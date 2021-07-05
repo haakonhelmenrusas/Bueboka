@@ -1,0 +1,23 @@
+.input {
+  width: 248px;
+  margin-bottom: 1rem;
+  font-family: inherit;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  appearance: none;
+  -webkit-appearance: none;
+}
+.label {
+  font-size: 1rem;
+  line-height: 24px;
+  margin-bottom: 0.25rem;
+}
+.field {
+  height: 48px;
+  width: 100%;
+  font-size: 16px;
+  padding: 8px 16px;
+  border-radius: 4px;
+  background-color: hsl(0, 0%, 90%);
+}
