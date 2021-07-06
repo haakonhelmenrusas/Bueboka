@@ -4,15 +4,16 @@ import styles from "./Input.module.css";
 type InputType = "text" | "number" | "password";
 
 interface InputProps {
-  isRequired?: boolean;
-  type?: InputType;
-  placeholder?: string;
-  name?: string;
-  labelName: string;
   id: string;
+  name?: string;
   value?: string;
+  type?: InputType;
+  style?: React.CSSProperties;
+  labelName: string;
   minLength?: number;
   maxLength?: number;
+  isRequired?: boolean;
+  placeholder?: string;
   onChange?: (e: React.ChangeEvent<HTMLInputElement>) => any;
 }
 
@@ -21,9 +22,9 @@ interface InputProps {
  * @param props - Input attributes like type, id etc.
  */
 const Input: React.FC<InputProps> = (props): JSX.Element => {
-  const { isRequired, type, name, labelName, id, value, ...restProps } = props;
+  const { isRequired, type, name, labelName, id, value, style, ...restProps } = props;
   return (
-    <div className={styles.input}>
+    <div style={style} className={styles.input}>
       <label className={styles.label} htmlFor={id}>
         {labelName}
       </label>

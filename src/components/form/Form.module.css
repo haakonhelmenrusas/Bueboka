@@ -1,0 +1,29 @@
+.component {
+  display: flex;
+  flex-direction: column;
+  padding: 2rem;
+  align-items: center;
+  max-width: 960px;
+  margin-left: auto;
+  margin-right: auto;
+}
+.heading {
+  font-size: 2rem;
+  font-weight: 600;
+  margin: 1rem 0;
+}
+.mesureSection {
+  display: flex;
+  flex-direction: column;
+}
+@media only screen and (max-width: 600px) {
+  .component {
+    padding: 1rem;
+  }
+  .mesureSection {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+  }
+}
