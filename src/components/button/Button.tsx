@@ -9,13 +9,14 @@ interface ButtonProps {
   type?: ButtonType;
   label: string;
   buttonStyle: ButtonStyle;
+  style?: React.CSSProperties;
   onClick?: (e: React.MouseEvent<HTMLButtonElement>) => any;
 }
 
 const Button: React.FC<ButtonProps> = (props): JSX.Element => {
-  const { label, onClick, buttonStyle, type } = props;
+  const { label, onClick, buttonStyle, type, style } = props;
     return (
-      <button type={type} onClick={onClick} className={[styles.button, styles[buttonStyle]].join(' ')}>
+      <button style={style} type={type} onClick={onClick} className={[styles.button, styles[buttonStyle]].join(' ')}>
         {label}
       </button>
     );
