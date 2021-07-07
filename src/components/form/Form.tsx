@@ -18,7 +18,7 @@ const Form: React.FC = (): JSX.Element => {
   };
 
   return (
-    <form name="Bueskytterens assistent" data-netlify="true" onSubmit={submitForm} className={styles.component}>
+    <form name="Bueskytterens assistent" method="post" className={styles.component}>
       <h3>Dine mål</h3>
       <section className={styles.mesureSection}>
         <div className={styles.mesureInputs}>
