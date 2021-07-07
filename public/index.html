@@ -15,6 +15,17 @@
   </head>
   <body>
     <noscript>You need to enable JavaScript to run this app.</noscript>
+    <!-- A little help for the Netlify post-processing bots -->
+    <form
+      name="Bueskytterens assistent"
+      netlify
+      netlify-honeypot="bot-field"
+      hidden
+    >
+      <input type="number" name="mesureA" />
+      <input type="number" name="mesureB" />
+    </form>
+
     <div id="root"></div>
   </body>
 </html>

@@ -22,6 +22,7 @@ const Form: React.FC = (): JSX.Element => {
       <h3>Dine mål</h3>
       <section className={styles.mesureSection}>
         <div className={styles.mesureInputs}>
+        <input type="hidden" name="form-name" value="Bueskytterens assistent" />
           <Input
             style={{ width: 80, marginRight: 16}}
             type="number"
@@ -33,7 +34,7 @@ const Form: React.FC = (): JSX.Element => {
           <Input
             style={{ width: 80}}
             type="number"
-            id="password"
+            id="mesureB"
             labelName="Mål B"
             onChange={mesureB => setMesureB(mesureB.currentTarget.value)}
             value={mesureB}
