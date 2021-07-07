@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 
 import MålA from '../../assets/images/Mål_A.jpg';
 import Button from "../button/Button";
@@ -7,8 +7,8 @@ import styles from "./Form.module.css";
 
 const Form: React.FC = (): JSX.Element => {
 
-  const [mesureA, setMesureA] = useState('');
-  const [mesureB, setMesureB] = useState('');
+/*   const [mesureA, setMesureA] = useState('');
+  const [mesureB, setMesureB] = useState(''); */
 
 /*   const submitForm = (event: React.FormEvent) => {
     event.preventDefault();
@@ -28,16 +28,16 @@ const Form: React.FC = (): JSX.Element => {
             type="number"
             id="mesureA"
             labelName="Mål A"
-            onChange={mesureA => setMesureA(mesureA.currentTarget.value)}
-            value={mesureA}
+ /*            onChange={mesureA => setMesureA(mesureA.currentTarget.value)}
+            value={mesureA} */
           />
           <Input
             style={{ width: 80}}
             type="number"
             id="mesureB"
             labelName="Mål B"
-            onChange={mesureB => setMesureB(mesureB.currentTarget.value)}
-            value={mesureB}
+/*             onChange={mesureB => setMesureB(mesureB.currentTarget.value)}
+            value={mesureB} */
             minLength={8}
           />
         </div>
