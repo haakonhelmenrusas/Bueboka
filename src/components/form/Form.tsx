@@ -10,12 +10,12 @@ const Form: React.FC = (): JSX.Element => {
   const [mesureA, setMesureA] = useState('');
   const [mesureB, setMesureB] = useState('');
 
-  const submitForm = (event: React.FormEvent) => {
+/*   const submitForm = (event: React.FormEvent) => {
     event.preventDefault();
     setMesureA('');
     setMesureB('');
     console.log(mesureA, mesureB)
-  };
+  }; */
 
   return (
     <form name="Bueskytterens assistent" method="post" className={styles.component}>
