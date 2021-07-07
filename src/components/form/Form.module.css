@@ -2,7 +2,6 @@
   display: flex;
   flex-direction: column;
   padding: 2rem;
-  align-items: center;
   max-width: 960px;
   margin-left: auto;
   margin-right: auto;
@@ -15,15 +14,29 @@
 .mesureSection {
   display: flex;
   flex-direction: column;
+  margin-bottom: 16px;
+}
+.mesureInputs {
+  display: flex;
+  flex-direction: row;
+}
+.measureAImageContainer {
+  width: 600px;
+}
+.measureAImage {
+  width: 100%;
+  height: auto;
 }
 @media only screen and (max-width: 600px) {
   .component {
     padding: 1rem;
   }
+  .measureAImageContainer {
+    width: 100%;
+  }
   .mesureSection {
     display: flex;
-    flex-direction: row;
-    align-items: center;
+    flex-direction: column;
     justify-content: space-between;
   }
 }
