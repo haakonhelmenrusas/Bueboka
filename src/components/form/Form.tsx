@@ -27,6 +27,7 @@ const Form: React.FC = (): JSX.Element => {
             style={{ width: 80, marginRight: 16}}
             type="number"
             id="mesureA"
+            name="mesureA"
             labelName="Mål A"
  /*            onChange={mesureA => setMesureA(mesureA.currentTarget.value)}
             value={mesureA} */
@@ -35,6 +36,7 @@ const Form: React.FC = (): JSX.Element => {
             style={{ width: 80}}
             type="number"
             id="mesureB"
+            name="mesureB"
             labelName="Mål B"
 /*             onChange={mesureB => setMesureB(mesureB.currentTarget.value)}
             value={mesureB} */
