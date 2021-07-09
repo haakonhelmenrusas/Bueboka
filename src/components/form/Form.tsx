@@ -7,16 +7,6 @@ import styles from "./Form.module.css";
 
 const Form: React.FC = (): JSX.Element => {
 
-/*   const [mesureA, setMesureA] = useState('');
-  const [mesureB, setMesureB] = useState(''); */
-
-/*   const submitForm = (event: React.FormEvent) => {
-    event.preventDefault();
-    setMesureA('');
-    setMesureB('');
-    console.log(mesureA, mesureB)
-  }; */
-
   return (
     <form name="Bueskytterens assistent" method="post" className={styles.component}>
       <h3>Dine mål</h3>
@@ -29,8 +19,6 @@ const Form: React.FC = (): JSX.Element => {
             id="mesureA"
             name="mesureA"
             labelName="Mål A"
- /*            onChange={mesureA => setMesureA(mesureA.currentTarget.value)}
-            value={mesureA} */
           />
           <Input
             style={{ width: 80}}
@@ -38,9 +26,6 @@ const Form: React.FC = (): JSX.Element => {
             id="mesureB"
             name="mesureB"
             labelName="Mål B"
-/*             onChange={mesureB => setMesureB(mesureB.currentTarget.value)}
-            value={mesureB} */
-            minLength={8}
           />
         </div>
         <div className={styles.measureAImageContainer}>
