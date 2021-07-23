@@ -4,11 +4,7 @@ import Button from '../components/button/Button';
 
 const provider = new firebase.auth.FacebookAuthProvider();
 
-interface IFacebookLogin  { 
-  children: React.ReactNode
-}
-
-const FacebookLogin = ( {children} : IFacebookLogin) => {
+const FacebookLogin = () => {
 
   function loginWithFacebook() {
     firebase
