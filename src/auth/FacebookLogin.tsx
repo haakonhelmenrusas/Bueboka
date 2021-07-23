@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react';
 import firebase from 'firebase';
+import Button from '../components/button/Button';
 
 const provider = new firebase.auth.FacebookAuthProvider();
 
@@ -9,7 +10,7 @@ interface IFacebookLogin  {
 
 const FacebookLogin = ( {children} : IFacebookLogin) => {
 
-  useEffect(() => {
+  function loginWithFacebook() {
     firebase
     .auth()
     .signInWithPopup(provider)
@@ -19,7 +20,7 @@ const FacebookLogin = ( {children} : IFacebookLogin) => {
   
       // The signed-in user info.
       const user = result.user;
-      console.log('FACEBOOK USER: ', user);
+      console.log('FACEBOOK USER: ', result);
       
       // This gives you a Facebook Access Token. You can use it to access the Facebook API.
       //const accessToken = credential.accessToken;
@@ -37,12 +38,15 @@ const FacebookLogin = ( {children} : IFacebookLogin) => {
   
       
     })
+  }
+
+  useEffect(() => {
   }, [])
 
   return (
-    <>
-    {children}
-    </>
+    <div>
+      <Button buttonStyle="primary" onClick={loginWithFacebook} label="Logg inn med Facebook"></Button>
+    </div>
   )
 
 };

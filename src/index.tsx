@@ -1,7 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import firebase from 'firebase/app';
-import FacebookLogin from './auth/FacebookLogin'
+import firebase from 'firebase';
 
 import './index.css';
 import App from './app/App';
@@ -18,9 +17,7 @@ firebase.initializeApp({
 
 ReactDOM.render(
   <React.StrictMode>
-    <FacebookLogin>
       <App />
-    </FacebookLogin>
   </React.StrictMode>,
   document.getElementById('root')
 );
