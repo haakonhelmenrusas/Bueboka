@@ -1,15 +1,10 @@
-import Form from '../components/form/Form';
+import Login from '../pages/login/Login';
 import './App.css';
 
 const App = () => {
   return (
     <div className="App">
-      <header className="App-header">
-        <h1>Bueskytterens assistent</h1>
-      </header>
-      <main>
-        <Form />
-      </main>
+      <Login />
     </div>
   );
 }
