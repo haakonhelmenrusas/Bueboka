@@ -23,21 +23,22 @@ const FacebookLogin = () => {
     history.push('/user')
   }
 
-  const loginWithFacebook = async () => {
-    await firebase.auth().setPersistence('local');
-
-    return firebase
-    .auth()
-    .signInWithPopup(provider)
-    .then((result) => {
+  const facebookSignInRedirectResult = async () => {
+    try {
+      const result_1 = await firebase.auth().getRedirectResult();
       // The signed-in user info.
-      const user = result.user;
+      const user = result_1.user;
       if (user) {
         saveUserToContext(user);
       }
-    })
-    .catch((error) => {
-    })
+    } catch (error) { }
+  }
+
+  const loginWithFacebook = async () => {
+    await firebase.auth().setPersistence('local');
+
+    await firebase.auth().signInWithRedirect(provider);
+    facebookSignInRedirectResult();
   }
 
   return (
