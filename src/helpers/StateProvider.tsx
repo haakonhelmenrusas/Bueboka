@@ -17,7 +17,7 @@ const StateProvider = ({ children }: IState) => {
 
   const [user, setUser] = useState<User>(contextDefaultValues.user);
 
-  const updateUser = (user: any) => setUser((prevState) => ({ ...prevState, user}));
+  const updateUser = (user: User) => setUser((prevState) => ({ ...prevState, displayName: user.displayName, email: user.email, photoURL: user.photoURL}));
 
   return (
     <UserContext.Provider value={{ user, updateUser }}>

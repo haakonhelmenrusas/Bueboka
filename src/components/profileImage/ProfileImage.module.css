@@ -1,0 +1,9 @@
+.imgContainer {
+  width: 48px;
+  height: 48px;
+  border-radius: 200px;
+}
+.img {
+  width: 100%;
+  height: auto;
+}
