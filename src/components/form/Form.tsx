@@ -5,7 +5,7 @@ import Button from "../button/Button";
 import Input from "../input/Input";
 import styles from "./Form.module.css";
 
-const Form: React.FC = (): JSX.Element => {
+const Form: React.FC = () => {
 
   return (
     <form name="Bueskytterens assistent" method="post" className={styles.component}>

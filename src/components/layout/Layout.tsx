@@ -1,4 +1,5 @@
 import React from 'react';
+import Header from '../header/Header';
 
 import styles from './Layout.module.css';
 
@@ -8,14 +9,14 @@ interface ILayout {
 
 const Layout = ({ children }: ILayout) => {
   return (
+  <>
+    <Header />
     <div className={styles.layout}>
-      <header className="App-header">
-        <h1>Bueskytterens assistent</h1>
-      </header>
       <main>
         {children}
       </main>
     </div>
+  </>
   )
 }
 
