@@ -1,4 +1,5 @@
-import React, { useState, createContext } from 'react'
+import firebase from 'firebase';
+import React, { useState, createContext, useEffect } from 'react'
 import { User } from '../types/User';
 import { UserContextState } from '../types/UserContext';
 
@@ -18,6 +19,19 @@ const StateProvider = ({ children }: IState) => {
   const [user, setUser] = useState<User>(contextDefaultValues.user);
 
   const updateUser = (user: User) => setUser((prevState) => ({ ...prevState, displayName: user.displayName, email: user.email, photoURL: user.photoURL}));
+
+  useEffect(() => {
+    firebase.auth().onAuthStateChanged((user => {
+      if (user) {
+        const userProfile: User = {
+          displayName: user.displayName!,
+          email: user.email!,
+          photoURL: user.photoURL!
+        }
+        updateUser(userProfile)
+      }
+    }))
+  }, [user])
 
   return (
     <UserContext.Provider value={{ user, updateUser }}>
