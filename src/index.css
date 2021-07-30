@@ -1,8 +1,13 @@
+*,
+*::after,
+*::before {
+  box-sizing: border-box;
+}
 body {
   color: white;
   background-color: #282c34;
   margin: 0;
-  font-family: "Segoe UI", "Roboto", "Helvetica Neue", sans-serif;
+  font-family: "Roboto", "Helvetica Neue", sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }

@@ -1,0 +1,25 @@
+.archerNumberContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 96px;
+  height: 80px;
+  border-radius: 8px;
+  background-color: #236e37;
+}
+.title {
+  width: 100%;
+  text-align: center;
+  padding: 8px 0;
+  margin: 0;
+  border-bottom: 1px solid #eee;
+}
+.numberContainer {
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.number {
+  font-weight: 600;
+}
