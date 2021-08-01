@@ -7,22 +7,28 @@ import styles from "./Form.module.css";
 
 const Form: React.FC = () => {
 
+  const handleSubmit = (event: React.FormEvent) => {
+    event.preventDefault();
+    console.log("DATA SENT");
+    
+  }
+
   return (
-    <form name="Bueskytterens assistent" method="post" className={styles.component}>
+    <form onSubmit={handleSubmit} name="Bueskytterens assistent" className={styles.component}>
       <h3>Dine mål</h3>
       <section className={styles.mesureSection}>
         <div className={styles.mesureInputs}>
         <input type="hidden" name="form-name" value="Bueskytterens assistent" />
           <Input
             style={{ width: 80, marginRight: 16}}
-            type="number"
+            type="text"
             id="mesureA"
             name="mesureA"
             labelName="Mål A"
           />
           <Input
             style={{ width: 80}}
-            type="number"
+            type="text"
             id="mesureB"
             name="mesureB"
             labelName="Mål B"

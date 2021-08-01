@@ -8,9 +8,7 @@ const ArcherNumber = ({ archerNumber }: IArcherNumber) => {
   return (
     <div className={styles.archerNumberContainer}>
         <p className={styles.title}>Skytternr</p>
-        <div className={styles.numberContainer}>
           <span className={styles.number}>{archerNumber}</span>
-        </div>
     </div>
   );
 };

@@ -3,6 +3,7 @@ import React, { useContext, useEffect, useState } from 'react';
 import { ArcherNumber, Button, Input, Layout } from '../../components';
 import { useArcherNumber, useFetchArcher } from '../../helpers/hooks';
 import { UserContext } from '../../helpers/StateProvider';
+import styles from './User.module.css';
 
 const User = () => {
   const { user } = useContext(UserContext);
@@ -33,16 +34,16 @@ const User = () => {
 
   return (
     <Layout>
-      <div>
+      <div className={styles.header}>
         <h2>Hei, {user.displayName}!</h2>
         <ArcherNumber archerNumber={value} />
-        <div>
-          <p>Legg inn ditt skytternr her</p>
-          <form onSubmit={handleSubmit}>
-            <Input onChange={onChangeHandler} labelName="Skytternr" name="skytternr" id="skytternr" type="text" style={{ width: 64}} />
-            <Button type='submit' label='Lagre skytternr' buttonStyle="primary">Lagre skytternr</Button>
-          </form>
-        </div>
+      </div>
+      <div className={styles.numberForm}>
+        <p>Legg inn ditt skytternr</p>
+        <form onSubmit={handleSubmit}>
+          <Input onChange={onChangeHandler} labelName="Skytternr" name="skytternr" id="skytternr" type="text" style={{ width: 64}} />
+          <Button type='submit' label='Lagre skytternr' buttonStyle="primary">Lagre skytternr</Button>
+        </form>
       </div>
     </Layout>
   )
