@@ -17,3 +17,8 @@
   color: #333;
   background-color: #ccc;
 }
+@media only screen and (max-width: 600px) {
+  .layout {
+    padding: 1rem;
+  }
+}

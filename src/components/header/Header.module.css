@@ -1,8 +1,6 @@
 .header {
   width: 100%;
   height: 80px;
-  position: sticky;
-  top: 0;
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -22,11 +20,8 @@
   .header {
     width: 100%;
     height: 80px;
-    position: sticky;
-    top: 0;
-    display: flex;
-    flex-direction: row;
+    flex-direction: column;
     align-items: center;
-    margin-top: 2rem;
+    justify-content: space-between;
   }
 }
