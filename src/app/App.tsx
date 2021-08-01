@@ -5,7 +5,7 @@ import {
 } from "react-router-dom";
 
 import StateProvider from "../helpers/StateProvider";
-import Form from "../components/form/Form";
+import FormPage from "../pages/form/FormPage";
 import Login from '../pages/login/Login';
 import User from "../pages/user/User";
 import './App.css';
@@ -19,7 +19,7 @@ const App = () => {
           <Switch>
             <Route path="/" exact component={Login} />
             <Route path="/user" component={User} />
-            <Route path="/form" component={Form} />
+            <Route path="/form" component={FormPage} />
           </Switch>
         </Router>
       </StateProvider>

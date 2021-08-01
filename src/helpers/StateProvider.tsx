@@ -8,7 +8,7 @@ interface IState {
 }
 
 const contextDefaultValues: UserContextState = {
-  user: {displayName: '', email: '', photoURL: ''},
+  user: {displayName: '', email: '', photoURL: '', id: ''},
   updateUser: () => {}
 };
 
@@ -26,7 +26,8 @@ const StateProvider = ({ children }: IState) => {
         const userProfile: User = {
           displayName: user.displayName!,
           email: user.email!,
-          photoURL: user.photoURL!
+          photoURL: user.photoURL!,
+          id: user.uid
         }
         updateUser(userProfile)
       }

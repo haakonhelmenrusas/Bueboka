@@ -6,11 +6,17 @@
   display: flex;
   flex-direction: row;
   align-items: center;
+  justify-content: space-between;
 }
 .logo {
   width: 64px;
   height: 64px;
   margin: 0 1rem;
+}
+.brand {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
 }
 @media only screen and (max-width: 600px) {
   .header {

@@ -17,7 +17,8 @@ const FacebookLogin = () => {
     const userProfile: User = {
       displayName: user.displayName!,
       email: user.email!,
-      photoURL: user.photoURL!
+      photoURL: user.photoURL!,
+      id: user.uid
     }
     updateUser(userProfile);
     history.push('/user')

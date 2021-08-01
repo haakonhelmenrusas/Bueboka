@@ -1,0 +1,19 @@
+.nav {
+  margin: 0;
+  padding: 0;
+}
+.list {
+  list-style: none;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+.li a {
+  color: #fff;
+  padding: 1rem 2rem;
+  text-decoration: none;
+}
+.li a:hover {
+  color: #333;
+  background-color: #ccc;
+}
