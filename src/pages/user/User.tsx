@@ -42,7 +42,7 @@ const User = () => {
         <p>Legg inn ditt skytternr</p>
         <form onSubmit={handleSubmit}>
           <Input onChange={onChangeHandler} labelName="Skytternr" name="skytternr" id="skytternr" type="text" style={{ width: 64}} />
-          <Button type='submit' label='Lagre skytternr' buttonStyle="primary">Lagre skytternr</Button>
+          <Button type='submit' label='Lagre' buttonStyle="primary" />
         </form>
       </div>
     </Layout>

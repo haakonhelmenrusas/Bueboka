@@ -1,7 +1,6 @@
-import { useContext } from 'react';
+import { useContext, useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
 import FacebookLogin from '../../auth/FacebookLogin';
-import Button from '../../components/button/Button';
 import Layout from '../../components/layout/Layout';
 import { UserContext } from '../../helpers/StateProvider';
 import styles from './Login.module.css';
@@ -10,6 +9,12 @@ const Login = () => {
 
   const { user } = useContext(UserContext);
   const history = useHistory();
+
+  useEffect(() => {
+    if (user.displayName) {
+      history.push('/user');
+    }
+  }, [history, user])
 
   return (
     <Layout>
@@ -21,13 +26,7 @@ const Login = () => {
           <li>oppdatere din profil med skytternr. og data om ditt utstyr</li>
           <li>legge inn mål fra skytting og få beregnet siktemål</li>
         </ul>
-        {user.displayName ? (
-          <Button style={{ width: 200}} buttonStyle="primary" onClick={() => history.push('/user')} label="Min profil"></Button>
-        ) : (
-          <>
-            <FacebookLogin />
-          </>
-        )}
+          <FacebookLogin />
       </div>
     </Layout>
   )
