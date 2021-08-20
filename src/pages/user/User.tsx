@@ -1,16 +1,18 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from "react";
 
-import { ArcherNumber, Button, Input, Layout } from '../../components';
-import { useArcherNumber, useFetchArcher } from '../../helpers/hooks';
-import { UserContext } from '../../helpers/StateProvider';
-import styles from './User.module.css';
+import { ArcherNumber, Button, Input, Layout } from "../../components";
+import { useArcherNumber, useFetchArcher } from "../../helpers/hooks";
+import { UserContext } from "../../helpers/StateProvider";
+import styles from "./User.module.css";
 
 const User = () => {
   const { user } = useContext(UserContext);
   const { writeArcherNumber } = useArcherNumber();
   const { value, getArcherNumber } = useFetchArcher();
 
-  const [archerNumber, setArcherNumber] = useState<number | undefined>(undefined);
+  const [archerNumber, setArcherNumber] = useState<number | undefined>(
+    undefined
+  );
 
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
@@ -18,19 +20,19 @@ const User = () => {
       writeArcherNumber(archerNumber);
       setArcherNumber(undefined);
     }
-  }
+  };
 
   const onChangeHandler = (event: any) => {
     event.preventDefault();
     const archerNumber: number = +event.target.value;
     setArcherNumber(archerNumber);
-  }
+  };
 
   useEffect(() => {
     if (user.displayName) {
       getArcherNumber();
     }
-  }, [getArcherNumber, user.displayName])
+  }, [getArcherNumber, user.displayName]);
 
   return (
     <Layout>
@@ -41,12 +43,19 @@ const User = () => {
       <div className={styles.numberForm}>
         <p>Legg inn ditt skytternr</p>
         <form onSubmit={handleSubmit}>
-          <Input onChange={onChangeHandler} labelName="Skytternr" name="skytternr" id="skytternr" type="text" style={{ width: 64}} />
-          <Button type='submit' label='Lagre' buttonStyle="primary" />
+          <Input
+            onChange={onChangeHandler}
+            labelName="Skytternr"
+            name="skytternr"
+            id="skytternr"
+            type="text"
+            style={{ width: 64 }}
+          />
+          <Button type="submit" label="Lagre" buttonStyle="primary" />
         </form>
       </div>
     </Layout>
-  )
-}
+  );
+};
 
 export default User;

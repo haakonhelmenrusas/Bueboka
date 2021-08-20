@@ -22,7 +22,8 @@ interface InputProps {
  * @param props - Input attributes like type, id etc.
  */
 const Input: React.FC<InputProps> = (props): JSX.Element => {
-  const { isRequired, type, name, labelName, id, value, style, ...restProps } = props;
+  const { isRequired, type, name, labelName, id, value, style, ...restProps } =
+    props;
   return (
     <div style={style} className={styles.input}>
       <label className={styles.label} htmlFor={id}>

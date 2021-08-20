@@ -1,11 +1,11 @@
 .header {
-  display: flex;
-  flex-direction: row;
-  align-items: baseline;
+	display: flex;
+	flex-direction: row;
+	align-items: baseline;
 }
 .numberForm {
-  padding: 1rem;
-  width: 200px;
-  border-radius: 4px;
-  box-shadow: 2px 2px 4px 4px #3d434e;
+	padding: 1rem;
+	width: 200px;
+	border-radius: 4px;
+	box-shadow: 2px 2px 4px 4px #3d434e;
 }

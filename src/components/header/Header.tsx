@@ -1,6 +1,6 @@
-import Logo from '../../assets/images/logo512.png';
-import Navbar from '../navbar/Navbar';
-import styles from './Header.module.css';
+import Logo from "../../assets/images/logo512.png";
+import Navbar from "../navbar/Navbar";
+import styles from "./Header.module.css";
 
 const Header = () => {
   return (
@@ -11,7 +11,7 @@ const Header = () => {
       </div>
       <Navbar />
     </header>
-  )
-}
+  );
+};
 
-export default Header
+export default Header;

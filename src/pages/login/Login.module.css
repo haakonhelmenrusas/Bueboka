@@ -1,10 +1,10 @@
 .welcomeContainer {
-  margin-left: auto;
-  margin-right: auto;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+	margin-left: auto;
+	margin-right: auto;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
 }
 .list {
-  margin-bottom: 2rem;
+	margin-bottom: 2rem;
 }

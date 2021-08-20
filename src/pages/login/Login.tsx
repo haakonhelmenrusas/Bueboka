@@ -1,20 +1,19 @@
-import { useContext, useEffect } from 'react';
-import { useHistory } from 'react-router-dom';
-import FacebookLogin from '../../auth/FacebookLogin';
-import Layout from '../../components/layout/Layout';
-import { UserContext } from '../../helpers/StateProvider';
-import styles from './Login.module.css';
+import { useContext, useEffect } from "react";
+import { useHistory } from "react-router-dom";
+import FacebookLogin from "../../auth/FacebookLogin";
+import Layout from "../../components/layout/Layout";
+import { UserContext } from "../../helpers/StateProvider";
+import styles from "./Login.module.css";
 
 const Login = () => {
-
   const { user } = useContext(UserContext);
   const history = useHistory();
 
   useEffect(() => {
     if (user.displayName) {
-      history.push('/user');
+      history.push("/user");
     }
-  }, [history, user])
+  }, [history, user]);
 
   return (
     <Layout>
@@ -26,10 +25,10 @@ const Login = () => {
           <li>oppdatere din profil med skytternr. og data om ditt utstyr</li>
           <li>legge inn mål fra skytting og få beregnet siktemål</li>
         </ul>
-          <FacebookLogin />
+        <FacebookLogin />
       </div>
     </Layout>
-  )
-}
+  );
+};
 
 export default Login;

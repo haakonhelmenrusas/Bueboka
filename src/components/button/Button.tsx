@@ -15,11 +15,16 @@ interface ButtonProps {
 
 const Button: React.FC<ButtonProps> = (props): JSX.Element => {
   const { label, onClick, buttonStyle, type, style } = props;
-    return (
-      <button style={style} type={type} onClick={onClick} className={[styles.button, styles[buttonStyle]].join(' ')}>
-        {label}
-      </button>
-    );
+  return (
+    <button
+      style={style}
+      type={type}
+      onClick={onClick}
+      className={[styles.button, styles[buttonStyle]].join(" ")}
+    >
+      {label}
+    </button>
+  );
 };
 
 export default Button;

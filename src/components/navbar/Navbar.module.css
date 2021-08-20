@@ -1,24 +1,24 @@
 .nav {
-  margin: 0;
-  padding: 0;
+	margin: 0;
+	padding: 0;
 }
 .list {
-  list-style: none;
-  display: flex;
-  flex-direction: row;
-  align-items: center;
+	list-style: none;
+	display: flex;
+	flex-direction: row;
+	align-items: center;
 }
 .li a {
-  color: #fff;
-  padding: 1rem 2rem;
-  text-decoration: none;
+	color: #fff;
+	padding: 1rem 2rem;
+	text-decoration: none;
 }
 .li a:hover {
-  color: #333;
-  background-color: #ccc;
+	color: #333;
+	background-color: #ccc;
 }
 @media only screen and (max-width: 600px) {
-  .layout {
-    padding: 1rem;
-  }
+	.layout {
+		padding: 1rem;
+	}
 }
