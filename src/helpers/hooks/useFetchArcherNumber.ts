@@ -11,14 +11,18 @@ const useFetchArcher = () => {
   const getArcherNumber = useCallback(() => {
     setStatus("pending");
     const userId = firebase.auth().currentUser!.uid;
-    const archerNumber = firebase
-      .database()
-      .ref("users/" + userId + "/profile");
+    try {
+      const archerNumber = firebase
+          .database()
+          .ref("users/" + userId + "/profile");
 
-    archerNumber.on("value", (snapshot) => {
-      const { archerNumber } = snapshot.val();
-      setValue(archerNumber);
-    });
+      archerNumber.on("value", (snapshot) => {
+        const { archerNumber } = snapshot.val();
+        setValue(archerNumber);
+      });
+    } catch (e) {
+      setError(e);
+    }
   }, []);
 
   return {
