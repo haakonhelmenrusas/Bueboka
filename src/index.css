@@ -4,8 +4,8 @@
 	box-sizing: border-box;
 }
 body {
-	color: white;
-	background-color: #282c34;
+	color: #282c34;
+	background-color: #eee;
 	margin: 0;
 	font-family: "Roboto", "Helvetica Neue", sans-serif;
 	-webkit-font-smoothing: antialiased;

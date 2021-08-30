@@ -7,7 +7,7 @@ const Header = () => {
     <header className={styles.header}>
       <div className={styles.brand}>
         <img className={styles.logo} src={Logo} alt="Logo" />
-        <h1>Bueskytterens assistent</h1>
+        <h1 className={styles.title}>Book of Arrows</h1>
       </div>
       <Navbar />
     </header>
