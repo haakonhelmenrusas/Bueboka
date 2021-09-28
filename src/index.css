@@ -7,12 +7,12 @@ body {
 	color: #282c34;
 	background-color: #eee;
 	margin: 0;
-	font-family: "Roboto", "Helvetica Neue", sans-serif;
+	font-family: "Share", "Helvetica Neue", sans-serif;
 	-webkit-font-smoothing: antialiased;
 	-moz-osx-font-smoothing: grayscale;
 }
 
 code {
-	font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
+	font-family: 'Share', Monaco, Consolas, "Courier New",
 	monospace;
 }

@@ -1,4 +1,4 @@
-import firebase from 'firebase';
+import firebase from 'firebase/auth';
 import React, { useState, createContext, useEffect } from 'react'
 import { User } from '../types/User';
 import { UserContextState } from '../types/UserContext';
@@ -36,7 +36,7 @@ const StateProvider = ({ children }: IState) => {
 
   return (
     <UserContext.Provider value={{ user, updateUser }}>
-     {children} 
+     {children}
     </UserContext.Provider>
   )
 }
