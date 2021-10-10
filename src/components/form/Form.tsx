@@ -1,8 +1,8 @@
 import React from "react";
 
 import MålA from "../../assets/images/Mål_A.jpg";
-import Button from "../button/Button";
-import Input from "../input/Input";
+import Button from "../common/button/Button";
+import Input from "../common/input/Input";
 import styles from "./Form.module.css";
 
 const Form: React.FC = () => {
