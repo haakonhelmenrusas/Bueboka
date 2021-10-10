@@ -1,25 +1,25 @@
 import { useCallback, useState } from "react";
-import firebase from "firebase";
+import { getAuth } from "firebase/auth";
+import { ref, getDatabase, onValue } from "firebase/database";
+import firebaseApp from "../../auth/FirebaseConfig";
 
 const useFetchArcher = () => {
-  const [status, setStatus] = useState<
-    "idle" | "pending" | "success" | "error"
-  >("idle");
+  const [status, setStatus] = useState<"idle" | "pending" | "success" | "error">("idle");
   const [value, setValue] = useState<any | null>(null);
   const [error, setError] = useState<any | null>(null);
 
   const getArcherNumber = useCallback(() => {
-    setStatus("pending");
-    const userId = firebase.auth().currentUser!.uid;
-    try {
-      const archerNumber = firebase
-          .database()
-          .ref("users/" + userId + "/profile");
+    const auth = getAuth(firebaseApp);
+    const db = getDatabase(firebaseApp);
+    const userId = auth.currentUser!.uid;
 
-      archerNumber.on("value", (snapshot) => {
+    setStatus("pending");
+    try {
+      const archerNumber = ref(db, "users/" + userId + "/profile");
+      onValue(archerNumber, (snapshot) => {
         const { archerNumber } = snapshot.val();
         setValue(archerNumber);
-      });
+      })
     } catch (e) {
       setError(e);
     }

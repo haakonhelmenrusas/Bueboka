@@ -1,5 +1,8 @@
 import { useState } from "react";
-import firebase from "firebase";
+import { getDatabase, ref, set } from "firebase/database";
+import { getAuth } from "firebase/auth";
+import firebaseApp from "../../auth/FirebaseConfig";
+
 
 const useArcherNumber = () => {
 	const [status, setStatus] = useState<
@@ -13,18 +16,17 @@ const useArcherNumber = () => {
 	 * @param archerNumber
 	 */
 	const writeArcherNumber = async (archerNumber: number): Promise<void> => {
-		const userId = firebase.auth().currentUser!.uid;
+		const auth = getAuth(firebaseApp);
+		const database = getDatabase(firebaseApp)
+		const userId = auth.currentUser!.uid;
+
 		setStatus("pending");
-		await firebase
-				.database()
-				.ref("users/" + userId)
-				.set(
+		set(ref(database, "users/" + userId),
 						{
 							profile: {
 								archerNumber: archerNumber,
 							},
 						},
-						() => {}
 				)
 				.then(() => {
 					setStatus("success");

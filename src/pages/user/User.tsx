@@ -1,6 +1,7 @@
 import React, { useContext, useEffect, useState } from "react";
 
-import { ArcherNumber, Button, Input, Layout } from "../../components";
+import { ArcherNumber } from "../../components";
+import { Button, Input, Layout } from "../../components/common";
 import { useArcherNumber, useFetchArcher } from "../../helpers/hooks";
 import { UserContext } from "../../helpers/StateProvider";
 import styles from "./User.module.css";

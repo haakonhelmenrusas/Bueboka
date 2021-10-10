@@ -1,7 +1,8 @@
-import firebase from 'firebase/auth';
+import { getAuth, onAuthStateChanged } from 'firebase/auth';
 import React, { useState, createContext, useEffect } from 'react'
-import { User } from '../types/User';
+import { IUser } from '../types/User';
 import { UserContextState } from '../types/UserContext';
+import firebaseApp from "../auth/FirebaseConfig";
 
 interface IState {
   children: React.ReactNode;
@@ -15,15 +16,15 @@ const contextDefaultValues: UserContextState = {
 export const UserContext = createContext<UserContextState>(contextDefaultValues);
 
 const StateProvider = ({ children }: IState) => {
+  const auth = getAuth(firebaseApp);
+  const [user, setUser] = useState<IUser>(contextDefaultValues.user);
 
-  const [user, setUser] = useState<User>(contextDefaultValues.user);
-
-  const updateUser = (user: User) => setUser((prevState) => ({ ...prevState, displayName: user.displayName, email: user.email, photoURL: user.photoURL}));
+  const updateUser = (user: IUser) => setUser((prevState) => ({ ...prevState, displayName: user.displayName, email: user.email, photoURL: user.photoURL}));
 
   useEffect(() => {
-    firebase.auth().onAuthStateChanged((user => {
+    onAuthStateChanged(auth,(user => {
       if (user) {
-        const userProfile: User = {
+        const userProfile: IUser = {
           displayName: user.displayName!,
           email: user.email!,
           photoURL: user.photoURL!,

@@ -1,7 +1,7 @@
 import { useContext, useEffect } from "react";
 import { useHistory } from "react-router-dom";
 import FacebookLogin from "../../auth/FacebookLogin";
-import Layout from "../../components/layout/Layout";
+import Layout from "../../components/common/layout/Layout";
 import { UserContext } from "../../helpers/StateProvider";
 import styles from "./Login.module.css";
 

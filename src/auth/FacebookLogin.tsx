@@ -1,19 +1,23 @@
 import { useHistory } from "react-router-dom";
 import { useContext } from "react";
-import { getAuth, signInWithRedirect , FacebookAuthProvider } from "firebase/auth";
+import { getAuth, getRedirectResult, signInWithRedirect, FacebookAuthProvider, browserSessionPersistence, User } from "firebase/auth";
 
 import { UserContext } from "../helpers/StateProvider";
-import Button from "../components/button/Button";
-import { User } from "../types/User";
+import Button from "../components/common/button/Button";
+import { IUser } from "../types/User";
+import firebaseApp from "./FirebaseConfig";
 
-const auth = getAuth();
+const auth = getAuth(firebaseApp);
+const provider = new FacebookAuthProvider();
 
 const FacebookLogin = () => {
   const history = useHistory();
   const { updateUser } = useContext(UserContext);
 
-  function saveUserToContext(user) {
-    const userProfile: User = {
+  auth.setPersistence(browserSessionPersistence);
+
+  function saveUserToContext(user: User) {
+    const userProfile: IUser = {
       displayName: user.displayName!,
       email: user.email!,
       photoURL: user.photoURL!,
@@ -25,20 +29,22 @@ const FacebookLogin = () => {
 
   const facebookSignInRedirectResult = async () => {
     try {
-      const result_1 = await signInWithRedirect(auth);
-      // The signed-in user info.
-      const user = result_1.user;
-      if (user) {
-        saveUserToContext(user);
+      const result_1 = await getRedirectResult(auth, provider);
+
+      if (result_1) {
+        const user = result_1.user;
+        if (user) {
+          saveUserToContext(user);
+        }
       }
-    } catch (error) {}
+    } catch (error) {
+      console.log("ERROR", error)
+    }
   };
 
   const loginWithFacebook = async () => {
-    await firebase.auth().setPersistence("local");
-
-    await firebase.auth().signInWithRedirect(provider);
-    facebookSignInRedirectResult();
+    await signInWithRedirect(auth, provider);
+    await facebookSignInRedirectResult();
   };
 
   return (
