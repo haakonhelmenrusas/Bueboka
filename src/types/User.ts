@@ -1,4 +1,4 @@
-export type User = {
+export interface IUser {
   displayName: string;
   email: string;
   photoURL: string;
