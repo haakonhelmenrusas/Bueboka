@@ -10,7 +10,8 @@ interface IState {
 
 const contextDefaultValues: UserContextState = {
   user: {displayName: '', email: '', photoURL: '', id: ''},
-  updateUser: () => {}
+  updateUser: () => {
+  }
 };
 
 export const UserContext = createContext<UserContextState>(contextDefaultValues);

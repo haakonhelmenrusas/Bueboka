@@ -1,8 +1,8 @@
 import React, {useContext, useEffect, useState} from "react";
-import {Button, Form} from "react-bootstrap";
+import {Button} from "react-bootstrap";
 
 import {ArcherNumber} from "../../components";
-import {Layout} from "../../components/common";
+import {Input, Layout} from "../../components/common";
 import {useArcherNumber, useFetchArcher} from "../../helpers/hooks";
 import {UserContext} from "../../helpers/StateProvider";
 import styles from "./User.module.css";
@@ -44,12 +44,17 @@ const User = () => {
 				</div>
 				<div className={styles.numberForm}>
 					<p>Legg inn ditt skytternr</p>
-					<Form onSubmit={handleSubmit}>
-						<Form.Group className="mb-3" controlId="formBasicNumber">
-							<Form.Control onChange={onChangeHandler} type="text" placeholder="Skytternr." />
-						</Form.Group>
+					<form onSubmit={handleSubmit}>
+						<Input
+								onChange={onChangeHandler}
+								labelName="Skytternr"
+								name="skytternr"
+								id="skytternr"
+								type="text"
+								style={{width: 64}}
+						/>
 						<Button type="submit" variant="primary">Lagre</Button>
-					</Form>
+					</form>
 				</div>
 			</Layout>
 	);
