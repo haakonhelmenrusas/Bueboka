@@ -1,10 +1,17 @@
-import { useHistory } from "react-router-dom";
-import { useContext } from "react";
-import { getAuth, getRedirectResult, signInWithRedirect, FacebookAuthProvider, browserSessionPersistence, User } from "firebase/auth";
+import {useHistory} from "react-router-dom";
+import {useContext} from "react";
+import {Button} from 'react-bootstrap';
+import {
+  browserSessionPersistence,
+  FacebookAuthProvider,
+  getAuth,
+  getRedirectResult,
+  signInWithRedirect,
+  User
+} from "firebase/auth";
 
-import { UserContext } from "../helpers/StateProvider";
-import Button from "../components/common/button/Button";
-import { IUser } from "../types/User";
+import {UserContext} from "../helpers/StateProvider";
+import {IUser} from "../types/User";
 import firebaseApp from "./FirebaseConfig";
 
 const auth = getAuth(firebaseApp);
@@ -12,7 +19,7 @@ const provider = new FacebookAuthProvider();
 
 const FacebookLogin = () => {
   const history = useHistory();
-  const { updateUser } = useContext(UserContext);
+  const {updateUser} = useContext(UserContext);
 
   auth.setPersistence(browserSessionPersistence);
 
@@ -48,14 +55,13 @@ const FacebookLogin = () => {
   };
 
   return (
-    <>
-      <Button
-    style={{width: 200}}
-    buttonStyle="primary"
-    onClick={loginWithFacebook}
-    label="Logg inn med Facebook"
-    />
-    </>
+      <>
+        <Button
+            style={{width: 200}}
+            variant="primary"
+            onClick={loginWithFacebook}>Logg inn med Facebook</Button>
+
+      </>
   );
 };
 

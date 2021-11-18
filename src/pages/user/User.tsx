@@ -1,15 +1,16 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, {useContext, useEffect, useState} from "react";
+import {Button} from "react-bootstrap";
 
-import { ArcherNumber } from "../../components";
-import { Button, Input, Layout } from "../../components/common";
-import { useArcherNumber, useFetchArcher } from "../../helpers/hooks";
-import { UserContext } from "../../helpers/StateProvider";
+import {ArcherNumber} from "../../components";
+import {Input, Layout} from "../../components/common";
+import {useArcherNumber, useFetchArcher} from "../../helpers/hooks";
+import {UserContext} from "../../helpers/StateProvider";
 import styles from "./User.module.css";
 
 const User = () => {
-	const { user } = useContext(UserContext);
-	const { writeArcherNumber } = useArcherNumber();
-	const { value, getArcherNumber } = useFetchArcher();
+	const {user} = useContext(UserContext);
+	const {writeArcherNumber} = useArcherNumber();
+	const {value, getArcherNumber} = useFetchArcher();
 
 	const [archerNumber, setArcherNumber] = useState<number | undefined>(
 			undefined
@@ -50,9 +51,9 @@ const User = () => {
 								name="skytternr"
 								id="skytternr"
 								type="text"
-								style={{ width: 64 }}
+								style={{width: 64}}
 						/>
-						<Button type="submit" label="Lagre" buttonStyle="primary" />
+						<Button type="submit" variant="primary">Lagre</Button>
 					</form>
 				</div>
 			</Layout>
