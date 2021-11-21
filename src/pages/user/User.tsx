@@ -9,7 +9,7 @@ import styles from "./User.module.css";
 
 const User = () => {
 	const {user} = useContext(UserContext);
-	const {writeArcherNumber} = useArcherNumber();
+	const {writeArcherNumber, status} = useArcherNumber();
 	const {value, getArcherNumber} = useFetchArcher();
 
 	const [archerNumber, setArcherNumber] = useState<number | undefined>(
@@ -48,7 +48,7 @@ const User = () => {
 						<Form.Group className="mb-3" controlId="formBasicNumber">
 							<Form.Control onChange={onChangeHandler} type="text" placeholder="Skytternr." />
 						</Form.Group>
-						<Button type="submit" variant="primary">Lagre</Button>
+						<Button disabled={status === "pending" ? true : false} type="submit" variant="primary">Lagre</Button>
 					</Form>
 				</div>
 			</Layout>
