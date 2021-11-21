@@ -12,7 +12,7 @@ const Footer = () => {
 				<span className={styles.divider}/>
 				<div className={styles.sponsor}>
 					<h4>Sponsor</h4>
-					<a href="https://arcticbuesport.no/" target="_blank">
+					<a href="https://arcticbuesport.no/" target="_blank" rel="noreferrer" >
 						<img className={styles.logo} src={ArticBueLogo} alt="Arctic Buesport AS Logo" />
 					</a>
 				</div>

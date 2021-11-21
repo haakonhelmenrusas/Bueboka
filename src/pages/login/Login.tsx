@@ -1,4 +1,4 @@
-import { useContext, useEffect } from "react";
+import React, { useContext, useEffect } from "react";
 import { useHistory } from "react-router-dom";
 import FacebookLogin from "../../auth/FacebookLogin";
 import Layout from "../../components/common/layout/Layout";

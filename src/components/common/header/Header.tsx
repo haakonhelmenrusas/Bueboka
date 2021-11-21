@@ -1,8 +1,10 @@
+import React from "react";
+import {getAuth} from "firebase/auth";
+
 import Logo from "../../../assets/images/logo512.png";
 import Navbar from "../navbar/Navbar";
-import styles from "./Header.module.css";
-import {getAuth} from "firebase/auth";
 import firebaseApp from "../../../auth/FirebaseConfig";
+import styles from "./Header.module.css";
 
 const Header = () => {
   const auth = getAuth(firebaseApp);
