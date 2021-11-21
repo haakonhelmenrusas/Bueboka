@@ -11,7 +11,7 @@ const useFetchArcher = () => {
   const getArcherNumber = useCallback(() => {
     const auth = getAuth(firebaseApp);
     const db = getDatabase(firebaseApp);
-    const userId = auth.currentUser!.uid;
+    const userId = auth.currentUser ? auth.currentUser.uid : null;
 
     setStatus("pending");
     try {
