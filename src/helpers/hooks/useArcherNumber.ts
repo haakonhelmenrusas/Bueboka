@@ -5,9 +5,7 @@ import firebaseApp from "../../auth/FirebaseConfig";
 
 
 const useArcherNumber = () => {
-	const [status, setStatus] = useState<
-			"idle" | "pending" | "success" | "error"
-			>("idle");
+	const [status, setStatus] = useState<"idle" | "pending" | "success" | "error">("idle");
 	const [error, setError] = useState<any | null>(null);
 
 	/**
@@ -18,7 +16,7 @@ const useArcherNumber = () => {
 	const writeArcherNumber = async (archerNumber: number): Promise<void> => {
 		const auth = getAuth(firebaseApp);
 		const database = getDatabase(firebaseApp)
-		const userId = auth.currentUser!.uid;
+		const userId = auth.currentUser ? auth.currentUser.uid : null;
 
 		setStatus("pending");
 		set(ref(database, "users/" + userId),

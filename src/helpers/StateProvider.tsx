@@ -10,8 +10,7 @@ interface IState {
 
 const contextDefaultValues: UserContextState = {
   user: {displayName: '', email: '', photoURL: '', id: ''},
-  updateUser: () => {
-  }
+  updateUser: () => {}
 };
 
 export const UserContext = createContext<UserContextState>(contextDefaultValues);
@@ -26,9 +25,9 @@ const StateProvider = ({ children }: IState) => {
     onAuthStateChanged(auth,(user => {
       if (user) {
         const userProfile: IUser = {
-          displayName: user.displayName!,
-          email: user.email!,
-          photoURL: user.photoURL!,
+          displayName: user.displayName,
+          email: user.email,
+          photoURL: user.photoURL,
           id: user.uid
         }
         updateUser(userProfile)
