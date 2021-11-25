@@ -1,52 +1,39 @@
 import React from "react";
+import {Button, Form} from 'react-bootstrap';
 
 import MålA from "../../assets/images/Mål_A.jpg";
-import Button from "../common/button/Button";
-import Input from "../common/input/Input";
 import styles from "./Form.module.css";
 
-const Form: React.FC = () => {
+const CalculateForm = () => {
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
     console.log("DATA SENT");
   };
 
   return (
-    <form
-      onSubmit={handleSubmit}
-      name="Bueskytterens assistent"
-      className={styles.component}
-    >
-      <h3>Dine mål</h3>
-      <section className={styles.mesureSection}>
-        <div className={styles.mesureInputs}>
-          <input
-            type="hidden"
-            name="form-name"
-            value="Bueskytterens assistent"
-          />
-          <Input
-            style={{ width: 80, marginRight: 16 }}
-            type="text"
-            id="mesureA"
-            name="mesureA"
-            labelName="Mål A"
-          />
-          <Input
-            style={{ width: 80 }}
-            type="text"
-            id="mesureB"
-            name="mesureB"
-            labelName="Mål B"
-          />
-        </div>
+      <div>
+        <h3>Dine mål</h3>
+        <Form onSubmit={handleSubmit}>
+          <Form.Group className="mb-3" controlId="formBasicMalA">
+            <Form.Label>Mål A</Form.Label>
+            <Form.Control type="text"/>
+            <Form.Text className="text-muted">
+              Hva er mål A?
+            </Form.Text>
+          </Form.Group>
+          <Form.Group className="mb-3" controlId="formBasicMalB">
+            <Form.Label>Mål B</Form.Label>
+            <Form.Control type="text"/>
+          </Form.Group>
+          <Button variant="primary" type="submit">
+            Submit
+          </Button>
+        </Form>
         <div className={styles.measureAImageContainer}>
-          <img className={styles.measureAImage} src={MålA} alt="Mål a" />
+          <img className={styles.measureAImage} src={MålA} alt="Mål a"/>
         </div>
-      </section>
-      <Button type="submit" buttonStyle="primary" label="Send inn" />
-    </form>
+      </div>
   );
 };
 
-export default Form;
+export default CalculateForm;

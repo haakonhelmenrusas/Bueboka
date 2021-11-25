@@ -1,7 +1,7 @@
-import { getAuth, onAuthStateChanged } from 'firebase/auth';
-import React, { useState, createContext, useEffect } from 'react'
-import { IUser } from '../types/User';
-import { UserContextState } from '../types/UserContext';
+import {getAuth, onAuthStateChanged} from 'firebase/auth';
+import React, {createContext, useEffect, useState} from 'react'
+import {IUser} from '../types/User';
+import {UserContextState} from '../types/UserContext';
 import firebaseApp from "../auth/FirebaseConfig";
 
 interface IState {
@@ -25,15 +25,15 @@ const StateProvider = ({ children }: IState) => {
     onAuthStateChanged(auth,(user => {
       if (user) {
         const userProfile: IUser = {
-          displayName: user.displayName!,
-          email: user.email!,
-          photoURL: user.photoURL!,
+          displayName: user.displayName,
+          email: user.email,
+          photoURL: user.photoURL,
           id: user.uid
         }
         updateUser(userProfile)
       }
     }))
-  }, [user])
+  }, [user, auth])
 
   return (
     <UserContext.Provider value={{ user, updateUser }}>

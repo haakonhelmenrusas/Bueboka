@@ -1,15 +1,16 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, {useContext, useEffect, useState} from "react";
+import {Button, Form} from "react-bootstrap";
 
-import { ArcherNumber } from "../../components";
-import { Button, Input, Layout } from "../../components/common";
-import { useArcherNumber, useFetchArcher } from "../../helpers/hooks";
-import { UserContext } from "../../helpers/StateProvider";
+import {ArcherNumber} from "../../components";
+import {Layout} from "../../components/common";
+import {useArcherNumber, useFetchArcher} from "../../helpers/hooks";
+import {UserContext} from "../../helpers/StateProvider";
 import styles from "./User.module.css";
 
 const User = () => {
-	const { user } = useContext(UserContext);
-	const { writeArcherNumber } = useArcherNumber();
-	const { value, getArcherNumber } = useFetchArcher();
+	const {user} = useContext(UserContext);
+	const {writeArcherNumber} = useArcherNumber();
+	const {value, getArcherNumber} = useFetchArcher();
 
 	const [archerNumber, setArcherNumber] = useState<number | undefined>(
 			undefined
@@ -43,17 +44,12 @@ const User = () => {
 				</div>
 				<div className={styles.numberForm}>
 					<p>Legg inn ditt skytternr</p>
-					<form onSubmit={handleSubmit}>
-						<Input
-								onChange={onChangeHandler}
-								labelName="Skytternr"
-								name="skytternr"
-								id="skytternr"
-								type="text"
-								style={{ width: 64 }}
-						/>
-						<Button type="submit" label="Lagre" buttonStyle="primary" />
-					</form>
+					<Form onSubmit={handleSubmit}>
+						<Form.Group className="mb-3" controlId="formBasicNumber">
+							<Form.Control onChange={onChangeHandler} type="text" placeholder="Skytternr." />
+						</Form.Group>
+						<Button type="submit" variant="primary">Lagre</Button>
+					</Form>
 				</div>
 			</Layout>
 	);
