@@ -1,3 +1,5 @@
+import React from "react";
+
 import styles from "./ArcherNumber.module.css";
 
 interface IArcherNumber {
