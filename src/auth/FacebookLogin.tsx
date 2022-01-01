@@ -11,7 +11,7 @@ import {
 
 import {UserContext} from "../helpers/StateProvider";
 import {IUser} from "../types/User";
-import firebaseApp from "./FirebaseConfig";
+import firebaseApp from "./";
 
 const auth = getAuth(firebaseApp);
 const provider = new FacebookAuthProvider();
@@ -33,9 +33,9 @@ const FacebookLogin = () => {
 
   const facebookSignInRedirectResult = async () => {
     try {
-      const result_1 = await getRedirectResult(auth, provider);
-      if (result_1) {
-        const user = result_1.user;
+      const userCredentials = await getRedirectResult(auth, provider);
+      if (userCredentials) {
+        const user = userCredentials.user;
         saveUserToContext(user);
       }
     } catch (error) {
