@@ -1,10 +1,11 @@
 import firebaseApp from "./";
 import { getAuth, GoogleAuthProvider, signInWithRedirect } from "firebase/auth";
 
-export const googleLogin = () => {
+export const googleLogin = async () => {
 	const auth = getAuth(firebaseApp);
 	const googleAuthProvider = new GoogleAuthProvider();
-	return () => {
-		return signInWithRedirect(auth, googleAuthProvider);
-	}
+	await signInWithRedirect(auth, googleAuthProvider).then(() => {
+
+	});
+
 }

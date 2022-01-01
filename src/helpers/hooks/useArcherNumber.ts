@@ -19,11 +19,9 @@ const useArcherNumber = () => {
 		const userId = auth.currentUser ? auth.currentUser.uid : null;
 
 		setStatus("pending");
-		set(ref(database, "users/" + userId),
+		set(ref(database, "users/" + userId + "/profile"),
 						{
-							profile: {
-								archerNumber: archerNumber,
-							},
+							archerNumber: archerNumber,
 						},
 				)
 				.then(() => {

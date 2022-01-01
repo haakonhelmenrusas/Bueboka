@@ -1,5 +1,6 @@
 import React, { useContext, useEffect, useState } from "react";
 import { Button, Form } from "react-bootstrap";
+import {useNavigate} from "react-router-dom";
 
 import { ArcherNumber } from "../../components";
 import { Layout } from "../../components/common";
@@ -10,6 +11,7 @@ import styles from "./User.module.css";
 const User = () => {
 	const {user} = useContext(UserContext);
 	const {writeArcherNumber, status} = useArcherNumber();
+	const navigate = useNavigate();
 	const {value, getArcherNumber} = useFetchArcher();
 
 	const [archerNumber, setArcherNumber] = useState<number | undefined>(
@@ -33,6 +35,8 @@ const User = () => {
 	useEffect(() => {
 		if (user.displayName) {
 			getArcherNumber();
+		} else {
+			navigate('/');
 		}
 	}, [getArcherNumber, user.displayName]);
 

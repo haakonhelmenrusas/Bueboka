@@ -10,15 +10,23 @@ import "./App.css";
 const App = () => {
   return (
     <div className="App">
-      <StateProvider>
-        <BrowserRouter>
+      <BrowserRouter>
+        <StateProvider>
           <Routes>
             <Route path="/" element={<Login />} />
             <Route path="user" element={<User />} />
             <Route path="form" element={<FormPage />} />
+            <Route
+                path="*"
+                element={
+                  <main style={{ padding: "1rem" }}>
+                    <p>There is nothing here!</p>
+                  </main>
+                }
+            />
           </Routes>
-        </BrowserRouter>
-      </StateProvider>
+        </StateProvider>
+      </BrowserRouter>
     </div>
   );
 };

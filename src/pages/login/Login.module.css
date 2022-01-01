@@ -8,3 +8,10 @@
 .list {
 	margin-bottom: 2rem;
 }
+.loginContainer {
+	display: flex;
+	flex-direction: column;
+}
+.loginContainer > button {
+	margin-bottom: 16px;
+}
