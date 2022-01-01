@@ -1,5 +1,5 @@
 import React from "react";
-import { BrowserRouter, Switch, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 import StateProvider from "../helpers/StateProvider";
 import FormPage from "../pages/form/FormPage";
@@ -12,11 +12,11 @@ const App = () => {
     <div className="App">
       <StateProvider>
         <BrowserRouter>
-          <Switch>
-            <Route path="/" exact component={Login} />
-            <Route path="/user" component={User} />
-            <Route path="/form" component={FormPage} />
-          </Switch>
+          <Routes>
+            <Route path="/" element={<Login />} />
+            <Route path="user" element={<User />} />
+            <Route path="form" element={<FormPage />} />
+          </Routes>
         </BrowserRouter>
       </StateProvider>
     </div>
