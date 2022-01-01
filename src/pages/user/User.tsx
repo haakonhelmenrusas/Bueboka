@@ -1,10 +1,10 @@
-import React, {useContext, useEffect, useState} from "react";
-import {Button, Form} from "react-bootstrap";
+import React, { useContext, useEffect, useState } from "react";
+import { Button, Form } from "react-bootstrap";
 
-import {ArcherNumber} from "../../components";
-import {Layout} from "../../components/common";
-import {useArcherNumber, useFetchArcher} from "../../helpers/hooks";
-import {UserContext} from "../../helpers/StateProvider";
+import { ArcherNumber } from "../../components";
+import { Layout } from "../../components/common";
+import { useArcherNumber, useFetchArcher} from "../../helpers/hooks";
+import { UserContext } from "../../helpers/StateProvider";
 import styles from "./User.module.css";
 
 const User = () => {

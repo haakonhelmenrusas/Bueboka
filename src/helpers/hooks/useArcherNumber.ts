@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { getDatabase, ref, set } from "firebase/database";
 import { getAuth } from "firebase/auth";
-import firebaseApp from "../../auth/FirebaseConfig";
+import firebaseApp from "../../auth/";
 
 
 const useArcherNumber = () => {

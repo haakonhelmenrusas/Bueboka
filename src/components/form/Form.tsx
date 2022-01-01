@@ -1,5 +1,5 @@
 import React from "react";
-import {Button, Form} from 'react-bootstrap';
+import { Button, Form } from 'react-bootstrap';
 
 import MålA from "../../assets/images/Mål_A.jpg";
 import styles from "./Form.module.css";

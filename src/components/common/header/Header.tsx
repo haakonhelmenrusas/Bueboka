@@ -3,7 +3,7 @@ import {getAuth} from "firebase/auth";
 
 import Logo from "../../../assets/images/logo512.png";
 import Navbar from "../navbar/Navbar";
-import firebaseApp from "../../../auth/FirebaseConfig";
+import firebaseApp from "../../../auth/";
 import styles from "./Header.module.css";
 
 const Header = () => {

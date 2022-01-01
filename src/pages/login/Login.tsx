@@ -1,5 +1,5 @@
 import React, { useContext, useEffect } from "react";
-import { useHistory } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import FacebookLogin from "../../auth/FacebookLogin";
 import Layout from "../../components/common/layout/Layout";
 import { UserContext } from "../../helpers/StateProvider";
@@ -7,13 +7,13 @@ import styles from "./Login.module.css";
 
 const Login = () => {
   const { user } = useContext(UserContext);
-  const history = useHistory();
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (user.displayName) {
-      history.push("/user");
+      navigate("/user");
     }
-  }, [history, user]);
+  }, [navigate, user]);
 
   return (
     <Layout>

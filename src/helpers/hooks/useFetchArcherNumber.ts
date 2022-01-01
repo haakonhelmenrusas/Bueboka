@@ -1,7 +1,7 @@
 import { useCallback, useState } from "react";
 import { getAuth } from "firebase/auth";
 import { ref, getDatabase, onValue } from "firebase/database";
-import firebaseApp from "../../auth/FirebaseConfig";
+import firebaseApp from "../../auth/";
 
 const useFetchArcher = () => {
   const [status, setStatus] = useState<"idle" | "pending" | "success" | "error">("idle");
