@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useState} from "react";
 import {getAuth} from "firebase/auth";
 import { Button } from "react-bootstrap";
 import { NavLink } from "react-router-dom";
@@ -10,6 +10,8 @@ import styles from "./Navbar.module.css";
 const Navbar = () => {
   const auth = getAuth(firebaseApp);
 
+  const [ profileMenu, setProfileMenu ] = useState(false);
+
   return (
     <nav className={styles.nav}>
       <ul className={styles.list}>
@@ -20,10 +22,13 @@ const Navbar = () => {
           <NavLink to="/form">Sikteskjema</NavLink>
         </li>
         <li className={styles.li}>
-          <div className={styles.profileNav}>
-            <ProfileImage photoURL={auth.currentUser ? auth.currentUser.photoURL ? auth.currentUser.photoURL : "" : ""} />
-            <Button variant="secondary" onClick={logOut}>Logg ut</Button>
-          </div>
+          <ProfileImage onClick={() => setProfileMenu((prevState => !prevState ))}
+                        photoURL={auth.currentUser ? auth.currentUser.photoURL ? auth.currentUser.photoURL : "" : ""} />
+          {profileMenu && (
+            <div className={styles.profileNav}>
+              <Button variant="secondary" onClick={logOut}>Logg ut</Button>
+            </div>
+          )}
         </li>
       </ul>
     </nav>
