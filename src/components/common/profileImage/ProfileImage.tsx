@@ -3,16 +3,15 @@ import React from "react";
 import styles from "./ProfileImage.module.css";
 
 interface IProfileImage {
-  photoURL: string;
-  onClick:  React.MouseEventHandler<HTMLDivElement>;
+	photoURL: string;
 }
 
-const ProfileImage = ({ photoURL, onClick }: IProfileImage) => {
-  return (
-    <div onClick={onClick} className={styles.imgContainer}>
-      <img className={styles.img} alt="Profile" src={photoURL} />
-    </div>
-  );
+const ProfileImage = ({photoURL}: IProfileImage) => {
+	return (
+			<div className={styles.imgContainer}>
+				<img className={styles.img} alt="Profile" src={photoURL}/>
+			</div>
+	);
 };
 
 export default ProfileImage;
