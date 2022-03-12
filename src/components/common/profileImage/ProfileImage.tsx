@@ -4,11 +4,12 @@ import styles from "./ProfileImage.module.css";
 
 interface IProfileImage {
   photoURL: string;
+  onClick:  React.MouseEventHandler<HTMLDivElement>;
 }
 
-const ProfileImage = ({ photoURL }: IProfileImage) => {
+const ProfileImage = ({ photoURL, onClick }: IProfileImage) => {
   return (
-    <div className={styles.imgContainer}>
+    <div onClick={onClick} className={styles.imgContainer}>
       <img className={styles.img} alt="Profile" src={photoURL} />
     </div>
   );
