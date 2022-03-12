@@ -1,31 +1,23 @@
-.heading {
-	font-size: 2rem;
-	font-weight: 600;
-	margin: 1rem 0;
+.form {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 16px;
 }
-.mesureSection {
-	display: flex;
-	flex-direction: column;
-	margin-bottom: 16px;
+
+.section {
+    display: flex;
+    flex-direction: row;
 }
+
 .mesureInputs {
-	display: flex;
-	flex-direction: row;
+    display: flex;
+    flex-direction: row;
 }
-.measureAImageContainer {
-	width: 600px;
-}
-.measureAImage {
-	width: 100%;
-	height: auto;
-}
+
 @media only screen and (max-width: 600px) {
-	.measureAImageContainer {
-		width: 100%;
-	}
-	.mesureSection {
-		display: flex;
-		flex-direction: column;
-		justify-content: space-between;
-	}
+    .mesureSection {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+    }
 }

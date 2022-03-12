@@ -36,4 +36,16 @@
         align-items: center;
         justify-content: space-between;
     }
+
+    .logo {
+        width: 40px;
+        height: 40px;
+        margin: 0 1rem;
+    }
+
+    .title {
+        font-family: 'Montserrat', sans-serif;
+        font-size: 20px;
+        font-weight: 500;
+    }
 }

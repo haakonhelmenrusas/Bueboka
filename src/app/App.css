@@ -1,9 +1,8 @@
 .App {
-	height: 100vh;
-	padding-bottom: 200px;
 }
+
 @media only screen and (max-width: 600px) {
-	.App-header {
-		font-size: 0.8rem;
-	}
+    .App-header {
+        font-size: 0.8rem;
+    }
 }

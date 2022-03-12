@@ -8,12 +8,7 @@ body {
     color: #282c34;
     background-color: #eee;
     margin: 0;
-    font-family: "Share", "Helvetica Neue", sans-serif;
+    font-family: "Raleway", "Helvetica Neue", sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-}
-
-code {
-    font-family: 'Raleway', Monaco, Consolas, "Courier New",
-    monospace;
 }

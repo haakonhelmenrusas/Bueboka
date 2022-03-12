@@ -1,12 +1,13 @@
-import React, { useContext, useEffect, useState } from "react";
-import { Button, Form } from "react-bootstrap";
+import React, {useContext, useEffect, useState} from "react";
+import {Button, Form} from "react-bootstrap";
 import {useNavigate} from "react-router-dom";
 
-import { ArcherNumber } from "../../components";
-import { Layout } from "../../components/common";
-import { useArcherNumber, useFetchArcher} from "../../helpers/hooks";
-import { UserContext } from "../../helpers/StateProvider";
+import {ArcherNumber} from "../../components";
+import {Layout} from "../../components/common";
+import {useArcherNumber, useFetchArcher} from "../../helpers/hooks";
+import {UserContext} from "../../helpers/StateProvider";
 import styles from "./User.module.css";
+import {logOut} from "../../auth";
 
 const User = () => {
 	const {user} = useContext(UserContext);
@@ -44,16 +45,19 @@ const User = () => {
 			<Layout>
 				<div className={styles.header}>
 					<h2>Hei, {user.displayName}!</h2>
-					<ArcherNumber archerNumber={value} />
+					<ArcherNumber archerNumber={value}/>
 				</div>
 				<div className={styles.numberForm}>
 					<p>Legg inn ditt skytternr</p>
 					<Form onSubmit={handleSubmit}>
 						<Form.Group className="mb-3" controlId="formBasicNumber">
-							<Form.Control onChange={onChangeHandler} type="text" placeholder="Skytternr." />
+							<Form.Control onChange={onChangeHandler} type="text" placeholder="Skytternr."/>
 						</Form.Group>
 						<Button disabled={status === "pending" ? true : false} type="submit" variant="primary">Lagre</Button>
 					</Form>
+				</div>
+				<div>
+					<Button variant="secondary" onClick={logOut}>Logg ut</Button>
 				</div>
 			</Layout>
 	);
