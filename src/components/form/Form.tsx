@@ -7,35 +7,40 @@ import styles from './Form.module.css';
 const CalculateForm = () => {
 	const handleSubmit = (event: React.FormEvent) => {
 		event.preventDefault();
-		console.log("DATA SENT");
+		const data = event.currentTarget;
+		console.log("DATA SENT", data);
 	};
+
+	const handleAimTarget1 = (event: any) => {
+		console.log(event.target.value)
+	}
 
 	return (
 			<div>
 				<h3>Siktemerker</h3>
 				<Form className={styles.form} onSubmit={handleSubmit}>
 					<div className={styles.section}>
-						<Form.Group className="mb-2" controlId="formBasicMalA">
-							<Form.Label>Mål A</Form.Label>
+						<Form.Group className={styles.formGroup} controlId="aimTarget1">
+							<Form.Label>5 m</Form.Label>
+							<Form.Control onChange={handleAimTarget1} type="text"/>
+						</Form.Group>
+						<Form.Group className={styles.formGroup} controlId="aimTarget2">
+							<Form.Label>10 m</Form.Label>
 							<Form.Control type="text"/>
 						</Form.Group>
-						<Form.Group className="m-3" controlId="formBasicMalB">
-							<Form.Label>Mål B</Form.Label>
+						<Form.Group className={styles.formGroup} controlId="aimTarget3">
+							<Form.Label>15 m</Form.Label>
+							<Form.Control type="text"/>
+						</Form.Group>
+						<Form.Group className={styles.formGroup} controlId="aimTarget4">
+							<Form.Label>20 m</Form.Label>
 							<Form.Control type="text"/>
 						</Form.Group>
 					</div>
 					<div className={styles.section}>
-						<Form.Group className="mb-3" controlId="formBasicMalA">
-							<Form.Label>Mål A</Form.Label>
-							<Form.Control type="text"/>
-						</Form.Group>
-						<Form.Group className="mb-3" controlId="formBasicMalB">
-							<Form.Label>Mål B</Form.Label>
-							<Form.Control type="text"/>
-						</Form.Group>
 					</div>
 					<Button style={{width: 200}} variant="primary" type="submit">
-						Submit
+						Send inn
 					</Button>
 				</Form>
 			</div>

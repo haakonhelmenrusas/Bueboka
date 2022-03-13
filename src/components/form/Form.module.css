@@ -6,9 +6,12 @@
 
 .section {
     display: flex;
+    flex-direction: column;
+}
+.formGroup {
+    display: flex;
     flex-direction: row;
 }
-
 .mesureInputs {
     display: flex;
     flex-direction: row;
