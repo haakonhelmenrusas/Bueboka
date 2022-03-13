@@ -6,48 +6,55 @@ import firebaseApp from "../auth/";
 import {useNavigate} from "react-router-dom";
 
 interface IState {
-  children: React.ReactNode;
+	children: React.ReactNode;
 }
 
 const contextDefaultValues: UserContextState = {
-  user: {displayName: '', email: '', photoURL: '', id: ''},
-  updateUser: () => {}
+	user: {
+		displayName: '',
+		email: '',
+		photoURL: '',
+		id: ''
+	},
+	updateUser: () => {
+		// This is intentional
+	}
 };
 
 export const UserContext = createContext<UserContextState>(contextDefaultValues);
 
-const StateProvider = ({ children }: IState) => {
-  const auth = getAuth(firebaseApp);
-  const navigate = useNavigate();
-  const [user, setUser] = useState<IUser>(contextDefaultValues.user);
+const StateProvider = ({children}: IState) => {
+	const auth = getAuth(firebaseApp);
+	const navigate = useNavigate();
+	const [user, setUser] = useState<IUser>(contextDefaultValues.user);
 
-  auth.setPersistence(browserLocalPersistence);
+	auth.setPersistence(browserLocalPersistence);
 
-  const updateUser = (user: IUser) => setUser((prevState) => (
-      { ...prevState, displayName: user.displayName, email: user.email, photoURL: user.photoURL})
-  );
+	const updateUser = (currentUser: IUser) => setUser((prevState) => (
+			{...prevState, displayName: currentUser.displayName, email: currentUser.email, photoURL: currentUser.photoURL})
+	);
 
-  useEffect(() => {
-    onAuthStateChanged(auth,(user => {
-      if (user) {
-        const userProfile: IUser = {
-          displayName: user.displayName,
-          email: user.email,
-          photoURL: user.photoURL,
-          id: user.uid
-        }
-        updateUser(userProfile)
-      } else {
-        navigate('/');
-      }
-    }))
-  }, [])
+	useEffect(() => {
+		onAuthStateChanged(auth, (changedUser => {
+			if (changedUser) {
+				const userProfile: IUser = {
+					displayName: changedUser.displayName,
+					email: changedUser.email,
+					photoURL: changedUser.photoURL,
+					id: changedUser.uid
+				}
+				updateUser(userProfile)
+			} else {
+				navigate('/');
+			}
+		}))
+	}, [])
 
-  return (
-    <UserContext.Provider value={{ user, updateUser }}>
-     {children}
-    </UserContext.Provider>
-  )
+	return (
+			<UserContext.Provider value={{user, updateUser}}>
+				{children}
+			</UserContext.Provider>
+	)
 }
 
 export default StateProvider

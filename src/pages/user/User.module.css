@@ -1,11 +1,24 @@
 .header {
-	display: flex;
-	flex-direction: row;
-	align-items: baseline;
+    display: flex;
+    flex-direction: column;
 }
+
+.headerContent {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    justify-content: space-between;
+}
+
+.profileData {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+}
+
 .numberForm {
-	padding: 1rem;
-	width: 200px;
-	border-radius: 4px;
-	box-shadow: 2px 2px 2px 2px #cdd0d5;
+    padding: 1rem;
+    width: 200px;
+    border-radius: 4px;
+    box-shadow: 2px 2px 2px 2px #cdd0d5;
 }

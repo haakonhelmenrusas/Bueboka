@@ -17,6 +17,27 @@
     text-decoration: none;
 }
 
+.li button {
+    border: none;
+    margin: 0;
+    padding: 0;
+    width: auto;
+    overflow: visible;
+    background: transparent;
+    color: inherit;
+    font: inherit;
+    line-height: normal;
+    -webkit-font-smoothing: inherit;
+    -moz-osx-font-smoothing: inherit;
+    -webkit-appearance: none;
+}
+
+.li button:hover {
+    color: #0d6efd;
+    background-color: #eee;
+    text-decoration: underline;
+}
+
 .profileNav {
     display: flex;
     flex-direction: column;

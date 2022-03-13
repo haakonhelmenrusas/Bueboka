@@ -1,13 +1,11 @@
 import React from "react";
-import {getAuth} from "firebase/auth";
 import {NavLink} from "react-router-dom";
 
-import firebaseApp from "../../../auth";
-import {ProfileImage} from "../index";
 import styles from "./Navbar.module.css";
+import {logOut} from "../../../auth";
+import {Button} from "react-bootstrap";
 
 const Navbar = () => {
-	const auth = getAuth(firebaseApp);
 
 	return (
 			<nav className={styles.nav}>
@@ -15,11 +13,8 @@ const Navbar = () => {
 					<li className={styles.li}>
 						<NavLink to="/form">Sikteskjema</NavLink>
 					</li>
-					<li className={styles.profileNav}>
-						<NavLink title="Profil" to="/user">
-							<ProfileImage
-									photoURL={auth.currentUser ? auth.currentUser.photoURL ? auth.currentUser.photoURL : "" : ""}/>
-						</NavLink>
+					<li className={styles.li}>
+						<Button onClick={logOut}>Logg ut</Button>
 					</li>
 				</ul>
 			</nav>

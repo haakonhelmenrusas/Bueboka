@@ -15,10 +15,17 @@
     margin: 0 1rem;
 }
 
-.brand {
+.brand a {
     display: flex;
     flex-direction: row;
     align-items: center;
+    color: #111;
+    text-decoration: none;
+}
+
+.brand a:hover {
+    color: #0d6efd;
+    text-decoration: underline;
 }
 
 .title {
@@ -33,8 +40,10 @@
         height: 80px;
         margin-top: 1rem;
         flex-direction: column;
-        align-items: center;
-        justify-content: space-between;
+    }
+
+    .brand {
+        margin-right: 30%;
     }
 
     .logo {
