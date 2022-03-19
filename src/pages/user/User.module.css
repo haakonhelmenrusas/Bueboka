@@ -14,11 +14,10 @@
     display: flex;
     flex-direction: row;
     align-items: flex-start;
+    margin-top: 8px;
 }
-
-.numberForm {
-    padding: 1rem;
-    width: 200px;
-    border-radius: 4px;
-    box-shadow: 2px 2px 2px 2px #cdd0d5;
+.profileSpecs {
+    display: flex;
+    flex-direction: column;
+    margin-left: 16px;
 }

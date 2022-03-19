@@ -1,0 +1,14 @@
+.container {
+    display: flex;
+    flex-direction: row;
+    color: #111111;
+    margin: 8px 8px 4px 0;
+}
+.bowIcon {
+    width: 24px;
+    height: 24px;
+}
+.bowType {
+    font-weight: 600;
+    margin-left: 8px;
+}

@@ -1,12 +1,12 @@
 import React from "react";
 
 import {Layout} from "../../components";
-import Form from "../../components/forms/markForm/markForm";
+import { CalculateForm } from "../../components/";
 
 const FormPage = () => {
 	return (
 			<Layout>
-				<Form/>
+				<CalculateForm/>
 			</Layout>
 	);
 };

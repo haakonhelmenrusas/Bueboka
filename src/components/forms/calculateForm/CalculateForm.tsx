@@ -3,7 +3,7 @@ import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 import {InputGroup} from "react-bootstrap";
 
-import styles from './markForm.module.css';
+import styles from './CalculateForm.module.css';
 
 const CalculateForm = () => {
 	const handleSubmit = (event: React.FormEvent) => {

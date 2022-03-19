@@ -12,9 +12,9 @@ const Layout = ({ children }: ILayout) => {
   return (
     <>
       <Header />
-      <div className={styles.layout}>
-        <main>{children}</main>
-      </div>
+      <main className={styles.layout}>
+        <>{children}</>
+      </main>
       <Footer />
     </>
   );

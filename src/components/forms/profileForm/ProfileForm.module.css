@@ -1,0 +1,18 @@
+.numberForm {
+    padding: 1rem;
+    border-radius: 4px;
+    margin: 16px auto;
+    box-shadow: 2px 2px 2px 2px #cdd0d5;
+}
+.formTitle {
+    margin-bottom: 16px;
+}
+.button {
+    width: 100%;
+    margin-top: 16px;
+}
+@media only screen and (max-width: 600px) {
+    .numberForm {
+        margin: 16px 0;
+    }
+}

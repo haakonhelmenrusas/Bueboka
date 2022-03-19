@@ -1,14 +1,18 @@
 .layout {
     display: flex;
     flex-direction: column;
-    padding: 2rem;
+    flex: 1 1;
+    padding: 2rem 0;
     max-width: 960px;
+    width: 960px;
     margin-left: auto;
     margin-right: auto;
 }
 
 @media only screen and (max-width: 600px) {
     .layout {
-        padding: 2rem;
+        width: 100%;
+        padding: 1rem;
+        max-width: 960px;
     }
 }
