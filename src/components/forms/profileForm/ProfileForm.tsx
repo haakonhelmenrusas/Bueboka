@@ -36,7 +36,19 @@ const ProfileForm: React.FC<IProfileForm> = ({ setShowEditForm }) => {
 
 	return (
 		<div className={styles.numberForm}>
-			<h3 className={styles.formTitle}>Rediger profil</h3>
+			<div className={styles.header}>
+				<h3 className={styles.formTitle}>Rediger profil</h3>
+				<button onClick={() => setShowEditForm((state) => !state)}>
+					<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+						<g transform="matrix(1,0,0,1,0,0)">
+							<title>Lukk skjema</title>
+							<line className={styles.lineStroke} x1="7" y1="16.999" x2="17" y2="6.999"/>
+							<line className={styles.lineStroke} x1="17" y1="16.999" x2="7" y2="6.999"/>
+							<circle className={styles.lineStroke} cx="12" cy="11.999" r="11.5"/>
+						</g>
+					</svg>
+				</button>
+			</div>
 			<Form onSubmit={handleSubmit}>
 				<Form.Group className="mb-3" controlId="formBasicNumber">
 					<Form.Text>Skytternr.</Form.Text>
