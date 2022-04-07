@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Button, Form } from "react-bootstrap";
+import {Button, Input, Select} from "@mantine/core";
 
 import {useArcherNumber, useBowType} from "../../../helpers/hooks";
 import styles from "./ProfileForm.module.css";
@@ -12,7 +12,7 @@ const ProfileForm: React.FC<IProfileForm> = ({ setShowEditForm }) => {
 	const { writeArcherNumber } = useArcherNumber();
 	const { writeBowType } = useBowType();
 	const [archerNumber, setArcherNumber] = useState<string>("");
-	const [bowType, setBowType] = useState<string>("");
+	const [bowType, setBowType] = useState<{label: string, value: string}>({ label: "", value: "" });
 
 	const handleSubmit = (event: React.FormEvent) => {
 		event.preventDefault();
@@ -22,16 +22,16 @@ const ProfileForm: React.FC<IProfileForm> = ({ setShowEditForm }) => {
 			});
 		}
 		if (bowType) {
-			writeBowType(bowType);
+			writeBowType(bowType.value);
 		}
 		setShowEditForm((state) => !state);
 	};
 
-	const handleArcherNumber = (event: React.ChangeEvent<HTMLInputElement>) => {
+	const handleArcherNumber = (event: any)=> {
 		setArcherNumber(event.target.value);
 	};
-	const handleBowType = (event: React.ChangeEvent<HTMLSelectElement>) => {
-		setBowType(event.target.value);
+	const handleBowType = (bowType: any) => {
+		setBowType(bowType);
 	};
 
 	return (
@@ -49,11 +49,10 @@ const ProfileForm: React.FC<IProfileForm> = ({ setShowEditForm }) => {
 					</svg>
 				</button>
 			</div>
-			<Form onSubmit={handleSubmit}>
-				<Form.Group className="mb-3" controlId="formBasicNumber">
-					<Form.Text>Skytternr.</Form.Text>
-					<Form.Control
-							onKeyPress={(e) => !/\d/.test(e.key) && e.preventDefault()}
+			<form onSubmit={handleSubmit}>
+				<div className="mb-3">
+					<Input
+							onKeyPress={(e: any) => !/\d/.test(e.key) && e.preventDefault()}
 							required
 							value={archerNumber}
 							maxLength={6}
@@ -61,28 +60,27 @@ const ProfileForm: React.FC<IProfileForm> = ({ setShowEditForm }) => {
 							type="text"
 							placeholder="F.eks. 2342"
 					/>
-					<Form.Text>Buetype</Form.Text>
-					<Form.Select
-						value={bowType}
+					<Select
+						value={bowType.value}
 						onChange={handleBowType}
+						placeholder="Velg din buetype"
 						aria-label="Bow type select"
-					>
-						<option>Velg din buetype</option>
-						<option value="Compound">Compound</option>
-						<option value="Recurve">Recurve</option>
-						<option value="Barebow">Barebow</option>
-						<option value="Tradisjonell">Tradisjonell</option>
-						<option value="Langbue">Langbue</option>
-						<option value="Annet">Annet</option>
-					</Form.Select>
-				</Form.Group>
+						data={[
+							{ value: 'Compound', label: 'Compound' },
+							{ value: 'Recurve', label: 'Recurve' },
+							{ value: 'Barebow', label: 'Barebow' },
+							{ value: 'Tradisjonell', label: 'Tradisjonell' },
+							{ value: 'Langbue', label: 'Langbue' },
+							{ value: 'Annet', label: 'Annet' },
+						]}
+					/>
+				</div>
 				<Button
 					className={styles.button}
 					disabled={status === "pending"}
 					type="submit"
-					variant="primary"
 				>Lagre</Button>
-			</Form>
+			</form>
 		</div>
 	)
 }

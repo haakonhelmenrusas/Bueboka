@@ -1,9 +1,10 @@
 import React from "react";
-import {NavLink} from "react-router-dom";
+import { NavLink } from "react-router-dom";
+import { Button } from "@mantine/core";
 
-import styles from "./Navbar.module.css";
 import {logOut} from "../../../auth";
-import {Button} from "react-bootstrap";
+import styles from "./Navbar.module.css";
+
 
 const Navbar = () => {
 

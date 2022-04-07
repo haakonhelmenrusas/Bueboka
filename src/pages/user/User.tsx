@@ -1,5 +1,4 @@
 import React, {useContext, useEffect, useState} from "react";
-import { Button } from "react-bootstrap";
 import {useNavigate} from "react-router-dom";
 import {getAuth} from "firebase/auth";
 
@@ -9,6 +8,7 @@ import {UserContext} from "../../helpers/StateProvider";
 import {ArcherNumber, BowType, ProfileForm} from "../../components";
 import firebaseApp from "../../auth";
 import styles from "./User.module.css";
+import {Button} from "@mantine/core";
 
 const User = () => {
 	const navigate = useNavigate();
@@ -34,7 +34,7 @@ const User = () => {
 						<h2>Hei, {user.displayName}!</h2>
 						<Button
 								onClick={() => setShowEditForm((state) => !state)}
-								variant={showEditForm ? "outline-dark" : "primary"}>{showEditForm ? "Lukk skjema" : "Rediger profil"}
+								variant={showEditForm ? "outline" : "filled"}>{showEditForm ? "Lukk skjema" : "Rediger profil"}
 						</Button>
 					</div>
 					<div className={styles.profileData}>

@@ -1,40 +1,72 @@
-import React from "react";
-import Button from 'react-bootstrap/Button';
-import Form from 'react-bootstrap/Form';
-import {InputGroup} from "react-bootstrap";
+import React, { useState } from "react";
+import { useForm } from "@mantine/form";
+import { Button, TextInput } from "@mantine/core";
 
+import { AimDistanceInput } from "../../index";
 import styles from './CalculateForm.module.css';
 
+export interface IAimDistance {
+	distance: string,
+	mark: number;
+}
+
 const CalculateForm = () => {
+
+	const form = useForm({
+		initialValues: {
+			aim: '',
+			aimDistance: 0,
+		},
+	});
+
+	const [aimDistanceInputs, setAimDistanceInputs] = useState<IAimDistance[]>([]);
+
 	const handleSubmit = (event: React.FormEvent) => {
 		event.preventDefault();
+		form.onSubmit((values => console.log(values)))
 		console.log("DATA SENT");
 	};
+
+	const addAimDistanceInput = () => {
+		setAimDistanceInputs([...aimDistanceInputs, { distance: "", mark: 0 }]);
+	}
+
+	const handleChange = (index: number, event: any) => {
+		let newFormValues = [...aimDistanceInputs];
+		//newFormValues[index][event.currentTarget.] = event.target.value;
+		setAimDistanceInputs(newFormValues);
+	}
+
+	const removeFormFields = (index: number) => {
+		let newFormValues = [...aimDistanceInputs];
+		newFormValues.splice(index, 1);
+		setAimDistanceInputs(newFormValues)
+	}
 
 	return (
 			<div>
 				<h3>Siktemerker</h3>
-				<Form className={styles.form} onSubmit={handleSubmit}>
-					<InputGroup className={styles.fieldGroup}>
-						<InputGroup.Text className={styles.label}>5 m</InputGroup.Text>
-						<Form.Control type="text"/>
-					</InputGroup>
-					<InputGroup className={styles.fieldGroup}>
-						<InputGroup.Text className={styles.label}>10 m</InputGroup.Text>
-						<Form.Control type="text"/>
-					</InputGroup>
-					<InputGroup className={styles.fieldGroup}>
-						<InputGroup.Text className={styles.label}>15 m</InputGroup.Text>
-						<Form.Control type="text"/>
-					</InputGroup>
-					<InputGroup className={styles.fieldGroup}>
-						<InputGroup.Text className={styles.label}>20 m</InputGroup.Text>
-						<Form.Control type="text"/>
-					</InputGroup>
-					<Button className={styles.submitButton} variant="primary" type="submit">
-						Submit
+				<form className={styles.form} onSubmit={handleSubmit}>
+					<div className={styles.fieldGroup}>
+						<TextInput className={styles.label}>10 m</TextInput>
+					</div>
+					{aimDistanceInputs.map((input, index) => (
+							<>
+								<AimDistanceInput input={input} onchange={handleChange} key={index} />
+								{
+									index ?
+											<button type="button" onClick={() => removeFormFields(index)}>Remove</button>
+											: null
+								}
+							</>
+					))}
+					<Button onClick={addAimDistanceInput} variant="outline" type="button">
+						&#43; Legg til siktemerke
 					</Button>
-				</Form>
+					<Button className={styles.submitButton} type="submit">
+						Send inn
+					</Button>
+				</form>
 			</div>
 	);
 };

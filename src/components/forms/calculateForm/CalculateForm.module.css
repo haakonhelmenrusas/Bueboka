@@ -4,17 +4,9 @@
     margin-bottom: 16px;
 }
 
-.label {
-    width: 8%;
-}
-
 .submitButton {
     width: 200px;
     margin-top: 2rem;
-}
-
-.fieldGroup {
-    margin-bottom: 1rem;
 }
 
 @media only screen and (max-width: 600px) {
