@@ -1,16 +1,22 @@
 import React, {useContext, useEffect, useState} from "react";
 import {useNavigate} from "react-router-dom";
 import {getAuth} from "firebase/auth";
+import {Avatar, Button, ColorScheme} from "@mantine/core";
 
-import {useFetchArcher, useFetchBow} from "../../helpers/hooks";
-import {Layout, ProfileImage} from "../../components/common";
-import {UserContext} from "../../helpers/StateProvider";
 import {ArcherNumber, BowType, ProfileForm} from "../../components";
+import { AppContainer } from "../../components/common";
+import {useFetchArcher, useFetchBow} from "../../helpers/hooks";
+import {UserContext} from "../../helpers/StateProvider";
 import firebaseApp from "../../auth";
 import styles from "./User.module.css";
-import {Button} from "@mantine/core";
+import Footer from "../../components/common/footer/Footer";
 
-const User = () => {
+interface IUser {
+	colorScheme: ColorScheme;
+	toggleColorScheme: () => void;
+}
+
+const User: React.FC<IUser> = ({ colorScheme, toggleColorScheme }) => {
 	const navigate = useNavigate();
 	const auth = getAuth(firebaseApp);
 	const { user } = useContext(UserContext);
@@ -28,28 +34,28 @@ const User = () => {
 	}, [getArcherNumber, user.displayName]);
 
 	return (
-			<Layout>
-				<div className={styles.header}>
-					<div className={styles.headerContent}>
-						<h2>Hei, {user.displayName}!</h2>
-						<Button
-								onClick={() => setShowEditForm((state) => !state)}
-								variant={showEditForm ? "outline" : "filled"}>{showEditForm ? "Lukk skjema" : "Rediger profil"}
-						</Button>
-					</div>
-					<div className={styles.profileData}>
-						<ProfileImage
-								photoURL={auth.currentUser ? auth.currentUser.photoURL ? auth.currentUser.photoURL : "" : ""}/>
-						<div className={styles.profileSpecs}>
-							<ArcherNumber archerNumber={value}/>
-							<BowType bowType={bowType} />
-						</div>
+		<AppContainer colorScheme={colorScheme} toggleColorScheme={toggleColorScheme}>
+			<div className={styles.header}>
+				<div className={styles.headerContent}>
+					<h2>Hei, {user.displayName}!</h2>
+					<Button
+							onClick={() => setShowEditForm((state) => !state)}
+							variant={showEditForm ? "outline" : "filled"}>{showEditForm ? "Lukk skjema" : "Rediger profil"}
+					</Button>
+				</div>
+				<div className={styles.profileData}>
+					<Avatar size={64} radius="xl" src={auth.currentUser ? auth.currentUser.photoURL : null} />
+					<div className={styles.profileSpecs}>
+						<ArcherNumber archerNumber={value}/>
+						<BowType bowType={bowType} />
 					</div>
 				</div>
-				{showEditForm && (
-					<ProfileForm setShowEditForm={setShowEditForm} />
-				)}
-			</Layout>
+			</div>
+			{showEditForm && (
+				<ProfileForm setShowEditForm={setShowEditForm} />
+			)}
+			<Footer />
+		</AppContainer>
 	);
 };
 

@@ -1,11 +1,10 @@
-import React, {useContext, useEffect} from "react";
-import {useNavigate} from "react-router-dom";
+import React, { useContext, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { Button } from "@mantine/core";
 
-import Layout from "../../components/common/layout/Layout";
-import {UserContext} from "../../helpers/StateProvider";
-import {googleLogin, facebookLogin} from "../../auth";
+import { UserContext } from "../../helpers/StateProvider";
+import { googleLogin, facebookLogin } from "../../auth";
 import styles from "./Login.module.css";
-import {Button} from "@mantine/core";
 
 const Login = () => {
 	const {user} = useContext(UserContext);
@@ -18,7 +17,7 @@ const Login = () => {
 	}, [navigate, user]);
 
 	return (
-			<Layout>
+			<>
 				<div className={styles.welcomeContainer}>
 					<h2>Velkommen!</h2>
 					<p>Vi gir deg</p>
@@ -31,7 +30,7 @@ const Login = () => {
 						<Button onClick={googleLogin}>Logg in med Google</Button>
 					</div>
 				</div>
-			</Layout>
+			</>
 	);
 };
 

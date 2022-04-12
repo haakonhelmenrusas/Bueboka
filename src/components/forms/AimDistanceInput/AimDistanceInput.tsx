@@ -14,7 +14,8 @@ const AimDistanceInput: React.FC<IAimDistanceInput> = ({ input, onchange }) => {
 	return (
 		<div className={styles.fieldGroup}>
 			<TextInput label="Avstand" value={input.distance} />
-			<NumberInput value={input.mark} onChange={onchange} />		</div>
+			<NumberInput value={input.mark} onChange={onchange} />
+		</div>
 	)
 }
 export default AimDistanceInput;
