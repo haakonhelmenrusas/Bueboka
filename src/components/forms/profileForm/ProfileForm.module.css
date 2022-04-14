@@ -2,11 +2,10 @@
     padding: 1.5rem;
     border-radius: 4px;
     margin: 16px auto;
-    box-shadow: 2px 2px 2px 2px #cdd0d5;
+    box-shadow: 1px 1px 2px 2px #cdd0d5;
 }
-.button {
-    width: 100%;
-    margin-top: 16px;
+.formTitle {
+    font-size: 1.4rem;
 }
 .header {
     display: flex;
@@ -28,16 +27,6 @@
     -webkit-font-smoothing: inherit;
     -moz-osx-font-smoothing: inherit;
     -webkit-appearance: none;
-}
-.header svg {
-    height: 24px;
-    width: 24px;
-}
-.lineStroke {
-    fill: none;
-    stroke: #000000;
-    stroke-linecap: round;
-    stroke-linejoin: round;
 }
 .header svg:hover {
     stroke: #0d6efd;

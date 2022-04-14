@@ -1,30 +1,16 @@
 .header {
-    width: 960px;
-    height: 80px;
     display: flex;
-    margin-left: auto;
-    margin-right: auto;
-    flex-direction: row;
-    align-items: center;
     justify-content: space-between;
-}
-
-.logo {
-    width: 64px;
-    height: 64px;
-}
-
-.brand a {
-    color: #111;
-    display: flex;
-    flex-direction: row;
     align-items: center;
-    text-decoration: none;
+    height: 100%;
 }
-
-.brand a:hover {
-    color: #0d6efd;
-    text-decoration: underline;
+.brand {
+    display: flex;
+    align-items: center;
+}
+.logo {
+    width: 56px;
+    height: 56px;
 }
 
 .title {
@@ -32,78 +18,15 @@
     font-size: 24px;
     font-weight: 500;
     margin-left: 16px;
-}
-
-.nav {
-    margin: 0;
-    padding: 0;
-}
-
-.list {
-    list-style: none;
-    display: flex;
-    margin: 0;
-    flex-direction: row;
-    align-items: center;
-}
-
-.li a {
-    color: #111;
-    padding: 1rem 2rem;
-    text-decoration: none;
-}
-
-.li button {
-    border: none;
-    margin: 0;
-    padding: 0;
-    width: auto;
-    overflow: visible;
-    background: transparent;
-    color: inherit;
-    font: inherit;
-    line-height: normal;
-    -webkit-font-smoothing: inherit;
-    -moz-osx-font-smoothing: inherit;
-    -webkit-appearance: none;
-}
-
-.li button:hover {
-    color: #0d6efd;
-    background-color: #eee;
-    text-decoration: underline;
-}
-
-.profileNav {
-    display: flex;
-    flex-direction: column;
-}
-
-.profileNav img:hover {
-    border: 2px solid #0d6efd;
-}
-
-.li a:hover {
-    color: #0d6efd;
-    text-decoration: underline;
+    margin-bottom: 0;
 }
 
 @media only screen and (max-width: 600px) {
-    .header {
-        width: 100%;
-        height: 80px;
-        margin-top: 1rem;
-        flex-direction: column;
-    }
-
-    .brand {
-        margin-right: 30%;
-    }
 
     .logo {
         width: 40px;
         height: 40px;
-        margin: 0 1rem;
+        margin: 0 1rem 0 0;
     }
 
     .title {
@@ -112,7 +35,7 @@
         font-weight: 500;
         margin-left: 0;
     }
-    .li a {
-        padding: 0.5rem 1rem;
+    .themeButton {
+        margin-left: auto;
     }
 }

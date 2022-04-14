@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link } from "react-router-dom";
-import { Target } from 'tabler-icons-react';
+import { Target, Logout } from 'tabler-icons-react';
 
 import {
 	AppShell,
@@ -10,7 +10,6 @@ import {
 	Burger,
 	useMantineTheme,
 	ColorScheme,
-	Button,
 	Anchor
 } from '@mantine/core';
 
@@ -32,39 +31,41 @@ const AppContainer: React.FC<IAppContainer> = ({ colorScheme, toggleColorScheme,
 			<AppShell
 					styles={{
 						main: {
+							display: "flex",
+							flexDirection: "column",
 							background: theme.colorScheme === 'dark' ? theme.colors.dark[8] : theme.colors.gray[0],
 						},
 					}}
 					navbarOffsetBreakpoint="sm"
 					fixed
 					navbar={
-						<Navbar p="md" hiddenBreakpoint="sm" hidden={!opened} width={{ sm: 136, lg: 300 }}>
-							<Anchor component={Link} to="/form">
-								Sikteskjema <Target />
-							</Anchor>
-							<Anchor component={Link} to="#">
-								<Button variant="outline" onClick={logOut}>Logg ut</Button>
-							</Anchor>
+						<Navbar p="md" hiddenBreakpoint="sm" hidden={!opened} width={{ sm: 148, lg: 200 }}>
+							<Navbar.Section grow>
+								<Anchor component={Link} to="/form">
+									<Target /> Sikteskjema
+								</Anchor>
+							</Navbar.Section>
+							<Navbar.Section>
+								<Anchor onClick={logOut} component={Link} to="#"><Logout />   Logg ut</Anchor>
+							</Navbar.Section>
 						</Navbar>
 					}
 					header={
-						<Header height={70} p="md">
-							<div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', height: '100%' }}>
-								<MediaQuery largerThan="sm" styles={{ display: 'none' }}>
-									<Burger
-											opened={opened}
-											onClick={() => setOpened((o) => !o)}
-											size="sm"
-											color={theme.colors.gray[6]}
-											mr="xl"
-									/>
-								</MediaQuery>
-								<div className={styles.brand}>
-									<Link title="Profil" to="/user">
-										<img className={styles.logo} src={Logo} alt="Logo"/>
-										<h1 className={styles.title}>Book of Arrows</h1>
-									</Link>
-								</div>
+						<Header className={styles.header} height={70} p="md">
+							<MediaQuery largerThan="sm" styles={{ display: 'none' }}>
+								<Burger
+										opened={opened}
+										onClick={() => setOpened((o) => !o)}
+										size="sm"
+										color={theme.colors.gray[6]}
+										mr="xl"
+								/>
+							</MediaQuery>
+							<Anchor className={styles.brand} component={Link} to="/user">
+								<img className={styles.logo} src={Logo} alt="Logo"/>
+								<h1 className={styles.title}>Book of Arrows</h1>
+							</Anchor>
+							<div className={styles.themeButton}>
 								<ThemeToggle colorScheme={colorScheme} toggleColorScheme={toggleColorScheme} />
 							</div>
 						</Header>

@@ -37,7 +37,7 @@ const User: React.FC<IUser> = ({ colorScheme, toggleColorScheme }) => {
 		<AppContainer colorScheme={colorScheme} toggleColorScheme={toggleColorScheme}>
 			<div className={styles.header}>
 				<div className={styles.headerContent}>
-					<h2>Hei, {user.displayName}!</h2>
+					<h2 className={styles.name}>Hei, {user.displayName}!</h2>
 					<Button
 							onClick={() => setShowEditForm((state) => !state)}
 							variant={showEditForm ? "outline" : "filled"}>{showEditForm ? "Lukk skjema" : "Rediger profil"}
