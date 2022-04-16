@@ -48,7 +48,7 @@ const CalculateForm = () => {
 				<h3>Siktemerker</h3>
 				<form className={styles.form} onSubmit={handleSubmit}>
 					<div className={styles.fieldGroup}>
-						<TextInput className={styles.label}>10 m</TextInput>
+						<TextInput className={styles.label} defaultValue={'10 m'} />
 					</div>
 					{aimDistanceInputs.map((input, index) => (
 							<>

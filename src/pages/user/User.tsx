@@ -9,7 +9,6 @@ import {useFetchArcher, useFetchBow} from "../../helpers/hooks";
 import {UserContext} from "../../helpers/StateProvider";
 import firebaseApp from "../../auth";
 import styles from "./User.module.css";
-import Footer from "../../components/common/footer/Footer";
 
 interface IUser {
 	colorScheme: ColorScheme;
@@ -54,7 +53,6 @@ const User: React.FC<IUser> = ({ colorScheme, toggleColorScheme }) => {
 			{showEditForm && (
 				<ProfileForm setShowEditForm={setShowEditForm} />
 			)}
-			<Footer />
 		</AppContainer>
 	);
 };

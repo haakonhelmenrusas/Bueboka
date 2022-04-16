@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link } from "react-router-dom";
-import { Target, Logout } from 'tabler-icons-react';
+import { Target, Logout, InfoCircle } from 'tabler-icons-react';
 
 import {
 	AppShell,
@@ -45,7 +45,10 @@ const AppContainer: React.FC<IAppContainer> = ({ colorScheme, toggleColorScheme,
 									<Target /> Sikteskjema
 								</Anchor>
 							</Navbar.Section>
-							<Navbar.Section>
+							<Navbar.Section style={{ display: 'flex', flexDirection: 'column'}}>
+								<Anchor component={Link} to="/about" style={{ marginBottom: 16 }}>
+									<InfoCircle /> Om oss
+								</Anchor>
 								<Anchor onClick={logOut} component={Link} to="#"><Logout />   Logg ut</Anchor>
 							</Navbar.Section>
 						</Navbar>

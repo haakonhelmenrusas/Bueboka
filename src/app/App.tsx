@@ -7,6 +7,7 @@ import StateProvider from "../helpers/StateProvider";
 import FormPage from "../pages/form/FormPage";
 import Login from "../pages/login/Login";
 import User from "../pages/user/User";
+import AboutPage from "../pages/about/AboutPage";
 
 const App = () => {
   const [colorScheme, setColorScheme] = useLocalStorage<ColorScheme>({
@@ -26,6 +27,7 @@ const App = () => {
                 <Routes>
                   <Route path="/" element={<Login />} />
                   <Route path="user" element={<User colorScheme={colorScheme} toggleColorScheme={toggleColorScheme} />} />
+                  <Route path="about" element={<AboutPage colorScheme={colorScheme} toggleColorScheme={toggleColorScheme} />} />
                   <Route path="form" element={<FormPage colorScheme={colorScheme} toggleColorScheme={toggleColorScheme} />} />
                   <Route
                       path="*"
