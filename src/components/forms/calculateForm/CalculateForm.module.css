@@ -1,21 +1,14 @@
 .form {
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
+    align-items: flex-end;
+    justify-content: space-between;
     margin-bottom: 16px;
-}
-
-.submitButton {
-    width: 200px;
-    margin-top: 2rem;
 }
 
 @media only screen and (max-width: 600px) {
     .label {
-        width: 20%;
+        width: 25%;
     }
 
-    .submitButton {
-        width: 100%;
-        margin-top: 2rem;
-    }
 }

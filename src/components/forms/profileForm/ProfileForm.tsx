@@ -6,35 +6,32 @@ import {useArcherNumber, useBowType, useFetchArcher} from "../../../helpers/hook
 import styles from "./ProfileForm.module.css";
 
 interface IProfileForm {
+	bowType: string | null;
+	archerNumber: string | null;
 	setShowEditForm: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-const ProfileForm: React.FC<IProfileForm> = ({ setShowEditForm }) => {
-	const { value, getArcherNumber } = useFetchArcher();
+const ProfileForm: React.FC<IProfileForm> = ({ bowType, archerNumber, setShowEditForm }) => {
 	const { writeArcherNumber } = useArcherNumber();
 	const { writeBowType } = useBowType();
-	const [archerNumber, setArcherNumber] = useState<string>(value ? value : "");
-	const [bowType, setBowType] = useState<{label: string, value: string}>({ label: "", value: "" });
-
-	useEffect(() => {
-		getArcherNumber();
-	}, []);
+	const [archerNum, setArcherNum] = useState<string>(archerNumber ? archerNumber : "");
+	const [bow, setBowType] = useState<{label: string, value: string}>({ label: bowType ? bowType : "", value: bowType ? bowType : "" });
 
 	const handleSubmit = (event: React.FormEvent) => {
 		event.preventDefault();
 		if (archerNumber) {
 			writeArcherNumber(parseInt(archerNumber)).then(() => {
-				setArcherNumber("");
+				setArcherNum("");
 			});
 		}
 		if (bowType) {
-			writeBowType(bowType.value);
+			writeBowType(bow.value);
 		}
 		setShowEditForm((state) => !state);
 	};
 
 	const handleArcherNumber = (event: any)=> {
-		setArcherNumber(event.target.value);
+		setArcherNum(event.target.value);
 	};
 	const handleBowType = (bowType: any) => {
 		setBowType(bowType);
@@ -53,7 +50,7 @@ const ProfileForm: React.FC<IProfileForm> = ({ setShowEditForm }) => {
 					<TextInput
 							onKeyDown={(e: any) => !/\d/.test(e.key) && e.preventDefault()}
 							required
-							value={archerNumber}
+							value={archerNum}
 							maxLength={6}
 							onChange={handleArcherNumber}
 							type="text"
@@ -61,7 +58,7 @@ const ProfileForm: React.FC<IProfileForm> = ({ setShowEditForm }) => {
 							label="Skytternr."
 					/>
 					<Select
-						value={bowType.value}
+						value={bow.value}
 						onChange={handleBowType}
 						placeholder="Velg din buetype"
 						aria-label="Bow type select"

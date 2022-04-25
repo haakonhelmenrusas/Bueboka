@@ -1,9 +1,10 @@
 import {browserLocalPersistence, getAuth, onAuthStateChanged} from 'firebase/auth';
 import React, {createContext, useEffect, useState} from 'react'
-import {IUser} from '../types/User';
-import {UserContextState} from '../types/UserContext';
-import firebaseApp from "../auth/";
 import {useNavigate} from "react-router-dom";
+
+import {UserContextState} from '../types/UserContext';
+import {IUser} from '../types/User';
+import firebaseApp from "../auth/";
 
 interface IState {
 	children: React.ReactNode;

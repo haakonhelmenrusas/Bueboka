@@ -38,8 +38,8 @@ const User: React.FC<IUser> = ({ colorScheme, toggleColorScheme }) => {
 				<div className={styles.headerContent}>
 					<h2 className={styles.name}>Hei, {user.displayName}!</h2>
 					<Button
-							onClick={() => setShowEditForm((state) => !state)}
-							variant={showEditForm ? "outline" : "filled"}>{showEditForm ? "Lukk skjema" : "Rediger profil"}
+						onClick={() => setShowEditForm((state) => !state)}
+						variant={showEditForm ? "outline" : "filled"}>{showEditForm ? "Lukk skjema" : "Rediger profil"}
 					</Button>
 				</div>
 				<div className={styles.profileData}>
@@ -51,7 +51,7 @@ const User: React.FC<IUser> = ({ colorScheme, toggleColorScheme }) => {
 				</div>
 			</div>
 			{showEditForm && (
-				<ProfileForm setShowEditForm={setShowEditForm} />
+				<ProfileForm bowType={bowType} archerNumber={value} setShowEditForm={setShowEditForm} />
 			)}
 		</AppContainer>
 	);
