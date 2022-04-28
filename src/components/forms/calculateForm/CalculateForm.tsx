@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from "react";
 import {formList, useForm} from "@mantine/form";
 import {AlertCircle, Plus, Trash, AlertTriangle} from 'tabler-icons-react';
-import {ActionIcon, Alert, Button, Loader, Table, TextInput} from "@mantine/core";
+import {ActionIcon, Alert, Button, Loader, Modal, Table, TextInput} from "@mantine/core";
 
 import {IAimDistanceMark, IAimDistanceMarkValue, ICalculatedMarks, Status} from "../../../models";
 import {useAimMarks} from "../../../helpers/hooks/";
@@ -15,7 +15,8 @@ const CalculateForm = () => {
 		},
 	});
 
-	const { status, error, sendAimMarks } = useAimMarks();
+	const [opened, setOpened] = useState(false);
+	const { status, sendAimMarks } = useAimMarks();
 	const [aimValue, setAimValue] = useState<string>('');
 	const [distanceValue, setDistanceValue] = useState<string>('');
 	const [resultMarks, setResultMarks] = useState<ICalculatedMarks | undefined>();
@@ -62,12 +63,17 @@ const CalculateForm = () => {
 		}
 	}
 
-	const renderDeviatonAlert = (index: number) => {
+	const renderDeviationAlert = (index: number) => {
 		if (resultMarks?.calculated_marks) {
-			if (resultMarks.marks_deviation[index] > 0.2) {
+			const deviationValue = parseFloat(resultMarks.marks_deviation[index].toFixed(2));
+			if (parseFloat(form.values.marks[index].aim) - deviationValue > 0.2 ||
+				parseFloat(form.values.marks[index].aim) - deviationValue < -0.2) {
+				console.log(deviationValue)
 				return (
-					<AlertTriangle color="orange" />
+					<AlertTriangle onClick={() => setOpened(true)} color="orange" />
 				)
+			} else {
+				return null;
 			}
 		}
 	}
@@ -95,7 +101,7 @@ const CalculateForm = () => {
 							<tr key={index}>
 								<td>{form.values.marks[index].distance}</td>
 								<td>{form.values.marks[index].aim}</td>
-								<td>{status === Status.Pending ? <Loader size={16} /> : renderCalculatedMarks(index)} {renderDeviatonAlert(index)}</td>
+								<td>{status === Status.Pending ? <Loader size={16} /> : renderCalculatedMarks(index)} {renderDeviationAlert(index)}</td>
 								<td>
 									<ActionIcon
 											style={{ marginLeft: "auto" }}
@@ -111,10 +117,22 @@ const CalculateForm = () => {
 					</tbody>
 				</Table>
 				{form.values.marks.length === 0 && (
-					<Alert icon={<AlertCircle size={16} />} title="Bummer!" color="blue">
+					<Alert icon={<AlertCircle size={16} />} title="Her var det tomt!" color="blue">
 						Legg inn siktemerker og send dem inn til beregning
 					</Alert>
 				)}
+			{opened && (
+				<>
+					<Modal
+						opened={opened}
+						onClose={() => setOpened(false)}
+						title="Stor avvik"
+						centered
+					>
+						Her avviker siktemerket du har sendt inn med beregnet sikemerke.
+					</Modal>
+				</>
+			)}
 		</div>
 	);
 };

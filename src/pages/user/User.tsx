@@ -1,12 +1,13 @@
 import React, {useContext, useEffect, useState} from "react";
-import {useNavigate} from "react-router-dom";
-import {getAuth} from "firebase/auth";
-import {Avatar, Button, ColorScheme} from "@mantine/core";
+import { useNavigate } from "react-router-dom";
+import { getAuth } from "firebase/auth";
+import { ActionIcon, Avatar, ColorScheme } from "@mantine/core";
+import { Settings } from "tabler-icons-react";
 
-import {ArcherNumber, BowType, ProfileForm} from "../../components";
+import { ArcherNumber, BowType, ProfileForm } from "../../components";
 import { AppContainer } from "../../components/common";
-import {useFetchArcher, useFetchBow} from "../../helpers/hooks";
-import {UserContext} from "../../helpers/StateProvider";
+import { useFetchArcher, useFetchBow } from "../../helpers/hooks";
+import { UserContext } from "../../helpers/StateProvider";
 import firebaseApp from "../../auth";
 import styles from "./User.module.css";
 
@@ -37,10 +38,14 @@ const User: React.FC<IUser> = ({ colorScheme, toggleColorScheme }) => {
 			<div className={styles.header}>
 				<div className={styles.headerContent}>
 					<h2 className={styles.name}>Hei, {user.displayName}!</h2>
-					<Button
+					<ActionIcon
+						style={{ marginLeft: "auto" }}
+						color="blue"
+						variant="hover"
 						onClick={() => setShowEditForm((state) => !state)}
-						variant={showEditForm ? "outline" : "filled"}>{showEditForm ? "Lukk skjema" : "Rediger profil"}
-					</Button>
+					>
+						<Settings size={24} />
+					</ActionIcon>
 				</div>
 				<div className={styles.profileData}>
 					<Avatar size={64} radius="xl" src={auth.currentUser ? auth.currentUser.photoURL : null} />
@@ -51,7 +56,12 @@ const User: React.FC<IUser> = ({ colorScheme, toggleColorScheme }) => {
 				</div>
 			</div>
 			{showEditForm && (
-				<ProfileForm bowType={bowType} archerNumber={value} setShowEditForm={setShowEditForm} />
+				<ProfileForm
+					showEditForm={showEditForm}
+					bowType={bowType}
+					archerNumber={value}
+					setShowEditForm={setShowEditForm}
+				/>
 			)}
 		</AppContainer>
 	);

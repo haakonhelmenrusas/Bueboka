@@ -1,11 +1,13 @@
-import { useState } from "react";
-import { getDatabase, ref, set } from "firebase/database";
-import { getAuth } from "firebase/auth";
+import {useState} from "react";
+import {getDatabase, ref, set} from "firebase/database";
+import {getAuth} from "firebase/auth";
+
 import firebaseApp from "../../auth/";
+import {Status} from "../../models";
 
 
 const useArcherNumber = () => {
-	const [status, setStatus] = useState<"idle" | "pending" | "success" | "error">("idle");
+	const [status, setStatus] = useState<Status>(Status.Idle);
 	const [error, setError] = useState<any | null>(null);
 
 	/**
@@ -18,18 +20,18 @@ const useArcherNumber = () => {
 		const database = getDatabase(firebaseApp)
 		const userId = auth.currentUser ? auth.currentUser.uid : null;
 
-		setStatus("pending");
+		setStatus(Status.Pending);
 		set(ref(database, "users/" + userId + "/profile"),
 						{
 							archerNumber: archerNumber,
 						},
 				)
 				.then(() => {
-					setStatus("success");
+					setStatus(Status.Idle);
 				})
 				.catch(() => {
 					setError(error);
-					setStatus("error");
+					setStatus(Status.Idle);
 				});
 	};
 
