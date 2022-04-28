@@ -1,7 +1,8 @@
-import { useState } from "react";
-import {IAimDistance} from "../../components/forms/calculateForm/CalculateForm";
+import {useState} from "react";
 
-const aimMarksAPICall = (body: IAimDistance[]) => {
+import {IAimDistanceMark, ICalculatedMarks, Status} from "../../models";
+
+const aimMarksAPICall = (body: IAimDistanceMark) => {
 	return fetch('https://calculate-aim.azurewebsites.net/api/archerAim', {
 		headers: {
 			'Content-Type': 'application/json',
@@ -12,18 +13,21 @@ const aimMarksAPICall = (body: IAimDistance[]) => {
 }
 
 const useAimMarks = () => {
-	const [status, setStatus] = useState<"idle" | "pending" | "success" | "error">("idle");
+	const [status, setStatus] = useState<Status>(Status.Idle);
 	const [error, setError] = useState<any | null>(null);
 
-
-	const sendAimMarks = async (body: IAimDistance[]): Promise<void> => {
+	const sendAimMarks = async (body: IAimDistanceMark): Promise<ICalculatedMarks | undefined> => {
 		try {
-			setStatus("pending");
+			setStatus(Status.Pending);
 			const result = await aimMarksAPICall(body);
+			if (result.ok) {
+				return result.json();
+			}
 		} catch (error) {
-			setStatus("error");
+			setStatus(Status.Error);
+			setError(error);
 		} finally {
-			setStatus("idle");
+			setStatus(Status.Idle);
 		}
 	};
 
