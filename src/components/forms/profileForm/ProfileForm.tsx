@@ -1,84 +1,81 @@
-import React, {useEffect, useState} from 'react';
-import {Button, TextInput, Select} from "@mantine/core";
-import { CircleX } from 'tabler-icons-react';
+import React, { useState } from 'react';
+import {Bow, Hash} from "tabler-icons-react";
+import {Button, TextInput, Select, Modal} from "@mantine/core";
 
-import {useArcherNumber, useBowType, useFetchArcher} from "../../../helpers/hooks";
+import { useArcherNumber, useBowType } from "../../../helpers/hooks";
+import { Status } from "../../../models";
 import styles from "./ProfileForm.module.css";
 
 interface IProfileForm {
 	bowType: string | null;
 	archerNumber: string | null;
+	showEditForm: boolean;
 	setShowEditForm: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-const ProfileForm: React.FC<IProfileForm> = ({ bowType, archerNumber, setShowEditForm }) => {
-	const { writeArcherNumber } = useArcherNumber();
+const ProfileForm: React.FC<IProfileForm> = ({ bowType, archerNumber, showEditForm, setShowEditForm }) => {
 	const { writeBowType } = useBowType();
+	const { status, writeArcherNumber } = useArcherNumber();
+
 	const [archerNum, setArcherNum] = useState<string>(archerNumber ? archerNumber : "");
-	const [bow, setBowType] = useState<{label: string, value: string}>({ label: bowType ? bowType : "", value: bowType ? bowType : "" });
+	const [bow, setBowType] = useState<string>(bowType ? bowType : "");
 
 	const handleSubmit = (event: React.FormEvent) => {
 		event.preventDefault();
-		if (archerNumber) {
-			writeArcherNumber(parseInt(archerNumber)).then(() => {
-				setArcherNum("");
-			});
+		if (archerNum) {
+			writeArcherNumber(parseInt(archerNum));
 		}
-		if (bowType) {
-			writeBowType(bow.value);
+		if (bow) {
+			writeBowType(bow);
 		}
 		setShowEditForm((state) => !state);
 	};
 
 	const handleArcherNumber = (event: any)=> {
-		setArcherNum(event.target.value);
+		setArcherNum(event.currentTarget.value);
 	};
-	const handleBowType = (bowType: any) => {
+	const handleBowType = (bowType: string) => {
 		setBowType(bowType);
 	};
 
 	return (
-		<div className={styles.numberForm}>
-			<div className={styles.header}>
-				<h3 className={styles.formTitle}>Rediger profil</h3>
-				<button onClick={() => setShowEditForm((state) => !state)}>
-					<CircleX aria-label="Lukk skjema" />
-				</button>
-			</div>
+		<Modal title="Rediger profil" opened={showEditForm} centered onClose={() => setShowEditForm(false)} className={styles.numberForm}>
 			<form onSubmit={handleSubmit}>
 				<div className="mb-3">
 					<TextInput
-							onKeyDown={(e: any) => !/\d/.test(e.key) && e.preventDefault()}
-							required
-							value={archerNum}
-							maxLength={6}
-							onChange={handleArcherNumber}
-							type="text"
-							placeholder="F.eks. 2342"
-							label="Skytternr."
+						key={archerNum}
+						icon={<Hash size={14} />}
+						className="mb-3"
+						value={archerNum}
+						maxLength={6}
+						onChange={handleArcherNumber}
+						type="tel"
+						placeholder="F.eks. 2342"
+						label="Skytternr."
 					/>
 					<Select
-						value={bow.value}
+						value={bow}
+						icon={<Bow size={14} />}
 						onChange={handleBowType}
 						placeholder="Velg din buetype"
 						aria-label="Bow type select"
 						data={[
-							{ value: 'Compound', label: 'Compound' },
-							{ value: 'Recurve', label: 'Recurve' },
-							{ value: 'Barebow', label: 'Barebow' },
-							{ value: 'Tradisjonell', label: 'Tradisjonell' },
-							{ value: 'Langbue', label: 'Langbue' },
-							{ value: 'Annet', label: 'Annet' },
+							'Compound',
+							'Recurve' ,
+							'Barebow' ,
+							'Tradisjonell' ,
+							'Langbue' ,
+							'Annet' ,
 						]}
 					/>
 				</div>
 				<Button
 					className={styles.button}
-					disabled={status === "pending"}
+					loading={status === Status.Pending}
 					type="submit"
 				>Lagre</Button>
 			</form>
-		</div>
+		</Modal>
 	)
 }
 
