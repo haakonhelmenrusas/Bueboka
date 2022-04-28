@@ -1,6 +1,5 @@
 .header {
-    display: flex;
-    flex-direction: column;
+    flex: 1;
 }
 
 .headerContent {
@@ -9,7 +8,9 @@
     align-items: flex-start;
     justify-content: space-between;
 }
-
+.name {
+    font-size: 1.6rem;
+}
 .profileData {
     display: flex;
     flex-direction: row;

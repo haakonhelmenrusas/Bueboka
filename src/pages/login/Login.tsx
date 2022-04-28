@@ -1,10 +1,9 @@
-import React, {useContext, useEffect} from "react";
-import {useNavigate} from "react-router-dom";
-import {Button} from "react-bootstrap";
+import React, { useContext, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { Button } from "@mantine/core";
 
-import Layout from "../../components/common/layout/Layout";
-import {UserContext} from "../../helpers/StateProvider";
-import {googleLogin, facebookLogin} from "../../auth";
+import { UserContext } from "../../helpers/StateProvider";
+import { googleLogin } from "../../auth";
 import styles from "./Login.module.css";
 
 const Login = () => {
@@ -18,7 +17,7 @@ const Login = () => {
 	}, [navigate, user]);
 
 	return (
-			<Layout>
+			<>
 				<div className={styles.welcomeContainer}>
 					<h2>Velkommen!</h2>
 					<p>Vi gir deg</p>
@@ -27,11 +26,11 @@ const Login = () => {
 						<li>beregnet siktemerker med avansert beregningsmodell</li>
 					</ul>
 					<div className={styles.loginContainer}>
-						<Button onClick={facebookLogin}>Logg in med Facebook</Button>
+						{/*<Button onClick={facebookLogin}>Logg in med Facebook</Button>*/}
 						<Button onClick={googleLogin}>Logg in med Google</Button>
 					</div>
 				</div>
-			</Layout>
+			</>
 	);
 };
 

@@ -5,7 +5,7 @@ import firebaseApp from "../../auth/";
 
 const useFetchArcher = () => {
 	const [status, setStatus] = useState<"idle" | "pending" | "success" | "error">("idle");
-	const [value, setValue] = useState<number | null>(null);
+	const [value, setValue] = useState<string | null>(null);
 	const [error, setError] = useState<any | null>(null);
 
 	const getArcherNumber = useCallback(() => {

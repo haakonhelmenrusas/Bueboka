@@ -3,7 +3,7 @@ import React from "react";
 import styles from "./ArcherNumber.module.css";
 
 interface IArcherNumber {
-	archerNumber: number | null;
+	archerNumber: string | null;
 }
 
 const ArcherNumber = ({archerNumber}: IArcherNumber) => {
