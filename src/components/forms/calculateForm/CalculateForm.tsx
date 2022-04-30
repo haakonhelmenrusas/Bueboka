@@ -38,7 +38,8 @@ const CalculateForm = () => {
 
 	useEffect(() => {
 		if (form.values.marks.length > 1) {
-			sendMarks(form.values.marks)
+			const sorted = form.values.marks.sort().reverse()
+			sendMarks(form.values.marks.sort().reverse())
 		}
 	}, [form.values.marks])
 
@@ -63,7 +64,7 @@ const CalculateForm = () => {
 		}
 	}
 
-	const renderDeviationAlert = (index: number) => {
+/*	const renderDeviationAlert = (index: number) => {
 		if (resultMarks?.calculated_marks) {
 			const deviationValue = parseFloat(resultMarks.marks_deviation[index].toFixed(2));
 			if (parseFloat(form.values.marks[index].aim) - deviationValue > 0.2 ||
@@ -76,7 +77,7 @@ const CalculateForm = () => {
 				return null;
 			}
 		}
-	}
+	}*/
 
 	return (
 		<div>
@@ -101,7 +102,7 @@ const CalculateForm = () => {
 							<tr key={index}>
 								<td>{form.values.marks[index].distance}</td>
 								<td>{form.values.marks[index].aim}</td>
-								<td>{status === Status.Pending ? <Loader size={16} /> : renderCalculatedMarks(index)} {renderDeviationAlert(index)}</td>
+								<td>{status === Status.Pending ? <Loader size={16} /> : renderCalculatedMarks(index)}</td>
 								<td>
 									<ActionIcon
 											style={{ marginLeft: "auto" }}
