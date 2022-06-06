@@ -18,13 +18,23 @@ const CalculateForm = () => {
 	const [opened, setOpened] = useState(false);
 	const { status, sendAimMarks } = useAimMarks();
 	const [aimValue, setAimValue] = useState<string>('');
+	const [aimError, setAimError] = useState(false);
+	const [distanceError, setDistanceError] = useState(false);
 	const [distanceValue, setDistanceValue] = useState<string>('');
 	const [resultMarks, setResultMarks] = useState<ICalculatedMarks | undefined>();
 
 	const sendMarks = async (marks: IAimDistanceMarkValue[]) => {
 		const body: IAimDistanceMark = {
 			marks: [...marks.map((mark) => parseFloat(mark.aim))],
-			distances: [...marks.map((mark) => parseFloat(mark.distance))]
+			given_distances: [...marks.map((mark) => parseFloat(mark.distance))],
+			bow_category: "recurve",
+			interval_sight_measured: 5.0,
+			interval_sight_real: 5.3,
+			arrow_diameter_mm: 5.69,
+			arrow_mass_gram: 21.2,
+			length_eye_sight_cm: 97.0,
+			length_nock_eye_cm: 12.0,
+			feet_behind_or_center: "behind"
 		}
 		try {
 			const aimMarkResponse = await sendAimMarks(body);
@@ -38,8 +48,7 @@ const CalculateForm = () => {
 
 	useEffect(() => {
 		if (form.values.marks.length > 1) {
-			const sorted = form.values.marks.sort().reverse()
-			sendMarks(form.values.marks.sort().reverse())
+			sendMarks(form.values.marks)
 		}
 	}, [form.values.marks])
 
@@ -51,9 +60,17 @@ const CalculateForm = () => {
 		setAimValue(event.currentTarget.value)
 	};
 	const handleAddMarks = () => {
-		form.addListItem('marks', { aim: aimValue, distance: distanceValue })
-		setAimValue('');
-		setDistanceValue('');
+		if (!aimValue) {
+			setAimError(true);
+		}
+		if (!distanceValue) {
+			setDistanceError(true);
+		}
+		if (aimValue && distanceValue) {
+			form.addListItem('marks', { aim: aimValue, distance: distanceValue })
+			setAimValue('');
+			setDistanceValue('');
+		}
 	};
 
 	const renderCalculatedMarks = (index: number) => {
@@ -80,16 +97,32 @@ const CalculateForm = () => {
 	}*/
 
 	return (
-		<div>
+		<div className={styles.container}>
 			<h3>Siktemerker</h3>
 			<form className={styles.form}>
-				<TextInput value={distanceValue} onChange={handleDistanceChange} className={styles.label} name="aimDistance" label="Avstand" />
-				<TextInput value={aimValue} onChange={handleAimChange} className={styles.label} name="aim" label="Merke" />
+				<TextInput
+					value={distanceValue}
+					onChange={handleDistanceChange}
+					className={styles.label}
+					name="aimDistance"
+					label="Avstand"
+					error={distanceError ? "Fyll inn avstanden først" : null}
+					onFocus={() => setDistanceError(false)}
+				/>
+				<TextInput
+					value={aimValue}
+					onChange={handleAimChange}
+					className={styles.label}
+					name="aim"
+					label="Merke"
+					error={aimError ? "Fyll inn merke først" : null}
+					onFocus={() => setAimError(false)}
+				/>
 				<Button loading={status === Status.Pending} onClick={handleAddMarks} type="button">
 					{status === Status.Pending ? 'Laster' : <> <Plus />  Legg til </>}
 				</Button>
 			</form>
-				<Table>
+				<Table striped verticalSpacing="sm" fontSize="md">
 					<thead>
 						<tr>
 							<td>Avstand</td>
@@ -105,6 +138,7 @@ const CalculateForm = () => {
 								<td>{status === Status.Pending ? <Loader size={16} /> : renderCalculatedMarks(index)}</td>
 								<td>
 									<ActionIcon
+											title="Fjern merke"
 											style={{ marginLeft: "auto" }}
 											color="red"
 											variant="hover"

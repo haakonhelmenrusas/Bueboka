@@ -1,4 +1,6 @@
-export interface IAimDistanceMark {
+import { IBallisticsObject } from "../helpers/IBallisticsObject";
+
+export interface IAimDistanceMark extends IBallisticsObject {
   marks: Array<number>;
-  distances: Array<number>;
+  given_distances: Array<number>;
 }

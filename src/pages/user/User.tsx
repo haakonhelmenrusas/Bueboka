@@ -39,6 +39,7 @@ const User: React.FC<IUser> = ({ colorScheme, toggleColorScheme }) => {
 				<div className={styles.headerContent}>
 					<h2 className={styles.name}>Hei, {user.displayName}!</h2>
 					<ActionIcon
+						title="Endre profil"
 						style={{ marginLeft: "auto" }}
 						color="blue"
 						variant="hover"

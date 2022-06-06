@@ -3,7 +3,7 @@ import {useState} from "react";
 import {IAimDistanceMark, ICalculatedMarks, Status} from "../../models";
 
 const aimMarksAPICall = (body: IAimDistanceMark) => {
-	return fetch('https://calculate-aim.azurewebsites.net/api/archerAim', {
+	return fetch('https://calculate-aim.azurewebsites.net/api/archerAim?task=CalcBallisticsPars', {
 		headers: {
 			'Content-Type': 'application/json',
 		},

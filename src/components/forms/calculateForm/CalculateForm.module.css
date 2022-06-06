@@ -1,11 +1,16 @@
+.container {
+    max-width: 600px;
+}
 .form {
     display: flex;
     flex-direction: row;
-    align-items: flex-end;
+    align-items: center;
     justify-content: space-between;
     margin-bottom: 16px;
 }
-
+.label {
+    height: 90px;
+}
 @media only screen and (max-width: 600px) {
     .label {
         width: 25%;
