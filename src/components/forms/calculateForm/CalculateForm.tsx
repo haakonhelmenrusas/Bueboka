@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { formList, useForm } from "@mantine/form";
 import { AlertCircle, Plus, Trash, Ruler2, BorderOuter, Calculator } from 'tabler-icons-react';
-import { ActionIcon, Alert, Button, Loader, Modal, Table, TextInput } from "@mantine/core";
+import { ActionIcon, Alert, Button, Loader, Modal, NumberInput, Table } from "@mantine/core";
 
 import { IAimDistanceMark, IAimDistanceMarkValue, Status } from "../../../models";
 import { useBallisticsParams, useStoreBallistics, useFetchBallistics } from "../../../helpers/hooks/";
@@ -19,15 +19,15 @@ const CalculateForm = () => {
 	const { status, calculateBallisticsParams } = useBallisticsParams();
 	const { ballistics, getBallistics } = useFetchBallistics();
 	const { storeBallistics } = useStoreBallistics();
-	const [aimValue, setAimValue] = useState<string>('');
+	const [aimValue, setAimValue] = useState<number>(0);
 	const [aimError, setAimError] = useState(false);
 	const [distanceError, setDistanceError] = useState(false);
-	const [distanceValue, setDistanceValue] = useState<string>('');
+	const [distanceValue, setDistanceValue] = useState<number>(0);
 
 	const sendMarks = async (marks: IAimDistanceMarkValue[]) => {
 		const body: IAimDistanceMark = {
-			marks: [...marks.map((mark) => parseFloat(mark.aim))],
-			given_distances: [...marks.map((mark) => parseFloat(mark.distance))],
+			marks: [...marks.map((mark) => mark.aim)],
+			given_distances: [...marks.map((mark) => mark.distance)],
 			bow_category: "recurve",
 			interval_sight_measured: 5.0,
 			interval_sight_real: 5.3,
@@ -37,6 +37,7 @@ const CalculateForm = () => {
 			length_nock_eye_cm: 12.0,
 			feet_behind_or_center: "behind"
 		}
+		console.log(body)
 		try {
 			const aimMarkResponse = await calculateBallisticsParams(body);
 			if (aimMarkResponse) {
@@ -50,17 +51,17 @@ const CalculateForm = () => {
 	useEffect(() => {
 		if (form.values.marks.length > 0) {
 			sendMarks(form.values.marks).then(() => {
-				getBallistics();
+				//getBallistics();
 			})
 		}
 	}, [form.values.marks])
 
-	const handleDistanceChange = (event: React.FormEvent<HTMLInputElement>) => {
-		setDistanceValue(event.currentTarget.value)
+	const handleDistanceChange = (value: number) => {
+		setDistanceValue(value)
 	};
 
-	const handleAimChange = (event: React.FormEvent<HTMLInputElement>) => {
-		setAimValue(event.currentTarget.value)
+	const handleAimChange = (value: number) => {
+		setAimValue(value)
 	};
 	const handleAddMarks = () => {
 		if (!aimValue) {
@@ -71,8 +72,8 @@ const CalculateForm = () => {
 		}
 		if (aimValue && distanceValue) {
 			form.addListItem('marks', { aim: aimValue, distance: distanceValue })
-			setAimValue('');
-			setDistanceValue('');
+			setAimValue(0);
+			setDistanceValue(0);
 		}
 	};
 
@@ -106,17 +107,26 @@ const CalculateForm = () => {
 	return (
 		<div className={styles.container}>
 			<form className={styles.form}>
-				<TextInput
+				<NumberInput
+					min={0}
+					max={100}
+					hideControls
 					value={distanceValue}
+					noClampOnBlur
 					onChange={handleDistanceChange}
+					formatter={(value) => `${value}`.replace(/,/g, '.') }
 					className={styles.label}
 					name="aimDistance"
 					label="Avstand"
 					error={distanceError ? "Fyll inn avstanden først" : null}
 					onFocus={() => setDistanceError(false)}
 				/>
-				<TextInput
+				<NumberInput
+					min={0}
+					max={15}
 					value={aimValue}
+					noClampOnBlur
+					hideControls
 					onChange={handleAimChange}
 					className={styles.label}
 					name="aim"

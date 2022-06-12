@@ -1,4 +1,4 @@
 export interface IAimDistanceMarkValue {
-  aim: string,
-  distance: string;
+  aim: number,
+  distance: number;
 }

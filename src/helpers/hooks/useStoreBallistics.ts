@@ -1,12 +1,12 @@
 import { useState } from "react";
-import {ref, getDatabase, set, update} from "firebase/database";
+import {ref, getDatabase, update} from "firebase/database";
 import { getAuth } from "firebase/auth";
 
 import firebaseApp from "../../auth/";
-import {ICalculatedMarks} from "../../models";
+import {ICalculatedMarks, Status} from "../../models";
 
 const useStoreBallistics = () => {
-  const [status, setStatus] = useState<"idle" | "pending" | "success" | "error">("idle");
+  const [status, setStatus] = useState<Status>(Status.Idle);
   const [error, setError] = useState<any | null>(null);
 
   /**
@@ -19,20 +19,18 @@ const useStoreBallistics = () => {
     const database = getDatabase(firebaseApp)
     const userId = auth.currentUser ? auth.currentUser.uid : null;
 
-    setStatus("pending");
+    setStatus(Status.Pending);
     update(ref(database, "users/" + userId + "/ballistics"),
       {
         calculation_result: ballistic_result,
       },
     )
       .then(() => {
-        console.log("STORE DB ??: ", )
-        setStatus("success");
+        setStatus(Status.Success);
       })
       .catch((error) => {
-        console.log("STORE DB ??: ", )
         setError(error);
-        setStatus("error");
+        setStatus(Status.Idle);
       });
   };
 

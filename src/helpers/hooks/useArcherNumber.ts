@@ -27,7 +27,7 @@ const useArcherNumber = () => {
 				},
 			)
 			.then(() => {
-				setStatus(Status.Idle);
+				setStatus(Status.Success);
 			})
 			.catch((error) => {
 				setError(error);
