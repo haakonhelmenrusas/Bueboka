@@ -21,17 +21,17 @@ const useBowType = () => {
 
 		setStatus("pending");
 		update(ref(database, "users/" + userId + "/profile"),
-				{
-					bowType: bowType,
-				},
+			{
+				bowType: bowType,
+			},
 		)
-				.then(() => {
-					setStatus("success");
-				})
-				.catch(() => {
-					setError(error);
-					setStatus("error");
-				});
+			.then(() => {
+				setStatus("success");
+			})
+			.catch((error) => {
+				setError(error);
+				setStatus("error");
+			});
 	};
 
 	return {

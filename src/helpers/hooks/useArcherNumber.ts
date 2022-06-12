@@ -22,17 +22,17 @@ const useArcherNumber = () => {
 
 		setStatus(Status.Pending);
 		set(ref(database, "users/" + userId + "/profile"),
-						{
-							archerNumber: archerNumber,
-						},
-				)
-				.then(() => {
-					setStatus(Status.Idle);
-				})
-				.catch(() => {
-					setError(error);
-					setStatus(Status.Idle);
-				});
+				{
+					archerNumber: archerNumber,
+				},
+			)
+			.then(() => {
+				setStatus(Status.Idle);
+			})
+			.catch((error) => {
+				setError(error);
+				setStatus(Status.Idle);
+			});
 	};
 
 	return {

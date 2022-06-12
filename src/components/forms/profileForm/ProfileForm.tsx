@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, {useEffect, useState, ChangeEvent} from 'react';
 import {Bow, Hash} from "tabler-icons-react";
 import {Button, TextInput, Select, Modal} from "@mantine/core";
 
@@ -17,8 +17,17 @@ const ProfileForm: React.FC<IProfileForm> = ({ bowType, archerNumber, showEditFo
 	const { writeBowType } = useBowType();
 	const { status, writeArcherNumber } = useArcherNumber();
 
-	const [archerNum, setArcherNum] = useState<string>(archerNumber ? archerNumber : "");
-	const [bow, setBowType] = useState<string>(bowType ? bowType : "");
+	const [archerNum, setArcherNum] = useState<string>("");
+	const [bow, setBowType] = useState<string>("");
+
+	useEffect(() => {
+		if (archerNumber) {
+			setArcherNum(archerNumber);
+		}
+		if (bowType) {
+			setBowType(bowType);
+		}
+	}, [])
 
 	const handleSubmit = (event: React.FormEvent) => {
 		event.preventDefault();
@@ -31,7 +40,7 @@ const ProfileForm: React.FC<IProfileForm> = ({ bowType, archerNumber, showEditFo
 		setShowEditForm((state) => !state);
 	};
 
-	const handleArcherNumber = (event: any)=> {
+	const handleArcherNumber = (event: ChangeEvent<HTMLInputElement>)=> {
 		setArcherNum(event.currentTarget.value);
 	};
 	const handleBowType = (bowType: string) => {
@@ -43,7 +52,6 @@ const ProfileForm: React.FC<IProfileForm> = ({ bowType, archerNumber, showEditFo
 			<form onSubmit={handleSubmit}>
 				<div className="mb-3">
 					<TextInput
-						key={archerNum}
 						icon={<Hash size={14} />}
 						className="mb-3"
 						value={archerNum}

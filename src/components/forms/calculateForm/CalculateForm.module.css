@@ -1,14 +1,32 @@
+.container {
+    max-width: 600px;
+}
 .form {
     display: flex;
     flex-direction: row;
-    align-items: flex-end;
-    justify-content: space-between;
+    align-items: center;
     margin-bottom: 16px;
 }
-
+.form button {
+    margin-left: auto;
+}
+.label {
+    height: 90px;
+    width: 200px;
+    margin-right: 16px
+}
 @media only screen and (max-width: 600px) {
+    .form {
+        flex-wrap: wrap;
+    }
+    .form button {
+        width: 100%;
+    }
     .label {
-        width: 25%;
+        width: 50%;
+        height: 104px;
+        margin-right: 0;
+        padding: 0 8px 0 0;
     }
 
 }
