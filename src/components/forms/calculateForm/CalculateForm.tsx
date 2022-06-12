@@ -1,10 +1,10 @@
-import React, {useEffect, useState} from "react";
-import {formList, useForm} from "@mantine/form";
-import {AlertCircle, Plus, Trash, AlertTriangle} from 'tabler-icons-react';
-import {ActionIcon, Alert, Button, Loader, Modal, Table, TextInput} from "@mantine/core";
+import React, { useEffect, useState } from "react";
+import { formList, useForm } from "@mantine/form";
+import { AlertCircle, Plus, Trash, Ruler2, BorderOuter, Calculator } from 'tabler-icons-react';
+import { ActionIcon, Alert, Button, Loader, Modal, Table, TextInput } from "@mantine/core";
 
-import {IAimDistanceMark, IAimDistanceMarkValue, ICalculatedMarks, Status} from "../../../models";
-import {useAimMarks} from "../../../helpers/hooks/";
+import { IAimDistanceMark, IAimDistanceMarkValue, Status } from "../../../models";
+import { useBallisticsParams, useStoreBallistics, useFetchBallistics } from "../../../helpers/hooks/";
 import styles from './CalculateForm.module.css';
 
 const CalculateForm = () => {
@@ -16,12 +16,13 @@ const CalculateForm = () => {
 	});
 
 	const [opened, setOpened] = useState(false);
-	const { status, sendAimMarks } = useAimMarks();
+	const { status, calculateBallisticsParams } = useBallisticsParams();
+	const { ballistics, getBallistics } = useFetchBallistics();
+	const { storeBallistics } = useStoreBallistics();
 	const [aimValue, setAimValue] = useState<string>('');
 	const [aimError, setAimError] = useState(false);
 	const [distanceError, setDistanceError] = useState(false);
 	const [distanceValue, setDistanceValue] = useState<string>('');
-	const [resultMarks, setResultMarks] = useState<ICalculatedMarks | undefined>();
 
 	const sendMarks = async (marks: IAimDistanceMarkValue[]) => {
 		const body: IAimDistanceMark = {
@@ -37,9 +38,9 @@ const CalculateForm = () => {
 			feet_behind_or_center: "behind"
 		}
 		try {
-			const aimMarkResponse = await sendAimMarks(body);
+			const aimMarkResponse = await calculateBallisticsParams(body);
 			if (aimMarkResponse) {
-				setResultMarks(aimMarkResponse);
+				await storeBallistics(aimMarkResponse);
 			}
 		} catch (error) {
 			console.log("NOT WORKING: ", error)
@@ -47,8 +48,10 @@ const CalculateForm = () => {
 	}
 
 	useEffect(() => {
-		if (form.values.marks.length > 1) {
-			sendMarks(form.values.marks)
+		if (form.values.marks.length > 0) {
+			sendMarks(form.values.marks).then(() => {
+				getBallistics();
+			})
 		}
 	}, [form.values.marks])
 
@@ -74,10 +77,14 @@ const CalculateForm = () => {
 	};
 
 	const renderCalculatedMarks = (index: number) => {
-		if (resultMarks?.calculated_marks) {
-			if (resultMarks.calculated_marks.length === form.values.marks.length) {
-				return resultMarks.calculated_marks[index].toFixed(2)
-			}
+		if (ballistics?.calculated_marks) {
+			return ballistics.calculated_marks[index].toFixed(2)
+		}
+	}
+
+	const renderGivenMark = (index: number) => {
+		if (ballistics) {
+			return <td>{ballistics.given_marks[index]}</td>
 		}
 	}
 
@@ -98,7 +105,6 @@ const CalculateForm = () => {
 
 	return (
 		<div className={styles.container}>
-			<h3>Siktemerker</h3>
 			<form className={styles.form}>
 				<TextInput
 					value={distanceValue}
@@ -125,16 +131,16 @@ const CalculateForm = () => {
 				<Table striped verticalSpacing="sm" fontSize="md">
 					<thead>
 						<tr>
-							<td>Avstand</td>
-							<td>Merke</td>
-							<td>Beregnet</td>
+							<td><Ruler2 /> Avstand</td>
+							<td><BorderOuter /> Merke</td>
+							<td><Calculator /> Beregnet</td>
 						</tr>
 					</thead>
 					<tbody>
-						{form.values.marks.length > 0 && form.values.marks.map((_, index) => (
+						{ballistics && ballistics.given_distance.map((distance, index) => (
 							<tr key={index}>
-								<td>{form.values.marks[index].distance}</td>
-								<td>{form.values.marks[index].aim}</td>
+								<td>{distance.toFixed(2)}</td>
+								<td>{renderGivenMark(index)}</td>
 								<td>{status === Status.Pending ? <Loader size={16} /> : renderCalculatedMarks(index)}</td>
 								<td>
 									<ActionIcon
@@ -152,7 +158,7 @@ const CalculateForm = () => {
 					</tbody>
 				</Table>
 				{form.values.marks.length === 0 && (
-					<Alert icon={<AlertCircle size={16} />} title="Her var det tomt!" color="blue">
+					<Alert mt={8} icon={<AlertCircle size={16} />} title="Her var det tomt!" color="blue">
 						Legg inn siktemerker og send dem inn til beregning
 					</Alert>
 				)}

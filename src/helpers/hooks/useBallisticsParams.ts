@@ -2,7 +2,7 @@ import {useState} from "react";
 
 import {IAimDistanceMark, ICalculatedMarks, Status} from "../../models";
 
-const aimMarksAPICall = (body: IAimDistanceMark) => {
+const calcBallisticsParams = (body: IAimDistanceMark) => {
 	return fetch('https://calculate-aim.azurewebsites.net/api/archerAim?task=CalcBallisticsPars', {
 		headers: {
 			'Content-Type': 'application/json',
@@ -12,14 +12,14 @@ const aimMarksAPICall = (body: IAimDistanceMark) => {
 	})
 }
 
-const useAimMarks = () => {
+const useBallisticsParams = () => {
 	const [status, setStatus] = useState<Status>(Status.Idle);
 	const [error, setError] = useState<any | null>(null);
 
-	const sendAimMarks = async (body: IAimDistanceMark): Promise<ICalculatedMarks | undefined> => {
+	const calculateBallisticsParams = async (body: IAimDistanceMark): Promise<ICalculatedMarks | undefined> => {
 		try {
 			setStatus(Status.Pending);
-			const result = await aimMarksAPICall(body);
+			const result = await calcBallisticsParams(body);
 			if (result.ok) {
 				return result.json();
 			}
@@ -34,8 +34,8 @@ const useAimMarks = () => {
 	return {
 		status,
 		error,
-		sendAimMarks,
+		calculateBallisticsParams,
 	};
 };
 
-export default useAimMarks;
+export default useBallisticsParams;
