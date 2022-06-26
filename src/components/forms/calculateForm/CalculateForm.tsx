@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { formList, useForm } from "@mantine/form";
-import { AlertCircle, Plus, Trash, Ruler2, BorderOuter, Calculator } from 'tabler-icons-react';
-import { ActionIcon, Alert, Button, Loader, Modal, NumberInput, Table } from "@mantine/core";
+import { AlertCircle, Plus } from 'tabler-icons-react';
+import { Alert, Button, Modal, NumberInput } from "@mantine/core";
 
 import { IAimDistanceMark, IAimDistanceMarkValue, Status } from "../../../models";
-import { useBallisticsParams, useStoreBallistics, useFetchBallistics } from "../../../helpers/hooks/";
+import { useBallisticsParams, useStoreBallistics } from "../../../helpers/hooks/";
 import styles from './CalculateForm.module.css';
+import {CalculationTable} from "../../index";
 
 const CalculateForm = () => {
 
@@ -17,12 +18,12 @@ const CalculateForm = () => {
 
 	const [opened, setOpened] = useState(false);
 	const { status, calculateBallisticsParams } = useBallisticsParams();
-	const { ballistics, getBallistics } = useFetchBallistics();
+
 	const { storeBallistics } = useStoreBallistics();
-	const [aimValue, setAimValue] = useState<number>(0);
+	const [aimValue, setAimValue] = useState<number>();
 	const [aimError, setAimError] = useState(false);
 	const [distanceError, setDistanceError] = useState(false);
-	const [distanceValue, setDistanceValue] = useState<number>(0);
+	const [distanceValue, setDistanceValue] = useState<number>();
 
 	const sendMarks = async (marks: IAimDistanceMarkValue[]) => {
 		const body: IAimDistanceMark = {
@@ -72,22 +73,10 @@ const CalculateForm = () => {
 		}
 		if (aimValue && distanceValue) {
 			form.addListItem('marks', { aim: aimValue, distance: distanceValue })
-			setAimValue(0);
-			setDistanceValue(0);
+			setAimValue(undefined);
+			setDistanceValue(undefined);
 		}
 	};
-
-	const renderCalculatedMarks = (index: number) => {
-		if (ballistics?.calculated_marks) {
-			return ballistics.calculated_marks[index].toFixed(2)
-		}
-	}
-
-	const renderGivenMark = (index: number) => {
-		if (ballistics) {
-			return <td>{ballistics.given_marks[index]}</td>
-		}
-	}
 
 /*	const renderDeviationAlert = (index: number) => {
 		if (resultMarks?.calculated_marks) {
@@ -111,6 +100,7 @@ const CalculateForm = () => {
 					min={0}
 					max={100}
 					hideControls
+					placeholder="F.eks. 20m"
 					value={distanceValue}
 					noClampOnBlur
 					onChange={handleDistanceChange}
@@ -124,6 +114,7 @@ const CalculateForm = () => {
 				<NumberInput
 					min={0}
 					max={15}
+					placeholder="F.eks. 2.3"
 					value={aimValue}
 					noClampOnBlur
 					hideControls
@@ -138,35 +129,7 @@ const CalculateForm = () => {
 					{status === Status.Pending ? 'Laster' : <> <Plus />  Legg til </>}
 				</Button>
 			</form>
-				<Table striped verticalSpacing="sm" fontSize="md">
-					<thead>
-						<tr>
-							<td><Ruler2 /> Avstand</td>
-							<td><BorderOuter /> Merke</td>
-							<td><Calculator /> Beregnet</td>
-						</tr>
-					</thead>
-					<tbody>
-						{ballistics && ballistics.given_distance.map((distance, index) => (
-							<tr key={index}>
-								<td>{distance.toFixed(2)}</td>
-								<td>{renderGivenMark(index)}</td>
-								<td>{status === Status.Pending ? <Loader size={16} /> : renderCalculatedMarks(index)}</td>
-								<td>
-									<ActionIcon
-											title="Fjern merke"
-											style={{ marginLeft: "auto" }}
-											color="red"
-											variant="hover"
-											onClick={() => form.removeListItem('marks', index)}
-									>
-										<Trash size={16} />
-									</ActionIcon>
-								</td>
-							</tr>
-						))}
-					</tbody>
-				</Table>
+				<CalculationTable form={form} />
 				{form.values.marks.length === 0 && (
 					<Alert mt={8} icon={<AlertCircle size={16} />} title="Her var det tomt!" color="blue">
 						Legg inn siktemerker og send dem inn til beregning

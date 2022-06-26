@@ -1,5 +1,5 @@
 import { useState } from "react";
-import {ref, getDatabase, update} from "firebase/database";
+import {ref, set, getDatabase, update} from "firebase/database";
 import { getAuth } from "firebase/auth";
 
 import firebaseApp from "../../auth/";
@@ -20,9 +20,9 @@ const useStoreBallistics = () => {
     const userId = auth.currentUser ? auth.currentUser.uid : null;
 
     setStatus(Status.Pending);
-    update(ref(database, "users/" + userId + "/ballistics"),
+    set(ref(database, "users/" + userId + "/ballistics"),
       {
-        calculation_result: ballistic_result,
+        ...ballistic_result,
       },
     )
       .then(() => {

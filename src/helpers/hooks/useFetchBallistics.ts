@@ -7,7 +7,7 @@ import {ICalculatedMarks, Status} from "../../models";
 
 const useFetchBallistics = () => {
   const [status, setStatus] = useState<Status>(Status.Idle);
-  const [ballistics, setValue] = useState<ICalculatedMarks | null>(null);
+  const [ballistics, setBallistics] = useState<ICalculatedMarks | null>(null);
   const [error, setError] = useState<any | null>(null);
 
   const getBallistics = useCallback(() => {
@@ -19,9 +19,8 @@ const useFetchBallistics = () => {
     try {
       const dbRef = ref(db, "users/" + userId + "/ballistics");
       onValue(dbRef, (snapshot) => {
-        const { calculation_result } = snapshot.val();
-        console.log("DATA: ", calculation_result)
-        setValue(calculation_result);
+        const data = snapshot.val();
+        setBallistics(data);
         setStatus(Status.Idle);
       })
     } catch (e) {
