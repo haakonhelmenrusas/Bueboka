@@ -42,7 +42,7 @@ const User: React.FC<IUser> = ({ colorScheme, toggleColorScheme }) => {
 						title="Endre profil"
 						style={{ marginLeft: "auto" }}
 						color="blue"
-						variant="hover"
+						variant="outline"
 						onClick={() => setShowEditForm((state) => !state)}
 					>
 						<Settings size={24} />

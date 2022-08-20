@@ -49,7 +49,7 @@ const CalculationTable = ({ form }: ICalculationTable) => {
                 title="Fjern merke"
                 style={{ marginLeft: "auto" }}
                 color="red"
-                variant="hover"
+                variant="outline"
                 onClick={() => form.removeListItem('marks', index)}
               >
                 <Trash size={16} />

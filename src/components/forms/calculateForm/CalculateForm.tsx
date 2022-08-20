@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { formList, useForm } from "@mantine/form";
+import { useForm } from "@mantine/form";
 import { AlertCircle, Plus } from 'tabler-icons-react';
 import { Alert, Button, Modal, NumberInput } from "@mantine/core";
 
@@ -12,7 +12,7 @@ const CalculateForm = () => {
 
 	const form = useForm({
 		initialValues: {
-			marks: formList<IAimDistanceMarkValue>([]),
+			marks: [],
 		},
 	});
 
@@ -72,7 +72,7 @@ const CalculateForm = () => {
 			setDistanceError(true);
 		}
 		if (aimValue && distanceValue) {
-			form.addListItem('marks', { aim: aimValue, distance: distanceValue })
+			form.insertListItem('marks', { aim: aimValue, distance: distanceValue })
 			setAimValue(undefined);
 			setDistanceValue(undefined);
 		}
