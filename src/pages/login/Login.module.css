@@ -1,17 +1,23 @@
 .welcomeContainer {
-	margin-left: auto;
-	margin-right: auto;
 	display: flex;
+	padding: 0 1rem;
+	max-width: 600px;
 	flex-direction: column;
-	align-items: center;
+	margin: 6rem auto 14rem;
 }
-.list {
-	margin-bottom: 2rem;
+.logo {
+	width: 96px;
+	height: 96px;
+	margin: 0 auto 0;
 }
-.loginContainer {
-	display: flex;
-	flex-direction: column;
+.title {
+	text-align: center;
 }
-.loginContainer > button {
-	margin-bottom: 16px;
+@media only screen and (max-width: 600px) {
+	.welcomeContainer {
+		display: flex;
+		padding: 0 1rem;
+		flex-direction: column;
+		margin: 6rem auto 14rem;
+	}
 }
