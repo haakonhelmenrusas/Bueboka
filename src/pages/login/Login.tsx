@@ -1,8 +1,7 @@
 import React, { useContext, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import {useMediaQuery} from "@mantine/hooks";
-import {Bow, BrandGoogle, SquareRoot2, UserCircle} from "tabler-icons-react";
-import {Button, Card, Text, ThemeIcon, Group, Grid} from "@mantine/core";
+import { Bow, BrandGoogle, ListCheck, UserCircle } from "tabler-icons-react";
+import { Button, Card } from "@mantine/core";
 
 import { UserContext } from "../../helpers/StateProvider";
 import { googleLogin } from "../../auth";
@@ -12,7 +11,6 @@ import styles from "./Login.module.css";
 
 const Login = () => {
 	const {user} = useContext(UserContext);
-	const matches = useMediaQuery('(min-width: 900px)');
 	const navigate = useNavigate();
 
 	useEffect(() => {
@@ -26,53 +24,23 @@ const Login = () => {
 				<div className={styles.welcomeContainer}>
 					<img className={styles.logo} alt="Logo" src={Logo} />
 					<h1 className={styles.title}>Book of Arrows</h1>
-					<Grid>
-						{matches && <Grid.Col span={2} />}
-						<Grid.Col span={matches ? 4 : 6}>
-							<Card shadow="md" radius={6} withBorder>
-								<Card.Section>
-									<Group p="xs">
-										<ThemeIcon>
-											<UserCircle />
-										</ThemeIcon>
-										<Text>
-											Egen profil
-										</Text>
-									</Group>
-								</Card.Section>
-							</Card>
-						</Grid.Col>
-						<Grid.Col span={matches ? 4 : 6}>
-							<Card shadow="md" radius={6} withBorder>
-								<Card.Section>
-									<Group p="xs">
-										<ThemeIcon>
-											<Bow />
-										</ThemeIcon>
-										<Text>
-											Bue & utstyr
-										</Text>
-									</Group>
-								</Card.Section>
-							</Card>
-						</Grid.Col>
-						{matches && <Grid.Col span={2} />}
-						<Grid.Col span={12}>
-							<Card shadow="md" radius={6} withBorder>
-								<Card.Section>
-									<Group p="xs">
-										<ThemeIcon>
-											<SquareRoot2 />
-										</ThemeIcon>
-										<Text>
-											Beregning av siktemerker
-										</Text>
-									</Group>
-								</Card.Section>
-							</Card>
-						</Grid.Col>
-					</Grid>
-					<Button mt={80} leftIcon={<BrandGoogle />} onClick={googleLogin}>
+					<div className={styles.list}>
+						<Card radius={4} shadow="md" className={styles.listItem}>
+							<UserCircle color="#228be6" size={40} />
+							<p className={styles.listText}>Skytterprofil</p>
+						</Card>
+						<Card radius={4} shadow="md" className={styles.listItem}>
+							<Bow color="#228be6" size={40} />
+							<p className={styles.listText}>Register utstyr</p>
+						</Card>
+						<Card radius={4} shadow="md" className={styles.listItem}>
+							<ListCheck color="#228be6" size={40} />
+							<p className={styles.listText}>Beregning av siktemerker</p>
+						</Card>
+					</div>
+					<h2 className={styles.subtitle}>Her samles Norges bueskyttere</h2>
+					<h3 className={styles.subtitle}>Bli med!</h3>
+					<Button leftIcon={<BrandGoogle />} onClick={googleLogin}>
 						Logg inn med Google
 					</Button>
 				</div>
