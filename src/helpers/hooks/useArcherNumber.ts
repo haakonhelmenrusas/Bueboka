@@ -1,5 +1,5 @@
 import {useState} from "react";
-import {getDatabase, ref, set} from "firebase/database";
+import { getFirestore, doc, setDoc  } from 'firebase/firestore/lite';
 import {getAuth} from "firebase/auth";
 
 import firebaseApp from "../../auth/";
@@ -10,29 +10,26 @@ const useArcherNumber = () => {
 	const [status, setStatus] = useState<Status>(Status.Idle);
 	const [error, setError] = useState<any | null>(null);
 
-	/**
-	 * Store archer number in users profile in database.
-	 *
-	 * @param archerNumber
-	 */
 	const writeArcherNumber = async (archerNumber: number): Promise<void> => {
 		const auth = getAuth(firebaseApp);
-		const database = getDatabase(firebaseApp)
+		const database = getFirestore(firebaseApp)
 		const userId = auth.currentUser ? auth.currentUser.uid : null;
 
-		setStatus(Status.Pending);
-		set(ref(database, "users/" + userId + "/profile"),
-				{
-					archerNumber: archerNumber,
-				},
-			)
-			.then(() => {
-				setStatus(Status.Success);
-			})
-			.catch((error) => {
-				setError(error);
-				setStatus(Status.Idle);
-			});
+		if (userId) {
+			setStatus(Status.Pending);
+			setDoc(doc(database, 'users', userId),
+					{
+						archerNumber: archerNumber,
+					},
+				)
+				.then(() => {
+					setStatus(Status.Success);
+				})
+				.catch((error) => {
+					setError(error);
+					setStatus(Status.Idle);
+				});
+		}
 	};
 
 	return {
