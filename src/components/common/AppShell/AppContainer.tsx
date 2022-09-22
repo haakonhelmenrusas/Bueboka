@@ -41,7 +41,7 @@ const AppContainer: React.FC<IAppContainer> = ({ colorScheme, toggleColorScheme,
 					navbar={
 						<Navbar p="md" hiddenBreakpoint="sm" hidden={!opened} width={{ sm: 148, lg: 200 }}>
 							<Navbar.Section grow>
-								<Anchor component={Link} to="/form">
+								<Anchor className={styles.link} component={Link} to="/form">
 									<Target /> Sikteskjema
 								</Anchor>
 							</Navbar.Section>

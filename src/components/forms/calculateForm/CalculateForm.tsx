@@ -5,8 +5,8 @@ import { Alert, Button, Modal, NumberInput } from "@mantine/core";
 
 import { IAimDistanceMark, IAimDistanceMarkValue, Status } from "../../../models";
 import { useBallisticsParams, useStoreBallistics } from "../../../helpers/hooks/";
-import styles from './CalculateForm.module.css';
 import {CalculationTable} from "../../index";
+import styles from './CalculateForm.module.css';
 
 const CalculateForm = () => {
 
@@ -126,7 +126,7 @@ const CalculateForm = () => {
 					onFocus={() => setAimError(false)}
 				/>
 				<Button loading={status === Status.Pending} onClick={handleAddMarks} type="button">
-					{status === Status.Pending ? 'Laster' : <> <Plus />  Legg til </>}
+					{status === Status.Pending ? 'Jobber' : <> <Plus />  Legg til </>}
 				</Button>
 			</form>
 				<CalculationTable form={form} />

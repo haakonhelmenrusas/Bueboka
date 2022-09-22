@@ -12,13 +12,15 @@
     width: 56px;
     height: 56px;
 }
-
+.link {
+    display: flex;
+    
+}
 .title {
     font-family: 'Montserrat', sans-serif;
     font-size: 24px;
     font-weight: 500;
-    margin-left: 16px;
-    margin-bottom: 0;
+    margin: 0 1rem;
 }
 
 @media only screen and (max-width: 600px) {
@@ -33,7 +35,7 @@
         font-family: 'Montserrat', sans-serif;
         font-size: 20px;
         font-weight: 500;
-        margin-left: 0;
+        margin: 0;
     }
     .themeButton {
         margin-left: auto;

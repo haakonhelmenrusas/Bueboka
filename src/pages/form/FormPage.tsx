@@ -13,12 +13,12 @@ interface IFormPage {
 const FormPage: React.FC<IFormPage> = ({ colorScheme, toggleColorScheme }) => {
 	return (
 		<AppContainer colorScheme={colorScheme} toggleColorScheme={toggleColorScheme}>
-			<Tabs variant="outline">
+			<Tabs defaultValue="Siktemerker" variant="outline">
 				<Tabs.List>
 					<Tabs.Tab value="Siktemerker" icon={<Markdown size={14} />}>
 						Siktemerker
 					</Tabs.Tab>
-					<Tabs.Tab value="Beregn siktemerker" icon={<Settings size={14} />}>Settings tab content</Tabs.Tab>
+					<Tabs.Tab disabled value="Beregn siktemerker" icon={<Settings size={14} />}>Settings</Tabs.Tab>
 				</Tabs.List>
 				<Tabs.Panel value="Siktemerker" pt="xs">
 					<CalculateForm/>
