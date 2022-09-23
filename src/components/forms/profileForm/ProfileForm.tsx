@@ -47,12 +47,12 @@ const ProfileForm: React.FC<IProfileForm> = ({ bowType, archerNumber, showEditFo
 	};
 
 	return (
-		<Modal title="Rediger profil" opened={showEditForm} centered onClose={() => setShowEditForm(false)} className={styles.numberForm}>
+		<Modal title="Rediger profil" opened={showEditForm} centered onClose={() => setShowEditForm(false)}>
 			<form onSubmit={handleSubmit}>
-				<div className="mb-3">
+				<div className={styles.numberForm}>
 					<TextInput
 						icon={<Hash size={14} />}
-						className="mb-3"
+						style={{ marginBottom: 8 }}
 						value={archerNum}
 						maxLength={6}
 						onChange={handleArcherNumber}
@@ -65,7 +65,7 @@ const ProfileForm: React.FC<IProfileForm> = ({ bowType, archerNumber, showEditFo
 						icon={<Bow size={14} />}
 						onChange={handleBowType}
 						placeholder="Velg din buetype"
-						aria-label="Bow type select"
+						aria-label="Velg din buetype"
 						data={[
 							'Compound',
 							'Recurve' ,
@@ -77,7 +77,7 @@ const ProfileForm: React.FC<IProfileForm> = ({ bowType, archerNumber, showEditFo
 					/>
 				</div>
 				<Button
-					className={styles.button}
+					fullWidth
 					loading={status === Status.Pending}
 					type="submit"
 				>Lagre</Button>
