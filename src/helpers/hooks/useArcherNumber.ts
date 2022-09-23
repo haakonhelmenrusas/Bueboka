@@ -1,5 +1,5 @@
 import {useState} from "react";
-import { getFirestore, doc, setDoc  } from 'firebase/firestore/lite';
+import { getFirestore, doc, updateDoc   } from 'firebase/firestore/lite';
 import {getAuth} from "firebase/auth";
 
 import firebaseApp from "../../auth/";
@@ -17,7 +17,7 @@ const useArcherNumber = () => {
 
 		if (userId) {
 			setStatus(Status.Pending);
-			setDoc(doc(database, 'users', userId),
+			updateDoc (doc(database, 'users', userId),
 					{
 						archerNumber: archerNumber,
 					},

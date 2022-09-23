@@ -2,9 +2,10 @@ import {useCallback, useState} from "react";
 import {getAuth} from "firebase/auth";
 import { getFirestore, doc, onSnapshot } from 'firebase/firestore';
 import firebaseApp from "../../auth/";
+import {Status} from "../../models";
 
 const useFetchArcher = () => {
-	const [status, setStatus] = useState<"idle" | "pending" | "success" | "error">("idle");
+	const [status, setStatus] = useState<Status>(Status.Idle);
 	const [value, setValue] = useState<string | null>(null);
 	const [error, setError] = useState<any | null>(null);
 
@@ -14,13 +15,14 @@ const useFetchArcher = () => {
 		const userId = auth.currentUser ? auth.currentUser.uid : null;
 
 		if (userId) {
-			setStatus("pending");
+			setStatus(Status.Pending);
 			try {
 				const dbRef = doc(database, "users/" + userId);
-				const docSnap = onSnapshot(dbRef, (doc) => {
+				onSnapshot(dbRef, (doc) => {
 					if (doc.exists()) {
 						const { archerNumber } = doc.data();
 						setValue(archerNumber);
+						setStatus(Status.Idle);
 					}
 				});
 			} catch (e) {

@@ -1,7 +1,6 @@
 import React, {useEffect, useState, ChangeEvent} from 'react';
-import {Bow, Hash} from "tabler-icons-react";
 import {Button, TextInput, Select, Modal} from "@mantine/core";
-
+import {Bow, Hash} from "tabler-icons-react";
 import { useArcherNumber, useBowType } from "../../../helpers/hooks";
 import { Status } from "../../../models";
 import styles from "./ProfileForm.module.css";

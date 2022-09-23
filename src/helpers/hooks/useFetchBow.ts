@@ -1,7 +1,6 @@
 import {useCallback, useState} from "react";
-import { ref, getDatabase, onValue } from "firebase/database";
+import { getFirestore, doc, onSnapshot } from 'firebase/firestore';
 import { getAuth } from "firebase/auth";
-
 import firebaseApp from "../../auth/";
 import {Status} from "../../models";
 
@@ -12,20 +11,24 @@ const useFetchBow = () => {
 
 	const getBow = useCallback(() => {
 		const auth = getAuth(firebaseApp);
-		const db = getDatabase(firebaseApp);
+		const database = getFirestore(firebaseApp);
 		const userId = auth.currentUser ? auth.currentUser.uid : null;
 
-		setStatus(Status.Pending);
-		try {
-			const dbRef = ref(db, "users/" + userId + "/profile");
-			onValue(dbRef, (snapshot) => {
-				const { bowType } = snapshot.val();
-				setBowType(bowType);
+		if (userId) {
+			setStatus(Status.Pending);
+			try {
+				const dbRef = doc(database, "users/" + userId);
+				onSnapshot(dbRef, (doc) => {
+					if (doc.exists()) {
+						const { bowType } = doc.data();
+						setBowType(bowType);
+						setStatus(Status.Idle);
+					}
+				})
+			} catch (e) {
+				setError(e);
 				setStatus(Status.Idle);
-			})
-		} catch (e) {
-			setError(e);
-			setStatus(Status.Idle);
+			}
 		}
 	}, []);
 
