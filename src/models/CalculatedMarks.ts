@@ -1,4 +1,4 @@
-export interface ICalculatedMarks {
+export interface CalculatedMarks {
   initial_arrow_speed: number;
   cd: number;
   arrow_mass_gram: number;

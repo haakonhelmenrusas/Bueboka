@@ -1,8 +1,8 @@
 import {useState} from "react";
 
-import {IAimDistanceMark, ICalculatedMarks, Status} from "../../models";
+import {AimDistanceMark, CalculatedMarks, Status} from "../../models";
 
-const calcBallisticsParams = (body: IAimDistanceMark) => {
+const calcBallisticsParams = (body: AimDistanceMark) => {
 	return fetch('https://calculate-aim.azurewebsites.net/api/archerAim?task=CalcBallisticsPars', {
 		headers: {
 			'Content-Type': 'application/json',
@@ -16,7 +16,7 @@ const useBallisticsParams = () => {
 	const [status, setStatus] = useState<Status>(Status.Idle);
 	const [error, setError] = useState<any | null>(null);
 
-	const calculateBallisticsParams = async (body: IAimDistanceMark): Promise<ICalculatedMarks | undefined> => {
+	const calculateBallisticsParams = async (body: AimDistanceMark): Promise<CalculatedMarks | undefined> => {
 		try {
 			setStatus(Status.Pending);
 			const result = await calcBallisticsParams(body);

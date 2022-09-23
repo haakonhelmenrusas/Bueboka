@@ -2,8 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useForm } from "@mantine/form";
 import { AlertCircle, Plus } from 'tabler-icons-react';
 import { Alert, Button, Modal, NumberInput } from "@mantine/core";
-
-import { IAimDistanceMark, IAimDistanceMarkValue, Status } from "../../../models";
+import { AimDistanceMark, AimDistanceMarkValue, Status } from "../../../models";
 import { useBallisticsParams, useStoreBallistics } from "../../../helpers/hooks/";
 import {CalculationTable} from "../../index";
 import styles from './CalculateForm.module.css';
@@ -25,8 +24,8 @@ const CalculateForm = () => {
 	const [distanceError, setDistanceError] = useState(false);
 	const [distanceValue, setDistanceValue] = useState<number>();
 
-	const sendMarks = async (marks: IAimDistanceMarkValue[]) => {
-		const body: IAimDistanceMark = {
+	const sendMarks = async (marks: AimDistanceMarkValue[]) => {
+		const body: AimDistanceMark = {
 			marks: [...marks.map((mark) => mark.aim)],
 			given_distances: [...marks.map((mark) => mark.distance)],
 			bow_category: "recurve",

@@ -1,8 +1,8 @@
 import {useState} from "react";
 
-import {ISightMarkCalculation, ICalculatedMarks, Status} from "../../models";
+import {SightMarkCalculation, CalculatedMarks, Status} from "../../models";
 
-const calcSightMarks = (body: ISightMarkCalculation) => {
+const calcSightMarks = (body: SightMarkCalculation) => {
   return fetch('https://calculate-aim.azurewebsites.net/api/archerAim?task=CalcSightMarks', {
     headers: {
       'Content-Type': 'application/json',
@@ -16,7 +16,7 @@ const useSightMarks = () => {
   const [status, setStatus] = useState<Status>(Status.Idle);
   const [error, setError] = useState<any | null>(null);
 
-  const calculateSightMarks = async (body: ISightMarkCalculation): Promise<ICalculatedMarks | undefined> => {
+  const calculateSightMarks = async (body: SightMarkCalculation): Promise<CalculatedMarks | undefined> => {
     try {
       setStatus(Status.Pending);
       const result = await calcSightMarks(body);

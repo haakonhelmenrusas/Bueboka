@@ -2,7 +2,7 @@ import {browserLocalPersistence, getAuth, onAuthStateChanged} from 'firebase/aut
 import React, {createContext, useEffect, useState} from 'react'
 import {useNavigate} from "react-router-dom";
 
-import { UserContextState, IUser } from '../models/';
+import { UserContextState, User } from '../models/';
 import firebaseApp from "../auth/";
 
 interface IState {
@@ -26,18 +26,18 @@ export const UserContext = createContext<UserContextState>(contextDefaultValues)
 const StateProvider = ({children}: IState) => {
 	const auth = getAuth(firebaseApp);
 	const navigate = useNavigate();
-	const [user, setUser] = useState<IUser>(contextDefaultValues.user);
+	const [user, setUser] = useState<User>(contextDefaultValues.user);
 
 	auth.setPersistence(browserLocalPersistence);
 
-	const updateUser = (currentUser: IUser) => setUser((prevState) => (
+	const updateUser = (currentUser: User) => setUser((prevState) => (
 			{...prevState, displayName: currentUser.displayName, email: currentUser.email, photoURL: currentUser.photoURL})
 	);
 
 	useEffect(() => {
 		onAuthStateChanged(auth, (changedUser => {
 			if (changedUser) {
-				const userProfile: IUser = {
+				const userProfile: User = {
 					displayName: changedUser.displayName,
 					email: changedUser.email,
 					photoURL: changedUser.photoURL,

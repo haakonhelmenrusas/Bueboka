@@ -1,4 +1,4 @@
-export interface IBallisticsObject {
+export interface BallisticsObject {
   bow_category: string;
   interval_sight_measured: number;
   interval_sight_real: number;

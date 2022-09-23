@@ -3,11 +3,11 @@ import { ref, getDatabase, onValue } from "firebase/database";
 import { getAuth } from "firebase/auth";
 
 import firebaseApp from "../../auth/";
-import {ICalculatedMarks, Status} from "../../models";
+import {CalculatedMarks, Status} from "../../models";
 
 const useFetchBallistics = () => {
   const [status, setStatus] = useState<Status>(Status.Idle);
-  const [ballistics, setBallistics] = useState<ICalculatedMarks | null>(null);
+  const [ballistics, setBallistics] = useState<CalculatedMarks | null>(null);
   const [error, setError] = useState<any | null>(null);
 
   const getBallistics = useCallback(() => {

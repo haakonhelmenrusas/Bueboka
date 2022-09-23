@@ -1,6 +1,6 @@
-import { IUser } from "./IUser";
+import { User } from "./User";
 
 export type UserContextState = {
-  user: IUser;
-  updateUser: (user: IUser) => void;
+  user: User;
+  updateUser: (user: User) => void;
 };

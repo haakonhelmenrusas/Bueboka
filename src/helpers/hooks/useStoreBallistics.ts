@@ -3,7 +3,7 @@ import {ref, set, getDatabase, update} from "firebase/database";
 import { getAuth } from "firebase/auth";
 
 import firebaseApp from "../../auth/";
-import {ICalculatedMarks, Status} from "../../models";
+import {CalculatedMarks, Status} from "../../models";
 
 const useStoreBallistics = () => {
   const [status, setStatus] = useState<Status>(Status.Idle);
@@ -14,7 +14,7 @@ const useStoreBallistics = () => {
    *
    * @param ballistic_result
    */
-  const storeBallistics = async (ballistic_result: ICalculatedMarks): Promise<void> => {
+  const storeBallistics = async (ballistic_result: CalculatedMarks): Promise<void> => {
     const auth = getAuth(firebaseApp);
     const database = getDatabase(firebaseApp)
     const userId = auth.currentUser ? auth.currentUser.uid : null;

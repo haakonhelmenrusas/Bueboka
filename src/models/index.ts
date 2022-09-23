@@ -1,7 +1,7 @@
-export type { IUser } from './IUser';
+export type { User } from './User';
 export type { UserContextState } from './UserContext';
-export type { IAimDistanceMarkValue } from './IAimDistanceMarkValue';
-export type { IAimDistanceMark } from './IAimDistanceMark';
-export type { ICalculatedMarks } from './ICalculatedMarks';
-export type { ISightMarkCalculation } from './ISightMarkCalculation';
+export type { AimDistanceMarkValue } from './AimDistanceMarkValue';
+export type { AimDistanceMark } from './AimDistanceMark';
+export type { CalculatedMarks } from './CalculatedMarks';
+export type { SightMarkCalculation } from './SightMarkCalculation';
 export { Status } from './Status';
