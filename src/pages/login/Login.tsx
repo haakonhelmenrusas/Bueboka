@@ -25,15 +25,15 @@ const Login = () => {
 					<img className={styles.logo} alt="Logo" src={Logo} />
 					<h1 className={styles.title}>Book of Arrows</h1>
 					<div className={styles.list}>
-						<Card radius={4} shadow="md" className={styles.listItem}>
+						<Card radius={4} className={styles.listItem}>
 							<UserCircle color="#228be6" size={40} />
 							<p className={styles.listText}>Skytterprofil</p>
 						</Card>
-						<Card radius={4} shadow="md" className={styles.listItem}>
+						<Card radius={4} className={styles.listItem}>
 							<Bow color="#228be6" size={40} />
 							<p className={styles.listText}>Register utstyr</p>
 						</Card>
-						<Card radius={4} shadow="md" className={styles.listItem}>
+						<Card radius={4} className={styles.listItem}>
 							<ListCheck color="#228be6" size={40} />
 							<p className={styles.listText}>Beregning av siktemerker</p>
 						</Card>

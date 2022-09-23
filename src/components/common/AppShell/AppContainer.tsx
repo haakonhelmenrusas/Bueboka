@@ -37,7 +37,7 @@ const AppContainer: React.FC<IAppContainer> = ({ colorScheme, toggleColorScheme,
 						},
 					}}
 					navbarOffsetBreakpoint="sm"
-					fixed
+
 					navbar={
 						<Navbar p="md" hiddenBreakpoint="sm" hidden={!opened} width={{ sm: 148, lg: 200 }}>
 							<Navbar.Section grow>
@@ -46,10 +46,16 @@ const AppContainer: React.FC<IAppContainer> = ({ colorScheme, toggleColorScheme,
 								</Anchor>
 							</Navbar.Section>
 							<Navbar.Section style={{ display: 'flex', flexDirection: 'column'}}>
-								<Anchor component={Link} to="/about" style={{ marginBottom: 16 }}>
-									<InfoCircle /> Om oss
+								<Anchor className={styles.link} component={Link} to="/about" style={{ marginBottom: 16 }}>
+									<InfoCircle /><span style={{ marginLeft: 8}}>Om oss</span>
 								</Anchor>
-								<Anchor onClick={logOut} component={Link} to="#"><Logout />   Logg ut</Anchor>
+								<Anchor
+									className={styles.link}
+									onClick={logOut}
+									component={Link}
+									to="#">
+									<Logout /><span style={{ marginLeft: 8}}>Logg ut</span>
+								</Anchor>
 							</Navbar.Section>
 						</Navbar>
 					}
