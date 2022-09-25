@@ -11,9 +11,6 @@
     "@mantine/hooks": "^5.4.0",
     "@mantine/modals": "^5.4.0",
     "@mantine/notifications": "^5.4.0",
-    "@testing-library/jest-dom": "^5.16.5",
-    "@testing-library/react": "^13.3.0",
-    "@testing-library/user-event": "^14.4.3",
     "@types/jest": "^28.1.7",
     "@types/node": "^18.7.18",
     "@types/react": "^18.0.17",
@@ -30,9 +27,7 @@
   },
   "scripts": {
     "start": "react-scripts start --host 0.0.0.0",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "build": "react-scripts build"
   },
   "eslintConfig": {
     "extends": [

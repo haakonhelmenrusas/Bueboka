@@ -9,7 +9,5 @@ if (el === null) throw new Error('Root container missing in index.html')
 
 const root = createRoot(el)
 root.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>
+  <App />
 )
