@@ -1,7 +1,7 @@
 import React, {useMemo} from "react";
 import {UseFormReturnType} from "@mantine/form";
-import {BorderOuter, Calculator, Ruler2, Trash} from "tabler-icons-react";
-import {ActionIcon, Table} from "@mantine/core";
+import {AlertCircle, BorderOuter, Calculator, Ruler2, Trash} from "tabler-icons-react";
+import {ActionIcon, Alert, Table} from "@mantine/core";
 import styles from './CalculationTable.module.css';
 import {CalculatedMarks} from "../../models";
 
@@ -41,11 +41,11 @@ const CalculationTable = ({ form, ballistics, getBallistics }: ICalculationTable
         )))
     } else {
       return (
-       <tr>
-         <td></td>
-         <td></td>
-         <td></td>
-       </tr>
+       <>
+         <Alert mt={8} icon={<AlertCircle size={16} />} title="Her var det tomt!" color="blue">
+           Legg inn siktemerker og send dem inn til beregning
+         </Alert>
+       </>
       )
     }
 }, [ballistics]);

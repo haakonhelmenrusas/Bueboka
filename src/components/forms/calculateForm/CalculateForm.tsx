@@ -1,7 +1,7 @@
-import React, { useState } from "react";
+import React, {useEffect, useState} from "react";
 import { useForm } from "@mantine/form";
-import { AlertCircle, Plus } from 'tabler-icons-react';
-import { Alert, Button, Modal, NumberInput } from "@mantine/core";
+import { Plus } from 'tabler-icons-react';
+import { Button, Modal, NumberInput } from "@mantine/core";
 import { AimDistanceMark, AimDistanceMarkValue, Status } from "../../../models";
 import { useBallisticsParams, useStoreBallistics } from "../../../helpers/hooks/";
 import {CalculationTable} from "../../index";
@@ -48,6 +48,10 @@ const CalculateForm = () => {
 			console.log("NOT WORKING: ", error)
 		}
 	}
+
+	useEffect(() => {
+		getBallistics();
+	},[])
 
 	const markCalculation = () => {
 		if (form.values.marks.length > 0) {
@@ -115,12 +119,7 @@ const CalculateForm = () => {
 					{status === Status.Pending ? 'Jobber' : <> <Plus />  Legg til </>}
 				</Button>
 			</form>
-				<CalculationTable form={form} ballistics={ballistics} getBallistics={getBallistics} />
-				{form.values.marks.length === 0 && (
-					<Alert mt={8} icon={<AlertCircle size={16} />} title="Her var det tomt!" color="blue">
-						Legg inn siktemerker og send dem inn til beregning
-					</Alert>
-				)}
+			<CalculationTable form={form} ballistics={ballistics} getBallistics={getBallistics} />
 			{opened && (
 				<>
 					<Modal
