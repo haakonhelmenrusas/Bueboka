@@ -8,7 +8,7 @@ export interface CalculatedMarks {
   sight_scaling: number;
   marks_bias: number;
   marks_std_deviation: number;
-  given_distance: Array<number>;
+  given_distances: Array<number>;
   given_marks: Array<number>;
   calculated_marks: Array<number>;
   marks_deviation: Array<number>;

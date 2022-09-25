@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { useForm } from "@mantine/form";
 import { AlertCircle, Plus } from 'tabler-icons-react';
 import { Alert, Button, Modal, NumberInput } from "@mantine/core";
@@ -6,6 +6,7 @@ import { AimDistanceMark, AimDistanceMarkValue, Status } from "../../../models";
 import { useBallisticsParams, useStoreBallistics } from "../../../helpers/hooks/";
 import {CalculationTable} from "../../index";
 import styles from './CalculateForm.module.css';
+import {useFetchBallistics} from "../../../helpers/hooks";
 
 const CalculateForm = () => {
 
@@ -17,8 +18,9 @@ const CalculateForm = () => {
 
 	const [opened, setOpened] = useState(false);
 	const { status, calculateBallisticsParams } = useBallisticsParams();
-
 	const { storeBallistics } = useStoreBallistics();
+	const { ballistics, getBallistics } = useFetchBallistics()
+
 	const [aimValue, setAimValue] = useState<number>();
 	const [aimError, setAimError] = useState(false);
 	const [distanceError, setDistanceError] = useState(false);
@@ -37,7 +39,6 @@ const CalculateForm = () => {
 			length_nock_eye_cm: 12.0,
 			feet_behind_or_center: "behind"
 		}
-		console.log(body)
 		try {
 			const aimMarkResponse = await calculateBallisticsParams(body);
 			if (aimMarkResponse) {
@@ -48,13 +49,13 @@ const CalculateForm = () => {
 		}
 	}
 
-	useEffect(() => {
+	const markCalculation = () => {
 		if (form.values.marks.length > 0) {
-			sendMarks(form.values.marks).then(() => {
-				//getBallistics();
+			sendMarks(form.values.marks).then(async () => {
+				await getBallistics();
 			})
 		}
-	}, [form.values.marks])
+	};
 
 	const handleDistanceChange = (value: number) => {
 		setDistanceValue(value)
@@ -74,23 +75,9 @@ const CalculateForm = () => {
 			form.insertListItem('marks', { aim: aimValue, distance: distanceValue })
 			setAimValue(undefined);
 			setDistanceValue(undefined);
+			markCalculation();
 		}
 	};
-
-/*	const renderDeviationAlert = (index: number) => {
-		if (resultMarks?.calculated_marks) {
-			const deviationValue = parseFloat(resultMarks.marks_deviation[index].toFixed(2));
-			if (parseFloat(form.values.marks[index].aim) - deviationValue > 0.2 ||
-				parseFloat(form.values.marks[index].aim) - deviationValue < -0.2) {
-				console.log(deviationValue)
-				return (
-					<AlertTriangle onClick={() => setOpened(true)} color="orange" />
-				)
-			} else {
-				return null;
-			}
-		}
-	}*/
 
 	return (
 		<div className={styles.container}>
@@ -107,7 +94,7 @@ const CalculateForm = () => {
 					className={styles.label}
 					name="aimDistance"
 					label="Avstand"
-					error={distanceError ? "Fyll inn avstanden først" : null}
+					error={distanceError ? "Fyll inn avstand først" : null}
 					onFocus={() => setDistanceError(false)}
 				/>
 				<NumberInput
@@ -128,7 +115,7 @@ const CalculateForm = () => {
 					{status === Status.Pending ? 'Jobber' : <> <Plus />  Legg til </>}
 				</Button>
 			</form>
-				<CalculationTable form={form} />
+				<CalculationTable form={form} ballistics={ballistics} getBallistics={getBallistics} />
 				{form.values.marks.length === 0 && (
 					<Alert mt={8} icon={<AlertCircle size={16} />} title="Her var det tomt!" color="blue">
 						Legg inn siktemerker og send dem inn til beregning

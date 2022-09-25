@@ -1,7 +1,6 @@
 import {useCallback, useState} from "react";
-import { ref, getDatabase, onValue } from "firebase/database";
+import { getFirestore, doc, getDoc } from 'firebase/firestore';
 import { getAuth } from "firebase/auth";
-
 import firebaseApp from "../../auth/";
 import {CalculatedMarks, Status} from "../../models";
 
@@ -10,19 +9,21 @@ const useFetchBallistics = () => {
   const [ballistics, setBallistics] = useState<CalculatedMarks | null>(null);
   const [error, setError] = useState<any | null>(null);
 
-  const getBallistics = useCallback(() => {
+  const getBallistics = useCallback(async () => {
     const auth = getAuth(firebaseApp);
-    const db = getDatabase(firebaseApp);
+    const database = getFirestore(firebaseApp);
     const userId = auth.currentUser ? auth.currentUser.uid : null;
 
     setStatus(Status.Pending);
     try {
-      const dbRef = ref(db, "users/" + userId + "/ballistics");
-      onValue(dbRef, (snapshot) => {
-        const data = snapshot.val();
-        setBallistics(data);
+      const dbRef = doc(database, "users/" + userId);
+      const docSnap = await getDoc(dbRef);
+
+      if (docSnap.exists()) {
+        const doc = docSnap.data();
+        setBallistics(doc.ballistics);
         setStatus(Status.Idle);
-      })
+      }
     } catch (e) {
       setError(e);
       setStatus(Status.Idle);

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { getFirestore, doc, updateDoc   } from 'firebase/firestore/lite';
+import { getFirestore, doc, updateDoc } from 'firebase/firestore/lite';
 import { getAuth } from "firebase/auth";
 import firebaseApp from "../../auth/";
 

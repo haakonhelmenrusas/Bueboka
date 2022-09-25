@@ -1,9 +1,8 @@
 import React, {useContext, useEffect, useState} from "react";
-import { useNavigate } from "react-router-dom";
+import {Link, useNavigate} from "react-router-dom";
 import { getAuth } from "firebase/auth";
-import { ActionIcon, Avatar, ColorScheme } from "@mantine/core";
+import { ActionIcon, Avatar, ColorScheme, Button } from "@mantine/core";
 import { Settings } from "tabler-icons-react";
-
 import { ArcherNumber, BowType, ProfileForm } from "../../components";
 import { AppContainer } from "../../components/common";
 import { useFetchArcher, useFetchBow } from "../../helpers/hooks";
@@ -55,6 +54,11 @@ const User: React.FC<IUser> = ({ colorScheme, toggleColorScheme }) => {
 						<BowType bowType={bowType} />
 					</div>
 				</div>
+				<Link to={'/form'}>
+					<Button>
+						Beregn siktemerker
+					</Button>
+				</Link>
 			</div>
 			{showEditForm && (
 				<ProfileForm

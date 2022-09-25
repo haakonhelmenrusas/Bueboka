@@ -1,64 +1,67 @@
-import React from "react";
+import React, {useMemo} from "react";
+import {UseFormReturnType} from "@mantine/form";
 import {BorderOuter, Calculator, Ruler2, Trash} from "tabler-icons-react";
-import {ActionIcon, Button, Loader, Table} from "@mantine/core";
-
-import {useFetchBallistics} from "../../helpers/hooks";
-import {Status} from "../../models";
+import {ActionIcon, Table} from "@mantine/core";
+import styles from './CalculationTable.module.css';
+import {CalculatedMarks} from "../../models";
 
 interface ICalculationTable {
-  form: any;
+  form:  UseFormReturnType<{marks: never[]}>;
+  ballistics: CalculatedMarks | null;
+  getBallistics: () => void;
 }
 
-const CalculationTable = ({ form }: ICalculationTable) => {
+const CalculationTable = ({ form, ballistics, getBallistics }: ICalculationTable) => {
 
-  const { ballistics, getBallistics } = useFetchBallistics();
-  console.log("BALL DATA: ", ballistics)
-  const renderCalculatedMarks = (index: number) => {
-    if (ballistics?.calculated_marks) {
-      return ballistics.calculated_marks[index].toFixed(2)
-    }
+  const handleRemoveMark = async (index: number) => {
+    form.removeListItem('marks', index);
+    await getBallistics();
   }
 
-  const renderGivenMark = (index: number) => {
+  const renderBallisticTable = useMemo(() => {
     if (ballistics) {
-      return <td>{ballistics.given_marks[index]}</td>
-    }
-  }
-
-  return (
-    <>
-      <Button onClick={() => getBallistics()} type="button">
-        Hent tall
-      </Button>
-      <Table striped verticalSpacing="sm" fontSize="md">
-        <thead>
-        <tr>
-          <td><Ruler2 /> Avstand</td>
-          <td><BorderOuter /> Merke</td>
-          <td><Calculator /> Beregnet</td>
-        </tr>
-        </thead>
-        <tbody>
-        {ballistics ? ballistics.given_distance.map((distance, index) => (
+      return (
+        ballistics.given_distances.map((distance, index) => (
           <tr key={index}>
             <td>{distance.toFixed(2)}</td>
-            <td>{renderGivenMark(index)}</td>
-            <td>{status === Status.Pending ? <Loader size={16} /> : renderCalculatedMarks(index)}</td>
+            <td>{ballistics.given_marks[index]}</td>
+            <td>{ballistics.calculated_marks[index].toFixed(2)}</td>
             <td>
               <ActionIcon
                 title="Fjern merke"
                 style={{ marginLeft: "auto" }}
                 color="red"
                 variant="outline"
-                onClick={() => form.removeListItem('marks', index)}
+                onClick={() => handleRemoveMark(index)}
               >
                 <Trash size={16} />
               </ActionIcon>
             </td>
           </tr>
-        )): (
-          <tr><td>No what??</td></tr>
-        )}
+        )))
+    } else {
+      return (
+       <tr>
+         <td></td>
+         <td></td>
+         <td></td>
+       </tr>
+      )
+    }
+}, [ballistics]);
+
+  return (
+    <>
+      <Table striped verticalSpacing="sm" fontSize="md">
+        <thead>
+        <tr>
+          <td><div className={styles.td}><Ruler2 style={{ marginRight: 4}} /> Avstand</div></td>
+          <td><div className={styles.td}><BorderOuter style={{ marginRight: 4}} /> Merke</div></td>
+          <td><div className={styles.td}><Calculator style={{ marginRight: 4}} /> Beregnet</div></td>
+        </tr>
+        </thead>
+        <tbody>
+          {renderBallisticTable}
         </tbody>
       </Table>
     </>

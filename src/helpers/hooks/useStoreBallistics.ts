@@ -1,7 +1,6 @@
 import { useState } from "react";
-import {ref, set, getDatabase, update} from "firebase/database";
+import { getFirestore, doc, updateDoc } from 'firebase/firestore/lite';
 import { getAuth } from "firebase/auth";
-
 import firebaseApp from "../../auth/";
 import {CalculatedMarks, Status} from "../../models";
 
@@ -9,20 +8,15 @@ const useStoreBallistics = () => {
   const [status, setStatus] = useState<Status>(Status.Idle);
   const [error, setError] = useState<any | null>(null);
 
-  /**
-   * Store ballistic calculation result in users profile in database.
-   *
-   * @param ballistic_result
-   */
   const storeBallistics = async (ballistic_result: CalculatedMarks): Promise<void> => {
     const auth = getAuth(firebaseApp);
-    const database = getDatabase(firebaseApp)
+    const database = getFirestore(firebaseApp)
     const userId = auth.currentUser ? auth.currentUser.uid : null;
 
     setStatus(Status.Pending);
-    set(ref(database, "users/" + userId + "/ballistics"),
+    updateDoc(doc(database, "users/" + userId),
       {
-        ...ballistic_result,
+        ballistics: ballistic_result
       },
     )
       .then(() => {
