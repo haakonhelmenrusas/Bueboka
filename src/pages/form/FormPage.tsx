@@ -1,6 +1,6 @@
 import React from "react";
 import {ColorScheme, Tabs} from "@mantine/core";
-import { Markdown, Settings } from 'tabler-icons-react';
+import { Markdown } from 'tabler-icons-react';
 
 import { CalculateForm } from "../../components/";
 import {AppContainer} from "../../components/common";
@@ -18,7 +18,7 @@ const FormPage: React.FC<IFormPage> = ({ colorScheme, toggleColorScheme }) => {
 					<Tabs.Tab value="Siktemerker" icon={<Markdown size={14} />}>
 						Siktemerker
 					</Tabs.Tab>
-					<Tabs.Tab disabled value="Beregn siktemerker" icon={<Settings size={14} />}>Settings</Tabs.Tab>
+					{/*<Tabs.Tab disabled value="Beregn siktemerker" icon={<Settings size={14} />}>Settings</Tabs.Tab>*/}
 				</Tabs.List>
 				<Tabs.Panel value="Siktemerker" pt="xs">
 					<CalculateForm/>
