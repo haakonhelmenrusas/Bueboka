@@ -16,13 +16,13 @@ const CalculateForm = () => {
 		},
 	});
 
-	const [opened, setOpened] = useState(false);
-	const { status, calculateBallisticsParams } = useBallisticsParams();
 	const { storeBallistics } = useStoreBallistics();
 	const { ballistics, getBallistics } = useFetchBallistics()
+	const { status, calculateBallisticsParams } = useBallisticsParams();
 
-	const [aimValue, setAimValue] = useState<number>();
+	const [opened, setOpened] = useState(false);
 	const [aimError, setAimError] = useState(false);
+	const [aimValue, setAimValue] = useState<number>();
 	const [distanceError, setDistanceError] = useState(false);
 	const [distanceValue, setDistanceValue] = useState<number>();
 
@@ -39,6 +39,12 @@ const CalculateForm = () => {
 			length_nock_eye_cm: 12.0,
 			feet_behind_or_center: "behind"
 		}
+
+		if (ballistics) {
+			body.marks.push(...ballistics.given_marks)
+			body.given_distances.push(...ballistics.given_distances)
+		}
+
 		try {
 			const aimMarkResponse = await calculateBallisticsParams(body);
 			if (aimMarkResponse) {
@@ -50,12 +56,15 @@ const CalculateForm = () => {
 	}
 
 	useEffect(() => {
+		// Get previous calculations from DB
 		getBallistics();
 	},[])
 
 	const markCalculation = () => {
 		if (form.values.marks.length > 0) {
 			sendMarks(form.values.marks).then(async () => {
+				setAimValue(undefined);
+				setDistanceValue(undefined);
 				await getBallistics();
 			})
 		}
@@ -77,8 +86,6 @@ const CalculateForm = () => {
 		}
 		if (aimValue && distanceValue) {
 			form.insertListItem('marks', { aim: aimValue, distance: distanceValue })
-			setAimValue(undefined);
-			setDistanceValue(undefined);
 			markCalculation();
 		}
 	};
@@ -89,11 +96,12 @@ const CalculateForm = () => {
 				<NumberInput
 					min={0}
 					max={100}
+					type="text"
 					hideControls
 					placeholder="F.eks. 20m"
 					value={distanceValue}
-					noClampOnBlur
 					onChange={handleDistanceChange}
+					parser={(value) => `${value}`.replace(/,/g, '.') }
 					formatter={(value) => `${value}`.replace(/,/g, '.') }
 					className={styles.label}
 					name="aimDistance"
@@ -104,10 +112,13 @@ const CalculateForm = () => {
 				<NumberInput
 					min={0}
 					max={15}
+					type="text"
+					precision={1}
 					placeholder="F.eks. 2.3"
 					value={aimValue}
-					noClampOnBlur
 					hideControls
+					parser={(value) => `${value}`.replace(/,/g, '.') }
+					formatter={(value) => `${value}`.replace(/,/g, '.') }
 					onChange={handleAimChange}
 					className={styles.label}
 					name="aim"
