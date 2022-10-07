@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { getFirestore, doc, updateDoc } from 'firebase/firestore/lite';
+import { getFirestore, doc, setDoc } from 'firebase/firestore/lite';
 import { getAuth } from "firebase/auth";
 import firebaseApp from "../../auth/";
 
@@ -15,9 +15,9 @@ const useBowType = () => {
 
 		if (userId) {
 			setStatus("pending");
-			updateDoc (doc(database, 'users', userId),
+			setDoc(doc(database, 'users', userId, 'profile', 'bow'),
 				{
-					bowType: bowType,
+					bowType,
 				},
 			)
 				.then(() => {

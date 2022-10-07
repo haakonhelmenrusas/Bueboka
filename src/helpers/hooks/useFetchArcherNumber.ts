@@ -17,7 +17,7 @@ const useFetchArcher = () => {
 		if (userId) {
 			setStatus(Status.Pending);
 			try {
-				const dbRef = doc(database, "users/" + userId);
+				const dbRef = doc(database, "users/" + userId, 'profile', 'archerNumber');
 				onSnapshot(dbRef, (doc) => {
 					if (doc.exists()) {
 						const { archerNumber } = doc.data();

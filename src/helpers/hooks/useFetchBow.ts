@@ -17,7 +17,7 @@ const useFetchBow = () => {
 		if (userId) {
 			setStatus(Status.Pending);
 			try {
-				const dbRef = doc(database, "users/" + userId);
+				const dbRef = doc(database, "users/" + userId, 'profile', 'bow');
 				onSnapshot(dbRef, (doc) => {
 					if (doc.exists()) {
 						const { bowType } = doc.data();

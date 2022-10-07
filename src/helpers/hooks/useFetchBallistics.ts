@@ -16,12 +16,12 @@ const useFetchBallistics = () => {
 
     setStatus(Status.Pending);
     try {
-      const dbRef = doc(database, "users/" + userId);
+      const dbRef = doc(database, "users/" + userId, 'ballistics', 'results');
       const docSnap = await getDoc(dbRef);
 
       if (docSnap.exists()) {
         const doc = docSnap.data();
-        setBallistics(doc.ballistics);
+        setBallistics(doc.ballistic_result);
         setStatus(Status.Idle);
       }
     } catch (e) {

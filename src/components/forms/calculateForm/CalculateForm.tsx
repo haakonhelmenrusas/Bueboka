@@ -77,6 +77,7 @@ const CalculateForm = () => {
 	const handleAimChange = (value: number) => {
 		setAimValue(value)
 	};
+
 	const handleAddMarks = () => {
 		if (!aimValue) {
 			setAimError(true);
@@ -98,7 +99,7 @@ const CalculateForm = () => {
 					max={100}
 					type="text"
 					hideControls
-					placeholder="F.eks. 20m"
+					placeholder="F.eks. 20"
 					value={distanceValue}
 					onChange={handleDistanceChange}
 					parser={(value) => `${value}`.replace(/,/g, '.') }

@@ -1,7 +1,7 @@
 import React, {useContext, useEffect, useState} from "react";
 import {Link, useNavigate} from "react-router-dom";
 import { getAuth } from "firebase/auth";
-import { ActionIcon, Avatar, ColorScheme, Button } from "@mantine/core";
+import { Avatar, ColorScheme, Button } from "@mantine/core";
 import { Settings } from "tabler-icons-react";
 import { ArcherNumber, BowType, ProfileForm } from "../../components";
 import { AppContainer } from "../../components/common";
@@ -37,15 +37,15 @@ const User: React.FC<IUser> = ({ colorScheme, toggleColorScheme }) => {
 			<div className={styles.header}>
 				<div className={styles.headerContent}>
 					<h2 className={styles.name}>Hei, {user.displayName}!</h2>
-					<ActionIcon
+					<Button
 						title="Endre profil"
 						style={{ marginLeft: "auto" }}
 						color="blue"
 						variant="outline"
 						onClick={() => setShowEditForm((state) => !state)}
-					>
+					>Endre profil
 						<Settings size={24} />
-					</ActionIcon>
+					</Button>
 				</div>
 				<div className={styles.profileData}>
 					<Avatar size={64} radius="xl" src={auth.currentUser ? auth.currentUser.photoURL : null} />

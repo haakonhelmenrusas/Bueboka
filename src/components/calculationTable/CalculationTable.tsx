@@ -41,11 +41,13 @@ const CalculationTable = ({ form, ballistics, getBallistics }: ICalculationTable
         )))
     } else {
       return (
-       <>
-         <Alert mt={8} icon={<AlertCircle size={16} />} title="Her var det tomt!" color="blue">
-           Legg inn siktemerker og send dem inn til beregning
-         </Alert>
-       </>
+       <tr>
+         <td colSpan={3}>
+           <Alert mt={8} icon={<AlertCircle size={16} />} title="Her var det tomt!" color="blue">
+             Legg inn siktemerker og send dem inn til beregning
+           </Alert>
+         </td>
+       </tr>
       )
     }
 }, [ballistics]);
