@@ -1,32 +1,31 @@
 .container {
-    max-width: 600px;
+  max-width: 600px;
 }
 .form {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    margin-bottom: 24px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  margin-bottom: 24px;
 }
 .form button {
-    margin-left: auto;
+  margin-left: auto;
 }
 .label {
-    height: 90px;
-    width: 200px;
-    margin-right: 16px
+  height: 90px;
+  width: 200px;
+  margin-right: 16px;
 }
 @media only screen and (max-width: 600px) {
-    .form {
-        flex-wrap: wrap;
-    }
-    .form button {
-        width: 100%;
-    }
-    .label {
-        width: 50%;
-        height: 104px;
-        margin-right: 0;
-        padding: 0 8px 0 0;
-    }
-
+  .form {
+    flex-wrap: wrap;
+  }
+  .form button {
+    width: 100%;
+  }
+  .label {
+    width: 50%;
+    height: 104px;
+    margin-right: 0;
+    padding: 0 8px 0 0;
+  }
 }

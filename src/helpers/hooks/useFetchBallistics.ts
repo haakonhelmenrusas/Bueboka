@@ -1,8 +1,8 @@
-import {useCallback, useState} from "react";
-import { getFirestore, doc, getDoc } from 'firebase/firestore';
+import { useCallback, useState } from "react";
+import { getFirestore, doc, getDoc } from "firebase/firestore";
 import { getAuth } from "firebase/auth";
 import firebaseApp from "../../auth/";
-import {CalculatedMarks, Status} from "../../models";
+import { CalculatedMarks, Status } from "../../models";
 
 const useFetchBallistics = () => {
   const [status, setStatus] = useState<Status>(Status.Idle);
@@ -16,7 +16,7 @@ const useFetchBallistics = () => {
 
     setStatus(Status.Pending);
     try {
-      const dbRef = doc(database, "users/" + userId, 'ballistics', 'results');
+      const dbRef = doc(database, "users/" + userId, "ballistics", "results");
       const docSnap = await getDoc(dbRef);
 
       if (docSnap.exists()) {

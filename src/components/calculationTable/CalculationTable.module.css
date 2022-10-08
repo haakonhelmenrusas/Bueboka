@@ -1,8 +1,8 @@
 .tr {
-    display: flex;
-    justify-content: space-around;
+  display: flex;
+  justify-content: space-around;
 }
 .td {
-    display: flex;
-    align-items: center;
+  display: flex;
+  align-items: center;
 }

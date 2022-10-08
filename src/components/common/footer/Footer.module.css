@@ -1,22 +1,22 @@
 .footer {
-    height: 200px;
+  height: 200px;
 }
 .container {
-    text-align: center;
+  text-align: center;
 }
 .divider {
-    display: flex;
-    background-color: #575757;
-    border: 0;
-    height: 1px;
-    margin-bottom: 1.5em;
-    margin-left: auto;
-    margin-right: auto;
-    width: 90%;
+  display: flex;
+  background-color: #575757;
+  border: 0;
+  height: 1px;
+  margin-bottom: 1.5em;
+  margin-left: auto;
+  margin-right: auto;
+  width: 90%;
 }
 .sponsor {
-    text-align: center;
+  text-align: center;
 }
 .logo {
-    width: 180px;
+  width: 180px;
 }

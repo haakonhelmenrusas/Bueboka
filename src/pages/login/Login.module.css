@@ -1,43 +1,43 @@
 .welcomeContainer {
-	display: flex;
-	padding: 0 1rem;
-	max-width: 600px;
-	flex-direction: column;
-	margin: 4rem auto 14rem;
+  display: flex;
+  padding: 0 1rem;
+  max-width: 600px;
+  flex-direction: column;
+  margin: 4rem auto 14rem;
 }
 .logo {
-	width: 96px;
-	height: 96px;
-	margin: 0 auto 0;
+  width: 96px;
+  height: 96px;
+  margin: 0 auto 0;
 }
 .title {
-	margin-bottom: 3rem;
-	text-align: center;
+  margin-bottom: 3rem;
+  text-align: center;
 }
 .subtitle {
-	text-align: center;
+  text-align: center;
 }
 .list {
-	display: flex;
-	flex-direction: row;
-	justify-content: space-around;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
 }
 .listItem {
-	display: flex;
-	flex-direction: column;
-	align-items: center;
-	justify-content: center;
-	margin-bottom: 1rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1rem;
 }
 .listText {
-	margin-bottom: 0;
+  margin-bottom: 0;
 }
 @media only screen and (max-width: 600px) {
-	.welcomeContainer {
-		padding: 0 1rem;
-	}
-	.list {
-		display: flex;
-		flex-direction: column;
-	}
+  .welcomeContainer {
+    padding: 0 1rem;
+  }
+  .list {
+    display: flex;
+    flex-direction: column;
+  }
 }

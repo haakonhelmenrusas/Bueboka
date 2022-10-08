@@ -8,10 +8,10 @@
         ".write": "$user_id === auth.uid",
         "profile": {
           "archerNumber": {
-            ".validate": "newData.isNumber()",
+            ".validate": "newData.isNumber()"
           },
           "bowType": {
-            ".validate": "newData.isString()",
+            ".validate": "newData.isString()"
           },
           "$other": {
             ".validate": false
@@ -20,60 +20,60 @@
         "ballistics": {
           "calculation_result": {
             "initial_arrow_speed": {
-              ".validate": "newData.isNumber()",
+              ".validate": "newData.isNumber()"
             },
             "cd": {
-              ".validate": "newData.isNumber()",
+              ".validate": "newData.isNumber()"
             },
             "arrow_mass_gram": {
-              ".validate": "newData.isNumber()",
+              ".validate": "newData.isNumber()"
             },
             "arrow_diameter_mm": {
-              ".validate": "newData.isNumber()",
+              ".validate": "newData.isNumber()"
             },
             "length_eye_sight_cm": {
-              ".validate": "newData.isNumber()",
+              ".validate": "newData.isNumber()"
             },
             "length_nock_eye_cm": {
-              ".validate": "newData.isNumber()",
+              ".validate": "newData.isNumber()"
             },
             "sight_scaling": {
-              ".validate": "newData.isNumber()",
+              ".validate": "newData.isNumber()"
             },
             "marks_bias": {
-              ".validate": "newData.isNumber()",
+              ".validate": "newData.isNumber()"
             },
             "marks_std_deviation": {
-              ".validate": "newData.isNumber()",
+              ".validate": "newData.isNumber()"
             },
             "given_distance": {
-              ".validate": "newData.hasChildren()",
+              ".validate": "newData.hasChildren()"
             },
             "given_marks": {
-              ".validate": "newData.hasChildren()",
+              ".validate": "newData.hasChildren()"
             },
             "calculated_marks": {
-              ".validate": "newData.hasChildren()",
+              ".validate": "newData.hasChildren()"
             },
             "marks_deviation": {
-              ".validate": "newData.hasChildren()",
+              ".validate": "newData.hasChildren()"
             },
             "arrow_speeds_at_distance": {
-              ".validate": "newData.hasChildren()",
+              ".validate": "newData.hasChildren()"
             },
             "relative_arrow_speeds_at_distance": {
-              ".validate": "newData.hasChildren()",
+              ".validate": "newData.hasChildren()"
             },
             "times_at_distance": {
-              ".validate": "newData.hasChildren()",
+              ".validate": "newData.hasChildren()"
             },
             "ballistics_pars": {
-              ".validate": "newData.hasChildren()",
+              ".validate": "newData.hasChildren()"
             },
             "$other": {
               ".validate": false
             }
-          },
+          }
         },
         "$other": {
           ".validate": false

@@ -1,24 +1,24 @@
 .header {
-    flex: 1;
+  flex: 1;
 }
 
 .headerContent {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: space-between;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
 }
 .name {
-    font-size: 1.4rem;
+  font-size: 1.4rem;
 }
 .profileData {
-    display: flex;
-    flex-direction: row;
-    align-items: flex-start;
-    margin-top: 8px;
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  margin-top: 8px;
 }
 .profileSpecs {
-    display: flex;
-    flex-direction: column;
-    margin-left: 16px;
+  display: flex;
+  flex-direction: column;
+  margin-left: 16px;
 }
