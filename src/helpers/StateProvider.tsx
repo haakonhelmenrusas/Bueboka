@@ -1,32 +1,17 @@
-import {
-  browserLocalPersistence,
-  getAuth,
-  onAuthStateChanged,
-} from "firebase/auth";
+import { browserLocalPersistence, getAuth, onAuthStateChanged } from "firebase/auth";
 import React, { createContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-import { UserContextState, User } from "../models/";
+import { User, UserContextState } from "../models/";
 import firebaseApp from "../auth/";
 
 interface IState {
   children: React.ReactNode;
 }
 
-const contextDefaultValues: UserContextState = {
-  user: {
-    displayName: "",
-    email: "",
-    photoURL: "",
-    id: "",
-  },
-  updateUser: () => {
-    // This is intentional
-  },
-};
+const contextDefaultValues: UserContextState = {} as UserContextState;
 
-export const UserContext =
-  createContext<UserContextState>(contextDefaultValues);
+export const UserContext = createContext<UserContextState>(contextDefaultValues);
 
 const StateProvider = ({ children }: IState) => {
   const auth = getAuth(firebaseApp);
@@ -59,11 +44,7 @@ const StateProvider = ({ children }: IState) => {
     });
   }, []);
 
-  return (
-    <UserContext.Provider value={{ user, updateUser }}>
-      {children}
-    </UserContext.Provider>
-  );
+  return <UserContext.Provider value={{ user, updateUser }}>{children}</UserContext.Provider>;
 };
 
 export default StateProvider;
