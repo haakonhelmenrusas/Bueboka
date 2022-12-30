@@ -1,45 +1,27 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { useForm } from "@mantine/form";
 import { Plus } from "tabler-icons-react";
 import { Button, Modal, NumberInput } from "@mantine/core";
 import { AimDistanceMark, AimDistanceMarkValue, Status } from "../../../models";
-import {
-  useBallisticsParams,
-  useStoreBallistics,
-} from "../../../helpers/hooks/";
+import { useBallisticsParams, useStoreBallistics } from "../../../helpers/hooks/";
 import { CalculationTable } from "../../index";
-import styles from "./CalculateForm.module.css";
 import { useFetchBallistics } from "../../../helpers/hooks";
+import { useCalculateForm } from "./useCalculateForm";
+import { Ballistics } from "../../../helpers/constants";
+import styles from "./CalculateForm.module.css";
 
 const CalculateForm = () => {
-  const form = useForm({
-    initialValues: {
-      marks: [],
-    },
-  });
-
+  const form = useForm({ initialValues: { marks: [] } });
   const { storeBallistics } = useStoreBallistics();
   const { ballistics, getBallistics } = useFetchBallistics();
   const { status, calculateBallisticsParams } = useBallisticsParams();
+  const [{ opened, aimError, aimValue, distanceError, distanceValue }, dispatch] = useCalculateForm();
 
-  const [opened, setOpened] = useState(false);
-  const [aimError, setAimError] = useState(false);
-  const [aimValue, setAimValue] = useState<number>();
-  const [distanceError, setDistanceError] = useState(false);
-  const [distanceValue, setDistanceValue] = useState<number>();
-
-  const sendMarks = async (marks: AimDistanceMarkValue[]) => {
+  async function sendMarks(marks: AimDistanceMarkValue[]) {
     const body: AimDistanceMark = {
+      ...Ballistics,
       marks: [...marks.map((mark) => mark.aim)],
       given_distances: [...marks.map((mark) => mark.distance)],
-      bow_category: "recurve",
-      interval_sight_measured: 5.0,
-      interval_sight_real: 5.3,
-      arrow_diameter_mm: 5.69,
-      arrow_mass_gram: 21.2,
-      length_eye_sight_cm: 97.0,
-      length_nock_eye_cm: 12.0,
-      feet_behind_or_center: "behind",
     };
 
     if (ballistics) {
@@ -55,46 +37,42 @@ const CalculateForm = () => {
     } catch (error) {
       console.log("NOT WORKING: ", error);
     }
-  };
+  }
 
-  useEffect(() => {
-    markCalculation();
-    // Get previous calculations from DB
-    getBallistics();
-  }, [form.values.marks]);
-
-  const markCalculation = () => {
+  function markCalculation() {
     if (form.values.marks.length > 0) {
-      console.log(form.values.marks);
       sendMarks(form.values.marks).then(async () => {
-        setAimValue(undefined);
-        setDistanceValue(undefined);
-        console.log("GOT SOME??");
+        dispatch({ type: "SET_AIM_VALUE", payload: undefined });
+        dispatch({ type: "SET_DISTANCE_VALUE", payload: undefined });
         await getBallistics();
       });
     }
-  };
+  }
 
-  const handleDistanceChange = (value: number) => {
-    setDistanceValue(value);
-  };
+  function handleDistanceChange(value: number) {
+    dispatch({ type: "SET_DISTANCE_VALUE", payload: value });
+  }
 
-  const handleAimChange = (value: number) => {
-    setAimValue(value);
-  };
+  function handleAimChange(value: number) {
+    dispatch({ type: "SET_AIM_VALUE", payload: value });
+  }
 
-  const handleAddMarks = () => {
+  function handleAddMarks() {
     if (!aimValue) {
-      setAimError(true);
+      dispatch({ type: "SET_AIM_ERROR", payload: true });
     }
     if (!distanceValue) {
-      setDistanceError(true);
+      dispatch({ type: "SET_DISTANCE_ERROR", payload: true });
     }
     if (aimValue && distanceValue) {
       form.insertListItem("marks", { aim: aimValue, distance: distanceValue });
       markCalculation();
     }
-  };
+  }
+
+  useEffect(() => {
+    markCalculation();
+  }, [form.values.marks]);
 
   return (
     <div className={styles.container}>
@@ -113,7 +91,7 @@ const CalculateForm = () => {
           name="aimDistance"
           label="Avstand"
           error={distanceError ? "Fyll inn avstand først" : null}
-          onFocus={() => setDistanceError(false)}
+          onFocus={() => dispatch({ type: "SET_DISTANCE_ERROR", payload: false })}
         />
         <NumberInput
           min={0}
@@ -130,13 +108,9 @@ const CalculateForm = () => {
           name="aim"
           label="Merke"
           error={aimError ? "Fyll inn merke først" : null}
-          onFocus={() => setAimError(false)}
+          onFocus={() => dispatch({ type: "SET_AIM_ERROR", payload: false })}
         />
-        <Button
-          loading={status === Status.Pending}
-          onClick={handleAddMarks}
-          type="button"
-        >
+        <Button loading={status === Status.Pending} onClick={handleAddMarks} type="button">
           {status === Status.Pending ? (
             "Jobber"
           ) : (
@@ -147,16 +121,12 @@ const CalculateForm = () => {
           )}
         </Button>
       </form>
-      <CalculationTable
-        form={form}
-        ballistics={ballistics}
-        getBallistics={getBallistics}
-      />
+      <CalculationTable form={form} ballistics={ballistics} getBallistics={getBallistics} />
       {opened && (
         <>
           <Modal
             opened={opened}
-            onClose={() => setOpened(false)}
+            onClose={() => dispatch({ type: "SET_OPENED", payload: false })}
             title="Stor avvik"
             centered
           >

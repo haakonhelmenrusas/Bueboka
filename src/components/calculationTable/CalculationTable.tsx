@@ -1,12 +1,6 @@
 import React, { useMemo } from "react";
 import { UseFormReturnType } from "@mantine/form";
-import {
-  AlertCircle,
-  BorderOuter,
-  Calculator,
-  Ruler2,
-  Trash,
-} from "tabler-icons-react";
+import { AlertCircle, BorderOuter, Calculator, Ruler2, Trash } from "tabler-icons-react";
 import { ActionIcon, Alert, Table } from "@mantine/core";
 import styles from "./CalculationTable.module.css";
 import { CalculatedMarks } from "../../models";
@@ -17,15 +11,11 @@ interface ICalculationTable {
   getBallistics: () => void;
 }
 
-const CalculationTable = ({
-  form,
-  ballistics,
-  getBallistics,
-}: ICalculationTable) => {
-  const handleRemoveMark = async (index: number) => {
+const CalculationTable = ({ form, ballistics, getBallistics }: ICalculationTable) => {
+  async function handleRemoveMark(index: number) {
     form.removeListItem("marks", index);
     await getBallistics();
-  };
+  }
 
   const renderBallisticTable = useMemo(() => {
     if (ballistics) {
@@ -51,12 +41,7 @@ const CalculationTable = ({
       return (
         <tr>
           <td colSpan={3}>
-            <Alert
-              mt={8}
-              icon={<AlertCircle size={16} />}
-              title="Her var det tomt!"
-              color="blue"
-            >
+            <Alert mt={8} icon={<AlertCircle size={16} />} title="Her var det tomt!" color="blue">
               Legg inn siktemerker og send dem inn til beregning
             </Alert>
           </td>
