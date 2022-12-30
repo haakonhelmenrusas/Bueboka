@@ -2,7 +2,6 @@ import React, { useContext, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Bow, BrandGoogle, ListCheck, UserCircle } from "tabler-icons-react";
 import { Button, Card } from "@mantine/core";
-
 import { UserContext } from "../../helpers/StateProvider";
 import { googleLogin } from "../../auth";
 import Logo from "../../assets/images/logo512.png";
@@ -14,7 +13,7 @@ const Login = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (user.displayName) {
+    if (user) {
       navigate("/user");
     }
   }, [navigate, user]);
@@ -30,12 +29,12 @@ const Login = () => {
             <p className={styles.listText}>Skytterprofil</p>
           </Card>
           <Card radius={4} className={styles.listItem}>
-            <Bow color="#228be6" size={40} />
-            <p className={styles.listText}>Register utstyr</p>
-          </Card>
-          <Card radius={4} className={styles.listItem}>
             <ListCheck color="#228be6" size={40} />
             <p className={styles.listText}>Beregning av siktemerker</p>
+          </Card>
+          <Card radius={4} className={styles.listItem}>
+            <Bow color="#228be6" size={40} />
+            <p className={styles.listText}>Register utstyr</p>
           </Card>
         </div>
         <h2 className={styles.subtitle}>Her samles Norges bueskyttere</h2>

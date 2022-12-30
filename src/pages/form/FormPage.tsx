@@ -1,21 +1,17 @@
 import React from "react";
 import { ColorScheme, Tabs } from "@mantine/core";
 import { Markdown } from "tabler-icons-react";
-
 import { CalculateForm } from "../../components/";
 import { AppContainer } from "../../components/common";
 
-interface IFormPage {
+interface FormPageProps {
   colorScheme: ColorScheme;
   toggleColorScheme: () => void;
 }
 
-const FormPage: React.FC<IFormPage> = ({ colorScheme, toggleColorScheme }) => {
+const FormPage: React.FC<FormPageProps> = ({ colorScheme, toggleColorScheme }) => {
   return (
-    <AppContainer
-      colorScheme={colorScheme}
-      toggleColorScheme={toggleColorScheme}
-    >
+    <AppContainer colorScheme={colorScheme} toggleColorScheme={toggleColorScheme}>
       <Tabs defaultValue="Siktemerker" variant="outline">
         <Tabs.List>
           <Tabs.Tab value="Siktemerker" icon={<Markdown size={14} />}>

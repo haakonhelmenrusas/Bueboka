@@ -10,18 +10,15 @@ interface IAboutPage {
   toggleColorScheme: () => void;
 }
 
-const AboutPage: React.FC<IAboutPage> = ({
-  colorScheme,
-  toggleColorScheme,
-}) => {
+const AboutPage: React.FC<IAboutPage> = ({ colorScheme, toggleColorScheme }) => {
   return (
-    <AppContainer
-      colorScheme={colorScheme}
-      toggleColorScheme={toggleColorScheme}
-    >
+    <AppContainer colorScheme={colorScheme} toggleColorScheme={toggleColorScheme}>
       <div className={styles.content}>
-        <h2>Hei!</h2>
-        <p>Hvem er vi og hva er egentlig Book of Arrows?</p>
+        <h1>Hei!</h1>
+        <p>
+          Book of Arrows er en tjeneste for alle bueskyttere. Her kan du lage en profil, få beregnet siktemerker og mye
+          mer!
+        </p>
       </div>
       <Footer />
     </AppContainer>
