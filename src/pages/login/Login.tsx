@@ -19,7 +19,9 @@ const Login = () => {
   }
 
   useEffect(() => {
-    navigate("/user", { replace: true });
+    if (user) {
+      navigate("/user", { replace: true });
+    }
   }, [user]);
 
   return (
