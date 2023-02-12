@@ -74,6 +74,10 @@ const CalculateForm = () => {
     markCalculation();
   }, [form.values.marks]);
 
+  useEffect(() => {
+    getBallistics();
+  }, []);
+
   return (
     <div className={styles.container}>
       <form className={styles.form}>

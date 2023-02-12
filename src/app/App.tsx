@@ -1,11 +1,12 @@
-import React from "react";
+import React, { useContext } from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { ColorScheme, ColorSchemeProvider, MantineProvider, Paper } from "@mantine/core";
 import { useLocalStorage } from "@mantine/hooks";
-import StateProvider from "../helpers/StateProvider";
+import StateProvider, { UserContext } from "../helpers/StateProvider";
 import { AboutPage, FormPage, LoginPage, UserPage } from "../pages";
 
 const App = () => {
+  const { user } = useContext(UserContext);
   const [colorScheme, setColorScheme] = useLocalStorage<ColorScheme>({
     key: "color-scheme",
     defaultValue: "light",
@@ -22,18 +23,22 @@ const App = () => {
               <Paper>
                 <Routes>
                   <Route path="/" element={<LoginPage />} />
-                  <Route
-                    path="user"
-                    element={<UserPage colorScheme={colorScheme} toggleColorScheme={toggleColorScheme} />}
-                  />
-                  <Route
-                    path="about"
-                    element={<AboutPage colorScheme={colorScheme} toggleColorScheme={toggleColorScheme} />}
-                  />
-                  <Route
-                    path="form"
-                    element={<FormPage colorScheme={colorScheme} toggleColorScheme={toggleColorScheme} />}
-                  />
+                  {user && (
+                    <>
+                      <Route
+                        path="user"
+                        element={<UserPage colorScheme={colorScheme} toggleColorScheme={toggleColorScheme} />}
+                      />
+                      <Route
+                        path="about"
+                        element={<AboutPage colorScheme={colorScheme} toggleColorScheme={toggleColorScheme} />}
+                      />
+                      <Route
+                        path="form"
+                        element={<FormPage colorScheme={colorScheme} toggleColorScheme={toggleColorScheme} />}
+                      />
+                    </>
+                  )}
                   <Route
                     path="*"
                     element={

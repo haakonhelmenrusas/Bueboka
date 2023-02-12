@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { getAuth } from "firebase/auth";
 import { Avatar, Button, ColorScheme } from "@mantine/core";
 import { Settings } from "tabler-icons-react";
@@ -16,7 +16,6 @@ interface UserProps {
 }
 
 const UserPage: React.FC<UserProps> = ({ colorScheme, toggleColorScheme }) => {
-  const navigate = useNavigate();
   const auth = getAuth(firebaseApp);
   const { user } = useContext(UserContext);
   const { value, getArcherNumber } = useFetchArcher();
@@ -24,13 +23,9 @@ const UserPage: React.FC<UserProps> = ({ colorScheme, toggleColorScheme }) => {
   const [showEditForm, setShowEditForm] = useState<boolean>(false);
 
   useEffect(() => {
-    if (user.displayName) {
-      getArcherNumber();
-      getBow();
-    } else {
-      navigate("/");
-    }
-  }, [getArcherNumber, user.displayName]);
+    getArcherNumber();
+    getBow();
+  }, []);
 
   return (
     <AppContainer colorScheme={colorScheme} toggleColorScheme={toggleColorScheme}>

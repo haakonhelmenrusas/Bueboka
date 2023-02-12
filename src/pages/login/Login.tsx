@@ -1,23 +1,12 @@
-import React, { useContext, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import React from "react";
 import { Bow, BrandGoogle, ListCheck, UserCircle } from "tabler-icons-react";
 import { Button, Card } from "@mantine/core";
-import { UserContext } from "../../helpers/StateProvider";
 import { googleLogin } from "../../auth";
 import Logo from "../../assets/images/logo512.png";
 import Footer from "../../components/common/footer/Footer";
 import styles from "./Login.module.css";
 
 const Login = () => {
-  const { user } = useContext(UserContext);
-  const navigate = useNavigate();
-
-  useEffect(() => {
-    if (user) {
-      navigate("/user");
-    }
-  }, [navigate, user]);
-
   return (
     <>
       <div className={styles.welcomeContainer}>
