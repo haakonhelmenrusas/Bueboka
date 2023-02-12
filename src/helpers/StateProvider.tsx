@@ -1,6 +1,5 @@
 import { browserLocalPersistence, getAuth, onAuthStateChanged } from "firebase/auth";
 import React, { createContext, useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
 
 import { User, UserContextState } from "../models/";
 import firebaseApp from "../auth/";
@@ -15,7 +14,6 @@ export const UserContext = createContext<UserContextState>(contextDefaultValues)
 
 const StateProvider = ({ children }: IState) => {
   const auth = getAuth(firebaseApp);
-  const navigate = useNavigate();
   const [user, setUser] = useState<User>(contextDefaultValues.user);
 
   auth.setPersistence(browserLocalPersistence);
@@ -38,8 +36,6 @@ const StateProvider = ({ children }: IState) => {
           id: changedUser.uid,
         };
         updateUser(userProfile);
-      } else {
-        navigate("/");
       }
     });
   }, []);

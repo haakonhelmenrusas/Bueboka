@@ -12,7 +12,7 @@ const Login = () => {
 
   async function handleLogin() {
     await googleLogin().then(() => {
-      navigate("/user");
+      navigate("/user", { replace: true });
     });
   }
 
