@@ -2,6 +2,7 @@
   display: flex;
   padding: 0 1rem;
   max-width: 600px;
+  text-align: center;
   flex-direction: column;
   margin: 4rem auto 14rem;
 }
@@ -15,7 +16,7 @@
   text-align: center;
 }
 .subtitle {
-  text-align: center;
+  font-size: 1.2rem;
 }
 .list {
   display: flex;
@@ -23,21 +24,28 @@
   justify-content: space-around;
 }
 .listItem {
+  padding-bottom: 8px;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  margin-bottom: 1rem;
 }
 .listText {
   margin-bottom: 0;
 }
+
 @media only screen and (max-width: 600px) {
   .welcomeContainer {
     padding: 0 1rem;
   }
+
   .list {
     display: flex;
     flex-direction: column;
+  }
+
+  .title {
+    margin-bottom: 1rem;
+    text-align: center;
   }
 }

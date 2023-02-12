@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext, useEffect } from "react";
 import { Bow, BrandGoogle, ListCheck, UserCircle } from "tabler-icons-react";
 import { Button, Card } from "@mantine/core";
 import { useNavigate } from "react-router-dom";
@@ -6,15 +6,21 @@ import { googleLogin } from "../../auth";
 import Logo from "../../assets/images/logo512.png";
 import Footer from "../../components/common/footer/Footer";
 import styles from "./Login.module.css";
+import { UserContext } from "../../helpers/StateProvider";
 
 const Login = () => {
   let navigate = useNavigate();
+  const { user } = useContext(UserContext);
 
   async function handleLogin() {
     await googleLogin().then(() => {
       navigate("/user", { replace: true });
     });
   }
+
+  useEffect(() => {
+    navigate("/user", { replace: true });
+  }, [user]);
 
   return (
     <>
@@ -36,7 +42,6 @@ const Login = () => {
           </Card>
         </div>
         <h2 className={styles.subtitle}>Her samles Norges bueskyttere</h2>
-        <h3 className={styles.subtitle}>Bli med!</h3>
         <Button leftIcon={<BrandGoogle />} onClick={handleLogin}>
           Logg inn med Google
         </Button>
