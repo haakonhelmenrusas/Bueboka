@@ -19,12 +19,12 @@ const UserPage: React.FC = () => {
   useEffect(() => {
     getArcherNumber();
     getBow();
-  }, []);
+  }, [user]);
 
   return (
     <div className={styles.header}>
       <div className={styles.headerContent}>
-        <h2 className={styles.name}>Hei, {user.displayName}!</h2>
+        <h2 className={styles.name}>Hei, {user && user.displayName}!</h2>
         <Button
           title="Endre profil"
           style={{ paddingLeft: 4, paddingRight: 4, marginLeft: "auto" }}
