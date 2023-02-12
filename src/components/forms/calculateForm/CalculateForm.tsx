@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useContext, useEffect } from "react";
 import { useForm } from "@mantine/form";
 import { Plus } from "tabler-icons-react";
 import { Button, Modal, NumberInput } from "@mantine/core";
@@ -9,8 +9,10 @@ import { useFetchBallistics } from "../../../helpers/hooks";
 import { useCalculateForm } from "./useCalculateForm";
 import { Ballistics } from "../../../helpers/constants";
 import styles from "./CalculateForm.module.css";
+import { UserContext } from "../../../helpers/StateProvider";
 
 const CalculateForm = () => {
+  const { user } = useContext(UserContext);
   const form = useForm({ initialValues: { marks: [] } });
   const { storeBallistics } = useStoreBallistics();
   const { ballistics, getBallistics } = useFetchBallistics();
@@ -76,7 +78,7 @@ const CalculateForm = () => {
 
   useEffect(() => {
     getBallistics();
-  }, []);
+  }, [user]);
 
   return (
     <div className={styles.container}>
