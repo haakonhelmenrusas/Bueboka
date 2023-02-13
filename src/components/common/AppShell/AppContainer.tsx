@@ -1,16 +1,7 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import { Target, Logout, InfoCircle } from "tabler-icons-react";
-import {
-  AppShell,
-  Navbar,
-  Header,
-  MediaQuery,
-  Burger,
-  useMantineTheme,
-  ColorScheme,
-  Anchor,
-} from "@mantine/core";
+import { InfoCircle, Logout, Target } from "tabler-icons-react";
+import { Anchor, AppShell, Burger, ColorScheme, Header, MediaQuery, Navbar, useMantineTheme } from "@mantine/core";
 import Logo from "../../../assets/images/logo512.png";
 import { ThemeToggle } from "../index";
 import { logOut } from "../../../auth";
@@ -22,11 +13,7 @@ interface IAppContainer {
   children: React.ReactNode;
 }
 
-const AppContainer: React.FC<IAppContainer> = ({
-  colorScheme,
-  toggleColorScheme,
-  children,
-}) => {
+const AppContainer: React.FC<IAppContainer> = ({ colorScheme, toggleColorScheme, children }) => {
   const theme = useMantineTheme();
   const [opened, setOpened] = useState(false);
   return (
@@ -35,27 +22,29 @@ const AppContainer: React.FC<IAppContainer> = ({
         main: {
           display: "flex",
           flexDirection: "column",
-          background:
-            theme.colorScheme === "dark"
-              ? theme.colors.dark[8]
-              : theme.colors.gray[0],
+          background: theme.colorScheme === "dark" ? theme.colors.dark[8] : theme.colors.gray[0],
         },
       }}
       navbarOffsetBreakpoint="sm"
       navbar={
-        <Navbar
-          p="md"
-          hiddenBreakpoint="sm"
-          hidden={!opened}
-          width={{ sm: 148, lg: 200 }}
-        >
+        <Navbar p="md" hiddenBreakpoint="sm" hidden={!opened} width={{ sm: 148, lg: 200 }}>
           <Navbar.Section grow>
-            <Anchor className={styles.link} component={Link} to="/form">
+            <Anchor
+              onClick={() => {
+                setOpened(false);
+              }}
+              className={styles.link}
+              component={Link}
+              to="/form"
+            >
               <Target /> Sikteskjema
             </Anchor>
           </Navbar.Section>
           <Navbar.Section style={{ display: "flex", flexDirection: "column" }}>
             <Anchor
+              onClick={() => {
+                setOpened(false);
+              }}
               className={styles.link}
               component={Link}
               to="/about"
@@ -64,12 +53,7 @@ const AppContainer: React.FC<IAppContainer> = ({
               <InfoCircle />
               <span style={{ marginLeft: 8 }}>Om oss</span>
             </Anchor>
-            <Anchor
-              className={styles.link}
-              onClick={logOut}
-              component={Link}
-              to="#"
-            >
+            <Anchor className={styles.link} onClick={logOut} component={Link} to="#">
               <Logout />
               <span style={{ marginLeft: 8 }}>Logg ut</span>
             </Anchor>
@@ -87,15 +71,19 @@ const AppContainer: React.FC<IAppContainer> = ({
               mr="xl"
             />
           </MediaQuery>
-          <Anchor className={styles.brand} component={Link} to="/user">
+          <Anchor
+            onClick={() => {
+              setOpened(false);
+            }}
+            className={styles.brand}
+            component={Link}
+            to="/user"
+          >
             <img className={styles.logo} src={Logo} alt="Logo" />
             <h1 className={styles.title}>Book of Arrows</h1>
           </Anchor>
           <div className={styles.themeButton}>
-            <ThemeToggle
-              colorScheme={colorScheme}
-              toggleColorScheme={toggleColorScheme}
-            />
+            <ThemeToggle colorScheme={colorScheme} toggleColorScheme={toggleColorScheme} />
           </div>
         </Header>
       }
