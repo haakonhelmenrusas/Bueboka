@@ -29,6 +29,7 @@ const Login = () => {
       <div className={styles.welcomeContainer}>
         <img className={styles.logo} alt="Logo" src={Logo} />
         <h1 className={styles.title}>Book of Arrows</h1>
+        <h2 className={styles.subtitle}>Her samles Norges bueskyttere</h2>
         <div className={styles.list}>
           <Card radius={4} className={styles.listItem}>
             <UserCircle color="#228be6" size={40} />
@@ -43,7 +44,6 @@ const Login = () => {
             <p className={styles.listText}>Register utstyr</p>
           </Card>
         </div>
-        <h2 className={styles.subtitle}>Her samles Norges bueskyttere</h2>
         <Button leftIcon={<BrandGoogle />} onClick={handleLogin}>
           Logg inn med Google
         </Button>
