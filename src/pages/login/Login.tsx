@@ -1,5 +1,5 @@
 import React, { useContext, useEffect } from "react";
-import { Bow, BrandGoogle, ListCheck, UserCircle } from "tabler-icons-react";
+import { Bow, ListCheck, UserCircle } from "tabler-icons-react";
 import { Button, Card } from "@mantine/core";
 import { useNavigate } from "react-router-dom";
 import { googleLogin } from "../../auth";
@@ -44,9 +44,7 @@ const Login = () => {
             <p className={styles.listText}>Register utstyr</p>
           </Card>
         </div>
-        <Button leftIcon={<BrandGoogle />} onClick={handleLogin}>
-          Logg inn med Google
-        </Button>
+        <Button onClick={handleLogin}>Logg inn med Google</Button>
       </div>
       <Footer />
     </>
