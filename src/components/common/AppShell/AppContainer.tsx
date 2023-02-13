@@ -3,7 +3,6 @@ import { Link } from "react-router-dom";
 import { InfoCircle, Logout, Target } from "tabler-icons-react";
 import { Anchor, AppShell, Burger, ColorScheme, Header, MediaQuery, Navbar, useMantineTheme } from "@mantine/core";
 import Logo from "../../../assets/images/logo512.png";
-import { ThemeToggle } from "../index";
 import { logOut } from "../../../auth";
 import styles from "./AppContainer.module.css";
 
@@ -82,9 +81,9 @@ const AppContainer: React.FC<IAppContainer> = ({ colorScheme, toggleColorScheme,
             <img className={styles.logo} src={Logo} alt="Logo" />
             <h1 className={styles.title}>Book of Arrows</h1>
           </Anchor>
-          <div className={styles.themeButton}>
+          {/*          <div className={styles.themeButton}>
             <ThemeToggle colorScheme={colorScheme} toggleColorScheme={toggleColorScheme} />
-          </div>
+          </div>*/}
         </Header>
       }
     >
