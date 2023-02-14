@@ -33,7 +33,6 @@ const CalculateForm = () => {
       const aimMarkResponse = await calculateBallisticsParams(body);
       if (aimMarkResponse) {
         await storeBallistics(aimMarkResponse);
-        await getBallistics();
       }
     } catch (error) {
       console.log("NOT WORKING: ", error);
@@ -85,7 +84,7 @@ const CalculateForm = () => {
 
   useEffect(() => {
     getBallistics();
-  }, [user, marks.length]);
+  }, [user]);
 
   return (
     <div className={styles.container}>
@@ -95,7 +94,9 @@ const CalculateForm = () => {
           max={100}
           decimalSeparator="."
           precision={1}
+          step={0.1}
           type="text"
+          inputMode="decimal"
           hideControls
           placeholder="F.eks. 20"
           value={distanceValue}
@@ -112,8 +113,11 @@ const CalculateForm = () => {
           min={0}
           max={15}
           type="text"
-          precision={1}
-          placeholder="F.eks. 2.3"
+          inputMode="decimal"
+          decimalSeparator="."
+          precision={2}
+          step={0.01}
+          placeholder="F.eks. 2.35"
           value={aimValue}
           hideControls
           parser={(value) => `${value}`.replace(/,/g, ".")}

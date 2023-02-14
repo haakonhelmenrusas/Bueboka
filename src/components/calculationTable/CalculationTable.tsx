@@ -15,7 +15,7 @@ const CalculationTable = ({ ballistics, removeMark }: CalculationTableProps) => 
       return ballistics.given_distances.map((distance, index) => (
         <tr key={index}>
           <td>{distance.toFixed(1)}m</td>
-          <td>{ballistics.given_marks[index]}</td>
+          <td>{ballistics.given_marks[index].toFixed(2)}</td>
           <td>{ballistics.calculated_marks[index].toFixed(2)}</td>
           <td>
             <ActionIcon
@@ -41,7 +41,7 @@ const CalculationTable = ({ ballistics, removeMark }: CalculationTableProps) => 
         </tr>
       );
     }
-  }, [ballistics?.given_marks]);
+  }, [ballistics?.given_marks.length]);
 
   return (
     <>
@@ -63,6 +63,7 @@ const CalculationTable = ({ ballistics, removeMark }: CalculationTableProps) => 
                 <Calculator style={{ marginRight: 4 }} /> Beregnet
               </div>
             </td>
+            <td></td>
           </tr>
         </thead>
         <tbody>{renderBallisticTable}</tbody>

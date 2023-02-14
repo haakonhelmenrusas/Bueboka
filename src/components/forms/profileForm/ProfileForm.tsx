@@ -1,23 +1,18 @@
-import React, { useEffect, useState, ChangeEvent } from "react";
-import { Button, TextInput, Select, Modal } from "@mantine/core";
+import React, { ChangeEvent, useEffect, useState } from "react";
+import { Button, Modal, Select, TextInput } from "@mantine/core";
 import { Bow, Hash } from "tabler-icons-react";
 import { useArcherNumber, useBowType } from "../../../helpers/hooks";
 import { Status } from "../../../models";
 import styles from "./ProfileForm.module.css";
 
-interface IProfileForm {
+interface ProfileFormProps {
   bowType: string | null;
   archerNumber: string | null;
   showEditForm: boolean;
   setShowEditForm: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-const ProfileForm: React.FC<IProfileForm> = ({
-  bowType,
-  archerNumber,
-  showEditForm,
-  setShowEditForm,
-}) => {
+const ProfileForm: React.FC<ProfileFormProps> = ({ bowType, archerNumber, showEditForm, setShowEditForm }) => {
   const { writeBowType } = useBowType();
   const { status, writeArcherNumber } = useArcherNumber();
 
@@ -52,12 +47,7 @@ const ProfileForm: React.FC<IProfileForm> = ({
   };
 
   return (
-    <Modal
-      title="Rediger profil"
-      opened={showEditForm}
-      centered
-      onClose={() => setShowEditForm(false)}
-    >
+    <Modal title="Rediger profil" opened={showEditForm} centered onClose={() => setShowEditForm(false)}>
       <form onSubmit={handleSubmit}>
         <div className={styles.numberForm}>
           <TextInput
@@ -76,14 +66,7 @@ const ProfileForm: React.FC<IProfileForm> = ({
             onChange={handleBowType}
             placeholder="Velg din buetype"
             aria-label="Velg din buetype"
-            data={[
-              "Compound",
-              "Recurve",
-              "Barebow",
-              "Tradisjonell",
-              "Langbue",
-              "Annet",
-            ]}
+            data={["Compound", "Recurve", "Barebow", "Tradisjonell", "Langbue", "Annet"]}
           />
         </div>
         <Button fullWidth loading={status === Status.Pending} type="submit">
