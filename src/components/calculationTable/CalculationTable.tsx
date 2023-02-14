@@ -1,27 +1,20 @@
 import React, { useMemo } from "react";
-import { UseFormReturnType } from "@mantine/form";
 import { AlertCircle, BorderOuter, Calculator, Ruler2, Trash } from "tabler-icons-react";
 import { ActionIcon, Alert, Table } from "@mantine/core";
 import styles from "./CalculationTable.module.css";
 import { CalculatedMarks } from "../../models";
 
-interface ICalculationTable {
-  form: UseFormReturnType<{ marks: never[] }>;
+interface CalculationTableProps {
   ballistics: CalculatedMarks | null;
-  getBallistics: () => void;
+  removeMark: (index: number) => void;
 }
 
-const CalculationTable = ({ form, ballistics, getBallistics }: ICalculationTable) => {
-  async function handleRemoveMark(index: number) {
-    form.removeListItem("marks", index);
-    await getBallistics();
-  }
-
+const CalculationTable = ({ ballistics, removeMark }: CalculationTableProps) => {
   const renderBallisticTable = useMemo(() => {
     if (ballistics) {
       return ballistics.given_distances.map((distance, index) => (
         <tr key={index}>
-          <td>{distance.toFixed(2)}</td>
+          <td>{distance.toFixed(1)}m</td>
           <td>{ballistics.given_marks[index]}</td>
           <td>{ballistics.calculated_marks[index].toFixed(2)}</td>
           <td>
@@ -30,7 +23,7 @@ const CalculationTable = ({ form, ballistics, getBallistics }: ICalculationTable
               style={{ marginLeft: "auto" }}
               color="red"
               variant="outline"
-              onClick={() => handleRemoveMark(index)}
+              onClick={() => removeMark(index)}
             >
               <Trash size={16} />
             </ActionIcon>
@@ -48,7 +41,7 @@ const CalculationTable = ({ form, ballistics, getBallistics }: ICalculationTable
         </tr>
       );
     }
-  }, [ballistics]);
+  }, [ballistics?.given_marks]);
 
   return (
     <>

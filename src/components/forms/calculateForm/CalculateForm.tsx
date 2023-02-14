@@ -1,5 +1,4 @@
-import React, { useContext, useEffect } from "react";
-import { useForm } from "@mantine/form";
+import React, { useContext, useEffect, useState } from "react";
 import { Plus } from "tabler-icons-react";
 import { Button, Modal, NumberInput } from "@mantine/core";
 import { AimDistanceMark, AimDistanceMarkValue, Status } from "../../../models";
@@ -13,7 +12,7 @@ import { UserContext } from "../../../helpers/StateProvider";
 
 const CalculateForm = () => {
   const { user } = useContext(UserContext);
-  const form = useForm({ initialValues: { marks: [] } });
+  const [marks, setMarks] = useState<AimDistanceMarkValue[]>([]);
   const { storeBallistics } = useStoreBallistics();
   const { ballistics, getBallistics } = useFetchBallistics();
   const { status, calculateBallisticsParams } = useBallisticsParams();
@@ -22,19 +21,19 @@ const CalculateForm = () => {
   async function sendMarks(marks: AimDistanceMarkValue[]) {
     const body: AimDistanceMark = {
       ...Ballistics,
-      marks: [...marks.map((mark) => mark.aim)],
-      given_distances: [...marks.map((mark) => mark.distance)],
+      marks: marks.map((mark) => mark.aim),
+      given_distances: marks.map((mark) => mark.distance),
     };
 
     if (ballistics) {
       body.marks.push(...ballistics.given_marks);
       body.given_distances.push(...ballistics.given_distances);
     }
-
     try {
       const aimMarkResponse = await calculateBallisticsParams(body);
       if (aimMarkResponse) {
         await storeBallistics(aimMarkResponse);
+        await getBallistics();
       }
     } catch (error) {
       console.log("NOT WORKING: ", error);
@@ -42,8 +41,8 @@ const CalculateForm = () => {
   }
 
   function markCalculation() {
-    if (form.values.marks.length > 0) {
-      sendMarks(form.values.marks).then(async () => {
+    if (marks.length > 0) {
+      sendMarks(marks).then(async () => {
         dispatch({ type: "SET_AIM_VALUE", payload: undefined });
         dispatch({ type: "SET_DISTANCE_VALUE", payload: undefined });
         await getBallistics();
@@ -59,7 +58,7 @@ const CalculateForm = () => {
     dispatch({ type: "SET_AIM_VALUE", payload: value });
   }
 
-  function handleAddMarks() {
+  function handleAddMark() {
     if (!aimValue) {
       dispatch({ type: "SET_AIM_ERROR", payload: true });
     }
@@ -67,18 +66,26 @@ const CalculateForm = () => {
       dispatch({ type: "SET_DISTANCE_ERROR", payload: true });
     }
     if (aimValue && distanceValue) {
-      form.insertListItem("marks", { aim: aimValue, distance: distanceValue });
-      markCalculation();
+      const newEntry: AimDistanceMarkValue = { aim: aimValue, distance: distanceValue };
+      setMarks([...marks, newEntry]);
+    }
+  }
+
+  async function handleRemoveMark(index: number) {
+    if (ballistics) {
+      ballistics.given_marks.splice(index, 1);
+      ballistics.given_distances.splice(index, 1);
+      await sendMarks([]);
     }
   }
 
   useEffect(() => {
     markCalculation();
-  }, [form.values.marks]);
+  }, [marks.length]);
 
   useEffect(() => {
     getBallistics();
-  }, [user]);
+  }, [user, marks.length]);
 
   return (
     <div className={styles.container}>
@@ -86,6 +93,8 @@ const CalculateForm = () => {
         <NumberInput
           min={0}
           max={100}
+          decimalSeparator="."
+          precision={1}
           type="text"
           hideControls
           placeholder="F.eks. 20"
@@ -116,7 +125,7 @@ const CalculateForm = () => {
           error={aimError ? "Fyll inn merke først" : null}
           onFocus={() => dispatch({ type: "SET_AIM_ERROR", payload: false })}
         />
-        <Button loading={status === Status.Pending} onClick={handleAddMarks} type="button">
+        <Button loading={status === Status.Pending} onClick={handleAddMark} type="button">
           {status === Status.Pending ? (
             "Jobber"
           ) : (
@@ -127,7 +136,7 @@ const CalculateForm = () => {
           )}
         </Button>
       </form>
-      <CalculationTable form={form} ballistics={ballistics} getBallistics={getBallistics} />
+      <CalculationTable ballistics={ballistics} removeMark={handleRemoveMark} />
       {opened && (
         <>
           <Modal

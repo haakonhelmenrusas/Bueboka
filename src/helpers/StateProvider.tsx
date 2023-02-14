@@ -1,6 +1,5 @@
 import { browserLocalPersistence, getAuth, onAuthStateChanged } from "firebase/auth";
 import React, { createContext, useEffect, useState } from "react";
-
 import { User, UserContextState } from "../models/";
 import firebaseApp from "../auth/";
 
