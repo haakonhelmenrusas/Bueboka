@@ -39,7 +39,7 @@ const AppContainer: React.FC<IAppContainer> = ({ colorScheme, toggleColorScheme,
               <Target /> Sikteskjema
             </Anchor>
           </Navbar.Section>
-          <Navbar.Section style={{ display: "flex", flexDirection: "column" }}>
+          <Navbar.Section style={{ display: "flex", flexDirection: "column", marginBottom: 70 }}>
             <Anchor
               onClick={() => {
                 setOpened(false);
