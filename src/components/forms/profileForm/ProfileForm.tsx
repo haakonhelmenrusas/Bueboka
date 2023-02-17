@@ -4,6 +4,7 @@ import { Bow, Hash } from "tabler-icons-react";
 import { useArcherNumber, useBowType } from "../../../helpers/hooks";
 import { Status } from "../../../models";
 import styles from "./ProfileForm.module.css";
+import { SelectItem } from "./Helpers";
 
 interface ProfileFormProps {
   bowType: string | null;
@@ -28,23 +29,24 @@ const ProfileForm: React.FC<ProfileFormProps> = ({ bowType, archerNumber, showEd
     }
   }, []);
 
-  const handleSubmit = (event: React.FormEvent) => {
+  async function handleSubmit(event: React.FormEvent) {
     event.preventDefault();
     if (archerNum) {
-      writeArcherNumber(parseInt(archerNum));
+      await writeArcherNumber(parseInt(archerNum));
     }
     if (bow) {
-      writeBowType(bow);
+      await writeBowType(bow);
     }
     setShowEditForm((state) => !state);
-  };
+  }
 
-  const handleArcherNumber = (event: ChangeEvent<HTMLInputElement>) => {
+  function handleArcherNumber(event: ChangeEvent<HTMLInputElement>) {
     setArcherNum(event.currentTarget.value);
-  };
-  const handleBowType = (bowType: string) => {
+  }
+
+  function handleBowType(bowType: string) {
     setBowType(bowType);
-  };
+  }
 
   return (
     <Modal title="Rediger profil" opened={showEditForm} centered onClose={() => setShowEditForm(false)}>
@@ -62,8 +64,10 @@ const ProfileForm: React.FC<ProfileFormProps> = ({ bowType, archerNumber, showEd
           />
           <Select
             value={bow}
+            label="Bue"
             icon={<Bow size={14} />}
             onChange={handleBowType}
+            itemComponent={SelectItem}
             placeholder="Velg din buetype"
             aria-label="Velg din buetype"
             data={["Compound", "Recurve", "Barebow", "Tradisjonell", "Langbue", "Annet"]}
