@@ -36,7 +36,7 @@ const AppContainer: React.FC<IAppContainer> = ({ colorScheme, toggleColorScheme,
               component={Link}
               to="/form"
             >
-              <Target /> Sikteskjema
+              <Target /> Siktemerker
             </Anchor>
           </Navbar.Section>
           <Navbar.Section style={{ display: "flex", flexDirection: "column", marginBottom: 70 }}>
