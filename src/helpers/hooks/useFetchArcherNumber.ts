@@ -1,8 +1,8 @@
 import { useCallback, useState } from "react";
 import { getAuth } from "firebase/auth";
-import { getFirestore, doc, onSnapshot } from "firebase/firestore";
+import { doc, getFirestore, onSnapshot } from "firebase/firestore";
 import firebaseApp from "../../auth/";
-import { Status } from "../../models";
+import { Status } from "../../types";
 
 const useFetchArcher = () => {
   const [status, setStatus] = useState<Status>(Status.Idle);
@@ -17,12 +17,7 @@ const useFetchArcher = () => {
     if (userId) {
       setStatus(Status.Pending);
       try {
-        const dbRef = doc(
-          database,
-          "users/" + userId,
-          "profile",
-          "archerNumber"
-        );
+        const dbRef = doc(database, "users/" + userId, "profile", "archerNumber");
         onSnapshot(dbRef, (doc) => {
           if (doc.exists()) {
             const { archerNumber } = doc.data();

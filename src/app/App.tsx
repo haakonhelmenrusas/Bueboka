@@ -1,7 +1,7 @@
 import React from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import StateProvider from "../helpers/StateProvider";
-import { AboutPage, FormPage, LoginPage, UserPage } from "../pages";
+import { AboutPage, LoginPage, SightMarks, UserPage } from "../pages";
 import Layout from "../components/common/Layout";
 
 const App = () => {
@@ -13,7 +13,7 @@ const App = () => {
           <Route element={<Layout />}>
             <Route path="user" element={<UserPage />} />
             <Route path="about" element={<AboutPage />} />
-            <Route path="form" element={<FormPage />} />
+            <Route path="siktemerker" element={<SightMarks />} />
           </Route>
           <Route
             path="*"

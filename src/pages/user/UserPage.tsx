@@ -42,7 +42,7 @@ const UserPage: React.FC = () => {
           <BowType bowType={bowType} />
         </div>
       </div>
-      <Link to={"/form"}>
+      <Link to={"/siktemerker "}>
         <Button>Beregn siktemerker</Button>
       </Link>
       {showEditForm && (

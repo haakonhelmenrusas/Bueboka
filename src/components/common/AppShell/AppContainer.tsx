@@ -34,7 +34,7 @@ const AppContainer: React.FC<IAppContainer> = ({ colorScheme, toggleColorScheme,
               }}
               className={styles.link}
               component={Link}
-              to="/form"
+              to="/siktemerker"
             >
               <Target /> Siktemerker
             </Anchor>

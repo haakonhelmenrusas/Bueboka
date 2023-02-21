@@ -1,22 +1,21 @@
 import React, { useContext, useEffect, useState } from "react";
 import { Plus } from "tabler-icons-react";
-import { Button, Modal, NumberInput } from "@mantine/core";
-import { AimDistanceMark, AimDistanceMarkValue, Status } from "../../../models";
-import { useBallisticsParams, useStoreBallistics } from "../../../helpers/hooks/";
-import { CalculationTable } from "../../index";
-import { useFetchBallistics } from "../../../helpers/hooks";
+import { Button, NumberInput } from "@mantine/core";
+import { AimDistanceMark, AimDistanceMarkValue, Status } from "../../../types";
+import { useBallisticsParams, useFetchBallistics, useStoreBallistics } from "../../../helpers/hooks";
 import { useCalculateForm } from "./useCalculateForm";
 import { Ballistics } from "../../../helpers/constants";
-import styles from "./CalculateForm.module.css";
 import { UserContext } from "../../../helpers/StateProvider";
+import CalculationTable from "./calculationTable/CalculationTable";
+import styles from "./CalculateForm.module.css";
 
 const CalculateForm = () => {
   const { user } = useContext(UserContext);
   const [marks, setMarks] = useState<AimDistanceMarkValue[]>([]);
   const { storeBallistics } = useStoreBallistics();
   const { ballistics, getBallistics } = useFetchBallistics();
-  const { status, calculateBallisticsParams } = useBallisticsParams();
-  const [{ opened, aimError, aimValue, distanceError, distanceValue }, dispatch] = useCalculateForm();
+  const { status, error, calculateBallisticsParams } = useBallisticsParams();
+  const [{ aimError, aimValue, distanceError, distanceValue }, dispatch] = useCalculateForm();
 
   async function sendMarks(marks: AimDistanceMarkValue[]) {
     const body: AimDistanceMark = {
@@ -33,6 +32,7 @@ const CalculateForm = () => {
       const aimMarkResponse = await calculateBallisticsParams(body);
       if (aimMarkResponse) {
         await storeBallistics(aimMarkResponse);
+        await getBallistics();
       }
     } catch (error) {
       console.log("NOT WORKING: ", error);
@@ -44,7 +44,6 @@ const CalculateForm = () => {
       sendMarks(marks).then(async () => {
         dispatch({ type: "SET_AIM_VALUE", payload: undefined });
         dispatch({ type: "SET_DISTANCE_VALUE", payload: undefined });
-        await getBallistics();
       });
     }
   }
@@ -84,6 +83,7 @@ const CalculateForm = () => {
 
   useEffect(() => {
     getBallistics();
+    return () => {};
   }, [user]);
 
   return (
@@ -141,18 +141,6 @@ const CalculateForm = () => {
         </Button>
       </form>
       <CalculationTable ballistics={ballistics} removeMark={handleRemoveMark} />
-      {opened && (
-        <>
-          <Modal
-            opened={opened}
-            onClose={() => dispatch({ type: "SET_OPENED", payload: false })}
-            title="Stor avvik"
-            centered
-          >
-            Her avviker siktemerket du har sendt inn med beregnet sikemerke.
-          </Modal>
-        </>
-      )}
     </div>
   );
 };

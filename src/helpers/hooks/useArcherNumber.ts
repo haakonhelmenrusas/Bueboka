@@ -1,9 +1,9 @@
 import { useState } from "react";
-import { getFirestore, doc, setDoc } from "firebase/firestore/lite";
+import { doc, getFirestore, setDoc } from "firebase/firestore/lite";
 import { getAuth } from "firebase/auth";
 
 import firebaseApp from "../../auth/";
-import { Status } from "../../models";
+import { Status } from "../../types";
 
 const useArcherNumber = () => {
   const [status, setStatus] = useState<Status>(Status.Idle);

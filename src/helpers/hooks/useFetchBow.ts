@@ -1,8 +1,8 @@
 import { useCallback, useState } from "react";
-import { getFirestore, doc, onSnapshot } from "firebase/firestore";
+import { doc, getFirestore, onSnapshot } from "firebase/firestore";
 import { getAuth } from "firebase/auth";
 import firebaseApp from "../../auth/";
-import { Status } from "../../models";
+import { Status } from "../../types";
 
 const useFetchBow = () => {
   const [status, setStatus] = useState<Status>(Status.Idle);

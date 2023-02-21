@@ -1,4 +1,4 @@
-import { AimDistanceMark } from "../models";
+import { AimDistanceMark } from "../types";
 
 export const Ballistics: AimDistanceMark = {
   marks: [],

@@ -2,7 +2,7 @@ import React, { ChangeEvent, useEffect, useState } from "react";
 import { Button, Modal, Select, TextInput } from "@mantine/core";
 import { Bow, Hash } from "tabler-icons-react";
 import { useArcherNumber, useBowType } from "../../../helpers/hooks";
-import { Status } from "../../../models";
+import { Status } from "../../../types";
 import styles from "./ProfileForm.module.css";
 import { SelectItem } from "./Helpers";
 

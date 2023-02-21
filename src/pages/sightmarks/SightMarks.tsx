@@ -1,9 +1,10 @@
 import React from "react";
 import { Tabs } from "@mantine/core";
 import { Markdown, Settings } from "tabler-icons-react";
-import { CalculateForm } from "../../components/";
+import CalculateForm from "./calculateForm/CalculateForm";
+import MarksTable from "./marksTable/MarksTable";
 
-const FormPage: React.FC = () => {
+const SightMarks: React.FC = () => {
   return (
     <Tabs defaultValue="Innskyting" variant="outline">
       <Tabs.List>
@@ -18,10 +19,10 @@ const FormPage: React.FC = () => {
         <CalculateForm />
       </Tabs.Panel>
       <Tabs.Panel value="Siktemerker" pt="xs">
-        Siktemerker
+        <MarksTable />
       </Tabs.Panel>
     </Tabs>
   );
 };
 
-export default FormPage;
+export default SightMarks;
