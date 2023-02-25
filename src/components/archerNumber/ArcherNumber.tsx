@@ -2,7 +2,7 @@ import React from "react";
 
 import styles from "./ArcherNumber.module.css";
 
-interface IArcherNumber {
+export interface IArcherNumber {
   archerNumber: string | null;
 }
 
