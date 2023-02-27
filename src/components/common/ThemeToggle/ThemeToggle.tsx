@@ -1,19 +1,16 @@
 import React from "react";
 import { ActionIcon, ColorScheme } from "@mantine/core";
-import { Sun, MoonStars } from "tabler-icons-react";
+import { MoonStars, Sun } from "tabler-icons-react";
 
-interface IThemeToggle {
+export interface ThemeToggleProps {
   colorScheme: ColorScheme;
   toggleColorScheme: () => void;
 }
 
-const ThemeToggle: React.FC<IThemeToggle> = ({
-  colorScheme,
-  toggleColorScheme,
-}) => {
+const ThemeToggle: React.FC<ThemeToggleProps> = ({ colorScheme, toggleColorScheme }) => {
   return (
-    <ActionIcon onClick={toggleColorScheme}>
-      {colorScheme === "dark" ? <Sun /> : <MoonStars />}
+    <ActionIcon data-testid="action-icon" onClick={toggleColorScheme}>
+      {colorScheme === "dark" ? <Sun data-testid="sun-icon" /> : <MoonStars data-testid="moon-stars-icon" />}
     </ActionIcon>
   );
 };

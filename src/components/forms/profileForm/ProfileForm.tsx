@@ -6,7 +6,7 @@ import { Status } from "../../../types";
 import styles from "./ProfileForm.module.css";
 import { SelectItem } from "./Helpers";
 
-interface ProfileFormProps {
+export interface ProfileFormProps {
   bowType: string | null;
   archerNumber: string | null;
   showEditForm: boolean;
@@ -49,7 +49,13 @@ const ProfileForm: React.FC<ProfileFormProps> = ({ bowType, archerNumber, showEd
   }
 
   return (
-    <Modal title="Rediger profil" opened={showEditForm} centered onClose={() => setShowEditForm(false)}>
+    <Modal
+      data-testid="modal"
+      title="Rediger profil"
+      opened={showEditForm}
+      centered
+      onClose={() => setShowEditForm(false)}
+    >
       <form onSubmit={handleSubmit}>
         <div className={styles.numberForm}>
           <TextInput
