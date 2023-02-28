@@ -1,4 +1,19 @@
+.table {
+    width: 50%;
+}
+
+@media screen and (max-width: 600px) {
+    .table {
+        width: 100%;
+    }
+
+    .plot {
+        width: 100%;
+    }
+}
+
 .td {
     display: flex;
     align-items: center;
+    padding-left: 10px;
 }

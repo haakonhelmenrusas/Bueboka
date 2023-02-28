@@ -1,13 +1,14 @@
 import React, { useEffect } from "react";
 import { AlertCircle, BorderOuter, Ruler2 } from "tabler-icons-react";
 import { Alert, Skeleton, Table } from "@mantine/core";
+import Plot from "react-plotly.js";
 import { useFetchBallistics, useSightMarks } from "../../../helpers/hooks";
 import { SightMarkCalculation, Status } from "../../../types";
 import styles from "./MarksTable.module.css";
 
 const MarksTable = () => {
   const { ballistics, getBallistics } = useFetchBallistics();
-  const { status, calculateSightMarks, data, error } = useSightMarks();
+  const { status, calculateSightMarks, data } = useSightMarks();
 
   useEffect(() => {
     getBallistics();
@@ -57,8 +58,8 @@ const MarksTable = () => {
   }
 
   return (
-    <>
-      <Table striped verticalSpacing="sm" fontSize="md">
+    <div>
+      <Table className={styles.table} striped verticalSpacing="sm" fontSize="md">
         <thead>
           <tr>
             <td>
@@ -75,7 +76,21 @@ const MarksTable = () => {
         </thead>
         <tbody>{renderMarksData()}</tbody>
       </Table>
-    </>
+      {data && (
+        <Plot
+          className={styles.plot}
+          data={[
+            {
+              x: [...data.distances],
+              y: [...data.sight_marks_by_hill_angle["0"]],
+              type: "scatter",
+              mode: "markers",
+            },
+          ]}
+          layout={{ title: "A Fancy Plot" }}
+        />
+      )}
+    </div>
   );
 };
 

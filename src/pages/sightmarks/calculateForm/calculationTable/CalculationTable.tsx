@@ -11,7 +11,6 @@ interface CalculationTableProps {
 
 const CalculationTable = ({ ballistics, removeMark }: CalculationTableProps) => {
   const renderBallisticTable = useMemo(() => {
-    console.log("Ballistics: ", ballistics);
     if (ballistics) {
       return ballistics.given_distances.map((distance, index) => (
         <tr key={index}>
