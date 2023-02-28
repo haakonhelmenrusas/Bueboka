@@ -24,7 +24,7 @@ const UserPage: React.FC = () => {
   return (
     <div className={styles.header}>
       <div className={styles.headerContent}>
-        <h2 className={styles.name}>Hei, {user && user.displayName}!</h2>
+        <h1 className={styles.name}>Hei, {user && user.displayName}!</h1>
         <Button
           title="Endre profil"
           style={{ paddingLeft: 4, paddingRight: 4, marginLeft: "auto" }}
