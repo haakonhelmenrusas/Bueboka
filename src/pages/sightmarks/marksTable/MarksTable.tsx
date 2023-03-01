@@ -17,7 +17,7 @@ const MarksTable = () => {
   useEffect(() => {
     if (ballistics) {
       const sightMarkCalc: SightMarkCalculation = {
-        distances: ballistics.given_distances,
+        distances: [5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70],
         angles: [0],
         ballistics_pars: ballistics.ballistics_pars,
       };
@@ -83,11 +83,13 @@ const MarksTable = () => {
             {
               x: [...data.distances],
               y: [...data.sight_marks_by_hill_angle["0"]],
+              xaxis: "Lengder",
+              yaxis: "Merker",
               type: "scatter",
-              mode: "markers",
+              mode: "lines+markers",
             },
           ]}
-          layout={{ title: "A Fancy Plot" }}
+          layout={{ title: "Siktemerker" }}
         />
       )}
     </div>
