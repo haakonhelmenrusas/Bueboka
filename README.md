@@ -1,6 +1,7 @@
 [![Netlify Status](https://api.netlify.com/api/v1/badges/176691ac-bee6-42e2-9ff2-82c9543d8b83/deploy-status)](https://app.netlify.com/sites/bueskytterens-assistent/deploys)
 
-# Book of Arrows
+# Bueboka
+En tjeneste for bueskyttere i Norge
 
 Link til [nettsiden](https://bookofarrows.no).
 
