@@ -58,7 +58,7 @@ const MarksTable = () => {
   }
 
   return (
-    <div>
+    <div className={styles.container}>
       <Table className={styles.table} striped verticalSpacing="sm" fontSize="md">
         <thead>
           <tr>

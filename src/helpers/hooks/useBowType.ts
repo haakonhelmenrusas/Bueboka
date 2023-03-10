@@ -1,12 +1,10 @@
 import { useState } from "react";
-import { getFirestore, doc, setDoc } from "firebase/firestore/lite";
+import { doc, getFirestore, setDoc } from "firebase/firestore/lite";
 import { getAuth } from "firebase/auth";
 import firebaseApp from "../../auth/";
 
 const useBowType = () => {
-  const [status, setStatus] = useState<
-    "idle" | "pending" | "success" | "error"
-  >("idle");
+  const [status, setStatus] = useState<"idle" | "pending" | "success" | "error">("idle");
   const [error, setError] = useState<any | null>(null);
 
   const writeBowType = async (bowType: string): Promise<void> => {

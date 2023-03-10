@@ -28,7 +28,7 @@ const Login = () => {
     <>
       <div className={styles.welcomeContainer}>
         <img className={styles.logo} alt="Logo" src={Logo} />
-        <h1 className={styles.title}>Book of Arrows</h1>
+        <h1 className={styles.title}>Bueboka</h1>
         <h2 className={styles.subtitle}>Her samles Norges bueskyttere</h2>
         <div className={styles.list}>
           <Card radius={4} className={styles.listItem}>

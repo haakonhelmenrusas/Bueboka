@@ -10,7 +10,6 @@
     "@mantine/hooks": "^5.10.3",
     "@mantine/modals": "^5.10.3",
     "@mantine/notifications": "^5.10.3",
-    "@testing-library/react": "^14.0.0",
     "dayjs": "^1.11.6",
     "firebase": "^9.17.1",
     "plotly.js": "^2.18.2",
@@ -47,6 +46,7 @@
   },
   "devDependencies": {
     "@testing-library/jest-dom": "^5.16.5",
+    "@testing-library/react": "^14.0.0",
     "@types/jest": "^29.4.0",
     "@types/node": "^18.13.0",
     "@types/plotly.js": "^2.12.18",

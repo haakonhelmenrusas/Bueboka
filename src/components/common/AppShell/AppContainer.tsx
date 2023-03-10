@@ -79,7 +79,7 @@ const AppContainer: React.FC<IAppContainer> = ({ colorScheme, toggleColorScheme,
             to="/user"
           >
             <img className={styles.logo} src={Logo} alt="Logo" />
-            <h1 className={styles.title}>Book of Arrows</h1>
+            <h1 className={styles.title}>Bueboka</h1>
           </Anchor>
           {/*          <div className={styles.themeButton}>
             <ThemeToggle colorScheme={colorScheme} toggleColorScheme={toggleColorScheme} />
