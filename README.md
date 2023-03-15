@@ -5,7 +5,7 @@ En tjeneste for bueskyttere i Norge
 
 Bli med på diskusjonen [forum](https://github.com/Aaronshades/Bueboka/discussions)
 
-Link til [nettsiden](https://bookofarrows.no).
+Link til [nettsiden](https://bueboka.no).
 
 ## Teknologien
 
