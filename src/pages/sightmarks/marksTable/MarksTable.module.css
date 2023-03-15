@@ -9,7 +9,17 @@
     width: 50%;
 }
 
+.td {
+    display: flex;
+    align-items: center;
+    padding-left: 10px;
+}
+
 @media screen and (max-width: 600px) {
+    .container {
+        flex-direction: column;
+    }
+
     .table {
         width: 100%;
     }
@@ -19,8 +29,3 @@
     }
 }
 
-.td {
-    display: flex;
-    align-items: center;
-    padding-left: 10px;
-}
