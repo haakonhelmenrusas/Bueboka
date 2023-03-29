@@ -18,6 +18,7 @@ const useBallisticsParams = () => {
   const calculateBallisticsParams = async (body: AimDistanceMark): Promise<CalculatedMarks | undefined> => {
     try {
       setStatus(Status.Pending);
+      setError(null);
       const result = await calcBallisticsParams(body);
       if (result.ok) {
         return result.json();
