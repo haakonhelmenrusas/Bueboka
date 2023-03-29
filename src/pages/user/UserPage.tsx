@@ -36,7 +36,7 @@ const UserPage: React.FC = () => {
         </Button>
       </div>
       <div className={styles.profileData}>
-        <Avatar size={64} radius="xl" src={auth.currentUser ? auth.currentUser.photoURL : null} />
+        <Avatar alt="Avatar" size={64} radius="xl" src={auth.currentUser ? auth.currentUser.photoURL : null} />
         <div className={styles.profileSpecs}>
           <ArcherNumber archerNumber={value} />
           <BowType bowType={bowType} />
