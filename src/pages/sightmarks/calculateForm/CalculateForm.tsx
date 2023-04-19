@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from "react";
-import { Calculator, Plus } from "tabler-icons-react";
-import { Button, NumberInput } from "@mantine/core";
+import { AlertCircle, Calculator, Plus } from "tabler-icons-react";
+import { Alert, Button, NumberInput } from "@mantine/core";
 import { AimDistanceMark, MarkValue, Status } from "../../../types";
 import { useBallisticsParams, useFetchBallistics, useStoreBallistics } from "../../../helpers/hooks";
 import { useCalculateForm } from "./useCalculateForm";
@@ -124,6 +124,14 @@ const CalculateForm = () => {
           <Plus /> Legg til{" "}
         </Button>
       </form>
+      {error && (
+        <>
+          <Alert mb={8} icon={<AlertCircle size={16} />} title="Noe gikk galt" color="red">
+            Obs, noe gikk galt. Prøv igjen senere.
+          </Alert>
+        </>
+      )}
+      <CalculationTable ballistics={ballistics} removeMark={handleRemoveMark} />
       <Button
         className={styles.calcButton}
         fullWidth
@@ -136,11 +144,10 @@ const CalculateForm = () => {
         ) : (
           <>
             {" "}
-            <Calculator /> Beregn siktemerker{" "}
+            <Calculator style={{ marginRight: 8 }} /> Beregn siktemerker{" "}
           </>
         )}
       </Button>
-      <CalculationTable ballistics={ballistics} removeMark={handleRemoveMark} />
     </div>
   );
 };
