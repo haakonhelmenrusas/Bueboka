@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState } from "react";
-import { Plus } from "tabler-icons-react";
-import { Button, NumberInput } from "@mantine/core";
-import { AimDistanceMark, AimDistanceMarkValue, Status } from "../../../types";
+import { AlertCircle, Calculator, Plus } from "tabler-icons-react";
+import { Alert, Button, NumberInput } from "@mantine/core";
+import { AimDistanceMark, MarkValue, Status } from "../../../types";
 import { useBallisticsParams, useFetchBallistics, useStoreBallistics } from "../../../helpers/hooks";
 import { useCalculateForm } from "./useCalculateForm";
 import { Ballistics } from "../../../helpers/constants";
@@ -11,13 +11,13 @@ import styles from "./CalculateForm.module.css";
 
 const CalculateForm = () => {
   const { user } = useContext(UserContext);
-  const [marks, setMarks] = useState<AimDistanceMarkValue[]>([]);
+  const [marks, setMarks] = useState<MarkValue[]>([]);
   const { storeBallistics } = useStoreBallistics();
   const { ballistics, getBallistics } = useFetchBallistics();
   const { status, error, calculateBallisticsParams } = useBallisticsParams();
   const [{ aimError, aimValue, distanceError, distanceValue }, dispatch] = useCalculateForm();
 
-  async function sendMarks(marks: AimDistanceMarkValue[]) {
+  async function sendMarks(marks: MarkValue[]) {
     const body: AimDistanceMark = {
       ...Ballistics,
       marks: marks.map((mark) => mark.aim),
@@ -40,12 +40,7 @@ const CalculateForm = () => {
   }
 
   function markCalculation() {
-    if (marks.length > 0) {
-      sendMarks(marks).then(async () => {
-        dispatch({ type: "SET_AIM_VALUE", payload: undefined });
-        dispatch({ type: "SET_DISTANCE_VALUE", payload: undefined });
-      });
-    }
+    sendMarks(marks);
   }
 
   function handleDistanceChange(value: number) {
@@ -64,8 +59,10 @@ const CalculateForm = () => {
       dispatch({ type: "SET_DISTANCE_ERROR", payload: true });
     }
     if (aimValue && distanceValue) {
-      const newEntry: AimDistanceMarkValue = { aim: aimValue, distance: distanceValue };
+      const newEntry: MarkValue = { aim: aimValue, distance: distanceValue };
       setMarks([...marks, newEntry]);
+      dispatch({ type: "SET_AIM_VALUE", payload: undefined });
+      dispatch({ type: "SET_DISTANCE_VALUE", payload: undefined });
     }
   }
 
@@ -73,17 +70,11 @@ const CalculateForm = () => {
     if (ballistics) {
       ballistics.given_marks.splice(index, 1);
       ballistics.given_distances.splice(index, 1);
-      await sendMarks([]);
     }
   }
 
   useEffect(() => {
-    markCalculation();
-  }, [marks.length]);
-
-  useEffect(() => {
     getBallistics();
-    return () => {};
   }, [user]);
 
   return (
@@ -129,18 +120,34 @@ const CalculateForm = () => {
           error={aimError ? "Fyll inn merke først" : null}
           onFocus={() => dispatch({ type: "SET_AIM_ERROR", payload: false })}
         />
-        <Button loading={status === Status.Pending} onClick={handleAddMark} type="button">
-          {status === Status.Pending ? (
-            "Jobber"
-          ) : (
-            <>
-              {" "}
-              <Plus /> Legg til{" "}
-            </>
-          )}
+        <Button className={styles.markButton} onClick={handleAddMark} type="button">
+          <Plus /> Legg til{" "}
         </Button>
       </form>
+      {error && (
+        <>
+          <Alert mb={8} icon={<AlertCircle size={16} />} title="Noe gikk galt" color="red">
+            Obs, noe gikk galt. Prøv igjen senere.
+          </Alert>
+        </>
+      )}
       <CalculationTable ballistics={ballistics} removeMark={handleRemoveMark} />
+      <Button
+        className={styles.calcButton}
+        fullWidth
+        loading={status === Status.Pending}
+        onClick={markCalculation}
+        type="button"
+      >
+        {status === Status.Pending ? (
+          "Jobber"
+        ) : (
+          <>
+            {" "}
+            <Calculator style={{ marginRight: 8 }} /> Beregn siktemerker{" "}
+          </>
+        )}
+      </Button>
     </div>
   );
 };

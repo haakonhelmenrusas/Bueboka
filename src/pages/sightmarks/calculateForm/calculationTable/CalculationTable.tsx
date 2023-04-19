@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import React from "react";
 import { AlertCircle, BorderOuter, Calculator, Ruler2, Trash } from "tabler-icons-react";
 import { ActionIcon, Alert, Table } from "@mantine/core";
 import { CalculatedMarks } from "../../../../types";
@@ -10,7 +10,7 @@ interface CalculationTableProps {
 }
 
 const CalculationTable = ({ ballistics, removeMark }: CalculationTableProps) => {
-  const renderBallisticTable = useMemo(() => {
+  const renderBallisticTable = () => {
     if (ballistics) {
       return ballistics.given_distances.map((distance, index) => (
         <tr key={index}>
@@ -41,7 +41,7 @@ const CalculationTable = ({ ballistics, removeMark }: CalculationTableProps) => 
         </tr>
       );
     }
-  }, [ballistics?.given_marks.length]);
+  };
 
   return (
     <>
@@ -66,7 +66,7 @@ const CalculationTable = ({ ballistics, removeMark }: CalculationTableProps) => 
             <td></td>
           </tr>
         </thead>
-        <tbody>{renderBallisticTable}</tbody>
+        <tbody>{renderBallisticTable()}</tbody>
       </Table>
     </>
   );

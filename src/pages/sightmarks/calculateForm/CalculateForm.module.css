@@ -2,29 +2,38 @@
   max-width: 600px;
 }
 .form {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  margin-bottom: 24px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    margin-bottom: 16px;
 }
-.form button {
-  margin-left: auto;
-}
+
 .label {
-  height: 90px;
-  width: 200px;
-  margin-right: 16px;
+    height: 90px;
+    width: 200px;
+    margin-right: 16px;
 }
+
+.calcButton {
+    margin-top: 16px;
+}
+
+.markButton {
+    width: initial;
+}
+
 @media only screen and (max-width: 600px) {
-  .form {
-    flex-wrap: wrap;
-  }
-  .form button {
-    width: 100%;
-  }
-  .label {
-    width: 50%;
-    margin-right: 0;
-    padding: 0 8px 0 0;
-  }
+    .form {
+        margin-bottom: 8px;
+    }
+
+    .markButton {
+        width: 120px;
+    }
+
+    .label {
+        width: 50%;
+        margin-right: 0;
+        padding: 0 8px 0 0;
+    }
 }
