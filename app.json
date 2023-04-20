@@ -13,7 +13,7 @@
     },
     "android": {
       "package": "com.aaronshade.bueboka",
-      "versionCode": 2
+      "versionCode": 3
     }
   }
 }
