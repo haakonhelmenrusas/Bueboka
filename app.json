@@ -5,6 +5,15 @@
       "bundler": "metro"
     },
     "name": "bueboka",
-    "slug": "bueboka"
+    "slug": "bueboka",
+    "extra": {
+      "eas": {
+        "projectId": "a740b024-fdf9-420d-9998-a6ae076ebc43"
+      }
+    },
+    "android": {
+      "package": "com.aaronshade.bueboka",
+      "versionCode": 2
+    }
   }
 }
