@@ -1,6 +1,7 @@
 {
   "cli": {
-    "version": ">= 3.9.3"
+    "version": ">= 3.9.3",
+    "promptToConfigurePushNotifications": false
   },
   "build": {
     "development": {
@@ -28,6 +29,9 @@
         "track": "production",
         "releaseStatus": "completed",
         "serviceAccountKeyPath": "${process.env.GOOGLE_SERVICE_ACCOUNT_PATH}"
+      },
+      "ios": {
+        "ascAppId": "6448108838"
       }
     }
   }

@@ -4,8 +4,14 @@
     "web": {
       "bundler": "metro"
     },
-    "name": "bueboka",
+    "name": "Bueboka",
     "slug": "bueboka",
+    "icon": "./assets/images/icon.png",
+    "splash": {
+      "image": "./assets/images/splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#FFFFFF"
+    },
     "extra": {
       "eas": {
         "projectId": "a740b024-fdf9-420d-9998-a6ae076ebc43"
@@ -13,7 +19,17 @@
     },
     "android": {
       "package": "com.aaronshade.bueboka",
-      "versionCode": 3
+      "versionCode": 3,
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/images/icon.png",
+        "backgroundColor": "#FFFFFF"
+      }
+    },
+    "ios": {
+      "bundleIdentifier": "com.aaronshade.bueboka",
+      "infoPlist": {
+        "CFBundleIconName": "./assets/images/ipad.png"
+      }
     }
   }
 }
