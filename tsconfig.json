@@ -1,0 +1,11 @@
+{
+  "compilerOptions": {
+    "module": "commonjs",
+    "target": "es5",
+    "sourceMap": true
+  },
+  "extends": "expo/tsconfig.base",
+  "exclude": [
+    "node_modules"
+  ]
+}
