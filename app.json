@@ -30,6 +30,12 @@
       "infoPlist": {
         "CFBundleIconName": "./assets/images/ipad.png"
       }
+    },
+    "runtimeVersion": {
+      "policy": "sdkVersion"
+    },
+    "updates": {
+      "url": "https://u.expo.dev/a740b024-fdf9-420d-9998-a6ae076ebc43"
     }
   }
 }

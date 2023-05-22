@@ -19,7 +19,11 @@
     },
     "production": {
       "ios": {
+        "channel": "production",
         "resourceClass": "m-medium"
+      },
+      "android": {
+        "channel": "production"
       }
     }
   },
