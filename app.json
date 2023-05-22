@@ -19,13 +19,14 @@
     },
     "android": {
       "package": "com.aaronshade.bueboka",
-      "versionCode": 3,
+      "versionCode": 4,
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/icon.png",
         "backgroundColor": "#FFFFFF"
       }
     },
     "ios": {
+      "buildNumber": "1.1.0",
       "bundleIdentifier": "com.aaronshade.bueboka",
       "infoPlist": {
         "CFBundleIconName": "./assets/images/ipad.png"
