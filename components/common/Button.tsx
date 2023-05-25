@@ -1,72 +1,52 @@
 import React from 'react';
-import { FlexStyle, Pressable, StyleProp, StyleSheet, Text } from 'react-native';
+import { ActivityIndicator, Pressable, PressableProps, Text, TextStyle, ViewStyle } from 'react-native';
 
-interface Props {
-  label?: string;
-  type?: 'filled' | 'outlined';
-  style?: StyleProp<FlexStyle>;
+interface ButtonProps extends PressableProps {
+  buttonStyle?: ViewStyle;
+  textStyle?: TextStyle;
+  label: string;
   disabled?: boolean;
-
-  onPress(): void;
+  type?: 'filled' | 'outline';
+  loading?: boolean;
 }
 
-export default function Button(props: Props) {
-  const { onPress, label, style, type, disabled } = props;
-
-  function getStyles() {
-    switch (type) {
-      case 'filled':
-        return styles.filled;
-      case 'outlined':
-        return styles.outlined;
-      default:
-        return styles.button;
-    }
-  }
-
-  function getTextStyles() {
-    switch (type) {
-      case 'filled':
-        return styles.textFilled;
-      case 'outlined':
-        return styles.textOutlined;
-      default:
-        return styles.text;
-    }
-  }
+const Button: React.FC<ButtonProps> = ({
+  buttonStyle,
+  textStyle,
+  label,
+  disabled,
+  type = 'filled',
+  loading = false,
+  ...props
+}) => {
+  const buttonColor = type === 'outline' ? 'transparent' : 'blue';
+  const textColor = type === 'outline' ? 'blue' : 'white';
 
   return (
-    <Pressable disabled={disabled} style={[style, styles.button, getStyles()]} onPress={onPress}>
-      <Text style={[styles.text, getTextStyles()]}>{label}</Text>
+    <Pressable
+      style={({ pressed }) => [
+        {
+          opacity: disabled || loading ? 0.6 : pressed ? 0.8 : 1,
+          backgroundColor: buttonColor,
+          justifyContent: 'center',
+          alignItems: 'center',
+          paddingVertical: 12,
+          paddingHorizontal: 24,
+          borderRadius: 4,
+          elevation: 3,
+          height: 48,
+        },
+        buttonStyle,
+      ]}
+      disabled={disabled || loading}
+      {...props}>
+      {loading ? (
+        <ActivityIndicator size={16} color={textColor} />
+      ) : (
+        <Text style={[textStyle, { color: textColor }]}>{label}</Text>
+      )}
     </Pressable>
   );
-}
+};
 
-const styles = StyleSheet.create({
-  button: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingVertical: 12,
-    paddingHorizontal: 32,
-    borderRadius: 4,
-    elevation: 3,
-  },
-  filled: {
-    backgroundColor: 'darkblue',
-  },
-  outlined: {
-    backgroundColor: 'white',
-  },
-  text: {
-    fontSize: 16,
-    lineHeight: 21,
-    fontWeight: 'bold',
-    letterSpacing: 0.25,
-  },
-  textFilled: {
-    color: 'white',
-  },
-  textOutlined: {
-    color: 'darkblue',
-  },
-});
+export default Button;
