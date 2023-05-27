@@ -1,14 +1,17 @@
 import { useState } from 'react';
-import { StyleSheet, Text, TextInput, View } from 'react-native';
+import { Keyboard, StyleSheet, Text, TouchableWithoutFeedback, View } from 'react-native';
 
+import MarksTable from './MarksTable';
 import { useCalcForm } from './useCalcForm';
 import Button from '../../../components/common/Button';
-import { AimDistanceMark, MarkValue, Status } from '../../../types';
+import Input from '../../../components/common/Input';
+import { AimDistanceMark, CalculatedMarks, MarkValue, Status } from '../../../types';
 import { Ballistics } from '../../../utils/Constants';
 import useBallisticsParams from '../../../utils/hooks/useBallisticsParams';
 
 export default function Calculate() {
   const [marks, setMarks] = useState<MarkValue[]>([]);
+  const [calculatedMarks, setCalculatedMarks] = useState<CalculatedMarks>(null);
   const { status, error, calculateBallisticsParams } = useBallisticsParams();
   const [{ aimError, aimValue, distanceError, distanceValue }, dispatch] = useCalcForm();
 
@@ -19,16 +22,16 @@ export default function Calculate() {
       given_distances: marks.map((mark) => mark.distance),
     };
 
-    /*      if (ballistics) {
-            body.marks.push(...ballistics.given_marks);
-            body.given_distances.push(...ballistics.given_distances);
-          }*/
+    /* if (calculatedMarks) {
+       body.marks.push(...calculatedMarks.given_marks);
+       body.given_distances.push(...calculatedMarks.given_distances);
+     }*/
     try {
       const aimMarkResponse = await calculateBallisticsParams(body);
       if (aimMarkResponse) {
-        console.log('RESPONSE: ', aimMarkResponse);
-        /*          await storeBallistics(aimMarkResponse);
-                  await getBallistics();*/
+        await setCalculatedMarks(aimMarkResponse);
+        // TODO: Implement getBallistics
+        //await getBallistics();
       }
     } catch (error) {
       console.log('NOT WORKING: ', error);
@@ -55,92 +58,92 @@ export default function Calculate() {
       dispatch({ type: 'SET_DISTANCE_ERROR', payload: true });
     }
     if (aimValue && distanceValue) {
-      const newEntry: MarkValue = { aim: parseInt(aimValue, 10), distance: parseInt(distanceValue, 10) };
-      setMarks([...marks, newEntry]);
+      const newEntry: MarkValue = { aim: parseFloat(aimValue), distance: parseFloat(distanceValue) };
+      setMarks((prevState) => (prevState ? [...prevState, newEntry] : [newEntry]));
       dispatch({ type: 'SET_AIM_VALUE', payload: '' });
       dispatch({ type: 'SET_DISTANCE_VALUE', payload: '' });
+      Keyboard.dismiss();
     }
   }
 
-  /*  async function handleRemoveMark(index: number) {
-      if (ballistics) {
-        ballistics.given_marks.splice(index, 1);
-        ballistics.given_distances.splice(index, 1);
-      }
-    }*/
+  async function handleRemoveMark(index: number) {
+    if (calculatedMarks) {
+      calculatedMarks.given_marks.splice(index, 1);
+      calculatedMarks.given_distances.splice(index, 1);
+    }
+  }
+
+  // Write a function that takes in the input 3,4 and returns 3.4
+  function formatNumber(number: string) {
+    return number.replace(',', '.');
+  }
 
   return (
-    <View>
-      <Text style={styles.title}>Beregn siktemerker</Text>
-      <View style={styles.form}>
-        <View style={{ marginRight: 8 }}>
-          <Text style={styles.label}>Avstand</Text>
-          <TextInput
-            onBlur={() => dispatch({ type: 'SET_DISTANCE_ERROR', payload: false })}
-            placeholder="F.eks. 20"
-            keyboardType="numeric"
-            style={styles.input}
-            value={distanceValue}
-            onChangeText={(value) => handleDistanceChange(value)}
+    <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
+      <View style={{ flex: 1 }}>
+        <View style={styles.form}>
+          <View>
+            <Input
+              textAlign="right"
+              maxLength={100}
+              label="Avstand"
+              onBlur={() => dispatch({ type: 'SET_DISTANCE_ERROR', payload: false })}
+              placeholderText="F.eks. 20"
+              keyboardType="numeric"
+              value={distanceValue}
+              onChangeText={(value) => handleDistanceChange(formatNumber(value))}
+            />
+            {distanceError && <Text style={{ color: 'red' }}>Fyll inn avstand</Text>}
+          </View>
+          <View>
+            <Input
+              textAlign="right"
+              maxLength={15}
+              label="Merke"
+              onBlur={() => dispatch({ type: 'SET_AIM_ERROR', payload: false })}
+              placeholderText="F.eks. 2.35"
+              keyboardType="numeric"
+              value={aimValue}
+              onChangeText={(value) => handleAimChange(formatNumber(value))}
+            />
+            {aimError && <Text style={{ color: 'red' }}>Fyll inn siktemerke</Text>}
+          </View>
+          <Button
+            type="outline"
+            buttonStyle={{ marginLeft: 'auto', marginTop: 16 }}
+            onPress={handleAddMark}
+            label="Legg til"
           />
-          {distanceError && <Text style={{ color: 'red' }}>Fyll inn avstand</Text>}
         </View>
-        <View>
-          <Text style={styles.label}>Merke</Text>
-          <TextInput
-            onBlur={() => dispatch({ type: 'SET_AIM_ERROR', payload: false })}
-            placeholder="F.eks. 2.35"
-            keyboardType="numeric"
-            style={styles.input}
-            value={aimValue}
-            onChangeText={(value) => handleAimChange(value)}
-          />
-          {aimError && <Text style={{ color: 'red' }}>Fyll inn siktemerke</Text>}
-        </View>
+        {error && (
+          <>
+            <View style={{ marginBottom: 8, padding: 8 }}>Obs, noe gikk galt. Prøv igjen senere.</View>
+          </>
+        )}
+        <MarksTable ballistics={calculatedMarks} removeMark={handleRemoveMark} />
         <Button
-          type="outlined"
-          style={{ marginLeft: 'auto', marginTop: 16 }}
-          onPress={handleAddMark}
-          label="Legg til"
+          type="filled"
+          loading={status === Status.Pending}
+          disabled={status === Status.Pending || marks.length === 0}
+          buttonStyle={{
+            alignSelf: 'flex-end',
+            position: 'absolute',
+            bottom: 8,
+            width: '100%',
+          }}
+          onPress={markCalculation}
+          label="Beregn siktemerker"
         />
       </View>
-      {error && (
-        <>
-          <View style={{ marginBottom: 8, padding: 8 }}>Obs, noe gikk galt. Prøv igjen senere.</View>
-        </>
-      )}
-      <Button
-        type="filled"
-        disabled={status === Status.Pending}
-        style={{ marginTop: 16, width: '100%' }}
-        onPress={markCalculation}
-        label={status === Status.Pending ? 'Jobber' : 'Beregn siktemerker'}
-      />
-    </View>
+    </TouchableWithoutFeedback>
   );
 }
 const styles = StyleSheet.create({
-  title: {
-    color: '#000',
-    fontSize: 20,
-    marginBottom: 16,
-  },
   form: {
     display: 'flex',
     flexDirection: 'row',
+    justifyContent: 'space-between',
     alignItems: 'flex-end',
-  },
-  label: {
-    color: '#000',
-    fontSize: 16,
-    marginBottom: 8,
-  },
-  input: {
-    height: 45,
-    paddingLeft: 8,
-    borderColor: 'gray',
-    borderWidth: 1,
-    width: 100,
-    borderRadius: 4,
+    marginBottom: 16,
   },
 });

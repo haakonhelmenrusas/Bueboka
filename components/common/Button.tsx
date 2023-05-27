@@ -33,7 +33,7 @@ const Button: React.FC<ButtonProps> = ({
           paddingVertical: 12,
           paddingHorizontal: 24,
           borderRadius: 4,
-          elevation: 3,
+          //elevation: 1,
           height: 48,
         },
         buttonStyle,
