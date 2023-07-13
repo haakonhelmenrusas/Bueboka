@@ -17,6 +17,13 @@ export default function AppLayout() {
           title: 'Bueskyting',
         }}
       />
+      <Tabs.Screen
+        name="omOss"
+        options={{
+          headerShadowVisible: false,
+          title: 'Om oss',
+        }}
+      />
     </Tabs>
   );
 }
