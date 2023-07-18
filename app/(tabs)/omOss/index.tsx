@@ -14,7 +14,13 @@ export default function About() {
       </Text>
       <View style={{ marginTop: 'auto' }}>
         <Text style={styles.sponsor}>Sponsor</Text>
-        <Image style={styles.logo} contentFit="cover" source={logo} accessibilityLabel="Arctic Buesport AS Logo" />
+        <Image
+          key={logo}
+          style={styles.logo}
+          contentFit="cover"
+          source={logo}
+          accessibilityLabel="Arctic Buesport AS Logo"
+        />
       </View>
     </View>
   );

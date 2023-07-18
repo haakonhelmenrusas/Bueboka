@@ -33,7 +33,6 @@ const Button: React.FC<ButtonProps> = ({
           paddingVertical: 12,
           paddingHorizontal: 24,
           borderRadius: 4,
-          //elevation: 1,
           height: 48,
         },
         buttonStyle,
@@ -41,7 +40,7 @@ const Button: React.FC<ButtonProps> = ({
       disabled={disabled || loading}
       {...props}>
       {loading ? (
-        <ActivityIndicator size={16} color={textColor} />
+        <ActivityIndicator testID="ActivityIndicator" size={16} color={textColor} />
       ) : (
         <Text style={[textStyle, { color: textColor }]}>{label}</Text>
       )}
