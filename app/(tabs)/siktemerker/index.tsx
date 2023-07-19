@@ -3,8 +3,7 @@ import { Keyboard, StyleSheet, Text, TouchableWithoutFeedback, View } from 'reac
 
 import MarksTable from './MarksTable';
 import { useCalcForm } from './useCalcForm';
-import Button from '../../../components/common/Button';
-import Input from '../../../components/common/Input';
+import { Button, Input } from '../../../components/common';
 import { AimDistanceMark, CalculatedMarks, MarkValue, Status } from '../../../types';
 import { Ballistics } from '../../../utils/Constants';
 import useBallisticsParams from '../../../utils/hooks/useBallisticsParams';
