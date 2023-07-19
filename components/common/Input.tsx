@@ -28,7 +28,13 @@ const Input = ({ label, placeholderText, ...props }: InputProps) => {
   return (
     <View accessible accessibilityLabel={isAndroid ? label : `${label}${': Disabled!'}`}>
       <Text style={styles.label}>{label}</Text>
-      <TextInput style={styles.input} placeholder={placeholderText} placeholderTextColor={textInputColor} {...props} />
+      <TextInput
+        testID="input"
+        style={styles.input}
+        placeholder={placeholderText}
+        placeholderTextColor={textInputColor}
+        {...props}
+      />
     </View>
   );
 };
