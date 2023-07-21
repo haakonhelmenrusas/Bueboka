@@ -1,3 +1,7 @@
+import { faBars } from '@fortawesome/free-solid-svg-icons/faBars';
+import { faBullseye } from '@fortawesome/free-solid-svg-icons/faBullseye';
+import { faChartLine } from '@fortawesome/free-solid-svg-icons/faChartLine';
+import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { Tabs } from 'expo-router';
 
 export default function AppLayout() {
@@ -6,22 +10,31 @@ export default function AppLayout() {
       <Tabs.Screen
         name="siktemerker"
         options={{
+          tabBarIcon: () => <FontAwesomeIcon icon={faChartLine} />,
           headerShadowVisible: false,
-          title: 'Siktemerker',
+          headerShown: false,
+          tabBarLabel: 'Siktemerker',
+          tabBarLabelStyle: { fontSize: 14, marginBottom: 4 },
         }}
       />
       <Tabs.Screen
         name="bueskyting"
         options={{
+          tabBarIcon: () => <FontAwesomeIcon icon={faBullseye} />,
           headerShadowVisible: false,
-          title: 'Bueskyting',
+          headerShown: false,
+          tabBarLabel: 'Bueskyting',
+          tabBarLabelStyle: { fontSize: 14, marginBottom: 4 },
         }}
       />
       <Tabs.Screen
         name="omOss"
         options={{
+          tabBarIcon: () => <FontAwesomeIcon icon={faBars} />,
           headerShadowVisible: false,
-          title: 'Om oss',
+          headerShown: false,
+          tabBarLabel: 'Om oss',
+          tabBarLabelStyle: { fontSize: 14, marginBottom: 4 },
         }}
       />
     </Tabs>
