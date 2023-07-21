@@ -13,6 +13,7 @@ export default function AppLayout() {
           tabBarIcon: () => <FontAwesomeIcon icon={faChartLine} />,
           headerShadowVisible: false,
           headerShown: false,
+          tabBarLabel: 'Siktemerker',
           tabBarLabelStyle: { fontSize: 14, marginBottom: 4 },
         }}
       />
@@ -22,6 +23,7 @@ export default function AppLayout() {
           tabBarIcon: () => <FontAwesomeIcon icon={faBullseye} />,
           headerShadowVisible: false,
           headerShown: false,
+          tabBarLabel: 'Bueskyting',
           tabBarLabelStyle: { fontSize: 14, marginBottom: 4 },
         }}
       />
@@ -31,6 +33,7 @@ export default function AppLayout() {
           tabBarIcon: () => <FontAwesomeIcon icon={faBars} />,
           headerShadowVisible: false,
           headerShown: false,
+          tabBarLabel: 'Om oss',
           tabBarLabelStyle: { fontSize: 14, marginBottom: 4 },
         }}
       />
