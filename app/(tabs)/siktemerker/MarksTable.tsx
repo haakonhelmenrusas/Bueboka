@@ -20,7 +20,7 @@ export default function MarksTable({ ballistics, removeMark }: CalculationTableP
         </View>
       ));
     } else {
-      return <Text>Legg inn siktemerker og send dem inn til beregning</Text>;
+      return <Text style={styles.info}>Legg inn siktemerker og send dem inn til beregning</Text>;
     }
   };
 
@@ -53,5 +53,9 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     fontSize: 16,
     marginTop: 8,
+  },
+  info: {
+    marginTop: 8,
+    fontSize: 16,
   },
 });

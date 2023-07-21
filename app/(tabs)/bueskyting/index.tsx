@@ -10,9 +10,10 @@ export default function Archery() {
 
 const styles = StyleSheet.create({
   title: {
-    color: '#000',
-    fontSize: 20,
+    fontSize: 24,
+    fontWeight: 'bold',
     marginBottom: 16,
+    marginTop: 16,
   },
   label: {
     color: '#000',

@@ -80,6 +80,7 @@ export default function Calculate() {
   return (
     <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
       <View style={{ flex: 1 }}>
+        <Text style={styles.title}>Siktemerker</Text>
         <View style={styles.form}>
           <View>
             <Input
@@ -138,6 +139,12 @@ export default function Calculate() {
   );
 }
 const styles = StyleSheet.create({
+  title: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    marginBottom: 16,
+    marginTop: 16,
+  },
   form: {
     display: 'flex',
     flexDirection: 'row',
