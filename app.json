@@ -37,6 +37,20 @@
     },
     "updates": {
       "url": "https://u.expo.dev/a740b024-fdf9-420d-9998-a6ae076ebc43"
+    },
+    "plugins": [
+      "sentry-expo"
+    ],
+    "hooks": {
+      "postPublish": [
+        {
+          "file": "sentry-expo/upload-sourcemaps",
+          "config": {
+            "organization": "EXPO_PUBLIC_SENTRY_ORG",
+            "project": "EXPO_PUBLIC_SENTRY_PROJECT"
+          }
+        }
+      ]
     }
   }
 }
