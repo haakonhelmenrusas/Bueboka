@@ -1,3 +1,4 @@
+import * as Sentry from '@sentry/react-native';
 import { useState } from 'react';
 import { Keyboard, StyleSheet, Text, TouchableWithoutFeedback, View } from 'react-native';
 
@@ -33,7 +34,7 @@ export default function Calculate() {
         //await getBallistics();
       }
     } catch (error) {
-      console.log('NOT WORKING: ', error);
+      Sentry.captureException(error);
     }
   }
 
@@ -65,7 +66,7 @@ export default function Calculate() {
     }
   }
 
-  async function handleRemoveMark(index: number) {
+  function handleRemoveMark(index: number) {
     if (calculatedMarks) {
       calculatedMarks.given_marks.splice(index, 1);
       calculatedMarks.given_distances.splice(index, 1);
