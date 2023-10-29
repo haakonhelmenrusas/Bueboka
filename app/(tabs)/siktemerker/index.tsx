@@ -5,6 +5,7 @@ import { Keyboard, StyleSheet, Text, TouchableWithoutFeedback, View } from 'reac
 import { Button, Input } from '../../../components/common';
 import { AimDistanceMark, CalculatedMarks, MarkValue } from '../../../types';
 import { Ballistics } from '../../../utils/Constants';
+import { formatNumber } from '../../../utils/helpers/formatNumber';
 import useBallisticsParams from '../../../utils/hooks/useBallisticsParams';
 import MarksTable from './MarksTable';
 import { useCalcForm } from './useCalcForm';
@@ -24,7 +25,7 @@ export default function Calculate() {
     try {
       const aimMarkResponse = await calculateBallisticsParams(body);
       if (aimMarkResponse) {
-        await setCalculatedMarks(aimMarkResponse);
+        setCalculatedMarks(aimMarkResponse);
         // TODO: Implement getBallistics
         //await getBallistics();
       }
@@ -63,11 +64,6 @@ export default function Calculate() {
       calculatedMarks.given_marks.splice(index, 1);
       calculatedMarks.given_distances.splice(index, 1);
     }
-  }
-
-  // Write a function that takes in the input 3,4 and returns 3.4
-  function formatNumber(number: string) {
-    return number.replace(',', '.');
   }
 
   return (
