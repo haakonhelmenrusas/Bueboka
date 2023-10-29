@@ -22,10 +22,6 @@ export default function Calculate() {
       given_distances: marks.map((mark) => mark.distance),
     };
 
-    /* if (calculatedMarks) {
-       body.marks.push(...calculatedMarks.given_marks);
-       body.given_distances.push(...calculatedMarks.given_distances);
-     }*/
     try {
       const aimMarkResponse = await calculateBallisticsParams(body);
       if (aimMarkResponse) {
