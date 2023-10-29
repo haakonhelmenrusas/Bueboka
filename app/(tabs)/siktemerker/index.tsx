@@ -5,21 +5,20 @@ import { Keyboard, StyleSheet, Text, TouchableWithoutFeedback, View } from 'reac
 import MarksTable from './MarksTable';
 import { useCalcForm } from './useCalcForm';
 import { Button, Input } from '../../../components/common';
-import { AimDistanceMark, CalculatedMarks, MarkValue, Status } from '../../../types';
+import { AimDistanceMark, CalculatedMarks, MarkValue } from '../../../types';
 import { Ballistics } from '../../../utils/Constants';
 import useBallisticsParams from '../../../utils/hooks/useBallisticsParams';
 
 export default function Calculate() {
-  const [marks, setMarks] = useState<MarkValue[]>([]);
   const [calculatedMarks, setCalculatedMarks] = useState<CalculatedMarks>(null);
-  const { status, error, calculateBallisticsParams } = useBallisticsParams();
+  const { error, calculateBallisticsParams } = useBallisticsParams();
   const [{ aimError, aimValue, distanceError, distanceValue }, dispatch] = useCalcForm();
 
-  async function sendMarks(marks: MarkValue[]) {
+  async function sendMarks(newMark: MarkValue) {
     const body: AimDistanceMark = {
       ...Ballistics,
-      marks: marks.map((mark) => mark.aim),
-      given_distances: marks.map((mark) => mark.distance),
+      new_given_mark: newMark.aim,
+      new_given_distances: newMark.distance,
     };
 
     try {
@@ -32,10 +31,6 @@ export default function Calculate() {
     } catch (error) {
       Sentry.captureException(error);
     }
-  }
-
-  function markCalculation() {
-    sendMarks(marks);
   }
 
   function handleDistanceChange(value: string) {
@@ -55,7 +50,8 @@ export default function Calculate() {
     }
     if (aimValue && distanceValue) {
       const newEntry: MarkValue = { aim: parseFloat(aimValue), distance: parseFloat(distanceValue) };
-      setMarks((prevState) => (prevState ? [...prevState, newEntry] : [newEntry]));
+
+      sendMarks(newEntry);
       dispatch({ type: 'SET_AIM_VALUE', payload: '' });
       dispatch({ type: 'SET_DISTANCE_VALUE', payload: '' });
       Keyboard.dismiss();
@@ -106,7 +102,7 @@ export default function Calculate() {
             {aimError && <Text style={{ color: 'red' }}>Fyll inn siktemerke</Text>}
           </View>
           <Button
-            type="outline"
+            type="filled"
             buttonStyle={{ marginLeft: 'auto', marginTop: 16 }}
             onPress={handleAddMark}
             label="Legg til"
@@ -118,19 +114,6 @@ export default function Calculate() {
           </>
         )}
         <MarksTable ballistics={calculatedMarks} removeMark={handleRemoveMark} />
-        <Button
-          type="filled"
-          loading={status === Status.Pending}
-          disabled={status === Status.Pending || marks.length === 0}
-          buttonStyle={{
-            alignSelf: 'flex-end',
-            position: 'absolute',
-            bottom: 8,
-            width: '100%',
-          }}
-          onPress={markCalculation}
-          label="Beregn siktemerker"
-        />
       </View>
     </TouchableWithoutFeedback>
   );
