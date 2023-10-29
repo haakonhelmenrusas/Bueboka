@@ -3,5 +3,5 @@
   "tabWidth": 2,
   "singleQuote": true,
   "bracketSameLine": true,
-  "trailingComma": "all"
+  "trailingComma": "es5"
 }
