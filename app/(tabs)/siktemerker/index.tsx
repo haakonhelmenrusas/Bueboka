@@ -2,12 +2,12 @@ import * as Sentry from '@sentry/react-native';
 import { useState } from 'react';
 import { Keyboard, StyleSheet, Text, TouchableWithoutFeedback, View } from 'react-native';
 
-import MarksTable from './MarksTable';
-import { useCalcForm } from './useCalcForm';
 import { Button, Input } from '../../../components/common';
 import { AimDistanceMark, CalculatedMarks, MarkValue } from '../../../types';
 import { Ballistics } from '../../../utils/Constants';
 import useBallisticsParams from '../../../utils/hooks/useBallisticsParams';
+import MarksTable from './MarksTable';
+import { useCalcForm } from './useCalcForm';
 
 export default function Calculate() {
   const [calculatedMarks, setCalculatedMarks] = useState<CalculatedMarks>(null);
