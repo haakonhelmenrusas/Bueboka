@@ -33,7 +33,11 @@
     "react-native-safe-area-context": "4.7.1",
     "react-native-screens": "~3.22.1",
     "react-native-svg": "^13.10.0",
-    "react-native-web": "~0.19.6"
+    "react-native-web": "~0.19.6",
+    "sentry-expo": "~7.0.0",
+    "expo-application": "~5.3.0",
+    "expo-device": "~5.4.0",
+    "@sentry/react-native": "5.5.0"
   },
   "devDependencies": {
     "@babel/core": "^7.22.9",
