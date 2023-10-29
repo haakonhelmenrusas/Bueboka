@@ -26,8 +26,7 @@ export default function Calculate() {
       const aimMarkResponse = await calculateBallisticsParams(body);
       if (aimMarkResponse) {
         setCalculatedMarks(aimMarkResponse);
-        // TODO: Implement getBallistics
-        //await getBallistics();
+        // TODO: Store in local storage
       }
     } catch (error) {
       Sentry.captureException(error);
