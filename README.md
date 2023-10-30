@@ -1,13 +1,14 @@
 # Bueboka
 En tjeneste for bueskyttere i Norge
 
-Bli med på diskusjonen [forum](https://github.com/Aaronshades/Bueboka/discussions)
+Join the discussion [forum](https://github.com/Aaronshades/Bueboka/discussions)
 
-Her kommer det lenker til App Store og Google Play når appen er klar for publisering.
+## Links to Apple app store and Google play store 
+Links coming soon
 
-## Teknologien
+## Technology
 
-Dette prosjektet er bygget med disse teknologiene:
+Rhe project is built using:
 
-- Bygget med React Native med Expo
+- React Native with Expo
 - Backend Database - Firebase Firestore [Firebase website](https://firebase.google.com/)
