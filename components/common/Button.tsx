@@ -5,6 +5,7 @@ interface ButtonProps extends PressableProps {
   buttonStyle?: ViewStyle;
   textStyle?: TextStyle;
   label: string;
+  icon?: React.ReactNode;
   disabled?: boolean;
   type?: 'filled' | 'outline';
   loading?: boolean;
@@ -14,6 +15,7 @@ const Button: React.FC<ButtonProps> = ({
   buttonStyle,
   textStyle,
   label,
+  icon,
   disabled,
   type = 'filled',
   loading = false,
@@ -42,7 +44,7 @@ const Button: React.FC<ButtonProps> = ({
       {loading ? (
         <ActivityIndicator testID="ActivityIndicator" size={16} color={textColor} />
       ) : (
-        <Text style={[textStyle, { color: textColor }]}>{label}</Text>
+        icon || <Text style={[textStyle, { color: textColor }]}>{label}</Text>
       )}
     </Pressable>
   );
