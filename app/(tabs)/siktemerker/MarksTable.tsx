@@ -1,5 +1,6 @@
+import { faTrash } from '@fortawesome/free-solid-svg-icons/faTrash';
+import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { StyleSheet, Text, View } from 'react-native';
-
 import Button from '../../../components/common/Button';
 import { CalculatedMarks } from '../../../types';
 
@@ -16,7 +17,12 @@ export default function MarksTable({ ballistics, removeMark }: CalculationTableP
           <Text>{distance.toFixed(1)}m</Text>
           <Text>{ballistics.given_marks[index].toFixed(2)}</Text>
           <Text>{ballistics.calculated_marks[index].toFixed(2)}</Text>
-          <Button label="Fjern" type="outline" onPress={() => removeMark(index)} />
+          <Button
+            icon={<FontAwesomeIcon icon={faTrash} color="red" />}
+            label="Fjern"
+            type="outline"
+            onPress={() => removeMark(index)}
+          />
         </View>
       ));
     } else {
@@ -26,11 +32,11 @@ export default function MarksTable({ ballistics, removeMark }: CalculationTableP
 
   return (
     <View>
-      <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
+      <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-around' }}>
         <Text style={styles.thead}>Avstand</Text>
         <Text style={styles.thead}>Merke</Text>
         <Text style={styles.thead}>Beregnet</Text>
-        <Text style={styles.thead} />
+        <Text style={styles.thead}></Text>
       </View>
       {renderBallisticTable()}
     </View>
@@ -43,11 +49,7 @@ const styles = StyleSheet.create({
     height: 48,
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-between',
-  },
-  td: {
-    display: 'flex',
-    alignItems: 'center',
+    justifyContent: 'space-around',
   },
   thead: {
     fontWeight: 'bold',
