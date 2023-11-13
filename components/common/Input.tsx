@@ -6,13 +6,16 @@ const editableTextInputColor = '#494949';
 
 interface InputProps extends TextInputProps {
   label: string;
+  error: boolean;
+  errorMessage?: string;
   placeholderText?: string;
 }
 
-const Input = ({ label, placeholderText, ...props }: InputProps) => {
+const Input = ({ label, error, errorMessage, placeholderText, ...props }: InputProps) => {
   const textInputColor = editableTextInputColor;
 
   const styles = StyleSheet.create({
+    container: { marginBottom: 16, height: 54 },
     label: { color: textInputColor, fontWeight: '500', fontSize: 16, marginBottom: 4 },
     input: {
       backgroundColor: '#FFF',
@@ -26,7 +29,7 @@ const Input = ({ label, placeholderText, ...props }: InputProps) => {
   });
 
   return (
-    <View accessible accessibilityLabel={isAndroid ? label : `${label}${': Disabled!'}`}>
+    <View style={styles.container} accessible accessibilityLabel={isAndroid ? label : `${label}${': Disabled!'}`}>
       <Text style={styles.label}>{label}</Text>
       <TextInput
         testID="input"
@@ -35,6 +38,7 @@ const Input = ({ label, placeholderText, ...props }: InputProps) => {
         placeholderTextColor={textInputColor}
         {...props}
       />
+      {error && <Text style={{ color: 'red', fontSize: 13 }}>{errorMessage}</Text>}
     </View>
   );
 };

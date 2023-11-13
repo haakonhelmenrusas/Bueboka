@@ -2,44 +2,39 @@ import * as Sentry from '@sentry/react-native';
 import { useState } from 'react';
 import { Keyboard, StyleSheet, Text, TouchableWithoutFeedback, View } from 'react-native';
 
+import { Button, Input } from '../../../components/common';
+import { AimDistanceMark, CalculatedMarks, MarkValue } from '../../../types';
+import { Ballistics, formatNumber, useBallisticsParams } from '../../../utils/';
 import MarksTable from './MarksTable';
 import { useCalcForm } from './useCalcForm';
-import { Button, Input } from '../../../components/common';
-import { AimDistanceMark, CalculatedMarks, MarkValue, Status } from '../../../types';
-import { Ballistics } from '../../../utils/Constants';
-import useBallisticsParams from '../../../utils/hooks/useBallisticsParams';
 
 export default function Calculate() {
-  const [marks, setMarks] = useState<MarkValue[]>([]);
   const [calculatedMarks, setCalculatedMarks] = useState<CalculatedMarks>(null);
-  const { status, error, calculateBallisticsParams } = useBallisticsParams();
+  const { error, status, calculateBallisticsParams } = useBallisticsParams();
   const [{ aimError, aimValue, distanceError, distanceValue }, dispatch] = useCalcForm();
 
-  async function sendMarks(marks: MarkValue[]) {
+  async function sendMarks(newMark: MarkValue) {
     const body: AimDistanceMark = {
       ...Ballistics,
-      marks: marks.map((mark) => mark.aim),
-      given_distances: marks.map((mark) => mark.distance),
+      new_given_mark: newMark.aim,
+      new_given_distance: newMark.distance,
     };
 
-    /* if (calculatedMarks) {
-       body.marks.push(...calculatedMarks.given_marks);
-       body.given_distances.push(...calculatedMarks.given_distances);
-     }*/
+    if (calculatedMarks) {
+      body.given_marks = calculatedMarks.given_marks;
+      body.given_distances = calculatedMarks.given_distances;
+    }
+    console.log('body', body);
+
     try {
       const aimMarkResponse = await calculateBallisticsParams(body);
       if (aimMarkResponse) {
-        await setCalculatedMarks(aimMarkResponse);
-        // TODO: Implement getBallistics
-        //await getBallistics();
+        setCalculatedMarks(aimMarkResponse);
+        // TODO: Store in local storage
       }
     } catch (error) {
       Sentry.captureException(error);
     }
-  }
-
-  function markCalculation() {
-    sendMarks(marks);
   }
 
   function handleDistanceChange(value: string) {
@@ -50,7 +45,7 @@ export default function Calculate() {
     dispatch({ type: 'SET_AIM_VALUE', payload: value });
   }
 
-  function handleAddMark() {
+  async function handleAddMark() {
     if (!aimValue) {
       dispatch({ type: 'SET_AIM_ERROR', payload: true });
     }
@@ -59,23 +54,18 @@ export default function Calculate() {
     }
     if (aimValue && distanceValue) {
       const newEntry: MarkValue = { aim: parseFloat(aimValue), distance: parseFloat(distanceValue) };
-      setMarks((prevState) => (prevState ? [...prevState, newEntry] : [newEntry]));
+
+      await sendMarks(newEntry);
       dispatch({ type: 'SET_AIM_VALUE', payload: '' });
       dispatch({ type: 'SET_DISTANCE_VALUE', payload: '' });
       Keyboard.dismiss();
     }
   }
 
-  function handleRemoveMark(index: number) {
-    if (calculatedMarks) {
-      calculatedMarks.given_marks.splice(index, 1);
-      calculatedMarks.given_distances.splice(index, 1);
-    }
-  }
+  async function handleRemoveMark(index: number) {
+    const newDistances = calculatedMarks.given_distances.filter((distance, i) => i === index);
 
-  // Write a function that takes in the input 3,4 and returns 3.4
-  function formatNumber(number: string) {
-    return number.replace(',', '.');
+    await sendMarks({ aim: 9999, distance: newDistances[0] });
   }
 
   return (
@@ -91,10 +81,11 @@ export default function Calculate() {
               onBlur={() => dispatch({ type: 'SET_DISTANCE_ERROR', payload: false })}
               placeholderText="F.eks. 20"
               keyboardType="numeric"
+              error={distanceError}
+              errorMessage="Fyll inn avstand"
               value={distanceValue}
               onChangeText={(value) => handleDistanceChange(formatNumber(value))}
             />
-            {distanceError && <Text style={{ color: 'red' }}>Fyll inn avstand</Text>}
           </View>
           <View>
             <Input
@@ -105,15 +96,18 @@ export default function Calculate() {
               placeholderText="F.eks. 2.35"
               keyboardType="numeric"
               value={aimValue}
+              error={aimError}
+              errorMessage="Fyll inn siktemerke"
               onChangeText={(value) => handleAimChange(formatNumber(value))}
             />
-            {aimError && <Text style={{ color: 'red' }}>Fyll inn siktemerke</Text>}
           </View>
           <Button
-            type="outline"
+            type="filled"
+            width={100}
+            loading={status === 'pending'}
             buttonStyle={{ marginLeft: 'auto', marginTop: 16 }}
             onPress={handleAddMark}
-            label="Legg til"
+            label="Beregn"
           />
         </View>
         {error && (
@@ -122,19 +116,6 @@ export default function Calculate() {
           </>
         )}
         <MarksTable ballistics={calculatedMarks} removeMark={handleRemoveMark} />
-        <Button
-          type="filled"
-          loading={status === Status.Pending}
-          disabled={status === Status.Pending || marks.length === 0}
-          buttonStyle={{
-            alignSelf: 'flex-end',
-            position: 'absolute',
-            bottom: 8,
-            width: '100%',
-          }}
-          onPress={markCalculation}
-          label="Beregn siktemerker"
-        />
       </View>
     </TouchableWithoutFeedback>
   );
@@ -150,7 +131,7 @@ const styles = StyleSheet.create({
     display: 'flex',
     flexDirection: 'row',
     justifyContent: 'space-between',
-    alignItems: 'flex-end',
+    alignItems: 'center',
     marginBottom: 16,
   },
 });
