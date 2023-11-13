@@ -19,8 +19,13 @@ export default function Calculate() {
     const body: AimDistanceMark = {
       ...Ballistics,
       new_given_mark: newMark.aim,
-      new_given_distances: newMark.distance,
+      new_given_distance: newMark.distance,
     };
+
+    if (calculatedMarks) {
+      body.given_marks = calculatedMarks.given_marks;
+      body.given_distances = calculatedMarks.given_distances;
+    }
 
     try {
       const aimMarkResponse = await calculateBallisticsParams(body);
@@ -41,7 +46,7 @@ export default function Calculate() {
     dispatch({ type: 'SET_AIM_VALUE', payload: value });
   }
 
-  function handleAddMark() {
+  async function handleAddMark() {
     if (!aimValue) {
       dispatch({ type: 'SET_AIM_ERROR', payload: true });
     }
@@ -51,18 +56,19 @@ export default function Calculate() {
     if (aimValue && distanceValue) {
       const newEntry: MarkValue = { aim: parseFloat(aimValue), distance: parseFloat(distanceValue) };
 
-      sendMarks(newEntry);
+      await sendMarks(newEntry);
       dispatch({ type: 'SET_AIM_VALUE', payload: '' });
       dispatch({ type: 'SET_DISTANCE_VALUE', payload: '' });
       Keyboard.dismiss();
     }
   }
 
-  function handleRemoveMark(index: number) {
-    if (calculatedMarks) {
-      calculatedMarks.given_marks.splice(index, 1);
-      calculatedMarks.given_distances.splice(index, 1);
-    }
+  async function handleRemoveMark(index: number) {
+    const newMarks = calculatedMarks.given_marks.filter((mark, i) => i !== index);
+    const newDistances = calculatedMarks.given_distances.filter((distance, i) => i !== index);
+    console.log(newMarks, newDistances);
+
+    await sendMarks({ aim: newMarks[0], distance: newDistances[0] });
   }
 
   return (
@@ -100,7 +106,7 @@ export default function Calculate() {
             type="filled"
             buttonStyle={{ marginLeft: 'auto', marginTop: 16 }}
             onPress={handleAddMark}
-            label="Legg til"
+            label="Beregn"
           />
         </View>
         {error && (
