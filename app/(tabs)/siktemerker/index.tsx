@@ -12,7 +12,7 @@ import { useCalcForm } from './useCalcForm';
 
 export default function Calculate() {
   const [calculatedMarks, setCalculatedMarks] = useState<CalculatedMarks>(null);
-  const { error, calculateBallisticsParams } = useBallisticsParams();
+  const { error, status, calculateBallisticsParams } = useBallisticsParams();
   const [{ aimError, aimValue, distanceError, distanceValue }, dispatch] = useCalcForm();
 
   async function sendMarks(newMark: MarkValue) {
@@ -68,7 +68,7 @@ export default function Calculate() {
     const newDistances = calculatedMarks.given_distances.filter((distance, i) => i !== index);
     console.log(newMarks, newDistances);
 
-    await sendMarks({ aim: newMarks[0], distance: newDistances[0] });
+    //await sendMarks({ aim: newMarks[0], distance: newDistances[0] });
   }
 
   return (
@@ -87,7 +87,7 @@ export default function Calculate() {
               value={distanceValue}
               onChangeText={(value) => handleDistanceChange(formatNumber(value))}
             />
-            {distanceError && <Text style={{ color: 'red' }}>Fyll inn avstand</Text>}
+            {distanceError && <Text style={{ color: 'red', fontSize: 13 }}>Fyll inn avstand</Text>}
           </View>
           <View>
             <Input
@@ -100,10 +100,12 @@ export default function Calculate() {
               value={aimValue}
               onChangeText={(value) => handleAimChange(formatNumber(value))}
             />
-            {aimError && <Text style={{ color: 'red' }}>Fyll inn siktemerke</Text>}
+            {aimError && <Text style={{ color: 'red', fontSize: 13 }}>Fyll inn siktemerke</Text>}
           </View>
           <Button
             type="filled"
+            width={100}
+            loading={status === 'pending'}
             buttonStyle={{ marginLeft: 'auto', marginTop: 16 }}
             onPress={handleAddMark}
             label="Beregn"
@@ -130,7 +132,7 @@ const styles = StyleSheet.create({
     display: 'flex',
     flexDirection: 'row',
     justifyContent: 'space-between',
-    alignItems: 'flex-end',
+    alignItems: 'center',
     marginBottom: 16,
   },
 });
