@@ -6,10 +6,12 @@ const editableTextInputColor = '#494949';
 
 interface InputProps extends TextInputProps {
   label: string;
+  error: boolean;
+  errorMessage?: string;
   placeholderText?: string;
 }
 
-const Input = ({ label, placeholderText, ...props }: InputProps) => {
+const Input = ({ label, error, errorMessage, placeholderText, ...props }: InputProps) => {
   const textInputColor = editableTextInputColor;
 
   const styles = StyleSheet.create({
@@ -36,6 +38,7 @@ const Input = ({ label, placeholderText, ...props }: InputProps) => {
         placeholderTextColor={textInputColor}
         {...props}
       />
+      {error && <Text style={{ color: 'red', fontSize: 13 }}>{errorMessage}</Text>}
     </View>
   );
 };

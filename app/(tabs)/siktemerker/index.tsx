@@ -84,10 +84,11 @@ export default function Calculate() {
               onBlur={() => dispatch({ type: 'SET_DISTANCE_ERROR', payload: false })}
               placeholderText="F.eks. 20"
               keyboardType="numeric"
+              error={distanceError}
+              errorMessage="Fyll inn avstand"
               value={distanceValue}
               onChangeText={(value) => handleDistanceChange(formatNumber(value))}
             />
-            {distanceError && <Text style={{ color: 'red', fontSize: 13 }}>Fyll inn avstand</Text>}
           </View>
           <View>
             <Input
@@ -98,9 +99,10 @@ export default function Calculate() {
               placeholderText="F.eks. 2.35"
               keyboardType="numeric"
               value={aimValue}
+              error={aimError}
+              errorMessage="Fyll inn siktemerke"
               onChangeText={(value) => handleAimChange(formatNumber(value))}
             />
-            {aimError && <Text style={{ color: 'red', fontSize: 13 }}>Fyll inn siktemerke</Text>}
           </View>
           <Button
             type="filled"
