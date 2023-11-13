@@ -24,6 +24,7 @@ export default function Calculate() {
       body.given_marks = calculatedMarks.given_marks;
       body.given_distances = calculatedMarks.given_distances;
     }
+    console.log('body', body);
 
     try {
       const aimMarkResponse = await calculateBallisticsParams(body);
@@ -62,11 +63,9 @@ export default function Calculate() {
   }
 
   async function handleRemoveMark(index: number) {
-    const newMarks = calculatedMarks.given_marks.filter((mark, i) => i !== index);
-    const newDistances = calculatedMarks.given_distances.filter((distance, i) => i !== index);
-    console.log(newMarks, newDistances);
+    const newDistances = calculatedMarks.given_distances.filter((distance, i) => i === index);
 
-    //await sendMarks({ aim: newMarks[0], distance: newDistances[0] });
+    await sendMarks({ aim: 9999, distance: newDistances[0] });
   }
 
   return (
