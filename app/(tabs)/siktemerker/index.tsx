@@ -4,9 +4,7 @@ import { Keyboard, StyleSheet, Text, TouchableWithoutFeedback, View } from 'reac
 
 import { Button, Input } from '../../../components/common';
 import { AimDistanceMark, CalculatedMarks, MarkValue } from '../../../types';
-import { Ballistics } from '../../../utils/Constants';
-import { formatNumber } from '../../../utils/helpers/formatNumber';
-import useBallisticsParams from '../../../utils/hooks/useBallisticsParams';
+import { Ballistics, formatNumber, useBallisticsParams } from '../../../utils/';
 import MarksTable from './MarksTable';
 import { useCalcForm } from './useCalcForm';
 
