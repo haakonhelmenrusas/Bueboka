@@ -1,17 +1,16 @@
 import * as Sentry from '@sentry/react-native';
-import { useState } from 'react';
 import { Keyboard, StyleSheet, Text, TouchableWithoutFeedback, View } from 'react-native';
 
 import { Button, Input } from '../../../components/common';
-import { AimDistanceMark, CalculatedMarks, MarkValue } from '../../../types';
-import { Ballistics, formatNumber, useBallisticsParams } from '../../../utils/';
+import { AimDistanceMark, MarkValue } from '../../../types';
+import { Ballistics, formatNumber, storeLocalStorage, useBallisticsParams, useLocalStorage } from '../../../utils/';
 import MarksTable from './MarksTable';
 import { useCalcForm } from './useCalcForm';
 
 export default function Calculate() {
-  const [calculatedMarks, setCalculatedMarks] = useState<CalculatedMarks>(null);
   const { error, status, calculateBallisticsParams } = useBallisticsParams();
   const [{ aimError, aimValue, distanceError, distanceValue }, dispatch] = useCalcForm();
+  const { data: ballistics } = useLocalStorage('ballistics');
 
   async function sendMarks(newMark: MarkValue) {
     const body: AimDistanceMark = {
@@ -20,16 +19,15 @@ export default function Calculate() {
       new_given_distance: newMark.distance,
     };
 
-    if (calculatedMarks) {
-      body.given_marks = calculatedMarks.given_marks;
-      body.given_distances = calculatedMarks.given_distances;
+    if (ballistics) {
+      body.given_marks = ballistics.given_marks;
+      body.given_distances = ballistics.given_distances;
     }
 
     try {
       const aimMarkResponse = await calculateBallisticsParams(body);
       if (aimMarkResponse) {
-        setCalculatedMarks(aimMarkResponse);
-        // TODO: Store in local storage
+        await storeLocalStorage(aimMarkResponse, 'ballistics');
       }
     } catch (error) {
       Sentry.captureException(error);
@@ -62,7 +60,7 @@ export default function Calculate() {
   }
 
   async function handleRemoveMark(index: number) {
-    const newDistances = calculatedMarks.given_distances.filter((distance, i) => i === index);
+    const newDistances = ballistics.given_distances.filter((distance, i) => i === index);
 
     await sendMarks({ aim: 9999, distance: newDistances[0] });
   }
@@ -114,7 +112,7 @@ export default function Calculate() {
             <View style={{ marginBottom: 8, padding: 8 }}>Obs, noe gikk galt. Prøv igjen senere.</View>
           </>
         )}
-        <MarksTable ballistics={calculatedMarks} removeMark={handleRemoveMark} />
+        <MarksTable ballistics={ballistics} removeMark={handleRemoveMark} />
       </View>
     </TouchableWithoutFeedback>
   );

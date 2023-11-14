@@ -8,7 +8,7 @@ import * as Sentry from '@sentry/react-native';
  * @param value Data to store in local storage
  * @param key Key to store data under
  */
-export const storeData = async (value, key: string) => {
+export const storeLocalStorage = async (value, key: string) => {
   try {
     const jsonValue = JSON.stringify(value);
     await AsyncStorage.setItem(key, jsonValue);
