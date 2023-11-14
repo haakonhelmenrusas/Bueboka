@@ -19,14 +19,14 @@
     },
     "android": {
       "package": "com.aaronshade.bueboka",
-      "versionCode": 9,
+      "versionCode": 10,
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/icon.png",
         "backgroundColor": "#FFFFFF"
       }
     },
     "ios": {
-      "buildNumber": "1.6.0",
+      "buildNumber": "1.7.0",
       "bundleIdentifier": "com.aaronshade.bueboka",
       "infoPlist": {
         "CFBundleIconName": "./assets/images/ipad.png"
@@ -38,9 +38,7 @@
     "updates": {
       "url": "https://u.expo.dev/a740b024-fdf9-420d-9998-a6ae076ebc43"
     },
-    "plugins": [
-      "sentry-expo"
-    ],
+    "plugins": ["sentry-expo"],
     "hooks": {
       "postPublish": [
         {
