@@ -24,7 +24,6 @@ export default function Calculate() {
       body.given_marks = calculatedMarks.given_marks;
       body.given_distances = calculatedMarks.given_distances;
     }
-    console.log('body', body);
 
     try {
       const aimMarkResponse = await calculateBallisticsParams(body);
