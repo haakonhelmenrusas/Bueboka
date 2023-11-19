@@ -43,7 +43,7 @@ const MarksForm: FC<MarksFormProps> = ({ sendMarks, status }) => {
     <View style={styles.form}>
       <View>
         <Input
-          textAlign="right"
+          textAlign="center"
           maxLength={100}
           label="Avstand"
           onBlur={() => dispatch({ type: 'SET_DISTANCE_ERROR', payload: false })}
@@ -57,11 +57,11 @@ const MarksForm: FC<MarksFormProps> = ({ sendMarks, status }) => {
       </View>
       <View>
         <Input
-          textAlign="right"
+          textAlign="center"
           maxLength={15}
           label="Merke"
           onBlur={() => dispatch({ type: 'SET_AIM_ERROR', payload: false })}
-          placeholderText="F.eks. 2.35"
+          placeholderText="F.eks. 2.3"
           keyboardType="numeric"
           value={aimValue}
           error={aimError}
