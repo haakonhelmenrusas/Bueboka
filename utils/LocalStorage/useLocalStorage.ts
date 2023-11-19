@@ -8,21 +8,22 @@ import { useEffect, useState } from 'react';
  * @param key Key to retrieve data from local storage.
  * @returns Data stored under key.
  */
-const getLocalStorage = async (key: string) => {
+const getLocalStorage = async <T>(key: string): Promise<T | null> => {
   try {
     const jsonValue = await AsyncStorage.getItem(key);
     return jsonValue != null ? JSON.parse(jsonValue) : null;
   } catch (error) {
     Sentry.captureException(error);
+    return null;
   }
 };
 
-const useLocalStorage = (key: string) => {
-  const [data, setData] = useState(null);
+const useLocalStorage = <T>(key: string) => {
+  const [data, setData] = useState<T | null>(null);
 
   useEffect(() => {
     const getData = async () => {
-      const data = await getLocalStorage(key);
+      const data = await getLocalStorage<T>(key);
       setData(data);
     };
     getData();

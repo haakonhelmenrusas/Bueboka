@@ -2,7 +2,7 @@ import * as Sentry from '@sentry/react-native';
 import { Keyboard, StyleSheet, Text, TouchableWithoutFeedback, View } from 'react-native';
 
 import { Button, Input } from '../../../components/common';
-import { AimDistanceMark, MarkValue } from '../../../types';
+import { AimDistanceMark, CalculatedMarks, MarkValue } from '../../../types';
 import { Ballistics, formatNumber, storeLocalStorage, useBallisticsParams, useLocalStorage } from '../../../utils/';
 import MarksTable from './MarksTable';
 import { useCalcForm } from './useCalcForm';
@@ -10,7 +10,7 @@ import { useCalcForm } from './useCalcForm';
 export default function Calculate() {
   const { error, status, calculateBallisticsParams } = useBallisticsParams();
   const [{ aimError, aimValue, distanceError, distanceValue }, dispatch] = useCalcForm();
-  const { data: ballistics } = useLocalStorage('ballistics');
+  const { data: ballistics } = useLocalStorage<CalculatedMarks>('ballistics');
 
   async function sendMarks(newMark: MarkValue) {
     const body: AimDistanceMark = {
@@ -60,7 +60,7 @@ export default function Calculate() {
   }
 
   async function handleRemoveMark(index: number) {
-    const newDistances = ballistics.given_distances.filter((distance, i) => i === index);
+    const newDistances = ballistics.given_distances.filter((_distance: any, i: number) => i === index);
 
     await sendMarks({ aim: 9999, distance: newDistances[0] });
   }
