@@ -57,7 +57,7 @@ export default function Calculate() {
         <MarksForm sendMarks={sendMarks} status={status} />
         {error && (
           <>
-            <View style={{ marginBottom: 8, padding: 8 }}>Obs, noe gikk galt. Prøv igjen senere.</View>
+            <View style={{ marginBottom: 8, padding: 8 }}>Oisann, noe gikk galt. Prøv igjen senere.</View>
           </>
         )}
         <MarksTable ballistics={ballistics} removeMark={handleRemoveMark} />
