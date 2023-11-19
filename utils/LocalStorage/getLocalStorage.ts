@@ -1,6 +1,5 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as Sentry from '@sentry/react-native';
-import { useEffect, useState } from 'react';
 
 /**
  * Function to retrieve data from local storage on device.
@@ -18,21 +17,4 @@ const getLocalStorage = async <T>(key: string): Promise<T | null> => {
   }
 };
 
-const useLocalStorage = <T>(key: string) => {
-  const [data, setData] = useState<T | null>(null);
-
-  useEffect(() => {
-    const getData = async () => {
-      const data = await getLocalStorage<T>(key);
-      setData(data);
-    };
-    getData();
-  }, [key]);
-
-  return {
-    data,
-    getLocalStorage,
-  };
-};
-
-export default useLocalStorage;
+export default getLocalStorage;

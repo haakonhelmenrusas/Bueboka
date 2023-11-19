@@ -1,16 +1,25 @@
 import * as Sentry from '@sentry/react-native';
+import { useEffect, useState } from 'react';
 import { Keyboard, StyleSheet, Text, TouchableWithoutFeedback, View } from 'react-native';
 
 import { Button, Input } from '../../../components/common';
 import { AimDistanceMark, CalculatedMarks, MarkValue } from '../../../types';
-import { Ballistics, formatNumber, storeLocalStorage, useBallisticsParams, useLocalStorage } from '../../../utils/';
+import { Ballistics, formatNumber, getLocalStorage, storeLocalStorage, useBallisticsParams } from '../../../utils/';
 import MarksTable from './MarksTable';
 import { useCalcForm } from './useCalcForm';
 
 export default function Calculate() {
+  const [ballistics, setBallistics] = useState<CalculatedMarks | null>(null);
   const { error, status, calculateBallisticsParams } = useBallisticsParams();
   const [{ aimError, aimValue, distanceError, distanceValue }, dispatch] = useCalcForm();
-  const { data: ballistics } = useLocalStorage<CalculatedMarks>('ballistics');
+
+  useEffect(() => {
+    getLocalStorage<CalculatedMarks>('ballistics').then((data) => {
+      if (data) {
+        setBallistics(data);
+      }
+    });
+  }, []);
 
   async function sendMarks(newMark: MarkValue) {
     const body: AimDistanceMark = {
@@ -27,7 +36,10 @@ export default function Calculate() {
     try {
       const aimMarkResponse = await calculateBallisticsParams(body);
       if (aimMarkResponse) {
-        await storeLocalStorage(aimMarkResponse, 'ballistics');
+        storeLocalStorage(aimMarkResponse, 'ballistics').then(async () => {
+          const ballisticsData = await getLocalStorage<CalculatedMarks>('ballistics');
+          setBallistics(ballisticsData);
+        });
       }
     } catch (error) {
       Sentry.captureException(error);
