@@ -50,7 +50,7 @@ const MarksForm: FC<MarksFormProps> = ({ sendMarks, status }) => {
           placeholderText="F.eks. 20"
           keyboardType="numeric"
           error={distanceError}
-          errorMessage="Fyll inn avstand"
+          errorMessage="Fyll inn"
           value={distanceValue}
           onChangeText={(value) => handleDistanceChange(formatNumber(value))}
         />
@@ -65,7 +65,7 @@ const MarksForm: FC<MarksFormProps> = ({ sendMarks, status }) => {
           keyboardType="numeric"
           value={aimValue}
           error={aimError}
-          errorMessage="Fyll inn siktemerke"
+          errorMessage="Fyll inn"
           onChangeText={(value) => handleAimChange(formatNumber(value))}
         />
       </View>
@@ -85,9 +85,8 @@ const styles = StyleSheet.create({
   form: {
     display: 'flex',
     flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: 16,
+    alignItems: 'flex-end',
+    marginBottom: 32,
   },
 });
 
