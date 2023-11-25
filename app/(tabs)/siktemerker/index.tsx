@@ -78,6 +78,7 @@ export default function Calculate() {
         // Store marks set in local storage
         await storeLocalStorage(marksSet, name);
         setBallistics(null);
+        setName('');
       } catch (error) {
         Sentry.captureException(error);
       }
