@@ -36,6 +36,7 @@ const Button: React.FC<ButtonProps> = ({
           alignItems: 'center',
           width: width,
           borderColor: buttonColor,
+          borderWidth: type === 'outline' ? 1 : 0,
           paddingVertical: 12,
           paddingHorizontal: 24,
           borderRadius: 32,
