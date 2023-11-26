@@ -5,10 +5,11 @@ import { Keyboard, StyleSheet, Text, TouchableWithoutFeedback, View } from 'reac
 import { Button } from '../../../components/common';
 import { AimDistanceMark, CalculatedMarks, MarkValue } from '../../../types';
 import { Ballistics, getLocalStorage, storeLocalStorage, useBallisticsParams } from '../../../utils/';
-import { MarksForm, MarksTable, SetModal } from './components';
+import { ConfirmRemoveMarks, MarksForm, MarksTable, SetModal } from './components';
 
 export default function Calculate() {
   const [modalVisible, setModalVisible] = useState(false);
+  const [conformationModalVisible, setConformationModalVisible] = useState(false);
   const [ballistics, setBallistics] = useState<CalculatedMarks | null>(null);
   const { error, status, calculateBallisticsParams } = useBallisticsParams();
 
@@ -68,15 +69,7 @@ export default function Calculate() {
         <MarksTable ballistics={ballistics} removeMark={handleRemoveMark} />
         {ballistics && ballistics.given_marks.length > 0 && (
           <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 'auto' }}>
-            <Button
-              label="Fjern merker"
-              type="outline"
-              onPress={() => {
-                storeLocalStorage(null, 'ballistics').then(() => {
-                  setBallistics(null);
-                });
-              }}
-            />
+            <Button label="Fjern merker" type="outline" onPress={() => setConformationModalVisible(true)} />
             <Button label="Lagre sett" type="filled" onPress={() => openModal()} />
           </View>
         )}
@@ -85,6 +78,11 @@ export default function Calculate() {
           closeModal={closeModal}
           setBallistics={setBallistics}
           ballistics={ballistics}
+        />
+        <ConfirmRemoveMarks
+          modalVisible={conformationModalVisible}
+          setBallistics={setBallistics}
+          closeModal={() => setConformationModalVisible(false)}
         />
       </View>
     </TouchableWithoutFeedback>
