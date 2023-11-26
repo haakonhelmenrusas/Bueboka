@@ -66,18 +66,20 @@ export default function Calculate() {
         <MarksForm sendMarks={sendMarks} status={status} />
         {error && <View style={{ marginBottom: 8, padding: 8 }}>Oisann, noe gikk galt. Prøv igjen!</View>}
         <MarksTable ballistics={ballistics} removeMark={handleRemoveMark} />
-        <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 'auto' }}>
-          <Button
-            label="Fjern merker"
-            type="outline"
-            onPress={() => {
-              storeLocalStorage(null, 'ballistics').then(() => {
-                setBallistics(null);
-              });
-            }}
-          />
-          <Button label="Lagre sett" type="filled" onPress={() => openModal()} />
-        </View>
+        {ballistics && ballistics.given_marks.length > 0 && (
+          <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 'auto' }}>
+            <Button
+              label="Fjern merker"
+              type="outline"
+              onPress={() => {
+                storeLocalStorage(null, 'ballistics').then(() => {
+                  setBallistics(null);
+                });
+              }}
+            />
+            <Button label="Lagre sett" type="filled" onPress={() => openModal()} />
+          </View>
+        )}
         <SetModal
           modalVisible={modalVisible}
           closeModal={closeModal}
