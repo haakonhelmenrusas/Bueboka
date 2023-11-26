@@ -1,6 +1,7 @@
 import { faTrash } from '@fortawesome/free-solid-svg-icons/faTrash';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { StyleSheet, Text, View } from 'react-native';
+
 import Button from '../../../../components/common/Button';
 import { CalculatedMarks } from '../../../../types';
 

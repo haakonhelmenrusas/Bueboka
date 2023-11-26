@@ -5,9 +5,7 @@ import { Keyboard, StyleSheet, Text, TouchableWithoutFeedback, View } from 'reac
 import { Button } from '../../../components/common';
 import { AimDistanceMark, CalculatedMarks, MarkValue } from '../../../types';
 import { Ballistics, getLocalStorage, storeLocalStorage, useBallisticsParams } from '../../../utils/';
-import MarksForm from './components/MarksForm';
-import MarksTable from './components/MarksTable';
-import SetModal from './components/SetModal';
+import { MarksForm, MarksTable, SetModal } from './components';
 
 export default function Calculate() {
   const [modalVisible, setModalVisible] = useState(false);
