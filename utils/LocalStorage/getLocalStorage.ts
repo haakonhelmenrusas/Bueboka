@@ -1,5 +1,5 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import * as Sentry from '@sentry/react-native';
+import { captureException } from '@sentry/react-native';
 
 /**
  * Function to retrieve data from local storage on device.
@@ -12,7 +12,7 @@ const getLocalStorage = async <T>(key: string): Promise<T | null> => {
     const jsonValue = await AsyncStorage.getItem(key);
     return jsonValue != null ? JSON.parse(jsonValue) : null;
   } catch (error) {
-    Sentry.captureException(error);
+    captureException(error);
     return null;
   }
 };

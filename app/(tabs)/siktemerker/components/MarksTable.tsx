@@ -33,7 +33,7 @@ export default function MarksTable({ ballistics, removeMark }: CalculationTableP
   return (
     <View>
       <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
-        <Text style={[styles.thead, styles.heading]}>Avstand</Text>
+        <Text style={[styles.thead, styles.heading, { marginLeft: -8 }]}>Avstand</Text>
         <Text style={[styles.thead, styles.heading]}>Merke</Text>
         <Text style={[styles.thead, styles.heading]}>Beregnet</Text>
         <Text style={styles.theadEnd}></Text>
@@ -75,7 +75,7 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   info: {
-    marginTop: 8,
+    margin: 8,
     fontSize: 16,
   },
 });

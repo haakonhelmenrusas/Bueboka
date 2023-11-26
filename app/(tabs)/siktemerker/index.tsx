@@ -1,16 +1,16 @@
-import * as Sentry from '@sentry/react-native';
+import { captureException } from '@sentry/react-native';
 import { useEffect, useState } from 'react';
-import { Keyboard, Modal, StyleSheet, Text, TouchableWithoutFeedback, View } from 'react-native';
+import { Keyboard, StyleSheet, Text, TouchableWithoutFeedback, View } from 'react-native';
 
-import { Button, Input } from '../../../components/common';
+import { Button } from '../../../components/common';
 import { AimDistanceMark, CalculatedMarks, MarkValue } from '../../../types';
 import { Ballistics, getLocalStorage, storeLocalStorage, useBallisticsParams } from '../../../utils/';
 import MarksForm from './components/MarksForm';
 import MarksTable from './components/MarksTable';
+import SetModal from './components/SetModal';
 
 export default function Calculate() {
   const [modalVisible, setModalVisible] = useState(false);
-  const [name, setName] = useState('');
   const [ballistics, setBallistics] = useState<CalculatedMarks | null>(null);
   const { error, status, calculateBallisticsParams } = useBallisticsParams();
 
@@ -28,11 +28,6 @@ export default function Calculate() {
 
   const closeModal = () => {
     setModalVisible(false);
-  };
-
-  const handleSave = () => {
-    storeMarksWithName(name);
-    closeModal();
   };
 
   async function sendMarks(newMark: MarkValue) {
@@ -56,7 +51,7 @@ export default function Calculate() {
         });
       }
     } catch (error) {
-      Sentry.captureException(error);
+      captureException(error);
     }
   }
 
@@ -66,35 +61,12 @@ export default function Calculate() {
     await sendMarks({ aim: 9999, distance: newDistances[0] });
   }
 
-  async function storeMarksWithName(name: string) {
-    if (ballistics) {
-      const marksSet = {
-        name: name,
-        marks: ballistics.given_marks,
-        distances: ballistics.given_distances,
-      };
-
-      try {
-        // Store marks set in local storage
-        await storeLocalStorage(marksSet, name);
-        setBallistics(null);
-        setName('');
-      } catch (error) {
-        Sentry.captureException(error);
-      }
-    }
-  }
-
   return (
     <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
       <View style={{ flex: 1 }}>
         <Text style={styles.title}>Siktemerker</Text>
         <MarksForm sendMarks={sendMarks} status={status} />
-        {error && (
-          <>
-            <View style={{ marginBottom: 8, padding: 8 }}>Oisann, noe gikk galt. Prøv igjen senere.</View>
-          </>
-        )}
+        {error && <View style={{ marginBottom: 8, padding: 8 }}>Oisann, noe gikk galt. Prøv igjen!</View>}
         <MarksTable ballistics={ballistics} removeMark={handleRemoveMark} />
         <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 'auto' }}>
           <Button
@@ -106,23 +78,14 @@ export default function Calculate() {
               });
             }}
           />
-          <Button label="Opprett sett" type="filled" onPress={() => openModal()} />
+          <Button label="Lagre sett" type="filled" onPress={() => openModal()} />
         </View>
-        <Modal visible={modalVisible} animationType="fade">
-          <View style={{ flex: 1, margin: 32, justifyContent: 'center', alignItems: 'center' }}>
-            <Input
-              label="Sett navn på settet"
-              error={false}
-              onChangeText={setName}
-              value={name}
-              placeholder="Enter name"
-            />
-            <View style={{ flexDirection: 'row', marginTop: 24, justifyContent: 'space-between' }}>
-              <Button type="outline" label="Avbryt" onPress={closeModal} />
-              <Button label="Lagre sett" onPress={handleSave} />
-            </View>
-          </View>
-        </Modal>
+        <SetModal
+          modalVisible={modalVisible}
+          closeModal={closeModal}
+          setBallistics={setBallistics}
+          ballistics={ballistics}
+        />
       </View>
     </TouchableWithoutFeedback>
   );
