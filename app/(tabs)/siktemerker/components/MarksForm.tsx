@@ -4,7 +4,7 @@ import { Keyboard, StyleSheet, View } from 'react-native';
 import { Button, Input } from '../../../../components/common';
 import { MarkValue } from '../../../../types';
 import { formatNumber } from '../../../../utils';
-import { useCalcForm } from './';
+import { useCalcForm } from './useCalcForm';
 
 interface MarksFormProps {
   status: string;

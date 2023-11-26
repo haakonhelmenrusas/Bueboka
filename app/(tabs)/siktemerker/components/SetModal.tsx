@@ -33,6 +33,7 @@ const SetModal = ({ modalVisible, closeModal, setBallistics, ballistics }: Props
           setList.push(marksSet);
           storeLocalStorage(setList, 'marksSets');
           setBallistics(null);
+          setNameError('');
           setName('');
           closeModal();
         }
@@ -42,15 +43,14 @@ const SetModal = ({ modalVisible, closeModal, setBallistics, ballistics }: Props
         storeLocalStorage(marksSets, 'marksSets');
         setBallistics(null);
         setName('');
+        setNameError('');
         closeModal();
       }
     }
   }
 
   const handleSave = async () => {
-    storeMarksWithName(name);
-    setNameError('');
-    closeModal();
+    await storeMarksWithName(name);
   };
 
   return (
