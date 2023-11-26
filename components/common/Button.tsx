@@ -23,8 +23,8 @@ const Button: React.FC<ButtonProps> = ({
   loading = false,
   ...props
 }) => {
-  const buttonColor = type === 'outline' ? 'transparent' : 'blue';
-  const textColor = type === 'outline' ? 'blue' : 'white';
+  const buttonColor = type === 'outline' ? 'transparent' : '#0066b2';
+  const textColor = type === 'outline' ? '#0066b2' : 'white';
 
   return (
     <Pressable
@@ -35,9 +35,11 @@ const Button: React.FC<ButtonProps> = ({
           justifyContent: 'center',
           alignItems: 'center',
           width: width,
+          borderColor: buttonColor,
+          borderWidth: type === 'outline' ? 1 : 0,
           paddingVertical: 12,
           paddingHorizontal: 24,
-          borderRadius: 4,
+          borderRadius: 32,
           height: 48,
         },
         buttonStyle,

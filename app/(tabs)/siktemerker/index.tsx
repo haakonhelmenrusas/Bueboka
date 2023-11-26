@@ -1,13 +1,15 @@
-import * as Sentry from '@sentry/react-native';
+import { captureException } from '@sentry/react-native';
 import { useEffect, useState } from 'react';
 import { Keyboard, StyleSheet, Text, TouchableWithoutFeedback, View } from 'react-native';
 
+import { Button } from '../../../components/common';
 import { AimDistanceMark, CalculatedMarks, MarkValue } from '../../../types';
 import { Ballistics, getLocalStorage, storeLocalStorage, useBallisticsParams } from '../../../utils/';
-import MarksForm from './components/MarksForm';
-import MarksTable from './components/MarksTable';
+import { ConfirmRemoveMarks, MarksForm, MarksTable, SetModal } from './components';
 
 export default function Calculate() {
+  const [modalVisible, setModalVisible] = useState(false);
+  const [conformationModalVisible, setConformationModalVisible] = useState(false);
   const [ballistics, setBallistics] = useState<CalculatedMarks | null>(null);
   const { error, status, calculateBallisticsParams } = useBallisticsParams();
 
@@ -18,6 +20,14 @@ export default function Calculate() {
       }
     });
   }, []);
+
+  const openModal = () => {
+    setModalVisible(true);
+  };
+
+  const closeModal = () => {
+    setModalVisible(false);
+  };
 
   async function sendMarks(newMark: MarkValue) {
     const body: AimDistanceMark = {
@@ -40,7 +50,7 @@ export default function Calculate() {
         });
       }
     } catch (error) {
-      Sentry.captureException(error);
+      captureException(error);
     }
   }
 
@@ -55,12 +65,25 @@ export default function Calculate() {
       <View style={{ flex: 1 }}>
         <Text style={styles.title}>Siktemerker</Text>
         <MarksForm sendMarks={sendMarks} status={status} />
-        {error && (
-          <>
-            <View style={{ marginBottom: 8, padding: 8 }}>Oisann, noe gikk galt. Prøv igjen senere.</View>
-          </>
-        )}
+        {error && <View style={{ marginBottom: 8, padding: 8 }}>Oisann, noe gikk galt. Prøv igjen!</View>}
         <MarksTable ballistics={ballistics} removeMark={handleRemoveMark} />
+        {ballistics && ballistics.given_marks.length > 0 && (
+          <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 'auto' }}>
+            <Button label="Fjern merker" type="outline" onPress={() => setConformationModalVisible(true)} />
+            <Button label="Lagre sett" type="filled" onPress={() => openModal()} />
+          </View>
+        )}
+        <SetModal
+          modalVisible={modalVisible}
+          closeModal={closeModal}
+          setBallistics={setBallistics}
+          ballistics={ballistics}
+        />
+        <ConfirmRemoveMarks
+          modalVisible={conformationModalVisible}
+          setBallistics={setBallistics}
+          closeModal={() => setConformationModalVisible(false)}
+        />
       </View>
     </TouchableWithoutFeedback>
   );
