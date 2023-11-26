@@ -64,7 +64,10 @@
     "extends": "universe/native"
   },
   "jest": {
-    "preset": "jest-expo"
+    "preset": "jest-expo",
+    "setupFiles": [
+      "./jestSetup.ts"
+    ]
   },
   "name": "bueboka",
   "version": "1.0.0",
