@@ -30,6 +30,6 @@ describe('Button', () => {
 
   test('renders a button with the correct text color when type is outline', () => {
     const { getByText } = render(<Button label="Click me!" type="outline" />);
-    expect(getByText('Click me!').props.style[1].color).toBe('blue');
+    expect(getByText('Click me!').props.style[1].color).toBe('#0066b2');
   });
 });
