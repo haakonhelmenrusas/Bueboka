@@ -29,7 +29,7 @@ const Input = ({ label, error, errorMessage, placeholderText, ...props }: InputP
   });
 
   return (
-    <View style={styles.container} accessible accessibilityLabel={isAndroid ? label : `${label}${': Disabled!'}`}>
+    <View style={styles.container} accessibilityLabel={isAndroid ? label : `${label}${': Disabled!'}`}>
       <Text style={styles.label}>{label}</Text>
       <TextInput
         testID="input"
