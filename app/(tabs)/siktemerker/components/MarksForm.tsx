@@ -73,7 +73,7 @@ const MarksForm: FC<MarksFormProps> = ({ sendMarks, status }) => {
         type="filled"
         width={100}
         loading={status === 'pending'}
-        buttonStyle={{ marginLeft: 'auto', marginTop: 16 }}
+        buttonStyle={{ marginLeft: 'auto', marginTop: 28 }}
         onPress={handleAddMark}
         label="Beregn"
       />
@@ -85,7 +85,6 @@ const styles = StyleSheet.create({
   form: {
     display: 'flex',
     flexDirection: 'row',
-    alignItems: 'flex-end',
     marginBottom: 32,
   },
 });
