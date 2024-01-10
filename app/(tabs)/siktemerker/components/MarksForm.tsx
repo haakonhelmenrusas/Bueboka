@@ -41,34 +41,30 @@ const MarksForm: FC<MarksFormProps> = ({ sendMarks, status }) => {
 
   return (
     <View style={styles.form}>
-      <View>
-        <Input
-          textAlign="center"
-          maxLength={100}
-          label="Avstand"
-          onBlur={() => dispatch({ type: 'SET_DISTANCE_ERROR', payload: false })}
-          placeholderText="F.eks. 20"
-          keyboardType="numeric"
-          error={distanceError}
-          errorMessage="Fyll inn"
-          value={distanceValue}
-          onChangeText={(value) => handleDistanceChange(formatNumber(value))}
-        />
-      </View>
-      <View>
-        <Input
-          textAlign="center"
-          maxLength={15}
-          label="Merke"
-          onBlur={() => dispatch({ type: 'SET_AIM_ERROR', payload: false })}
-          placeholderText="F.eks. 2.3"
-          keyboardType="numeric"
-          value={aimValue}
-          error={aimError}
-          errorMessage="Fyll inn"
-          onChangeText={(value) => handleAimChange(formatNumber(value))}
-        />
-      </View>
+      <Input
+        textAlign="center"
+        maxLength={100}
+        label="Avstand"
+        onBlur={() => dispatch({ type: 'SET_DISTANCE_ERROR', payload: false })}
+        placeholderText="F.eks. 20"
+        keyboardType="numeric"
+        error={distanceError}
+        errorMessage="Fyll inn"
+        value={distanceValue}
+        onChangeText={(value) => handleDistanceChange(formatNumber(value))}
+      />
+      <Input
+        textAlign="center"
+        maxLength={15}
+        label="Merke"
+        onBlur={() => dispatch({ type: 'SET_AIM_ERROR', payload: false })}
+        placeholderText="F.eks. 2.3"
+        keyboardType="numeric"
+        value={aimValue}
+        error={aimError}
+        errorMessage="Fyll inn"
+        onChangeText={(value) => handleAimChange(formatNumber(value))}
+      />
       <Button
         type="filled"
         width={100}

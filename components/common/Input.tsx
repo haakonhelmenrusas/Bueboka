@@ -15,7 +15,7 @@ const Input = ({ label, error, errorMessage, placeholderText, ...props }: InputP
   const textInputColor = editableTextInputColor;
 
   const styles = StyleSheet.create({
-    container: { marginBottom: 16, height: 48, marginRight: 8, width: '100%' },
+    container: { marginBottom: 16, height: 48, marginRight: 8 },
     label: { color: textInputColor, fontWeight: '500', fontSize: 16, marginBottom: 4 },
     input: {
       backgroundColor: '#FFF',
