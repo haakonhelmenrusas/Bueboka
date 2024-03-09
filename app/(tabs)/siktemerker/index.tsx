@@ -7,7 +7,7 @@ export default function Calculate() {
   const [screen, setScreen] = useState('calculate');
 
   return (
-    <View style={{ flex: 1 }}>
+    <View style={styles.container}>
       <Text style={styles.title}>Beregn siktemerker</Text>
       <View style={styles.header}>
         <Text
@@ -27,9 +27,12 @@ export default function Calculate() {
   );
 }
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
   title: {
     fontSize: 24,
-    fontWeight: 'bold',
+    fontWeight: '500',
     marginBottom: 16,
     marginTop: 16,
   },
@@ -37,10 +40,11 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     marginBottom: 16,
+    paddingHorizontal: 16,
   },
   headerText: {
     fontSize: 18,
-    fontWeight: 'bold',
+    fontWeight: '600',
     textDecorationLine: 'none',
   },
   underline: {
