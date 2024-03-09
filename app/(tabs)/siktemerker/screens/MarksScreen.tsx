@@ -19,9 +19,26 @@ export default function MarksScreen({ setScreen }: MarksScreenProps) {
     });
   }, []);
 
+  function renderMessageTitle() {
+    if (ballistics) {
+      return ballistics.given_distances.length < 1 && 'For få siktemerker';
+    }
+    return 'Ingen siktemerker';
+  }
+
+  function renderMessageDescription() {
+    if (ballistics) {
+      return (
+        ballistics.given_distances.length < 1 &&
+        'For å beregne siktemerker må du legge til minst to merker i innskyting.'
+      );
+    }
+    return 'For å beregne siktemerker må du gjøre innskytinger.';
+  }
+
   return (
     <View>
-      {ballistics ? (
+      {ballistics && ballistics.given_distances.length > 1 ? (
         <View>
           <View style={styles.header}>
             <Text style={styles.headerText}>Distance</Text>
@@ -36,8 +53,8 @@ export default function MarksScreen({ setScreen }: MarksScreenProps) {
         </View>
       ) : (
         <Message
-          title="Ingen siktemerker lagt til"
-          description="For å beregne siktemerker må du legge til minst én innskyting."
+          title={renderMessageTitle()}
+          description={renderMessageDescription()}
           onPress={() => setScreen('calculate')}
           buttonLabel="Gå til innskyting"
         />
