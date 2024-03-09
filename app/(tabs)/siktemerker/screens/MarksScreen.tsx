@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
-import { Button } from '../../../../components/common';
+import { Message } from '../../../../components/common';
 import { CalculatedMarks } from '../../../../types';
 import { getLocalStorage } from '../../../../utils';
 
@@ -35,11 +35,12 @@ export default function MarksScreen({ setScreen }: MarksScreenProps) {
           ))}
         </View>
       ) : (
-        <View style={styles.messageContainer}>
-          <Text style={styles.messageTitle}>Her var det tomt</Text>
-          <Text style={styles.messageText}>For å vise siktemerker gjør først Innskyting</Text>
-          <Button onPress={() => setScreen('calculate')} label="Gå til Innskyting" />
-        </View>
+        <Message
+          title="Ingen siktemerker lagt til"
+          description="For å beregne siktemerker må du legge til minst én innskyting."
+          onPress={() => setScreen('calculate')}
+          buttonLabel="Gå til innskyting"
+        />
       )}
     </View>
   );
@@ -56,19 +57,5 @@ const styles = StyleSheet.create({
   },
   row: {
     flexDirection: 'row',
-  },
-  messageContainer: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    height: '80%',
-  },
-  messageTitle: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    marginBottom: 16,
-  },
-  messageText: {
-    fontSize: 16,
-    marginBottom: 16,
   },
 });
