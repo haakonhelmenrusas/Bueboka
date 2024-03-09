@@ -5,8 +5,8 @@ import Button from '../Button';
 interface MessageProps {
   title: string;
   description: string;
-  onPress: () => void;
-  buttonLabel: string;
+  onPress?: () => void;
+  buttonLabel?: string;
 }
 
 const Message: React.FC<MessageProps> = ({ title, description, onPress, buttonLabel }) => {
