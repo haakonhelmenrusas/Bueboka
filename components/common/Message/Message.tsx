@@ -14,7 +14,7 @@ const Message: React.FC<MessageProps> = ({ title, description, onPress, buttonLa
     <View style={styles.messageContainer}>
       <Text style={styles.messageTitle}>{title}</Text>
       <Text style={styles.messageText}>{description}</Text>
-      <Button onPress={onPress} label={buttonLabel} />
+      {onPress && buttonLabel && <Button onPress={onPress} label={buttonLabel} />}
     </View>
   );
 };
