@@ -1,8 +1,9 @@
 import { useEffect, useState } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
-import { Message } from '../../../../components/common';
+import { Button, Message } from '../../../../components/common';
 import { CalculatedMarks } from '../../../../types';
 import { getLocalStorage } from '../../../../utils';
+import CalculateMarksModal from '../components/CalculateMarksModal';
 
 interface MarksScreenProps {
   setScreen: (screen: string) => void;
@@ -10,6 +11,7 @@ interface MarksScreenProps {
 
 export default function MarksScreen({ setScreen }: MarksScreenProps) {
   const [ballistics, setBallistics] = useState<CalculatedMarks | null>(null);
+  const [modalVisible, setModalVisible] = useState(false);
 
   useEffect(() => {
     getLocalStorage<CalculatedMarks>('ballistics').then((data) => {
@@ -37,9 +39,9 @@ export default function MarksScreen({ setScreen }: MarksScreenProps) {
   }
 
   return (
-    <View>
+    <View style={styles.page}>
       {ballistics && ballistics.given_distances.length > 1 ? (
-        <View>
+        <View style={{ flex: 1 }}>
           <View style={styles.header}>
             <Text style={styles.headerText}>Distance</Text>
             <Text style={styles.headerText}>Mark</Text>
@@ -50,6 +52,14 @@ export default function MarksScreen({ setScreen }: MarksScreenProps) {
               <Text>{ballistics.given_marks[index]}</Text>
             </View>
           ))}
+          <View style={{ marginTop: 'auto' }}>
+            <Button disabled={modalVisible} label="Beregn siktemerker" onPress={() => setModalVisible(true)} />
+          </View>
+          <CalculateMarksModal
+            modalVisible={modalVisible}
+            closeModal={() => setModalVisible(false)}
+            ballistics={ballistics}
+          />
         </View>
       ) : (
         <Message
@@ -63,6 +73,10 @@ export default function MarksScreen({ setScreen }: MarksScreenProps) {
   );
 }
 const styles = StyleSheet.create({
+  page: {
+    flex: 1,
+    padding: 16,
+  },
   header: {
     flexDirection: 'row',
     marginBottom: 16,
