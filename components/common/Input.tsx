@@ -6,7 +6,7 @@ const editableTextInputColor = '#494949';
 
 interface InputProps extends TextInputProps {
   label: string;
-  error: boolean;
+  error?: boolean;
   errorMessage?: string;
   placeholderText?: string;
 }

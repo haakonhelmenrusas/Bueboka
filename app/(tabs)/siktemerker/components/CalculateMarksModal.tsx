@@ -4,20 +4,20 @@ import { useState } from 'react';
 import { Modal, StyleSheet, Text, View } from 'react-native';
 import { Button, Input } from '../../../../components/common';
 import { CalculatedMarks } from '../../../../types';
-import { formatNumber } from '../../../../utils';
+import { formatNumber, storeLocalStorage } from '../../../../utils';
 import useCalculateMarks from '../../../../utils/hooks/useCalculateMarks';
 
 interface Props {
   modalVisible: boolean;
   closeModal: () => void;
   ballistics: CalculatedMarks | null;
+  setCalculatedMarks: (calculatedMarks: CalculatedMarks) => void;
 }
 
-const CalculateMarksModal = ({ modalVisible, closeModal, ballistics }: Props) => {
+const CalculateMarksModal = ({ modalVisible, closeModal, ballistics, setCalculatedMarks }: Props) => {
   const [distanceFrom, setDistanceFrom] = useState<number | undefined>(undefined);
   const [distanceTo, setDistanceTo] = useState<number | undefined>(undefined);
   const [interval, setInterval] = useState<number | undefined>(undefined);
-  const [nameError, setNameError] = useState('');
   const { calculateMarks, status, error } = useCalculateMarks();
 
   const handleDistanceFromChange = (value: string) => {
@@ -42,14 +42,13 @@ const CalculateMarksModal = ({ modalVisible, closeModal, ballistics }: Props) =>
         };
         const res = await calculateMarks(body);
         console.log(res);
+        await storeLocalStorage(res, 'calculatedMarks');
+        setDistanceFrom(undefined);
+        setDistanceTo(undefined);
         closeModal();
       } else {
-        setNameError('Fyll ut alle feltene');
+        console.log('Missing values');
       }
-      setDistanceFrom(undefined);
-      setDistanceTo(undefined);
-      setNameError('');
-      closeModal();
     }
   }
 
@@ -72,7 +71,6 @@ const CalculateMarksModal = ({ modalVisible, closeModal, ballistics }: Props) =>
             maxLength={100}
             label="Fra avstand"
             keyboardType="numeric"
-            error={nameError.length > 0}
             value={distanceFrom && distanceFrom.toString()}
             onChangeText={(value) => handleDistanceFromChange(formatNumber(value))}
           />
@@ -81,7 +79,6 @@ const CalculateMarksModal = ({ modalVisible, closeModal, ballistics }: Props) =>
             maxLength={100}
             label="Til avstand"
             keyboardType="numeric"
-            error={nameError.length > 0}
             value={distanceTo && distanceTo.toString()}
             onChangeText={(value) => handleDistanceToChange(formatNumber(value))}
           />
@@ -90,7 +87,6 @@ const CalculateMarksModal = ({ modalVisible, closeModal, ballistics }: Props) =>
             maxLength={100}
             label="Intevall"
             keyboardType="numeric"
-            error={nameError.length > 0}
             value={interval && interval.toString()}
             onChangeText={(value) => handleIntervalChange(formatNumber(value))}
           />

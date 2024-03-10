@@ -11,12 +11,21 @@ interface MarksScreenProps {
 
 export default function MarksScreen({ setScreen }: MarksScreenProps) {
   const [ballistics, setBallistics] = useState<CalculatedMarks | null>(null);
+  const [calculatedMarks, setCalculatedMarks] = useState<CalculatedMarks | null>(null);
   const [modalVisible, setModalVisible] = useState(false);
 
   useEffect(() => {
     getLocalStorage<CalculatedMarks>('ballistics').then((data) => {
       if (data) {
         setBallistics(data);
+      }
+    });
+  }, []);
+
+  useEffect(() => {
+    getLocalStorage<CalculatedMarks>('calculatedMarks').then((data) => {
+      if (data) {
+        setCalculatedMarks(data);
       }
     });
   }, []);
@@ -43,8 +52,8 @@ export default function MarksScreen({ setScreen }: MarksScreenProps) {
       {ballistics && ballistics.given_distances.length > 1 ? (
         <View style={{ flex: 1 }}>
           <View style={styles.header}>
-            <Text style={styles.headerText}>Distance</Text>
-            <Text style={styles.headerText}>Mark</Text>
+            <Text style={styles.headerText}>Avstand</Text>
+            <Text style={styles.headerText}>Merke</Text>
           </View>
           {ballistics.given_distances.map((distance, index) => (
             <View style={styles.row} key={index}>
@@ -59,6 +68,7 @@ export default function MarksScreen({ setScreen }: MarksScreenProps) {
             modalVisible={modalVisible}
             closeModal={() => setModalVisible(false)}
             ballistics={ballistics}
+            setCalculatedMarks={setCalculatedMarks}
           />
         </View>
       ) : (
