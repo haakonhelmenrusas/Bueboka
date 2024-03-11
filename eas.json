@@ -3,8 +3,23 @@
     "version": ">= 3.9.3",
     "promptToConfigurePushNotifications": false
   },
+  "base": {
+    "android": {
+      "image": "default",
+      "env": {
+        "PLATFORM": "android"
+      }
+    },
+    "ios": {
+      "image": "latest",
+      "env": {
+        "PLATFORM": "ios"
+      }
+    }
+  },
   "build": {
     "development": {
+      "extends": "base",
       "developmentClient": true,
       "distribution": "internal",
       "ios": {
@@ -12,12 +27,14 @@
       }
     },
     "preview": {
+      "extends": "base",
       "distribution": "internal",
       "ios": {
         "resourceClass": "m-medium"
       }
     },
     "production": {
+      "extends": "base",
       "ios": {
         "channel": "main",
         "resourceClass": "m-medium"
