@@ -3,21 +3,21 @@
     "version": ">= 3.9.3",
     "promptToConfigurePushNotifications": false
   },
-  "base": {
-    "android": {
-      "image": "default",
-      "env": {
-        "PLATFORM": "android"
+  "build": {
+    "base": {
+      "android": {
+        "image": "default",
+        "env": {
+          "PLATFORM": "android"
+        }
+      },
+      "ios": {
+        "image": "latest",
+        "env": {
+          "PLATFORM": "ios"
+        }
       }
     },
-    "ios": {
-      "image": "latest",
-      "env": {
-        "PLATFORM": "ios"
-      }
-    }
-  },
-  "build": {
     "development": {
       "extends": "base",
       "developmentClient": true,
