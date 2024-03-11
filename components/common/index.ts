@@ -1,4 +1,5 @@
 import Button from './Button';
 import Input from './Input';
+import Message from './Message/Message';
 
-export { Input, Button };
+export { Button, Input, Message };

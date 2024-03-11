@@ -1,98 +1,53 @@
-import { captureException } from '@sentry/react-native';
-import { useEffect, useState } from 'react';
-import { Keyboard, StyleSheet, Text, TouchableWithoutFeedback, View } from 'react-native';
-
-import { Button } from '../../../components/common';
-import { AimDistanceMark, CalculatedMarks, MarkValue } from '../../../types';
-import { Ballistics, getLocalStorage, storeLocalStorage, useBallisticsParams } from '../../../utils/';
-import { ConfirmRemoveMarks, MarksForm, MarksTable, SetModal } from './components';
+import { useState } from 'react';
+import { StyleSheet, Text, View } from 'react-native';
+import CalculateScreen from './screens/CalculateScreen';
+import MarksScreen from './screens/MarksScreen';
 
 export default function Calculate() {
-  const [modalVisible, setModalVisible] = useState(false);
-  const [conformationModalVisible, setConformationModalVisible] = useState(false);
-  const [ballistics, setBallistics] = useState<CalculatedMarks | null>(null);
-  const { error, status, calculateBallisticsParams } = useBallisticsParams();
-
-  useEffect(() => {
-    getLocalStorage<CalculatedMarks>('ballistics').then((data) => {
-      if (data) {
-        setBallistics(data);
-      }
-    });
-  }, []);
-
-  const openModal = () => {
-    setModalVisible(true);
-  };
-
-  const closeModal = () => {
-    setModalVisible(false);
-  };
-
-  async function sendMarks(newMark: MarkValue) {
-    const body: AimDistanceMark = {
-      ...Ballistics,
-      new_given_mark: newMark.aim,
-      new_given_distance: newMark.distance,
-    };
-
-    if (ballistics) {
-      body.given_marks = ballistics.given_marks;
-      body.given_distances = ballistics.given_distances;
-    }
-
-    try {
-      const aimMarkResponse = await calculateBallisticsParams(body);
-      if (aimMarkResponse) {
-        storeLocalStorage(aimMarkResponse, 'ballistics').then(async () => {
-          const ballisticsData = await getLocalStorage<CalculatedMarks>('ballistics');
-          setBallistics(ballisticsData);
-        });
-      }
-    } catch (error) {
-      captureException(error);
-    }
-  }
-
-  async function handleRemoveMark(index: number) {
-    const newDistances = ballistics.given_distances.filter((_distance: any, i: number) => i === index);
-
-    await sendMarks({ aim: 9999, distance: newDistances[0] });
-  }
+  const [screen, setScreen] = useState('calculate');
 
   return (
-    <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
-      <View style={{ flex: 1 }}>
-        <Text style={styles.title}>Siktemerker</Text>
-        <MarksForm sendMarks={sendMarks} status={status} />
-        {error && <View style={{ marginBottom: 8, padding: 8 }}>Oisann, noe gikk galt. Prøv igjen!</View>}
-        <MarksTable ballistics={ballistics} removeMark={handleRemoveMark} />
-        {ballistics && ballistics.given_marks.length > 0 && (
-          <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 'auto' }}>
-            <Button label="Fjern merker" type="outline" onPress={() => setConformationModalVisible(true)} />
-            <Button label="Lagre sett" type="filled" onPress={() => openModal()} />
-          </View>
-        )}
-        <SetModal
-          modalVisible={modalVisible}
-          closeModal={closeModal}
-          setBallistics={setBallistics}
-          ballistics={ballistics}
-        />
-        <ConfirmRemoveMarks
-          modalVisible={conformationModalVisible}
-          setBallistics={setBallistics}
-          closeModal={() => setConformationModalVisible(false)}
-        />
+    <View style={styles.container}>
+      <Text style={styles.title}>Beregn siktemerker</Text>
+      <View style={styles.header}>
+        <Text
+          style={[styles.headerText, screen === 'calculate' ? styles.underline : null]}
+          onPress={() => setScreen('calculate')}>
+          Innskyting
+        </Text>
+        <Text
+          style={[styles.headerText, screen === 'marks' ? styles.underline : null]}
+          onPress={() => setScreen('marks')}>
+          Siktemerker
+        </Text>
       </View>
-    </TouchableWithoutFeedback>
+      {screen === 'calculate' && <CalculateScreen />}
+      {screen === 'marks' && <MarksScreen setScreen={setScreen} />}
+    </View>
   );
 }
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
   title: {
     fontSize: 24,
-    fontWeight: 'bold',
+    fontWeight: '500',
     marginBottom: 16,
     marginTop: 16,
+  },
+  header: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginBottom: 16,
+    paddingHorizontal: 16,
+  },
+  headerText: {
+    fontSize: 18,
+    fontWeight: '600',
+    textDecorationLine: 'none',
+  },
+  underline: {
+    textDecorationLine: 'underline',
   },
 });

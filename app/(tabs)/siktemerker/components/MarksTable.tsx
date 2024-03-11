@@ -2,6 +2,7 @@ import { faTrash } from '@fortawesome/free-solid-svg-icons/faTrash';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { StyleSheet, Text, View } from 'react-native';
 
+import { Message } from '../../../../components/common';
 import Button from '../../../../components/common/Button';
 import { CalculatedMarks } from '../../../../types';
 
@@ -27,7 +28,7 @@ export default function MarksTable({ ballistics, removeMark }: CalculationTableP
         </View>
       ));
     } else {
-      return <Text style={styles.info}>Legg inn siktemerker og send dem inn til beregning</Text>;
+      return <Message title="Ingen siktemerker" description="Legg til siktemerker å send til beregning" />;
     }
   };
 
