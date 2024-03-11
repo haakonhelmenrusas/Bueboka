@@ -1,9 +1,10 @@
 import { useEffect, useState } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import { Button, Message } from '../../../../components/common';
-import { CalculatedMarks } from '../../../../types';
+import { CalculatedMarks, MarksResult } from '../../../../types';
 import { getLocalStorage } from '../../../../utils';
 import CalculateMarksModal from '../components/CalculateMarksModal';
+import CalculatedMarksTable from '../components/CalculatedMarksTable';
 
 interface MarksScreenProps {
   setScreen: (screen: string) => void;
@@ -11,7 +12,7 @@ interface MarksScreenProps {
 
 export default function MarksScreen({ setScreen }: MarksScreenProps) {
   const [ballistics, setBallistics] = useState<CalculatedMarks | null>(null);
-  const [calculatedMarks, setCalculatedMarks] = useState<CalculatedMarks | null>(null);
+  const [calculatedMarks, setCalculatedMarks] = useState<MarksResult | null>(null);
   const [modalVisible, setModalVisible] = useState(false);
 
   useEffect(() => {
@@ -23,12 +24,12 @@ export default function MarksScreen({ setScreen }: MarksScreenProps) {
   }, []);
 
   useEffect(() => {
-    getLocalStorage<CalculatedMarks>('calculatedMarks').then((data) => {
+    getLocalStorage<MarksResult>('calculatedMarks').then((data) => {
       if (data) {
         setCalculatedMarks(data);
       }
     });
-  }, []);
+  }, [modalVisible]);
 
   function renderMessageTitle() {
     if (ballistics) {
@@ -49,18 +50,9 @@ export default function MarksScreen({ setScreen }: MarksScreenProps) {
 
   return (
     <View style={styles.page}>
-      {ballistics && ballistics.given_distances.length > 1 ? (
+      {calculatedMarks && calculatedMarks.distances.length > 1 ? (
         <View style={{ flex: 1 }}>
-          <View style={styles.header}>
-            <Text style={styles.headerText}>Avstand</Text>
-            <Text style={styles.headerText}>Merke</Text>
-          </View>
-          {ballistics.given_distances.map((distance, index) => (
-            <View style={styles.row} key={index}>
-              <Text>{distance.toFixed(1)} m</Text>
-              <Text>{ballistics.given_marks[index]}</Text>
-            </View>
-          ))}
+          <CalculatedMarksTable marksData={calculatedMarks} />
           <View style={{ marginTop: 'auto' }}>
             <Button disabled={modalVisible} label="Beregn siktemerker" onPress={() => setModalVisible(true)} />
           </View>
@@ -85,7 +77,6 @@ export default function MarksScreen({ setScreen }: MarksScreenProps) {
 const styles = StyleSheet.create({
   page: {
     flex: 1,
-    padding: 16,
   },
   header: {
     flexDirection: 'row',

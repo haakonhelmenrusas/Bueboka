@@ -3,7 +3,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { useState } from 'react';
 import { Modal, StyleSheet, Text, View } from 'react-native';
 import { Button, Input } from '../../../../components/common';
-import { CalculatedMarks } from '../../../../types';
+import { CalculatedMarks, MarksResult } from '../../../../types';
 import { formatNumber, storeLocalStorage } from '../../../../utils';
 import useCalculateMarks from '../../../../utils/hooks/useCalculateMarks';
 
@@ -11,7 +11,7 @@ interface Props {
   modalVisible: boolean;
   closeModal: () => void;
   ballistics: CalculatedMarks | null;
-  setCalculatedMarks: (calculatedMarks: CalculatedMarks) => void;
+  setCalculatedMarks: (calculatedMarks: MarksResult) => void;
 }
 
 const CalculateMarksModal = ({ modalVisible, closeModal, ballistics, setCalculatedMarks }: Props) => {
@@ -38,7 +38,7 @@ const CalculateMarksModal = ({ modalVisible, closeModal, ballistics, setCalculat
         const body = {
           ballistics_pars: ballistics.ballistics_pars,
           distances_def: [distanceFrom, interval, distanceTo],
-          angles: [0, 15],
+          angles: [-15, 0, 15],
         };
         const res = await calculateMarks(body);
         console.log(res);
