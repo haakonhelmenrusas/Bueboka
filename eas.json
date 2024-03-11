@@ -6,7 +6,7 @@
   "build": {
     "base": {
       "android": {
-        "image": "default",
+        "image": "latest",
         "env": {
           "PLATFORM": "android"
         }
