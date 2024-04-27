@@ -37,10 +37,10 @@ const Button: React.FC<ButtonProps> = ({
           width: width,
           borderColor: buttonColor,
           borderWidth: type === 'outline' ? 1 : 0,
-          paddingVertical: 12,
+          paddingVertical: 8,
           paddingHorizontal: 24,
           borderRadius: 8,
-          height: 48,
+          height: 40,
         },
         buttonStyle,
       ]}

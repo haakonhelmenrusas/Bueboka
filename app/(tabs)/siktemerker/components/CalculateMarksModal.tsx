@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { Modal, StyleSheet, Text, View } from 'react-native';
 import { Button, Input } from '../../../../components/common';
 import { CalculatedMarks, MarksResult } from '../../../../types';
-import { formatNumber, storeLocalStorage } from '../../../../utils';
+import { formatNumber, getLocalStorage, storeLocalStorage } from '../../../../utils';
 import useCalculateMarks from '../../../../utils/hooks/useCalculateMarks';
 
 interface Props {
@@ -18,7 +18,7 @@ const CalculateMarksModal = ({ modalVisible, closeModal, ballistics, setCalculat
   const [distanceFrom, setDistanceFrom] = useState<number | undefined>(undefined);
   const [distanceTo, setDistanceTo] = useState<number | undefined>(undefined);
   const [interval, setInterval] = useState<number | undefined>(undefined);
-  const { calculateMarks, status, error } = useCalculateMarks();
+  const { calculateMarks, status } = useCalculateMarks();
 
   const handleDistanceFromChange = (value: string) => {
     setDistanceFrom(parseFloat(value));
@@ -41,8 +41,10 @@ const CalculateMarksModal = ({ modalVisible, closeModal, ballistics, setCalculat
           angles: [-15, 0, 15],
         };
         const res = await calculateMarks(body);
-        console.log(res);
-        await storeLocalStorage(res, 'calculatedMarks');
+        await storeLocalStorage(res, 'calculatedMarks').then(async () => {
+          const marks = await getLocalStorage<MarksResult>('calculatedMarks');
+          setCalculatedMarks(marks);
+        });
         setDistanceFrom(undefined);
         setDistanceTo(undefined);
         closeModal();
@@ -60,9 +62,9 @@ const CalculateMarksModal = ({ modalVisible, closeModal, ballistics, setCalculat
     <Modal transparent visible={modalVisible} animationType="fade">
       <View style={styles.modal}>
         <View style={styles.header}>
-          <Text style={{ fontSize: 18, fontWeight: '500', marginBottom: 20 }}>Beregn siktemerker</Text>
+          <Text style={{ fontSize: 16, fontWeight: '400', marginBottom: 16 }}>Beregn siktemerker</Text>
           <Text onPress={closeModal}>
-            <FontAwesomeIcon icon={faMultiply} size={24} />
+            <FontAwesomeIcon icon={faMultiply} size={20} />
           </Text>
         </View>
         <View style={styles.inputs}>
@@ -103,7 +105,7 @@ const styles = StyleSheet.create({
     marginBottom: '40%',
     marginLeft: 'auto',
     marginRight: 'auto',
-    height: 280,
+    height: 264,
     width: '90%',
     justifyContent: 'space-around',
     alignItems: 'center',
@@ -112,7 +114,7 @@ const styles = StyleSheet.create({
     shadowRadius: 8,
     shadowOffset: { width: 0, height: 2 },
     elevation: 5,
-    padding: 16,
+    padding: 12,
     borderRadius: 4,
     backgroundColor: 'white',
   },

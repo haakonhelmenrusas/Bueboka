@@ -29,7 +29,7 @@ export default function MarksScreen({ setScreen }: MarksScreenProps) {
         setCalculatedMarks(data);
       }
     });
-  }, [modalVisible]);
+  }, []);
 
   function renderMessageTitle() {
     if (ballistics) {
@@ -74,6 +74,7 @@ export default function MarksScreen({ setScreen }: MarksScreenProps) {
     </View>
   );
 }
+
 const styles = StyleSheet.create({
   page: {
     flex: 1,

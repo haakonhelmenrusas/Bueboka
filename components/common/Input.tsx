@@ -15,16 +15,16 @@ const Input = ({ label, error, errorMessage, placeholderText, ...props }: InputP
   const textInputColor = editableTextInputColor;
 
   const styles = StyleSheet.create({
-    container: { marginBottom: 16, height: 48, marginRight: 8 },
-    label: { color: textInputColor, fontWeight: '500', fontSize: 16, marginBottom: 4 },
+    container: { marginBottom: 16, height: 40, marginRight: 8 },
+    label: { color: textInputColor, fontWeight: '500', fontSize: 14, marginBottom: 4 },
     input: {
       backgroundColor: '#FFF',
       paddingHorizontal: 12,
-      height: 48,
+      height: 40,
       width: '100%',
       borderColor: textInputColor,
       borderWidth: 1,
-      borderRadius: 12,
+      borderRadius: 8,
     },
   });
 
@@ -38,7 +38,7 @@ const Input = ({ label, error, errorMessage, placeholderText, ...props }: InputP
         placeholderTextColor={textInputColor}
         {...props}
       />
-      {error && <Text style={{ color: 'red', fontSize: 13 }}>{errorMessage}</Text>}
+      {error && <Text style={{ color: 'red', fontSize: 12 }}>{errorMessage}</Text>}
     </View>
   );
 };

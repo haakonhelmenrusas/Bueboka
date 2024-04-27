@@ -31,8 +31,8 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   title: {
-    fontSize: 24,
-    fontWeight: '500',
+    fontSize: 22,
+    fontWeight: '400',
     marginBottom: 16,
     marginTop: 16,
   },
