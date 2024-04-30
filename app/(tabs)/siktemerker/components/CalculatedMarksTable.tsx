@@ -13,8 +13,12 @@ export default function CalculatedMarksTable({ marksData }: CalculatedMarksProps
           <Text style={styles.trData}>{distance.toFixed(1)}m</Text>
           {Object.keys(marksData.sight_marks_by_hill_angle)
             .sort()
-            .map((angle) => {
-              return <Text style={styles.trData}>{marksData.sight_marks_by_hill_angle[angle][index].toFixed(1)}</Text>;
+            .map((angle, key) => {
+              return (
+                <Text key={key} style={styles.trData}>
+                  {marksData.sight_marks_by_hill_angle[angle][index].toFixed(1)}
+                </Text>
+              );
             })}
         </View>
       ));
