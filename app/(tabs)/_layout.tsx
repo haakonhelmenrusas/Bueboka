@@ -1,5 +1,6 @@
 import { faChartBar } from '@fortawesome/free-regular-svg-icons/faChartBar';
-import { faCircleXmark } from '@fortawesome/free-regular-svg-icons/faCircleXmark';
+import { faCircleQuestion } from '@fortawesome/free-regular-svg-icons/faCircleQuestion';
+import { faDragon } from '@fortawesome/free-solid-svg-icons/faDragon';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { Tabs } from 'expo-router';
 
@@ -19,7 +20,7 @@ export default function AppLayout() {
       <Tabs.Screen
         name="bueskyting"
         options={{
-          tabBarIcon: () => <FontAwesomeIcon icon={faCircleXmark} />,
+          tabBarIcon: () => <FontAwesomeIcon icon={faDragon} />,
           headerShadowVisible: false,
           headerShown: false,
           tabBarLabel: 'Bueskyting',
@@ -29,7 +30,7 @@ export default function AppLayout() {
       <Tabs.Screen
         name="omOss"
         options={{
-          tabBarIcon: () => <FontAwesomeIcon icon={faCircleXmark} />,
+          tabBarIcon: () => <FontAwesomeIcon icon={faCircleQuestion} />,
           headerShadowVisible: false,
           headerShown: false,
           tabBarLabel: 'Om oss',
