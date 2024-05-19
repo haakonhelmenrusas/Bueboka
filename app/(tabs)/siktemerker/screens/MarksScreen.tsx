@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
-import { StyleSheet, View } from 'react-native';
+import { ScrollView, StyleSheet, View } from 'react-native';
 import { Button, Message } from '../../../../components/common';
 import { CalculatedMarks, MarksResult } from '../../../../types';
-import { getLocalStorage } from '../../../../utils';
+import { getLocalStorage, storeLocalStorage } from '../../../../utils';
 import CalculateMarksModal from '../components/CalculateMarksModal';
 import CalculatedMarksTable from '../components/CalculatedMarksTable';
 
@@ -51,16 +51,36 @@ export default function MarksScreen({ setScreen }: MarksScreenProps) {
   function renderMarksResultTable() {
     if (calculatedMarks && calculatedMarks.distances.length > 1) {
       return <CalculatedMarksTable marksData={calculatedMarks} />;
+    } else if (ballistics && ballistics.given_distances.length > 1) {
+      return (
+        <View style={{ marginTop: '50%' }}>
+          <Message
+            title="Ingen beregnede siktemerker"
+            description="For å beregne siktemerker kan du trykke på knappen under."
+            onPress={() => setModalVisible(true)}
+            buttonLabel="Beregn siktemerker"
+          />
+        </View>
+      );
     }
+  }
+
+  function handleRemoveMarks() {
+    storeLocalStorage(null, 'calculatedMarks').then(() => {
+      setCalculatedMarks(null);
+    });
   }
 
   return (
     <View style={styles.page}>
-      {renderMarksResultTable()}
+      <ScrollView style={styles.scrollView}>{renderMarksResultTable()}</ScrollView>
       {ballistics && ballistics.given_distances.length > 1 ? (
         <View style={{ flex: 1 }}>
           <View style={{ marginTop: 'auto' }}>
-            <Button disabled={modalVisible} label="Beregn siktemerker" onPress={() => setModalVisible(true)} />
+            <View style={styles.buttons}>
+              <Button type="outline" label="Fjern siktemerker" onPress={handleRemoveMarks} />
+              <Button type="outline" label="Tilbake til innskyting" onPress={() => setScreen('calculate')} />
+            </View>
           </View>
           <CalculateMarksModal
             modalVisible={modalVisible}
@@ -84,6 +104,15 @@ export default function MarksScreen({ setScreen }: MarksScreenProps) {
 const styles = StyleSheet.create({
   page: {
     flex: 1,
+  },
+  scrollView: {
+    flex: 1,
+    minHeight: '60%',
+  },
+  buttons: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginTop: 16,
   },
   header: {
     flexDirection: 'row',

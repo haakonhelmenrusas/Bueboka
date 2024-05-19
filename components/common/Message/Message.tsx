@@ -28,7 +28,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     margin: 16,
-    height: '70%',
+    height: '50%',
   },
   messageTitle: {
     fontSize: 20,
