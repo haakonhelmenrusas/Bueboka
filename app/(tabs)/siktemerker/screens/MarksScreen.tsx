@@ -33,7 +33,7 @@ export default function MarksScreen({ setScreen }: MarksScreenProps) {
 
   function renderMessageTitle() {
     if (ballistics) {
-      return ballistics.given_distances.length < 1 && 'For få siktemerker';
+      return ballistics.given_distances.length <= 1 && 'For få siktemerker';
     }
     return 'Ingen siktemerker';
   }
@@ -41,18 +41,24 @@ export default function MarksScreen({ setScreen }: MarksScreenProps) {
   function renderMessageDescription() {
     if (ballistics) {
       return (
-        ballistics.given_distances.length < 1 &&
+        ballistics.given_distances.length <= 1 &&
         'For å beregne siktemerker må du legge til minst to merker i innskyting.'
       );
     }
     return 'For å beregne siktemerker må du gjøre innskytinger.';
   }
 
+  function renderMarksResultTable() {
+    if (calculatedMarks && calculatedMarks.distances.length > 1) {
+      return <CalculatedMarksTable marksData={calculatedMarks} />;
+    }
+  }
+
   return (
     <View style={styles.page}>
-      {calculatedMarks && calculatedMarks.distances.length > 1 ? (
+      {renderMarksResultTable()}
+      {ballistics && ballistics.given_distances.length > 1 ? (
         <View style={{ flex: 1 }}>
-          <CalculatedMarksTable marksData={calculatedMarks} />
           <View style={{ marginTop: 'auto' }}>
             <Button disabled={modalVisible} label="Beregn siktemerker" onPress={() => setModalVisible(true)} />
           </View>

@@ -3,7 +3,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { StyleSheet, Text, View } from 'react-native';
 
 import { Message } from '../../../../components/common';
-import Button from '../../../../components/common/Button';
+import Button from '../../../../components/common/Button/Button';
 import { CalculatedMarks } from '../../../../types';
 
 interface CalculationTableProps {

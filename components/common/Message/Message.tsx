@@ -2,7 +2,7 @@ import { faInfoCircle } from '@fortawesome/free-solid-svg-icons/faInfoCircle';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
-import Button from '../Button';
+import Button from '../Button/Button';
 
 interface MessageProps {
   title: string;
