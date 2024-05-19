@@ -23,7 +23,8 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/icon.png",
         "backgroundColor": "#FFFFFF"
-      }
+      },
+      "googleServicesFile": "@env/GOOGLE_SERVICES_JSON_PATH"
     },
     "ios": {
       "buildNumber": "1.12.0",
