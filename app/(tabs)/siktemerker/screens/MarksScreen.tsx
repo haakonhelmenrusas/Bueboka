@@ -51,7 +51,7 @@ export default function MarksScreen({ setScreen }: MarksScreenProps) {
   function renderMarksResultTable() {
     if (calculatedMarks && calculatedMarks.distances.length > 1) {
       return <CalculatedMarksTable marksData={calculatedMarks} />;
-    } else if (ballistics && ballistics.given_distances.length > 1) {
+    } else if (!calculatedMarks && ballistics && ballistics.given_distances.length > 1) {
       return (
         <View style={{ marginTop: '50%' }}>
           <Message
@@ -74,7 +74,7 @@ export default function MarksScreen({ setScreen }: MarksScreenProps) {
   return (
     <View style={styles.page}>
       <ScrollView style={styles.scrollView}>{renderMarksResultTable()}</ScrollView>
-      {ballistics && ballistics.given_distances.length > 1 ? (
+      {!calculatedMarks && ballistics && ballistics.given_distances.length > 1 ? (
         <View style={{ flex: 1 }}>
           <View style={{ marginTop: 'auto' }}>
             <View style={styles.buttons}>
