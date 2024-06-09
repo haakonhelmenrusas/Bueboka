@@ -1,7 +1,7 @@
 import { faMultiply } from '@fortawesome/free-solid-svg-icons/faMultiply';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { Modal, StyleSheet, Text, View } from 'react-native';
-import { Button, Input } from '../../../../components/common';
+import { Button, Checkbox, Input } from '../../../../components/common';
 import { CalculatedMarks, MarksResult } from '../../../../types';
 import { formatNumber, getLocalStorage, storeLocalStorage } from '../../../../utils';
 import useCalculateMarks from '../../../../utils/hooks/useCalculateMarks';
@@ -15,8 +15,10 @@ interface Props {
 }
 
 const CalculateMarksModal = ({ modalVisible, closeModal, ballistics, setCalculatedMarks }: Props) => {
-  const [{ distanceFrom, distanceFromError, distanceTo, distanceToError, interval, intervalError }, dispatch] =
-    useCalcMarksForm();
+  const [
+    { distanceFrom, distanceFromError, distanceTo, distanceToError, interval, intervalError, anglesVisible, angles },
+    dispatch,
+  ] = useCalcMarksForm();
   const { calculateMarks, status } = useCalculateMarks();
 
   const handleDistanceFromChange = (value: string) => {
@@ -31,14 +33,22 @@ const CalculateMarksModal = ({ modalVisible, closeModal, ballistics, setCalculat
     dispatch({ type: 'SET_INTERVAL', payload: value });
   }
 
+  function handleAngleChange(value: string, index: number) {
+    const newAngles = [...angles];
+    newAngles[index] = parseFloat(value);
+    dispatch({ type: 'SET_ANGLES', payload: newAngles });
+  }
+
   async function calculateMarksFunc(distanceFrom: number, distanceTo: number, interval: number) {
     if (ballistics) {
       const body = {
         ballistics_pars: ballistics.ballistics_pars,
         distances_def: [distanceFrom, interval, distanceTo],
-        angles: [-15, 0, 15],
+        angles: angles.length > 0 ? angles : [-15, 0, 15],
       };
+
       const res = await calculateMarks(body);
+
       await storeLocalStorage(res, 'calculatedMarks').then(async () => {
         const marks = await getLocalStorage<MarksResult>('calculatedMarks');
         setCalculatedMarks(marks);
@@ -46,6 +56,7 @@ const CalculateMarksModal = ({ modalVisible, closeModal, ballistics, setCalculat
       dispatch({ type: 'SET_DISTANCE_FROM', payload: '' });
       dispatch({ type: 'SET_DISTANCE_TO', payload: '' });
       dispatch({ type: 'SET_INTERVAL', payload: '' });
+      dispatch({ type: 'SET_ANGLES', payload: [] });
       closeModal();
     }
   }
@@ -67,9 +78,7 @@ const CalculateMarksModal = ({ modalVisible, closeModal, ballistics, setCalculat
     <Modal transparent visible={modalVisible} animationType="fade">
       <View style={styles.modal}>
         <View style={styles.header}>
-          <Text style={{ fontSize: 16, textAlign: 'center', fontWeight: '500', marginBottom: 1 }}>
-            Beregn siktemerker
-          </Text>
+          <Text style={{ fontSize: 20, fontWeight: '500' }}>Beregn siktemerker</Text>
           <Text onPress={closeModal}>
             <FontAwesomeIcon icon={faMultiply} size={20} />
           </Text>
@@ -109,7 +118,41 @@ const CalculateMarksModal = ({ modalVisible, closeModal, ballistics, setCalculat
             errorMessage="Verdi mangler"
           />
         </View>
-        <Button loading={status === 'pending'} width={200} label="Beregn" onPress={handleSave} />
+        <View style={styles.checkBox}>
+          <Checkbox
+            label="Flere vinkler"
+            checked={anglesVisible}
+            onPress={() => dispatch({ type: 'SET_ANGLES_VISIBLE', payload: !anglesVisible })}
+          />
+        </View>
+        {anglesVisible && (
+          <View style={styles.angles}>
+            <Input
+              textAlign="center"
+              maxLength={100}
+              label="Vinkel"
+              keyboardType="numeric"
+              onChange={(event) => handleAngleChange(event.nativeEvent.text, 0)}
+            />
+            <Input
+              textAlign="center"
+              maxLength={100}
+              label="Vinkel"
+              keyboardType="numeric"
+              onChange={(event) => handleAngleChange(event.nativeEvent.text, 1)}
+            />
+            <Input
+              textAlign="center"
+              maxLength={100}
+              label="Vinkel"
+              keyboardType="numeric"
+              onChange={(event) => handleAngleChange(event.nativeEvent.text, 2)}
+            />
+          </View>
+        )}
+        <View style={styles.submit}>
+          <Button loading={status === 'pending'} width={200} label="Beregn" onPress={handleSave} />
+        </View>
       </View>
     </Modal>
   );
@@ -117,13 +160,10 @@ const CalculateMarksModal = ({ modalVisible, closeModal, ballistics, setCalculat
 
 const styles = StyleSheet.create({
   modal: {
-    marginTop: 'auto',
-    marginBottom: '15%',
-    marginLeft: 'auto',
-    marginRight: 'auto',
-    height: 264,
+    margin: 'auto',
+    height: 'auto',
     width: '90%',
-    justifyContent: 'space-around',
+    display: 'flex',
     alignItems: 'center',
     shadowColor: 'black',
     shadowOpacity: 0.1,
@@ -143,9 +183,23 @@ const styles = StyleSheet.create({
     width: '100%',
     flexDirection: 'row',
     justifyContent: 'space-between',
+    marginTop: 16,
+  },
+  checkBox: {
+    width: '100%',
+    marginTop: 16,
+  },
+  angles: {
+    width: '100%',
+    flexDirection: 'row',
+    marginBottom: 24,
   },
   button: {
     width: '100%',
+  },
+  submit: {
+    display: 'flex',
+    alignItems: 'center',
   },
 });
 

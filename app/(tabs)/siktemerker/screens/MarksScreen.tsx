@@ -74,7 +74,7 @@ export default function MarksScreen({ setScreen }: MarksScreenProps) {
   return (
     <View style={styles.page}>
       <ScrollView style={styles.scrollView}>{renderMarksResultTable()}</ScrollView>
-      {!calculatedMarks && ballistics && ballistics.given_distances.length > 1 ? (
+      {ballistics && ballistics.given_distances.length > 1 ? (
         <View style={{ flex: 1 }}>
           <View style={{ marginTop: 'auto' }}>
             <View style={styles.buttons}>
