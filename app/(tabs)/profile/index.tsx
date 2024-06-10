@@ -1,7 +1,7 @@
 import { Image } from 'expo-image';
 import { StyleSheet, Text, View } from 'react-native';
 
-export default function About() {
+export default function Profile() {
   const logo = require('../../../assets/images/arcticBueLogo.png');
 
   const blurhash =
@@ -46,7 +46,6 @@ const styles = StyleSheet.create({
   text: {
     fontSize: 16,
     marginBottom: 16,
-    textAlign: 'justify',
   },
   sponsorContainer: {
     marginTop: 'auto',

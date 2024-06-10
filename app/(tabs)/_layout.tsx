@@ -1,5 +1,5 @@
 import { faChartBar } from '@fortawesome/free-regular-svg-icons/faChartBar';
-import { faCircleQuestion } from '@fortawesome/free-regular-svg-icons/faCircleQuestion';
+import { faUser } from '@fortawesome/free-regular-svg-icons/faUser';
 import { faDragon } from '@fortawesome/free-solid-svg-icons/faDragon';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { Tabs } from 'expo-router';
@@ -28,12 +28,12 @@ export default function AppLayout() {
         }}
       />
       <Tabs.Screen
-        name="omOss"
+        name="profile"
         options={{
-          tabBarIcon: () => <FontAwesomeIcon icon={faCircleQuestion} />,
+          tabBarIcon: () => <FontAwesomeIcon icon={faUser} />,
           headerShadowVisible: false,
           headerShown: false,
-          tabBarLabel: 'Om oss',
+          tabBarLabel: 'Profil',
           tabBarLabelStyle: { fontSize: 14, marginBottom: 4 },
         }}
       />
