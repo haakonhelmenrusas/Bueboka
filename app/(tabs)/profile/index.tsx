@@ -1,4 +1,3 @@
-import { Image } from 'expo-image';
 import { StyleSheet, Text, View } from 'react-native';
 
 export default function Profile() {
@@ -9,25 +8,11 @@ export default function Profile() {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Hei!</Text>
+      <Text style={styles.title}>Hei skytter!</Text>
       <Text style={styles.text}>
-        Bueboka er en tjeneste for alle bueskyttere. Vi ønsker å gjøre det enklere for alle å finne informasjon om
-        bueskyting. Her kan du bergene dine egne siktemerker, finne informasjon om konkurranser og finne informasjon om
-        klubber i Norge.
+        Velkommen til din profilside på Bueboka! Fyll inn din informasjon for å få en skreddersydd opplevelse som passer
+        akkurat deg.
       </Text>
-
-      <Text style={styles.sponsor}>Sponsor</Text>
-      <View style={styles.sponsorContainer}>
-        <Image
-          key={logo}
-          style={styles.logo}
-          contentFit="contain"
-          source={logo}
-          transition={500}
-          placeholder={blurhash}
-          accessibilityLabel="Arctic Buesport AS Logo"
-        />
-      </View>
     </View>
   );
 }
@@ -39,26 +24,12 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 24,
-    fontWeight: 'bold',
+    fontWeight: 'medium',
     marginBottom: 16,
     marginTop: 16,
   },
   text: {
     fontSize: 16,
     marginBottom: 16,
-  },
-  sponsorContainer: {
-    marginTop: 'auto',
-    width: 200,
-    flex: 1,
-    alignSelf: 'center',
-    justifyContent: 'center',
-  },
-  sponsor: {
-    fontSize: 26,
-    textAlign: 'center',
-  },
-  logo: {
-    flex: 1,
   },
 });
