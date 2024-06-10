@@ -1,5 +1,5 @@
 import { Image } from 'expo-image';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View, Linking, TouchableOpacity } from 'react-native';
 
 export default function About() {
   const logo = require('../../../assets/images/arcticBueLogo.png');
@@ -15,10 +15,21 @@ export default function About() {
           Bueboka er en tjeneste for alle bueskyttere. Vi ønsker å gjøre det enklere for alle å finne informasjon om
           bueskyting.
         </Text>
+        <Text style={styles.text}>I denne første versjonen kan du beregne dine egne siktemerker.</Text>
         <Text style={styles.text}>
-          Her kan du bergene dine egne siktemerker, finne informasjon om konkurranser og finne informasjon om klubber i
-          Norge.
+          Kildekoden og utviklingen av denne appen skjer helt åpent, så kom gjerne med inspill!
         </Text>
+        <Text style={styles.text}>
+          Vi ser også etter bidragsytere så om du har lyst eller kjenner noen ta gjerne kontakt!
+        </Text>
+        <View style={styles.links}>
+          <TouchableOpacity onPress={() => Linking.openURL('https://github.com/haakonhelmenrusas/Bueboka/discussions')}>
+            <Text style={styles.link}>GitHub</Text>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={() => Linking.openURL('https://www.facebook.com/profile.php?id=61560373960234')}>
+            <Text style={styles.link}>Facebook</Text>
+          </TouchableOpacity>
+        </View>
       </View>
       <View style={styles.sponsorContainer}>
         <Text style={styles.sponsor}>Sponsor</Text>
@@ -54,6 +65,16 @@ const styles = StyleSheet.create({
     fontSize: 18,
     lineHeight: 20,
     marginBottom: 16,
+  },
+  links: {
+    marginTop: 16,
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+  },
+  link: {
+    fontSize: 18,
+    color: 'blue',
   },
   sponsorContainer: {
     width: 200,
