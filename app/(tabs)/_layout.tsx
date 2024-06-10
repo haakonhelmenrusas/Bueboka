@@ -1,7 +1,6 @@
-import { faChartBar } from '@fortawesome/free-regular-svg-icons/faChartBar';
-import { faUser } from '@fortawesome/free-regular-svg-icons/faUser';
-import { faCircleQuestion } from '@fortawesome/free-regular-svg-icons/faCircleQuestion';
-import { faDragon } from '@fortawesome/free-solid-svg-icons/faDragon';
+import { faChartBar } from '@fortawesome/free-solid-svg-icons/faChartBar';
+import { faUser } from '@fortawesome/free-solid-svg-icons/faUser';
+import { faCircleQuestion } from '@fortawesome/free-solid-svg-icons/faCircleQuestion';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { Tabs } from 'expo-router';
 
@@ -11,27 +10,17 @@ export default function AppLayout() {
       <Tabs.Screen
         name="siktemerker"
         options={{
-          tabBarIcon: () => <FontAwesomeIcon icon={faChartBar} />,
+          tabBarIcon: ({ focused }) => <FontAwesomeIcon icon={faChartBar} color={focused ? '#0066b2' : 'grey'} />,
           headerShadowVisible: false,
           headerShown: false,
           tabBarLabel: 'Siktemerker',
           tabBarLabelStyle: { fontSize: 14, marginBottom: 4 },
         }}
       />
-      {/*       <Tabs.Screen
-        name="bueskyting"
-        options={{
-          tabBarIcon: () => <FontAwesomeIcon icon={faDragon} />,
-          headerShadowVisible: false,
-          headerShown: false,
-          tabBarLabel: 'Bueskyting',
-          tabBarLabelStyle: { fontSize: 14, marginBottom: 4 },
-        }}
-      /> */}
       <Tabs.Screen
         name="profile"
         options={{
-          tabBarIcon: () => <FontAwesomeIcon icon={faUser} />,
+          tabBarIcon: ({ focused }) => <FontAwesomeIcon icon={faUser} color={focused ? '#0066b2' : 'grey'} />,
           headerShadowVisible: false,
           headerShown: false,
           tabBarLabel: 'Profil',
@@ -41,7 +30,7 @@ export default function AppLayout() {
       <Tabs.Screen
         name="about"
         options={{
-          tabBarIcon: () => <FontAwesomeIcon icon={faCircleQuestion} />,
+          tabBarIcon: ({ focused }) => <FontAwesomeIcon icon={faCircleQuestion} color={focused ? '#0066b2' : 'grey'} />,
           headerShadowVisible: false,
           headerShown: false,
           tabBarLabel: 'Om oss',
