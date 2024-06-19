@@ -6,11 +6,15 @@ import { Tabs } from 'expo-router';
 
 export default function AppLayout() {
   return (
-    <Tabs>
+    <Tabs
+      screenOptions={{
+        tabBarActiveTintColor: '#053546',
+        tabBarInactiveTintColor: 'grey',
+      }}>
       <Tabs.Screen
         name="siktemerker"
         options={{
-          tabBarIcon: ({ focused }) => <FontAwesomeIcon icon={faChartBar} color={focused ? '#0066b2' : 'grey'} />,
+          tabBarIcon: ({ focused }) => <FontAwesomeIcon icon={faChartBar} color={focused ? '#053546' : 'grey'} />,
           headerShadowVisible: false,
           headerShown: false,
           tabBarLabel: 'Siktemerker',
@@ -20,7 +24,7 @@ export default function AppLayout() {
       <Tabs.Screen
         name="profile"
         options={{
-          tabBarIcon: ({ focused }) => <FontAwesomeIcon icon={faUser} color={focused ? '#0066b2' : 'grey'} />,
+          tabBarIcon: ({ focused }) => <FontAwesomeIcon icon={faUser} color={focused ? '#053546' : 'grey'} />,
           headerShadowVisible: false,
           headerShown: false,
           tabBarLabel: 'Profil',
@@ -30,7 +34,7 @@ export default function AppLayout() {
       <Tabs.Screen
         name="about"
         options={{
-          tabBarIcon: ({ focused }) => <FontAwesomeIcon icon={faCircleQuestion} color={focused ? '#0066b2' : 'grey'} />,
+          tabBarIcon: ({ focused }) => <FontAwesomeIcon icon={faCircleQuestion} color={focused ? '#053546' : 'grey'} />,
           headerShadowVisible: false,
           headerShown: false,
           tabBarLabel: 'Om oss',
