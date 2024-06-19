@@ -1,5 +1,6 @@
 import { FC, useState } from 'react';
 import { View, Image, Text, StyleSheet, TouchableNativeFeedback, TouchableOpacity, Modal } from 'react-native';
+import { Button } from '../../../../../components/common';
 
 interface Bow {
   name: string;
@@ -18,15 +19,15 @@ const BowCard: FC<Bow> = ({ name, description }) => {
           onRequestClose={() => {
             setModalVisible(!modalVisible);
           }}>
-          <View style={{ marginTop: 22 }}>
+          <View style={{ margin: 24 }}>
             <View>
-              <Text>Hello World!</Text>
+              <Text style={styles.title}>Din bue</Text>
 
               <TouchableOpacity
                 onPress={() => {
                   setModalVisible(!modalVisible);
                 }}>
-                <Text>Hide Modal</Text>
+                <Button label="Hide modal" />
               </TouchableOpacity>
             </View>
           </View>
