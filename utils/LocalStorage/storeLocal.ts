@@ -1,5 +1,4 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import * as Sentry from '@sentry/react-native';
 
 /**
  *
@@ -13,6 +12,6 @@ export const storeLocalStorage = async (value, key: string) => {
     const jsonValue = JSON.stringify(value);
     await AsyncStorage.setItem(key, jsonValue);
   } catch (error) {
-    Sentry.captureException(error);
+    console.log('Error', error);
   }
 };

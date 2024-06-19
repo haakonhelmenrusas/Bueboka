@@ -1,4 +1,3 @@
-import { captureException } from '@sentry/react-native';
 import { useEffect, useState } from 'react';
 import { Keyboard, TouchableWithoutFeedback, View } from 'react-native';
 import { Button } from '../../../../components/common';
@@ -40,7 +39,7 @@ export default function CalculateScreen() {
         });
       }
     } catch (error) {
-      captureException(error);
+      console.log('Error', error);
     }
   }
 

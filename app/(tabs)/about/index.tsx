@@ -1,43 +1,47 @@
+import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
+import { faFeather } from '@fortawesome/free-solid-svg-icons/faFeather';
 import { Image } from 'expo-image';
 import { StyleSheet, Text, View, Linking, TouchableOpacity } from 'react-native';
 
 export default function About() {
-  const logo = require('../../../assets/images/arcticBueLogo.png');
+  const sponsor = require('../../../assets/images/arcticBueLogo.png');
+  const logo = require('../../../assets/images/logo512.png');
 
   const blurhash =
     '|rF?hV%2WCj[ayj[a|j[az_NaeWBj@ayfRayfQfQM{M|azj[azf6fQfQfQIpWXofj[ayj[j[fQayWCoeoeaya}j[ayfQa{oLj?j[WVj[ayayj[fQoff7azayj[ayj[j[ayofayayayj[fQj[ayayj[ayfjj[j[ayjuayj[';
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Bueboka</Text>
       <View style={styles.header}>
-        <Text style={styles.text}>
-          Bueboka er en tjeneste for alle bueskyttere. Vi ønsker å gjøre det enklere for alle å finne informasjon om
-          bueskyting.
-        </Text>
-        <Text style={styles.text}>I denne første versjonen kan du beregne dine egne siktemerker.</Text>
-        <Text style={styles.text}>
-          Kildekoden og utviklingen av denne appen skjer helt åpent, så kom gjerne med inspill!
-        </Text>
-        <Text style={styles.text}>
-          Vi ser også etter bidragsytere så om du har lyst eller kjenner noen ta gjerne kontakt!
-        </Text>
-        <View style={styles.links}>
-          <TouchableOpacity onPress={() => Linking.openURL('https://github.com/haakonhelmenrusas/Bueboka/discussions')}>
-            <Text style={styles.link}>GitHub</Text>
-          </TouchableOpacity>
-          <TouchableOpacity onPress={() => Linking.openURL('https://www.facebook.com/profile.php?id=61560373960234')}>
-            <Text style={styles.link}>Facebook</Text>
-          </TouchableOpacity>
-        </View>
-      </View>
-      <View style={styles.sponsorContainer}>
-        <Text style={styles.sponsor}>Sponsor</Text>
         <Image
-          key={logo}
           style={styles.logo}
           contentFit="contain"
           source={logo}
+          transition={200}
+          placeholder={blurhash}
+          accessibilityLabel="Bueboka Logo"
+        />
+        <Text style={styles.title}>Bueboka</Text>
+        <Text style={styles.sub}>Bueboka er en tjeneste for alle bueskyttere i Norge.</Text>
+      </View>
+      <View style={styles.box}>
+        <Text style={styles.text}>Beregne dine siktemerker</Text>
+        <FontAwesomeIcon style={styles.feather} icon={faFeather} />
+      </View>
+      <View style={styles.links}>
+        <TouchableOpacity onPress={() => Linking.openURL('https://github.com/haakonhelmenrusas/Bueboka/discussions')}>
+          <Text style={styles.link}>GitHub</Text>
+        </TouchableOpacity>
+        <TouchableOpacity onPress={() => Linking.openURL('https://www.facebook.com/profile.php?id=61560373960234')}>
+          <Text style={styles.link}>Facebook</Text>
+        </TouchableOpacity>
+      </View>
+      <View style={styles.sponsorContainer}>
+        <Text style={styles.sponsor}>Sponset av</Text>
+        <Image
+          style={styles.sponsorLogo}
+          contentFit="contain"
+          source={sponsor}
           transition={200}
           placeholder={blurhash}
           accessibilityLabel="Arctic Buesport AS Logo"
@@ -53,41 +57,73 @@ const styles = StyleSheet.create({
     alignContent: 'center',
   },
   header: {
-    flex: 2,
+    height: '50%',
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#D8F5FF',
+    margin: -16,
+    paddingTop: 24,
+    marginTop: -32,
   },
   title: {
-    fontSize: 24,
-    fontWeight: 'medium',
+    fontSize: 32,
+    fontWeight: 'bold',
+    textAlign: 'center',
     marginBottom: 16,
-    marginTop: 16,
+    marginTop: 32,
+  },
+  sub: {
+    fontSize: 16,
+    textAlign: 'center',
+    marginBottom: 16,
+  },
+  box: {
+    backgroundColor: '#053546',
+    borderRadius: 10,
+    padding: 24,
+    textAlign: 'center',
+  },
+  feather: {
+    color: '#fff',
+    fontSize: 32,
+    alignSelf: 'center',
   },
   text: {
+    color: '#fff',
+    textAlign: 'center',
     fontSize: 18,
-    lineHeight: 20,
     marginBottom: 16,
   },
   links: {
     marginTop: 16,
     display: 'flex',
     flexDirection: 'row',
-    justifyContent: 'space-around',
+    width: '100%',
+    justifyContent: 'space-evenly',
   },
   link: {
-    fontSize: 18,
+    fontSize: 16,
     color: 'blue',
   },
   sponsorContainer: {
-    width: 200,
-
-    flex: 1,
+    height: 150,
+    marginTop: 'auto',
     alignSelf: 'center',
     justifyContent: 'center',
   },
   sponsor: {
-    fontSize: 26,
+    fontSize: 14,
+    color: '#227B9A',
     textAlign: 'center',
   },
   logo: {
-    flex: 1,
+    height: 150,
+    width: 150,
+  },
+  sponsorLogo: {
+    marginLeft: 'auto',
+    marginRight: 'auto',
+    height: 80,
+    width: 250,
   },
 });
