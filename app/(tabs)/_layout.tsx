@@ -10,6 +10,7 @@ export default function AppLayout() {
       screenOptions={{
         tabBarActiveTintColor: '#053546',
         tabBarInactiveTintColor: 'grey',
+        tabBarHideOnKeyboard: true,
       }}>
       <Tabs.Screen
         name="siktemerker"
