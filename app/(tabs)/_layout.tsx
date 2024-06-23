@@ -1,4 +1,4 @@
-import { faChartBar } from '@fortawesome/free-solid-svg-icons/faChartBar';
+import { faBullseye } from '@fortawesome/free-solid-svg-icons/faBullseye';
 import { faUser } from '@fortawesome/free-solid-svg-icons/faUser';
 import { faCircleQuestion } from '@fortawesome/free-solid-svg-icons/faCircleQuestion';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
@@ -15,7 +15,7 @@ export default function AppLayout() {
       <Tabs.Screen
         name="siktemerker"
         options={{
-          tabBarIcon: ({ focused }) => <FontAwesomeIcon icon={faChartBar} color={focused ? '#053546' : 'grey'} />,
+          tabBarIcon: ({ focused }) => <FontAwesomeIcon icon={faBullseye} color={focused ? '#053546' : 'grey'} />,
           headerShadowVisible: false,
           headerShown: false,
           tabBarLabel: 'Siktemerker',
