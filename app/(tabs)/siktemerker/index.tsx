@@ -10,16 +10,22 @@ export default function Calculate() {
     <View style={styles.container}>
       <Text style={styles.title}>Beregn siktemerker</Text>
       <View style={styles.header}>
-        <Text
-          style={[styles.headerText, screen === 'calculate' ? styles.underline : null]}
-          onPress={() => setScreen('calculate')}>
-          Innskyting
-        </Text>
-        <Text
-          style={[styles.headerText, screen === 'marks' ? styles.underline : null]}
-          onPress={() => setScreen('marks')}>
-          Siktemerker
-        </Text>
+        <View style={styles.headerItem}>
+          <Text
+            style={[styles.headerText, screen === 'calculate' ? styles.activeText : null]}
+            onPress={() => setScreen('calculate')}>
+            Innskyting
+          </Text>
+          {screen === 'calculate' && <View style={styles.activeLine} />}
+        </View>
+        <View style={styles.headerItem}>
+          <Text
+            style={[styles.headerText, screen === 'marks' ? styles.activeText : null]}
+            onPress={() => setScreen('marks')}>
+            Siktemerker
+          </Text>
+          {screen === 'marks' && <View style={styles.activeLine} />}
+        </View>
       </View>
       {screen === 'calculate' && <CalculateScreen />}
       {screen === 'marks' && <MarksScreen setScreen={setScreen} />}
@@ -31,23 +37,35 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   title: {
-    fontSize: 22,
-    fontWeight: '400',
-    marginBottom: 16,
-    marginTop: 16,
+    fontSize: 18,
+    fontWeight: '600',
+    marginBottom: 32,
+    marginTop: 24,
+    textAlign: 'center',
   },
   header: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginBottom: 16,
-    paddingHorizontal: 16,
+    justifyContent: 'space-around',
+    marginBottom: 24,
+  },
+  headerItem: {
+    flexDirection: 'column',
+    alignItems: 'center',
+    width: '50%',
+    marginBottom: -8,
   },
   headerText: {
     fontSize: 18,
+    padding: 8,
     fontWeight: '600',
-    textDecorationLine: 'none',
+    color: '#666',
   },
-  underline: {
-    textDecorationLine: 'underline',
+  activeText: {
+    color: '#227B9A',
+  },
+  activeLine: {
+    height: 2,
+    width: '100%',
+    backgroundColor: '#227B9A',
   },
 });

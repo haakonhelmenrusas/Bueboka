@@ -1,45 +1,22 @@
-import { FC, useState } from 'react';
-import { View, Image, Text, StyleSheet, TouchableNativeFeedback, TouchableOpacity, Modal } from 'react-native';
-import { Button } from '../../../../../components/common';
+import { FC } from 'react';
+import { View, Image, Text, StyleSheet, TouchableOpacity, Modal } from 'react-native';
 
 interface Bow {
   name: string;
   description?: string;
+  onPress?: () => void;
 }
 
-const BowCard: FC<Bow> = ({ name, description }) => {
-  const [modalVisible, setModalVisible] = useState(false);
+const BowCard: FC<Bow> = ({ name, description, onPress }) => {
   return (
-    <TouchableOpacity style={styles.container} onPress={() => setModalVisible(true)}>
-      <>
-        <Modal
-          animationType="slide"
-          transparent={false}
-          visible={modalVisible}
-          onRequestClose={() => {
-            setModalVisible(!modalVisible);
-          }}>
-          <View style={{ margin: 24 }}>
-            <View>
-              <Text style={styles.title}>Din bue</Text>
-
-              <TouchableOpacity
-                onPress={() => {
-                  setModalVisible(!modalVisible);
-                }}>
-                <Button label="Hide modal" />
-              </TouchableOpacity>
-            </View>
-          </View>
-        </Modal>
-        <View style={styles.imageContainer}>
-          <Image source={require('../../../../../assets/bow.png')} style={styles.image} />
-          <Text style={styles.title}>{name}</Text>
-        </View>
-        <View>
-          <Text style={styles.text}>{description}</Text>
-        </View>
-      </>
+    <TouchableOpacity style={styles.container} onPress={() => onPress}>
+      <View style={styles.imageContainer}>
+        <Image source={require('../../../../../assets/bow.png')} style={styles.image} />
+        <Text style={styles.title}>{name}</Text>
+      </View>
+      <View>
+        <Text style={styles.text}>{description}</Text>
+      </View>
     </TouchableOpacity>
   );
 };
@@ -49,7 +26,7 @@ const styles = StyleSheet.create({
   container: {
     alignContent: 'center',
     height: 200,
-    width: '80%',
+    width: '100%',
     marginHorizontal: 'auto',
     shadowColor: '#000',
     backgroundColor: '#fff',

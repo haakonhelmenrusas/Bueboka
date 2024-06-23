@@ -23,8 +23,8 @@ const Button: React.FC<ButtonProps> = ({
   loading = false,
   ...props
 }) => {
-  const buttonColor = type === 'outline' ? 'transparent' : '#0066b2';
-  const textColor = type === 'outline' ? '#0066b2' : 'white';
+  const buttonColor = type === 'outline' ? 'transparent' : '#053546';
+  const textColor = type === 'outline' ? '#053546' : 'white';
 
   return (
     <Pressable

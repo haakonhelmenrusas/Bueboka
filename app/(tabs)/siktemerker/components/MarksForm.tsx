@@ -41,35 +41,37 @@ const MarksForm: FC<MarksFormProps> = ({ sendMarks, status }) => {
 
   return (
     <View style={styles.form}>
-      <Input
-        textAlign="center"
-        maxLength={100}
-        label="Avstand"
-        onBlur={() => dispatch({ type: 'SET_DISTANCE_ERROR', payload: false })}
-        placeholderText="F.eks. 20"
-        keyboardType="numeric"
-        error={distanceError}
-        errorMessage="Fyll inn"
-        value={distanceValue}
-        onChangeText={(value) => handleDistanceChange(formatNumber(value))}
-      />
-      <Input
-        textAlign="center"
-        maxLength={15}
-        label="Merke"
-        onBlur={() => dispatch({ type: 'SET_AIM_ERROR', payload: false })}
-        placeholderText="F.eks. 2.3"
-        keyboardType="numeric"
-        value={aimValue}
-        error={aimError}
-        errorMessage="Fyll inn"
-        onChangeText={(value) => handleAimChange(formatNumber(value))}
-      />
+      <View style={styles.inputs}>
+        <Input
+          textAlign="center"
+          maxLength={100}
+          label="Avstand"
+          onBlur={() => dispatch({ type: 'SET_DISTANCE_ERROR', payload: false })}
+          placeholderText="F.eks. 20"
+          keyboardType="numeric"
+          error={distanceError}
+          errorMessage="Fyll inn"
+          value={distanceValue}
+          onChangeText={(value) => handleDistanceChange(formatNumber(value))}
+        />
+        <Input
+          textAlign="center"
+          maxLength={15}
+          label="Merke"
+          onBlur={() => dispatch({ type: 'SET_AIM_ERROR', payload: false })}
+          placeholderText="F.eks. 2.3"
+          keyboardType="numeric"
+          value={aimValue}
+          error={aimError}
+          errorMessage="Fyll inn"
+          onChangeText={(value) => handleAimChange(formatNumber(value))}
+        />
+      </View>
       <Button
-        type="filled"
-        width={100}
+        type={'filled'}
+        disabled={aimValue === '' || distanceValue === ''}
         loading={status === 'pending'}
-        buttonStyle={{ marginLeft: 'auto', marginTop: 28 }}
+        buttonStyle={styles.button}
         onPress={handleAddMark}
         label="Beregn"
       />
@@ -80,8 +82,29 @@ const MarksForm: FC<MarksFormProps> = ({ sendMarks, status }) => {
 const styles = StyleSheet.create({
   form: {
     display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'center',
+    backgroundColor: '#FFF',
+    margin: -8,
+    marginTop: 0,
+    padding: 24,
+    borderTopLeftRadius: 16,
+    borderTopRightRadius: 16,
+    // shadow
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: -2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
+  },
+  inputs: {
+    display: 'flex',
     flexDirection: 'row',
-    marginBottom: 32,
+    justifyContent: 'space-around',
+  },
+  button: {
+    height: 48,
+    marginTop: 24,
   },
 });
 

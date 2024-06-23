@@ -1,9 +1,19 @@
 import { useEffect, useState } from 'react';
-import { Keyboard, TouchableWithoutFeedback, View } from 'react-native';
+import {
+  Keyboard,
+  TouchableWithoutFeedback,
+  KeyboardAvoidingView,
+  View,
+  StyleSheet,
+  Text,
+  Platform,
+} from 'react-native';
 import { Button } from '../../../../components/common';
 import { AimDistanceMark, CalculatedMarks, MarkValue } from '../../../../types';
 import { Ballistics, getLocalStorage, storeLocalStorage, useBallisticsParams } from '../../../../utils';
 import { ConfirmRemoveMarks, MarksForm, MarksTable } from '../components';
+import { faTrash } from '@fortawesome/free-solid-svg-icons/faTrash';
+import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 
 export default function CalculateScreen() {
   const [conformationModalVisible, setConformationModalVisible] = useState(false);
@@ -51,21 +61,44 @@ export default function CalculateScreen() {
 
   return (
     <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
-      <View style={{ flex: 1 }}>
-        <MarksForm sendMarks={sendMarks} status={status} />
-        {error && <View style={{ marginBottom: 8, padding: 8 }}>Oisann, noe gikk galt. Prøv igjen!</View>}
-        <MarksTable ballistics={ballistics} removeMark={handleRemoveMark} />
-        {ballistics && ballistics.given_marks.length > 0 && (
-          <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 'auto' }}>
-            <Button label="Fjern merker" type="outline" onPress={() => setConformationModalVisible(true)} />
+      <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
+        <View style={styles.container}>
+          {error && <View style={{ marginBottom: 8, padding: 8 }}>Oisann, noe gikk galt. Prøv igjen!</View>}
+          <MarksTable ballistics={ballistics} removeMark={handleRemoveMark} />
+          <View style={styles.centeredContainer}>
+            {ballistics && ballistics.given_marks.length > 0 && (
+              <Text onPress={() => setConformationModalVisible(true)} style={styles.remove}>
+                <FontAwesomeIcon icon={faTrash} color="#227B9A" />
+                Tøm liste
+              </Text>
+            )}
           </View>
-        )}
-        <ConfirmRemoveMarks
-          modalVisible={conformationModalVisible}
-          setBallistics={setBallistics}
-          closeModal={() => setConformationModalVisible(false)}
-        />
-      </View>
+          <View style={{ marginTop: 'auto' }}>
+            <MarksForm sendMarks={sendMarks} status={status} />
+          </View>
+          <ConfirmRemoveMarks
+            modalVisible={conformationModalVisible}
+            setBallistics={setBallistics}
+            closeModal={() => setConformationModalVisible(false)}
+          />
+        </View>
+      </KeyboardAvoidingView>
     </TouchableWithoutFeedback>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#F2F2F2',
+    margin: -16,
+    padding: 8,
+  },
+  remove: {
+    color: '#227B9A',
+  },
+  centeredContainer: {
+    alignItems: 'center',
+    marginVertical: 32,
+  },
+});

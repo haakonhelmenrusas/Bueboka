@@ -18,7 +18,7 @@ const Message: React.FC<MessageProps> = ({ title, description, onPress, buttonLa
         <FontAwesomeIcon style={styles.icon} icon={faInfoCircle} /> {title}
       </Text>
       <Text style={styles.messageText}>{description}</Text>
-      {onPress && buttonLabel && <Button onPress={onPress} label={buttonLabel} />}
+      {onPress && buttonLabel && <Button width={300} onPress={onPress} label={buttonLabel} />}
     </View>
   );
 };
@@ -28,7 +28,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     margin: 16,
-    height: '50%',
+    height: 200,
   },
   messageTitle: {
     fontSize: 20,

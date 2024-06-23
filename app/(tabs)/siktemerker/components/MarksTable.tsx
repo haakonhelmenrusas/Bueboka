@@ -15,12 +15,21 @@ export default function MarksTable({ ballistics, removeMark }: CalculationTableP
   const renderBallisticTable = () => {
     if (ballistics) {
       return ballistics.given_distances.map((distance, index) => (
-        <View style={[styles.tr, index % 2 === 0 ? styles.evenRow : styles.oddRow]} key={index}>
-          <Text style={styles.trData}>{distance.toFixed(1)}m</Text>
-          <Text style={styles.trData}>{ballistics.given_marks[index].toFixed(2)}</Text>
-          <Text style={styles.trData}>{ballistics.calculated_marks[index].toFixed(2)}</Text>
+        <View style={styles.tr} key={index}>
+          <View style={styles.section}>
+            <Text style={styles.thead}>Avstand</Text>
+            <Text style={styles.trData}>{distance.toFixed(1)}m</Text>
+          </View>
+          <View style={styles.section}>
+            <Text style={styles.thead}>Merke</Text>
+            <Text style={styles.trData}>{ballistics.given_marks[index].toFixed(2)}</Text>
+          </View>
+          <View style={styles.sectionCalc}>
+            <Text style={styles.thead}>Beregnet</Text>
+            <Text style={styles.trData}>{ballistics.calculated_marks[index].toFixed(2)}</Text>
+          </View>
           <Button
-            icon={<FontAwesomeIcon icon={faTrash} color="red" />}
+            icon={<FontAwesomeIcon icon={faTrash} color="#227B9A" />}
             label="Fjern"
             type="outline"
             onPress={() => removeMark(index)}
@@ -32,52 +41,62 @@ export default function MarksTable({ ballistics, removeMark }: CalculationTableP
     }
   };
 
-  return (
-    <View>
-      <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
-        <Text style={[styles.thead, styles.heading, { marginLeft: -8 }]}>Avstand</Text>
-        <Text style={[styles.thead, styles.heading]}>Merke</Text>
-        <Text style={[styles.thead, styles.heading]}>Beregnet</Text>
-        <Text style={styles.theadEnd}></Text>
-      </View>
-      {renderBallisticTable()}
-    </View>
-  );
+  return <View style={styles.container}>{renderBallisticTable()}</View>;
 }
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    margin: 8,
+    backgroundColor: '#F2F2F2',
+  },
   tr: {
     display: 'flex',
-    height: 48,
+    height: 72,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
+    backgroundColor: '#FFF',
+    borderRadius: 12,
+    marginBottom: 12,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
+  },
+  section: {
+    flex: 1,
+    paddingTop: 4,
+    paddingBottom: 4,
+    paddingLeft: 2,
+    paddingRight: 2,
+    margin: 8,
+  },
+  sectionCalc: {
+    flex: 1,
+    paddingTop: 4,
+    paddingBottom: 4,
+    paddingLeft: 2,
+    paddingRight: 2,
+    backgroundColor: '#D8F5FF',
+    borderRadius: 12,
+    margin: 8,
   },
   trData: {
     flex: 1,
+    fontSize: 20,
     textAlign: 'center',
   },
-  evenRow: {
-    backgroundColor: '#F8F8F8',
-  },
-  oddRow: {
-    backgroundColor: '#FFF',
-  },
   thead: {
-    fontWeight: 'bold',
-    fontSize: 16,
-    marginTop: 8,
-  },
-  theadEnd: {
-    width: '20%',
+    fontWeight: '400',
+    color: '#227B9A',
+    textAlign: 'center',
+    fontSize: 14,
   },
   heading: {
     flex: 1,
     textAlign: 'center',
-    marginBottom: 8,
-  },
-  info: {
-    margin: 8,
-    fontSize: 16,
+    marginBottom: 4,
   },
 });
