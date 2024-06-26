@@ -8,7 +8,6 @@ import {
   Text,
   Platform,
 } from 'react-native';
-import { Button } from '../../../../components/common';
 import { AimDistanceMark, CalculatedMarks, MarkValue } from '../../../../types';
 import { Ballistics, getLocalStorage, storeLocalStorage, useBallisticsParams } from '../../../../utils';
 import { ConfirmRemoveMarks, MarksForm, MarksTable } from '../components';
