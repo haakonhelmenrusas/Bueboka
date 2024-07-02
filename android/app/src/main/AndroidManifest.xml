@@ -29,6 +29,7 @@
         <data android:scheme="acme"/>
         <data android:scheme="com.aaronshade.bueboka"/>
         <data android:scheme="exp+bueboka"/>
+        <data android:scheme="bueboka"/>
       </intent-filter>
     </activity>
     <activity android:name="com.facebook.react.devsupport.DevSettingsActivity" android:exported="false"/>
