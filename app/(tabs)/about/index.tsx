@@ -1,7 +1,7 @@
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faFeather } from '@fortawesome/free-solid-svg-icons/faFeather';
 import { Image } from 'expo-image';
-import { StyleSheet, Text, View, Linking, TouchableOpacity } from 'react-native';
+import { StyleSheet, Text, View, Linking, TouchableOpacity, ScrollView } from 'react-native';
 
 export default function About() {
   const sponsor = require('../../../assets/images/arcticBueLogo.png');
@@ -36,17 +36,19 @@ export default function About() {
           <Text style={styles.link}>Facebook</Text>
         </TouchableOpacity>
       </View>
-      <View style={styles.sponsorContainer}>
-        <Text style={styles.sponsor}>Sponset av</Text>
-        <Image
-          style={styles.sponsorLogo}
-          contentFit="contain"
-          source={sponsor}
-          transition={200}
-          placeholder={blurhash}
-          accessibilityLabel="Arctic Buesport AS Logo"
-        />
-      </View>
+      <ScrollView>
+        <View style={styles.sponsorContainer}>
+          <Text style={styles.sponsor}>Sponset av</Text>
+          <Image
+            style={styles.sponsorLogo}
+            contentFit="contain"
+            source={sponsor}
+            transition={200}
+            placeholder={blurhash}
+            accessibilityLabel="Arctic Buesport AS Logo"
+          />
+        </View>
+      </ScrollView>
     </View>
   );
 }
@@ -75,6 +77,7 @@ const styles = StyleSheet.create({
   sub: {
     fontSize: 16,
     textAlign: 'center',
+    marginHorizontal: 32,
     marginBottom: 16,
   },
   box: {
@@ -95,7 +98,8 @@ const styles = StyleSheet.create({
     marginBottom: 16,
   },
   links: {
-    marginTop: 16,
+    marginTop: 32,
+    marginBottom: 32,
     display: 'flex',
     flexDirection: 'row',
     width: '100%',
@@ -106,10 +110,9 @@ const styles = StyleSheet.create({
     color: 'blue',
   },
   sponsorContainer: {
-    height: 150,
+    flexDirection: 'column',
     marginTop: 'auto',
-    alignSelf: 'center',
-    justifyContent: 'center',
+    alignItems: 'center',
   },
   sponsor: {
     fontSize: 14,
