@@ -1,3 +1,4 @@
+import { Platform } from 'react-native';
 import { faBullseye } from '@fortawesome/free-solid-svg-icons/faBullseye';
 import { faUser } from '@fortawesome/free-solid-svg-icons/faUser';
 import { faCircleQuestion } from '@fortawesome/free-solid-svg-icons/faCircleQuestion';
@@ -11,6 +12,10 @@ export default function AppLayout() {
         tabBarActiveTintColor: '#053546',
         tabBarInactiveTintColor: 'grey',
         tabBarHideOnKeyboard: true,
+        tabBarStyle: {
+          height: Platform.OS === 'ios' ? 84 : 64,
+          paddingBottom: Platform.OS === 'ios' ? 20 : 0,
+        },
       }}>
       <Tabs.Screen
         name="siktemerker"
@@ -19,7 +24,7 @@ export default function AppLayout() {
           headerShadowVisible: false,
           headerShown: false,
           tabBarLabel: 'Siktemerker',
-          tabBarLabelStyle: { fontSize: 14, marginBottom: 4 },
+          tabBarLabelStyle: { fontSize: 14, marginBottom: 8 },
         }}
       />
       <Tabs.Screen
@@ -29,7 +34,7 @@ export default function AppLayout() {
           headerShadowVisible: false,
           headerShown: false,
           tabBarLabel: 'Profil',
-          tabBarLabelStyle: { fontSize: 14, marginBottom: 4 },
+          tabBarLabelStyle: { fontSize: 14, marginBottom: 8 },
         }}
       />
       <Tabs.Screen
@@ -39,7 +44,7 @@ export default function AppLayout() {
           headerShadowVisible: false,
           headerShown: false,
           tabBarLabel: 'Om oss',
-          tabBarLabelStyle: { fontSize: 14, marginBottom: 4 },
+          tabBarLabelStyle: { fontSize: 14, marginBottom: 8 },
         }}
       />
     </Tabs>
