@@ -1,11 +1,11 @@
 import React from 'react';
-import { ActivityIndicator, Pressable, PressableProps, Text, TextStyle, ViewStyle } from 'react-native';
+import { ActivityIndicator, DimensionValue, Pressable, PressableProps, Text, TextStyle, ViewStyle } from 'react-native';
 
 interface ButtonProps extends PressableProps {
   buttonStyle?: ViewStyle;
   textStyle?: TextStyle;
   label: string;
-  width?: number;
+  width?: number | DimensionValue;
   icon?: React.ReactNode;
   disabled?: boolean;
   type?: 'filled' | 'outline';
@@ -17,7 +17,7 @@ const Button: React.FC<ButtonProps> = ({
   textStyle,
   label,
   icon,
-  width,
+  width = 'auto',
   disabled,
   type = 'filled',
   loading = false,
