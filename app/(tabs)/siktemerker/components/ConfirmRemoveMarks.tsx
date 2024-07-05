@@ -18,7 +18,7 @@ const ConfirmRemoveMarks = ({ modalVisible, setBallistics, closeModal }: Props) 
   }
 
   return (
-    <Modal transparent visible={modalVisible} animationType="fade">
+    <Modal onRequestClose={closeModal} transparent visible={modalVisible} animationType="fade">
       <View style={styles.modal}>
         <Text style={{ fontSize: 18 }}>Bekreft fjerning av siktemerker</Text>
         <View style={styles.buttons}>
@@ -33,11 +33,11 @@ const ConfirmRemoveMarks = ({ modalVisible, setBallistics, closeModal }: Props) 
 const styles = StyleSheet.create({
   modal: {
     marginTop: 'auto',
-    marginBottom: '40%',
+    marginBottom: '30%',
     marginLeft: 'auto',
     marginRight: 'auto',
     height: 160,
-    width: '80%',
+    width: '90%',
     justifyContent: 'space-around',
     alignItems: 'center',
     shadowColor: 'black',
