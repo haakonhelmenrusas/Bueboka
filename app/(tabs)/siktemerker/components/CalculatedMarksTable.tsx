@@ -26,8 +26,8 @@ export default function CalculatedMarksTable({ marksData }: CalculatedMarksProps
   };
 
   return (
-    <View>
-      <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
+    <View style={styles.page}>
+      <View style={styles.constainer}>
         <Text style={[styles.thead, styles.heading, { marginLeft: -8 }]}>Avstand</Text>
         {Object.keys(marksData?.sight_marks_by_hill_angle)
           .sort()
@@ -45,19 +45,32 @@ export default function CalculatedMarksTable({ marksData }: CalculatedMarksProps
 }
 
 const styles = StyleSheet.create({
+  page: {
+    margin: 16,
+    backgroundColor: '#FFF',
+    padding: 16,
+    borderRadius: 12,
+  },
+  constainer: {
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
   tr: {
     display: 'flex',
     height: 48,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
+    borderRadius: 12,
   },
   trData: {
     flex: 1,
+    fontSize: 16,
     textAlign: 'center',
   },
   evenRow: {
-    backgroundColor: '#F8F8F8',
+    backgroundColor: '#D8F5FF',
   },
   oddRow: {
     backgroundColor: '#FFF',

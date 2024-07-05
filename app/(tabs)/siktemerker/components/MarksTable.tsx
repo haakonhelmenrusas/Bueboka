@@ -30,7 +30,7 @@ export default function MarksTable({ ballistics, removeMark }: CalculationTableP
           </View>
           <Button
             icon={<FontAwesomeIcon icon={faTrash} color="#227B9A" />}
-            label="Fjern"
+            label=""
             type="outline"
             onPress={() => removeMark(index)}
           />

@@ -1,6 +1,6 @@
 import { faMultiply } from '@fortawesome/free-solid-svg-icons/faMultiply';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
-import { Modal, StyleSheet, Text, View } from 'react-native';
+import { Keyboard, Modal, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { Button, Checkbox, Input } from '../../../../components/common';
 import { CalculatedMarks, MarksResult } from '../../../../types';
 import { formatNumber, getLocalStorage, storeLocalStorage } from '../../../../utils';
@@ -44,7 +44,7 @@ const CalculateMarksModal = ({ modalVisible, closeModal, ballistics, setCalculat
       const body = {
         ballistics_pars: ballistics.ballistics_pars,
         distances_def: [distanceFrom, interval, distanceTo],
-        angles: angles.length > 0 ? angles : [-15, 0, 15],
+        angles: angles.length > 0 ? angles : [0],
       };
 
       const res = await calculateMarks(body);
@@ -57,6 +57,7 @@ const CalculateMarksModal = ({ modalVisible, closeModal, ballistics, setCalculat
       dispatch({ type: 'SET_DISTANCE_TO', payload: '' });
       dispatch({ type: 'SET_INTERVAL', payload: '' });
       dispatch({ type: 'SET_ANGLES', payload: [] });
+      Keyboard.dismiss();
       closeModal();
     }
   }
@@ -71,21 +72,31 @@ const CalculateMarksModal = ({ modalVisible, closeModal, ballistics, setCalculat
     if (!interval) {
       dispatch({ type: 'SET_INTERVAL_ERROR', payload: true });
     }
-    await calculateMarksFunc(parseFloat(distanceFrom), parseFloat(distanceTo), parseFloat(interval));
+    if (distanceFrom && distanceTo && interval) {
+      await calculateMarksFunc(parseFloat(distanceFrom), parseFloat(distanceTo), parseFloat(interval));
+    }
   };
 
   return (
-    <Modal transparent visible={modalVisible} animationType="fade">
+    <Modal onRequestClose={closeModal} visible={modalVisible} animationType="slide">
       <View style={styles.modal}>
         <View style={styles.header}>
           <Text style={{ fontSize: 20, fontWeight: '500' }}>Beregn siktemerker</Text>
-          <Text onPress={closeModal}>
-            <FontAwesomeIcon icon={faMultiply} size={20} />
-          </Text>
+          <TouchableOpacity
+            style={{ padding: 16, margin: -8 }}
+            onPress={() => {
+              Keyboard.dismiss();
+              closeModal();
+            }}>
+            <Text>
+              <FontAwesomeIcon icon={faMultiply} size={20} />
+            </Text>
+          </TouchableOpacity>
         </View>
         <View style={styles.inputs}>
           <Input
-            textAlign="center"
+            inputStyle={{ width: 80 }}
+            labelStyle={{ textAlign: 'center' }}
             maxLength={100}
             label="Fra avstand"
             onBlur={() => dispatch({ type: 'SET_DISTANCE_FROM_ERROR', payload: false })}
@@ -96,7 +107,8 @@ const CalculateMarksModal = ({ modalVisible, closeModal, ballistics, setCalculat
             onChangeText={(value) => handleDistanceFromChange(formatNumber(value))}
           />
           <Input
-            textAlign="center"
+            inputStyle={{ width: 80 }}
+            labelStyle={{ textAlign: 'center' }}
             maxLength={100}
             onBlur={() => dispatch({ type: 'SET_DISTANCE_TO_ERROR', payload: false })}
             label="Til avstand"
@@ -107,7 +119,8 @@ const CalculateMarksModal = ({ modalVisible, closeModal, ballistics, setCalculat
             errorMessage="Verdi mangler"
           />
           <Input
-            textAlign="center"
+            inputStyle={{ width: 80 }}
+            labelStyle={{ textAlign: 'center' }}
             maxLength={100}
             label="Intevall"
             onBlur={() => dispatch({ type: 'SET_INTERVAL_ERROR', payload: false })}
@@ -129,6 +142,8 @@ const CalculateMarksModal = ({ modalVisible, closeModal, ballistics, setCalculat
           <View style={styles.angles}>
             <Input
               textAlign="center"
+              inputStyle={{ width: 80 }}
+              labelStyle={{ textAlign: 'center' }}
               maxLength={100}
               label="Vinkel"
               keyboardType="numeric"
@@ -136,6 +151,8 @@ const CalculateMarksModal = ({ modalVisible, closeModal, ballistics, setCalculat
             />
             <Input
               textAlign="center"
+              inputStyle={{ width: 80 }}
+              labelStyle={{ textAlign: 'center' }}
               maxLength={100}
               label="Vinkel"
               keyboardType="numeric"
@@ -143,6 +160,8 @@ const CalculateMarksModal = ({ modalVisible, closeModal, ballistics, setCalculat
             />
             <Input
               textAlign="center"
+              inputStyle={{ width: 80 }}
+              labelStyle={{ textAlign: 'center' }}
               maxLength={100}
               label="Vinkel"
               keyboardType="numeric"
@@ -150,8 +169,9 @@ const CalculateMarksModal = ({ modalVisible, closeModal, ballistics, setCalculat
             />
           </View>
         )}
-        <View style={styles.submit}>
-          <Button loading={status === 'pending'} width={200} label="Beregn" onPress={handleSave} />
+        <View style={styles.bottons}>
+          <Button loading={status === 'pending'} width="auto" label="Beregn" onPress={handleSave} />
+          <Button type="outline" width="auto" label="Lukk" onPress={closeModal} />
         </View>
       </View>
     </Modal>
@@ -160,19 +180,11 @@ const CalculateMarksModal = ({ modalVisible, closeModal, ballistics, setCalculat
 
 const styles = StyleSheet.create({
   modal: {
-    margin: 'auto',
-    height: 'auto',
-    width: '90%',
     display: 'flex',
+    flex: 1,
     alignItems: 'center',
-    shadowColor: 'black',
-    shadowOpacity: 0.1,
-    shadowRadius: 8,
-    shadowOffset: { width: 0, height: 2 },
-    elevation: 5,
-    padding: 12,
-    borderRadius: 4,
-    backgroundColor: 'white',
+    padding: 24,
+    marginTop: 64,
   },
   header: {
     width: '100%',
@@ -187,19 +199,19 @@ const styles = StyleSheet.create({
   },
   checkBox: {
     width: '100%',
-    marginTop: 16,
+    marginTop: 32,
   },
   angles: {
     width: '100%',
     flexDirection: 'row',
+    justifyContent: 'space-between',
     marginBottom: 24,
   },
-  button: {
+  bottons: {
     width: '100%',
-  },
-  submit: {
-    display: 'flex',
-    alignItems: 'center',
+    flexDirection: 'column',
+    marginTop: 32,
+    gap: 16,
   },
 });
 

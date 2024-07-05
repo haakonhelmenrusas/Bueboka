@@ -10,6 +10,7 @@ interface ButtonProps extends PressableProps {
   disabled?: boolean;
   type?: 'filled' | 'outline';
   loading?: boolean;
+  iconPosition?: 'left' | 'right';
 }
 
 const Button: React.FC<ButtonProps> = ({
@@ -21,10 +22,23 @@ const Button: React.FC<ButtonProps> = ({
   disabled,
   type = 'filled',
   loading = false,
+  iconPosition = 'left',
   ...props
 }) => {
   const buttonColor = type === 'outline' ? 'transparent' : '#053546';
   const textColor = type === 'outline' ? '#053546' : 'white';
+
+  const renderContent = () => {
+    const content = [
+      iconPosition === 'left' && icon,
+      <Text key="label" style={[textStyle, { color: textColor, marginLeft: icon ? 8 : 0, marginRight: icon ? 8 : 0 }]}>
+        {label}
+      </Text>,
+      iconPosition === 'right' && icon,
+    ];
+
+    return content.filter(Boolean);
+  };
 
   return (
     <Pressable
@@ -34,6 +48,7 @@ const Button: React.FC<ButtonProps> = ({
           backgroundColor: buttonColor,
           justifyContent: 'center',
           alignItems: 'center',
+          flexDirection: 'row',
           width: width,
           borderColor: buttonColor,
           borderWidth: type === 'outline' ? 1 : 0,
@@ -46,11 +61,7 @@ const Button: React.FC<ButtonProps> = ({
       ]}
       disabled={disabled || loading}
       {...props}>
-      {loading ? (
-        <ActivityIndicator testID="ActivityIndicator" size={16} color={textColor} />
-      ) : (
-        icon || <Text style={[textStyle, { color: textColor }]}>{label}</Text>
-      )}
+      {loading ? <ActivityIndicator testID="ActivityIndicator" size={16} color={textColor} /> : renderContent()}
     </Pressable>
   );
 };

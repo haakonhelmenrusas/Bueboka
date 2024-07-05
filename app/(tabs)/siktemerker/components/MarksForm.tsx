@@ -59,7 +59,7 @@ const MarksForm: FC<MarksFormProps> = ({ sendMarks, status, onInputFocusChange }
           value={distanceValue}
           onChangeText={(value) => handleDistanceChange(formatNumber(value))}
           labelStyle={{ textAlign: 'center' }}
-          inputStyle={{ width: 180 }}
+          inputStyle={{ width: 160 }}
         />
         <Input
           textAlign="center"
@@ -77,7 +77,7 @@ const MarksForm: FC<MarksFormProps> = ({ sendMarks, status, onInputFocusChange }
           errorMessage="Fyll inn"
           onChangeText={(value) => handleAimChange(formatNumber(value))}
           labelStyle={{ textAlign: 'center' }}
-          inputStyle={{ width: 180 }}
+          inputStyle={{ width: 160 }}
         />
       </View>
       <Button

@@ -1,10 +1,13 @@
 import { useEffect, useState } from 'react';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { ScrollView, StyleSheet, View } from 'react-native';
 import { Button, Message } from '../../../../components/common';
 import { CalculatedMarks, MarksResult } from '../../../../types';
-import { getLocalStorage, storeLocalStorage } from '../../../../utils';
+import { getLocalStorage } from '../../../../utils';
 import CalculateMarksModal from '../components/CalculateMarksModal';
 import CalculatedMarksTable from '../components/CalculatedMarksTable';
+import { faTrash } from '@fortawesome/free-solid-svg-icons/faTrash';
+import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 
 interface MarksScreenProps {
   setScreen: (screen: string) => void;
@@ -65,38 +68,43 @@ export default function MarksScreen({ setScreen }: MarksScreenProps) {
     }
   }
 
-  function handleRemoveMarks() {
-    storeLocalStorage(null, 'calculatedMarks').then(() => {
+  async function handleRemoveMarks() {
+    try {
+      await AsyncStorage.removeItem('calculatedMarks');
       setCalculatedMarks(null);
-    });
+    } catch (error) {
+      console.error('Error removing data', error);
+    }
   }
 
   return (
     <View style={styles.page}>
       <ScrollView style={styles.scrollView}>{renderMarksResultTable()}</ScrollView>
-      {ballistics && ballistics.given_distances.length > 1 ? (
+      {(!calculatedMarks && !ballistics) ||
+        (ballistics && ballistics.given_distances.length <= 1 && (
+          <Message
+            title={renderMessageTitle()}
+            description={renderMessageDescription()}
+            onPress={() => setScreen('calculate')}
+            buttonLabel="Gå til innskyting"
+          />
+        ))}
+      {ballistics && ballistics.given_distances.length >= 1 && calculatedMarks && (
         <View style={{ flex: 1 }}>
           <View style={{ marginTop: 'auto' }}>
             <View style={styles.buttons}>
+              <FontAwesomeIcon icon={faTrash} color="#227B9A" />
               <Button type="outline" label="Fjern siktemerker" onPress={handleRemoveMarks} />
-              <Button type="outline" label="Tilbake til innskyting" onPress={() => setScreen('calculate')} />
             </View>
           </View>
-          <CalculateMarksModal
-            modalVisible={modalVisible}
-            closeModal={() => setModalVisible(false)}
-            ballistics={ballistics}
-            setCalculatedMarks={setCalculatedMarks}
-          />
         </View>
-      ) : (
-        <Message
-          title={renderMessageTitle()}
-          description={renderMessageDescription()}
-          onPress={() => setScreen('calculate')}
-          buttonLabel="Gå til innskyting"
-        />
       )}
+      <CalculateMarksModal
+        modalVisible={modalVisible}
+        closeModal={() => setModalVisible(false)}
+        ballistics={ballistics}
+        setCalculatedMarks={setCalculatedMarks}
+      />
     </View>
   );
 }
@@ -105,8 +113,6 @@ const styles = StyleSheet.create({
   page: {
     flex: 1,
     backgroundColor: '#F2F2F2',
-    padding: 16,
-    margin: -16,
   },
   scrollView: {
     flex: 1,
@@ -114,7 +120,8 @@ const styles = StyleSheet.create({
   },
   buttons: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    justifyContent: 'center',
+    alignItems: 'center',
     marginTop: 16,
   },
   header: {
