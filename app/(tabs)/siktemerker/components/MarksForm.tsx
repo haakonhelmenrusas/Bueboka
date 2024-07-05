@@ -9,9 +9,10 @@ import { useCalcForm } from './useCalcForm';
 interface MarksFormProps {
   status: string;
   sendMarks: (newMark: MarkValue) => Promise<void>;
+  onInputFocusChange: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-const MarksForm: FC<MarksFormProps> = ({ sendMarks, status }) => {
+const MarksForm: FC<MarksFormProps> = ({ sendMarks, status, onInputFocusChange }) => {
   const [{ aimError, aimValue, distanceError, distanceValue }, dispatch] = useCalcForm();
 
   function handleDistanceChange(value: string) {
@@ -46,29 +47,40 @@ const MarksForm: FC<MarksFormProps> = ({ sendMarks, status }) => {
           textAlign="center"
           maxLength={100}
           label="Avstand"
-          onBlur={() => dispatch({ type: 'SET_DISTANCE_ERROR', payload: false })}
+          onBlur={() => {
+            dispatch({ type: 'SET_DISTANCE_ERROR', payload: false });
+            onInputFocusChange(false);
+          }}
+          onFocus={() => onInputFocusChange(true)}
           placeholderText="F.eks. 20"
           keyboardType="numeric"
           error={distanceError}
           errorMessage="Fyll inn"
           value={distanceValue}
           onChangeText={(value) => handleDistanceChange(formatNumber(value))}
+          labelStyle={{ textAlign: 'center' }}
+          inputStyle={{ width: 180 }}
         />
         <Input
           textAlign="center"
           maxLength={15}
           label="Merke"
-          onBlur={() => dispatch({ type: 'SET_AIM_ERROR', payload: false })}
+          onBlur={() => {
+            dispatch({ type: 'SET_AIM_ERROR', payload: false });
+            onInputFocusChange(false);
+          }}
+          onFocus={() => onInputFocusChange(true)}
           placeholderText="F.eks. 2.3"
           keyboardType="numeric"
           value={aimValue}
           error={aimError}
           errorMessage="Fyll inn"
           onChangeText={(value) => handleAimChange(formatNumber(value))}
+          labelStyle={{ textAlign: 'center' }}
+          inputStyle={{ width: 180 }}
         />
       </View>
       <Button
-        type={'filled'}
         disabled={aimValue === '' || distanceValue === ''}
         loading={status === 'pending'}
         buttonStyle={styles.button}
@@ -83,14 +95,10 @@ const styles = StyleSheet.create({
   form: {
     display: 'flex',
     flexDirection: 'column',
-    justifyContent: 'center',
     backgroundColor: '#FFF',
-    margin: -8,
-    marginTop: 0,
     padding: 24,
     borderTopLeftRadius: 16,
     borderTopRightRadius: 16,
-    // shadow
     shadowColor: '#000',
     shadowOffset: { width: 0, height: -2 },
     shadowOpacity: 0.25,
@@ -103,7 +111,6 @@ const styles = StyleSheet.create({
     justifyContent: 'space-around',
   },
   button: {
-    height: 48,
     marginTop: 24,
   },
 });
