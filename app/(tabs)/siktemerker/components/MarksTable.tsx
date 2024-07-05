@@ -47,7 +47,7 @@ export default function MarksTable({ ballistics, removeMark }: CalculationTableP
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    margin: 8,
+    margin: 16,
     backgroundColor: '#F2F2F2',
   },
   tr: {
@@ -85,7 +85,7 @@ const styles = StyleSheet.create({
   },
   trData: {
     flex: 1,
-    fontSize: 20,
+    fontSize: 18,
     textAlign: 'center',
   },
   thead: {

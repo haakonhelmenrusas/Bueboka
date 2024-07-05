@@ -39,24 +39,22 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 18,
     fontWeight: '600',
-    marginBottom: 32,
+    marginBottom: 24,
     marginTop: 24,
     textAlign: 'center',
   },
   header: {
     flexDirection: 'row',
     justifyContent: 'space-around',
-    marginBottom: 24,
   },
   headerItem: {
     flexDirection: 'column',
     alignItems: 'center',
     width: '50%',
-    marginBottom: -8,
   },
   headerText: {
     fontSize: 18,
-    padding: 8,
+    paddingBottom: 8,
     fontWeight: '600',
     color: '#666',
   },

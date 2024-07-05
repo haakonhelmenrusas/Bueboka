@@ -40,7 +40,7 @@ const Button: React.FC<ButtonProps> = ({
           paddingVertical: 8,
           paddingHorizontal: 24,
           borderRadius: 8,
-          height: 40,
+          height: 48,
         },
         buttonStyle,
       ]}

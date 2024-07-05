@@ -14,10 +14,6 @@ export default Layout;
 const styles = StyleSheet.create({
   safeArea: {
     backgroundColor: '#fff',
-    width: '100%',
-    paddingBottom: 16,
-    paddingLeft: 16,
-    paddingRight: 16,
     flex: 1,
   },
 });
