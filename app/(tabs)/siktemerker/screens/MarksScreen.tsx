@@ -124,16 +124,4 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginTop: 16,
   },
-  header: {
-    flexDirection: 'row',
-    marginBottom: 16,
-  },
-  headerText: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    marginRight: 16,
-  },
-  row: {
-    flexDirection: 'row',
-  },
 });
