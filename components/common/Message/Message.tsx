@@ -25,9 +25,11 @@ const Message: React.FC<MessageProps> = ({ title, description, onPress, buttonLa
 
 const styles = StyleSheet.create({
   messageContainer: {
+    backgroundColor: '#FFF',
+    borderRadius: 12,
+    padding: 16,
     alignItems: 'center',
     justifyContent: 'center',
-    margin: 16,
     height: 'auto',
   },
   messageTitle: {
@@ -41,7 +43,6 @@ const styles = StyleSheet.create({
   messageText: {
     fontSize: 16,
     marginBottom: 16,
-    paddingHorizontal: 16,
   },
 });
 
