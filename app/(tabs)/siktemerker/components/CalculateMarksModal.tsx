@@ -1,11 +1,15 @@
 import { faMultiply } from '@fortawesome/free-solid-svg-icons/faMultiply';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { Keyboard, Modal, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import { Button, Checkbox, Input } from '../../../../components/common';
+import { Button, Input } from '../../../../components/common';
 import { CalculatedMarks, MarksResult } from '../../../../types';
 import { formatNumber, getLocalStorage, storeLocalStorage } from '../../../../utils';
 import useCalculateMarks from '../../../../utils/hooks/useCalculateMarks';
 import { useCalcMarksForm } from './useCalcMarksForm';
+import { faRulerHorizontal } from '@fortawesome/free-solid-svg-icons/faRulerHorizontal';
+import { faCrosshairs } from '@fortawesome/free-solid-svg-icons/faCrosshairs';
+import { faChevronDown } from '@fortawesome/free-solid-svg-icons/faChevronDown';
+import { faChevronUp } from '@fortawesome/free-solid-svg-icons/faChevronUp';
 
 interface Props {
   modalVisible: boolean;
@@ -95,7 +99,7 @@ const CalculateMarksModal = ({ modalVisible, closeModal, ballistics, setCalculat
         </View>
         <View style={styles.inputs}>
           <Input
-            inputStyle={{ width: 80 }}
+            inputStyle={{ width: 100 }}
             labelStyle={{ textAlign: 'center' }}
             maxLength={100}
             label="Fra avstand"
@@ -105,9 +109,10 @@ const CalculateMarksModal = ({ modalVisible, closeModal, ballistics, setCalculat
             error={distanceFromError}
             errorMessage="Verdi mangler"
             onChangeText={(value) => handleDistanceFromChange(formatNumber(value))}
+            icon={<FontAwesomeIcon icon={faRulerHorizontal} color="#227B9A" />}
           />
           <Input
-            inputStyle={{ width: 80 }}
+            inputStyle={{ width: 100 }}
             labelStyle={{ textAlign: 'center' }}
             maxLength={100}
             onBlur={() => dispatch({ type: 'SET_DISTANCE_TO_ERROR', payload: false })}
@@ -117,9 +122,10 @@ const CalculateMarksModal = ({ modalVisible, closeModal, ballistics, setCalculat
             error={distanceToError}
             onChangeText={(value) => handleDistanceToChange(formatNumber(value))}
             errorMessage="Verdi mangler"
+            icon={<FontAwesomeIcon icon={faRulerHorizontal} color="#227B9A" />}
           />
           <Input
-            inputStyle={{ width: 80 }}
+            inputStyle={{ width: 100 }}
             labelStyle={{ textAlign: 'center' }}
             maxLength={100}
             label="Intevall"
@@ -129,15 +135,15 @@ const CalculateMarksModal = ({ modalVisible, closeModal, ballistics, setCalculat
             error={intervalError}
             onChangeText={(value) => handleIntervalChange(formatNumber(value))}
             errorMessage="Verdi mangler"
+            icon={<FontAwesomeIcon icon={faCrosshairs} color="#227B9A" />}
           />
         </View>
-        <View style={styles.checkBox}>
-          <Checkbox
-            label="Flere vinkler"
-            checked={anglesVisible}
-            onPress={() => dispatch({ type: 'SET_ANGLES_VISIBLE', payload: !anglesVisible })}
-          />
-        </View>
+        <TouchableOpacity
+          style={styles.checkBox}
+          onPress={() => dispatch({ type: 'SET_ANGLES_VISIBLE', payload: !anglesVisible })}>
+          <FontAwesomeIcon icon={anglesVisible ? faChevronUp : faChevronDown} color="#227B9A" />
+          <Text> Flere vinkler</Text>
+        </TouchableOpacity>
         {anglesVisible && (
           <View style={styles.angles}>
             <Input
@@ -198,6 +204,8 @@ const styles = StyleSheet.create({
     marginTop: 16,
   },
   checkBox: {
+    flexDirection: 'row',
+    alignItems: 'center',
     width: '100%',
     marginTop: 32,
   },
@@ -206,6 +214,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     marginBottom: 24,
+    marginTop: 16,
   },
   bottons: {
     width: '100%',

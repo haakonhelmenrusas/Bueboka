@@ -34,34 +34,41 @@ export default function MarksScreen({ setScreen }: MarksScreenProps) {
     });
   }, []);
 
-  function renderMessageTitle() {
-    if (ballistics) {
-      return ballistics.given_distances.length <= 1 && 'For få siktemerker';
-    }
-    return 'Ingen siktemerker';
-  }
-
-  function renderMessageDescription() {
-    if (ballistics) {
-      return (
-        ballistics.given_distances.length <= 1 &&
-        'For å beregne siktemerker må du legge til minst to merker i innskyting.'
-      );
-    }
-    return 'For å beregne siktemerker må du gjøre innskytinger.';
-  }
-
-  function renderMarksResultTable() {
-    if (calculatedMarks && calculatedMarks.distances.length > 1) {
+  function renderContent() {
+    if (calculatedMarks) {
       return <CalculatedMarksTable marksData={calculatedMarks} />;
-    } else if (!calculatedMarks && ballistics && ballistics.given_distances.length > 1) {
+    } else if (ballistics) {
+      if (ballistics.given_distances.length > 1) {
+        return (
+          <View style={{ marginTop: 'auto', padding: 16 }}>
+            <Message
+              title="Ingen beregnede siktemerker"
+              description="For å beregne siktemerker kan du trykke på knappen under."
+              onPress={() => setModalVisible(true)}
+              buttonLabel="Beregn siktemerker"
+            />
+          </View>
+        );
+      } else {
+        return (
+          <View style={{ marginTop: 'auto', padding: 16 }}>
+            <Message
+              title="Få tilgjengelige avstander"
+              description="Du trenger flere avstander for å beregne siktemerker."
+              onPress={() => setScreen('calculate')}
+              buttonLabel="Gå til innskyting"
+            />
+          </View>
+        );
+      }
+    } else {
       return (
-        <View style={{ marginTop: 'auto' }}>
+        <View style={{ marginTop: 'auto', padding: 16 }}>
           <Message
-            title="Ingen beregnede siktemerker"
-            description="For å beregne siktemerker kan du trykke på knappen under."
-            onPress={() => setModalVisible(true)}
-            buttonLabel="Beregn siktemerker"
+            title="Ingen data"
+            description="Legg inn dine merker for å beregne siktemerker."
+            onPress={() => setScreen('calculate')}
+            buttonLabel="Gå til innskyting"
           />
         </View>
       );
@@ -79,21 +86,12 @@ export default function MarksScreen({ setScreen }: MarksScreenProps) {
 
   return (
     <View style={styles.page}>
-      <ScrollView style={styles.scrollView}>{renderMarksResultTable()}</ScrollView>
-      {(!calculatedMarks && !ballistics) ||
-        (ballistics && ballistics.given_distances.length <= 1 && (
-          <Message
-            title={renderMessageTitle()}
-            description={renderMessageDescription()}
-            onPress={() => setScreen('calculate')}
-            buttonLabel="Gå til innskyting"
-          />
-        ))}
-      {ballistics && ballistics.given_distances.length >= 1 && calculatedMarks && (
+      <ScrollView style={styles.scrollView}>{renderContent()}</ScrollView>
+      {calculatedMarks && (
         <View style={{ flex: 1 }}>
           <View style={{ marginTop: 'auto' }}>
             <View style={styles.buttons}>
-              <FontAwesomeIcon icon={faTrash} color="#227B9A" />
+              <FontAwesomeIcon style={{ marginRight: -8 }} icon={faTrash} color="#227B9A" />
               <Button type="outline" label="Fjern siktemerker" onPress={handleRemoveMarks} />
             </View>
           </View>

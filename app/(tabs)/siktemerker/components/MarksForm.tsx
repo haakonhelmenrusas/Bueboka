@@ -5,6 +5,9 @@ import { Button, Input } from '../../../../components/common';
 import { MarkValue } from '../../../../types';
 import { formatNumber } from '../../../../utils';
 import { useCalcForm } from './useCalcForm';
+import { faRulerHorizontal } from '@fortawesome/free-solid-svg-icons/faRulerHorizontal';
+import { faCrosshairs } from '@fortawesome/free-solid-svg-icons/faCrosshairs';
+import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 
 interface MarksFormProps {
   status: string;
@@ -58,7 +61,7 @@ const MarksForm: FC<MarksFormProps> = ({ sendMarks, status, onInputFocusChange }
           errorMessage="Fyll inn"
           value={distanceValue}
           onChangeText={(value) => handleDistanceChange(formatNumber(value))}
-          labelStyle={{ textAlign: 'center' }}
+          icon={<FontAwesomeIcon icon={faRulerHorizontal} color="#227B9A" />}
           inputStyle={{ width: 160 }}
         />
         <Input
@@ -76,7 +79,7 @@ const MarksForm: FC<MarksFormProps> = ({ sendMarks, status, onInputFocusChange }
           error={aimError}
           errorMessage="Fyll inn"
           onChangeText={(value) => handleAimChange(formatNumber(value))}
-          labelStyle={{ textAlign: 'center' }}
+          icon={<FontAwesomeIcon icon={faCrosshairs} color="#227B9A" />}
           inputStyle={{ width: 160 }}
         />
       </View>
