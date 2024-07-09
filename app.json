@@ -25,7 +25,6 @@
       }
     },
     "ios": {
-      "buildNumber": "1.14.0",
       "bundleIdentifier": "com.aaronshade.bueboka",
       "infoPlist": {
         "CFBundleIconName": "./assets/images/ipad.png"
