@@ -1,23 +1,57 @@
+import { View, Image, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { Bow } from '@/types';
+import { capitalizeFirstLetter } from '@/utils';
 import { FC } from 'react';
-import { View, Image, Text, StyleSheet, TouchableOpacity, Modal } from 'react-native';
+import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
+import { faCog } from '@fortawesome/free-solid-svg-icons/faCog';
 
-interface Bow {
-  name: string;
-  description?: string;
-  onPress?: () => void;
+interface BowCardProps {
+  bow: Bow;
+  openFormWithData: () => void;
 }
 
-const BowCard: FC<Bow> = ({ name, description, onPress }) => {
+const BowCard: FC<BowCardProps> = ({ bow, openFormWithData }) => {
+  const { bowName, bowType, placement, eyeToAim, eyeToNock, arrowWeight, arrowDiameter } = bow;
   return (
-    <TouchableOpacity style={styles.container} onPress={() => onPress}>
-      <View style={styles.imageContainer}>
-        <Image source={require('../../../../../assets/bow.png')} style={styles.image} />
-        <Text style={styles.title}>{name}</Text>
+    <View style={styles.container}>
+      <View style={styles.header}>
+        <Image source={require('@/assets/bow.png')} style={[styles.image, { tintColor: '#D8F5FF' }]} />
+        <Text style={styles.title}>{bowName}</Text>
+        <TouchableOpacity onPress={openFormWithData} style={styles.cogIcon}>
+          <FontAwesomeIcon icon={faCog} size={24} color="#FFF" />
+        </TouchableOpacity>
       </View>
-      <View>
-        <Text style={styles.text}>{description}</Text>
+      <View style={styles.body}>
+        <View style={styles.column}>
+          <View>
+            <Text style={styles.head}>Buetype</Text>
+            <Text style={styles.text}>{capitalizeFirstLetter(bowType)}</Text>
+          </View>
+          <View>
+            <Text style={styles.head}>Plassering fot</Text>
+            <Text style={styles.text}>{placement === 'behind' ? 'Bak linja' : 'Over linja'}</Text>
+          </View>
+          <View>
+            <Text style={styles.head}>Fra øye til nock</Text>
+            <Text style={styles.text}>{eyeToNock} cm</Text>
+          </View>
+        </View>
+        <View style={styles.column}>
+          <View>
+            <Text style={styles.head}>Vekt pil</Text>
+            <Text style={styles.text}>{arrowWeight} gram</Text>
+          </View>
+          <View>
+            <Text style={styles.head}>Fra øye til sikte</Text>
+            <Text style={styles.text}>{eyeToAim} cm</Text>
+          </View>
+          <View>
+            <Text style={styles.head}>Diameter pil</Text>
+            <Text style={styles.text}>{arrowDiameter} mm</Text>
+          </View>
+        </View>
       </View>
-    </TouchableOpacity>
+    </View>
   );
 };
 export default BowCard;
@@ -25,39 +59,54 @@ export default BowCard;
 const styles = StyleSheet.create({
   container: {
     alignContent: 'center',
-    height: 200,
     width: '100%',
     marginHorizontal: 'auto',
-    shadowColor: '#000',
     backgroundColor: '#fff',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 3,
-    elevation: 5,
     borderRadius: 12,
-    padding: 16,
+    borderWidth: 2,
+    borderColor: '#053546',
   },
-  imageContainer: {
+  header: {
     display: 'flex',
     flexDirection: 'row',
-    marginBottom: 16,
-    alignItems: 'flex-end',
+    padding: 12,
+    alignItems: 'center',
+    borderTopEndRadius: 10,
+    borderTopStartRadius: 10,
+    backgroundColor: '#053546',
   },
   image: {
-    width: 40,
-    height: 40,
+    width: 28,
+    height: 28,
     resizeMode: 'contain',
     marginRight: 16,
   },
   title: {
     fontSize: 24,
+    color: '#D8F5FF',
     fontWeight: 'medium',
   },
-  text: {
+  cogIcon: {
+    marginLeft: 'auto',
+    padding: 8,
+  },
+  body: {
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    padding: 16,
+  },
+  column: {
+    flex: 1,
+    marginHorizontal: 8,
+  },
+  head: {
     fontSize: 16,
+    fontWeight: 'bold',
+    marginBottom: 4,
+  },
+  text: {
+    fontSize: 14,
     marginBottom: 16,
   },
 });
