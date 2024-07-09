@@ -4,4 +4,7 @@ export interface MarksResult {
   sight_marks_by_hill_angle: {
     angle: number[];
   };
+  arrow_speed_by_angle: {
+    speed: number[];
+  };
 }

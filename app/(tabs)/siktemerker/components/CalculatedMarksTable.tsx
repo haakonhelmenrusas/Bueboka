@@ -14,10 +14,15 @@ export default function CalculatedMarksTable({ marksData }: CalculatedMarksProps
           {Object.keys(marksData.sight_marks_by_hill_angle)
             .sort()
             .map((angle, key) => {
+              const speed = Object.keys(marksData.arrow_speed_by_angle).sort()[key];
               return (
-                <Text key={key} style={styles.trData}>
-                  {marksData.sight_marks_by_hill_angle[angle][index].toFixed(1)}
-                </Text>
+                <View key={key} style={styles.trDataColumn}>
+                  <Text style={[styles.trData, { fontWeight: '600', fontSize: 18 }]}>
+                    {marksData.sight_marks_by_hill_angle[angle][index].toFixed(1)}
+                  </Text>
+                  <View style={{ height: 1, backgroundColor: '#053546' }} />
+                  <Text style={styles.trData}>{marksData.arrow_speed_by_angle[speed][index].toFixed(0)} m/s</Text>
+                </View>
               );
             })}
         </View>
@@ -27,7 +32,7 @@ export default function CalculatedMarksTable({ marksData }: CalculatedMarksProps
 
   return (
     <View style={styles.page}>
-      <View style={styles.constainer}>
+      <View style={styles.container}>
         <Text style={[styles.thead, styles.heading, { marginLeft: -8 }]}>Avstand</Text>
         {Object.keys(marksData?.sight_marks_by_hill_angle)
           .sort()
@@ -48,24 +53,28 @@ const styles = StyleSheet.create({
   page: {
     margin: 16,
     backgroundColor: '#FFF',
-    padding: 16,
+    padding: 8,
     borderRadius: 12,
   },
-  constainer: {
+  container: {
     display: 'flex',
     flexDirection: 'row',
     justifyContent: 'space-between',
   },
+  trDataColumn: {
+    display: 'flex',
+    flexDirection: 'column',
+  },
   tr: {
     display: 'flex',
-    height: 48,
+    height: 64,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
     borderRadius: 12,
+    padding: 12,
   },
   trData: {
-    flex: 1,
     fontSize: 16,
     textAlign: 'center',
   },
