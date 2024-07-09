@@ -19,7 +19,6 @@
     },
     "android": {
       "package": "com.aaronshade.bueboka",
-      "versionCode": 17,
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/icon.png",
         "backgroundColor": "#FFFFFF"
