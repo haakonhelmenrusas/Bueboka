@@ -156,7 +156,7 @@ const CalculateMarksModal = ({
               labelStyle={{ textAlign: 'center' }}
               maxLength={100}
               label="Vinkel"
-              keyboardType="numeric"
+              keyboardType="numbers-and-punctuation"
               onChange={(event) => handleAngleChange(event.nativeEvent.text, 0)}
             />
             <Input
@@ -165,7 +165,7 @@ const CalculateMarksModal = ({
               labelStyle={{ textAlign: 'center' }}
               maxLength={100}
               label="Vinkel"
-              keyboardType="numeric"
+              keyboardType="numbers-and-punctuation"
               onChange={(event) => handleAngleChange(event.nativeEvent.text, 1)}
             />
             <Input
@@ -174,7 +174,7 @@ const CalculateMarksModal = ({
               labelStyle={{ textAlign: 'center' }}
               maxLength={100}
               label="Vinkel"
-              keyboardType="numeric"
+              keyboardType="numbers-and-punctuation"
               onChange={(event) => handleAngleChange(event.nativeEvent.text, 2)}
             />
           </View>
