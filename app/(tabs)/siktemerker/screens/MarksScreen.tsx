@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { ScrollView, StyleSheet, View } from 'react-native';
-import { Button, Message } from '../../../../components/common';
-import { CalculatedMarks, MarksResult } from '../../../../types';
-import { getLocalStorage } from '../../../../utils';
+import { Button, Message } from '@/components/common';
+import { CalculatedMarks, MarksResult } from '@/types';
+import { getLocalStorage } from '@/utils';
 import CalculateMarksModal from '../components/CalculateMarksModal';
 import CalculatedMarksTable from '../components/CalculatedMarksTable';
 import { faTrash } from '@fortawesome/free-solid-svg-icons/faTrash';

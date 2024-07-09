@@ -2,9 +2,9 @@ import { faTrash } from '@fortawesome/free-solid-svg-icons/faTrash';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { StyleSheet, Text, View } from 'react-native';
 
-import { Message } from '../../../../components/common';
-import Button from '../../../../components/common/Button/Button';
-import { CalculatedMarks } from '../../../../types';
+import { Message } from '@/components/common';
+import Button from '@/components/common/Button/Button';
+import { CalculatedMarks } from '@/types';
 
 interface CalculationTableProps {
   ballistics: CalculatedMarks | null;

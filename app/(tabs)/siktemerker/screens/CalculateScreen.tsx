@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Keyboard, Pressable, KeyboardAvoidingView, View, StyleSheet, Text, Platform } from 'react-native';
-import { AimDistanceMark, CalculatedMarks, MarkValue } from '../../../../types';
-import { Ballistics, getLocalStorage, storeLocalStorage, useBallisticsParams } from '../../../../utils';
+import { AimDistanceMark, CalculatedMarks, MarkValue } from '@/types';
+import { Ballistics, getLocalStorage, storeLocalStorage, useBallisticsParams } from '@/utils';
 import { ConfirmRemoveMarks, MarksForm, MarksTable } from '../components';
 import { faTrash } from '@fortawesome/free-solid-svg-icons/faTrash';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';

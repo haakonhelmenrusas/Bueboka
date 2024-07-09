@@ -1,24 +1,28 @@
 import { faMultiply } from '@fortawesome/free-solid-svg-icons/faMultiply';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { Keyboard, Modal, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import { Button, Input } from '../../../../components/common';
-import { CalculatedMarks, MarksResult } from '../../../../types';
-import { formatNumber, getLocalStorage, storeLocalStorage } from '../../../../utils';
-import useCalculateMarks from '../../../../utils/hooks/useCalculateMarks';
+import { Button, Input } from '@/components/common';
+import { CalculatedMarks, MarksResult } from '@/types';
+import { useCalculateMarks, formatNumber, getLocalStorage, storeLocalStorage } from '@/utils';
 import { useCalcMarksForm } from './useCalcMarksForm';
 import { faRulerHorizontal } from '@fortawesome/free-solid-svg-icons/faRulerHorizontal';
 import { faCrosshairs } from '@fortawesome/free-solid-svg-icons/faCrosshairs';
 import { faChevronDown } from '@fortawesome/free-solid-svg-icons/faChevronDown';
 import { faChevronUp } from '@fortawesome/free-solid-svg-icons/faChevronUp';
 
-interface Props {
+interface CalculateMarksModalProps {
   modalVisible: boolean;
   closeModal: () => void;
   ballistics: CalculatedMarks | null;
   setCalculatedMarks: (calculatedMarks: MarksResult) => void;
 }
 
-const CalculateMarksModal = ({ modalVisible, closeModal, ballistics, setCalculatedMarks }: Props) => {
+const CalculateMarksModal = ({
+  modalVisible,
+  closeModal,
+  ballistics,
+  setCalculatedMarks,
+}: CalculateMarksModalProps) => {
   const [
     { distanceFrom, distanceFromError, distanceTo, distanceToError, interval, intervalError, anglesVisible, angles },
     dispatch,

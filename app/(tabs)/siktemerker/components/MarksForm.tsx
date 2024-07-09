@@ -1,9 +1,9 @@
 import React, { FC } from 'react';
 import { Keyboard, StyleSheet, View } from 'react-native';
 
-import { Button, Input } from '../../../../components/common';
-import { MarkValue } from '../../../../types';
-import { formatNumber } from '../../../../utils';
+import { Button, Input } from '@/components/common';
+import { MarkValue } from '@/types';
+import { formatNumber } from '@/utils';
 import { useCalcForm } from './useCalcForm';
 import { faRulerHorizontal } from '@fortawesome/free-solid-svg-icons/faRulerHorizontal';
 import { faCrosshairs } from '@fortawesome/free-solid-svg-icons/faCrosshairs';

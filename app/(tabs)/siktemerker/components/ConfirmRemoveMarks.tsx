@@ -1,7 +1,7 @@
 import { Modal, StyleSheet, Text, View } from 'react-native';
-import { Button } from '../../../../components/common';
-import { CalculatedMarks } from '../../../../types';
-import { storeLocalStorage } from '../../../../utils';
+import { Button } from '@/components/common';
+import { CalculatedMarks } from '@/types';
+import { storeLocalStorage } from '@/utils';
 
 interface Props {
   modalVisible: boolean;
