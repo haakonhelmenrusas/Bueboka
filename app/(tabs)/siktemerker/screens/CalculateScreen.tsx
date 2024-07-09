@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Keyboard, Pressable, KeyboardAvoidingView, View, StyleSheet, Text, Platform } from 'react-native';
-import { AimDistanceMark, CalculatedMarks, MarkValue } from '@/types';
+import { AimDistanceMark, Bow, CalculatedMarks, MarkValue } from '@/types';
 import { Ballistics, getLocalStorage, storeLocalStorage, useBallisticsParams } from '@/utils';
 import { ConfirmRemoveMarks, MarksForm, MarksTable } from '../components';
 import { faTrash } from '@fortawesome/free-solid-svg-icons/faTrash';
@@ -21,11 +21,22 @@ export default function CalculateScreen() {
   }, []);
 
   async function sendMarks(newMark: MarkValue) {
+    const bow = await getLocalStorage<Bow>('bow');
+
     const body: AimDistanceMark = {
       ...Ballistics,
       new_given_mark: newMark.aim,
       new_given_distance: newMark.distance,
     };
+
+    if (bow) {
+      body.bow_category = bow.bowType;
+      body.arrow_diameter_mm = bow.arrowDiameter;
+      body.arrow_mass_gram = bow.arrowWeight;
+      body.feet_behind_or_center = bow.placement;
+      body.length_eye_sight_cm = bow.eyeToAim;
+      body.length_nock_eye_cm = bow.eyeToNock;
+    }
 
     if (ballistics) {
       body.given_marks = ballistics.given_marks;

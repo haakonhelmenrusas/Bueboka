@@ -1,5 +1,5 @@
 import { StyleSheet, Text, View } from 'react-native';
-import { MarksResult } from '../../../../types';
+import { MarksResult } from '@/types';
 
 interface CalculatedMarksProps {
   marksData: MarksResult | null;
@@ -17,7 +17,7 @@ export default function CalculatedMarksTable({ marksData }: CalculatedMarksProps
               const speed = Object.keys(marksData.arrow_speed_by_angle).sort()[key];
               return (
                 <View key={key} style={styles.trDataColumn}>
-                  <Text style={[styles.trData, { fontWeight: '600', fontSize: 18 }]}>
+                  <Text style={[styles.trData, { fontWeight: '600', fontSize: 16 }]}>
                     {marksData.sight_marks_by_hill_angle[angle][index].toFixed(1)}
                   </Text>
                   <View style={{ height: 1, backgroundColor: '#053546' }} />
@@ -33,7 +33,7 @@ export default function CalculatedMarksTable({ marksData }: CalculatedMarksProps
   return (
     <View style={styles.page}>
       <View style={styles.container}>
-        <Text style={[styles.thead, styles.heading, { marginLeft: -8 }]}>Avstand</Text>
+        <Text style={[styles.thead, styles.heading]}>Avstand</Text>
         {Object.keys(marksData?.sight_marks_by_hill_angle)
           .sort()
           .map((angle) => {
@@ -70,7 +70,7 @@ const styles = StyleSheet.create({
     height: 64,
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-between',
+    justifyContent: 'space-around',
     borderRadius: 12,
     padding: 12,
   },
