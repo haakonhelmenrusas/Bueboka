@@ -2,7 +2,7 @@ import { View, Text, StyleSheet, TouchableOpacity, Platform, Modal, Keyboard, Pr
 import { useEffect, useState } from 'react';
 import { Input, Button } from '@/components/common';
 import { useBowForm } from './useBowForm';
-import { storeLocalStorage } from '@/utils';
+import { formatNumber, storeLocalStorage } from '@/utils';
 import { Bow } from '@/types';
 
 interface BowFormProps {
@@ -86,12 +86,13 @@ const BowForm = ({ modalVisible, setModalVisible, bow }: BowFormProps) => {
           <Input
             value={bowName}
             onChangeText={(value) => dispatch({ type: 'SET_BOW_NAME', payload: value })}
+            inputStyle={bowName === '' ? { borderColor: '#ccc' } : { borderColor: '#053546' }}
             onFocus={handleInputFocus}
             onBlur={() => {
               dispatch({ type: 'SET_BOW_NAME_ERROR', payload: false });
               setInputFocused(false);
             }}
-            placeholderText="Hoyt eller Dragon"
+            placeholderText="F.eks. Hoyt"
             label="Navn på bue"
             error={bowNameError}
             errorMessage="Du må fylle inn navn på bue"
@@ -102,7 +103,7 @@ const BowForm = ({ modalVisible, setModalVisible, bow }: BowFormProps) => {
               {bowTypes.map((bow) => (
                 <TouchableOpacity
                   key={bow.value}
-                  style={styles.radioButtonContainer}
+                  style={[styles.radioButtonContainer, bowType === bow.value && styles.radioButtonContainerSelected]}
                   onPress={() => {
                     dispatch({ type: 'SET_BOW_TYPE', payload: bow.value });
                   }}>
@@ -112,13 +113,16 @@ const BowForm = ({ modalVisible, setModalVisible, bow }: BowFormProps) => {
               ))}
             </View>
           </View>
-          <View style={styles.placement}>
+          <View>
             <Text style={styles.bowTypeLabel}>Plassering</Text>
-            <View style={{ flexDirection: 'row' }}>
+            <View style={{ flexDirection: 'row', justifyContent: 'space-around' }}>
               {alignment.map((place) => (
                 <TouchableOpacity
                   key={place.value}
-                  style={styles.radioButtonContainer}
+                  style={[
+                    styles.radioButtonContainer,
+                    placement === place.value && styles.radioButtonContainerSelected,
+                  ]}
                   onPress={() => {
                     dispatch({ type: 'SET_PLACEMENT', payload: place.value });
                   }}>
@@ -133,10 +137,12 @@ const BowForm = ({ modalVisible, setModalVisible, bow }: BowFormProps) => {
               onFocus={handleInputFocus}
               onBlur={handleInputBlur}
               textAlign="center"
-              inputStyle={{ width: 128 }}
-              label="Fra øye til nock"
+              containerStyle={{ flex: 1, marginRight: 8 }}
+              inputStyle={eyeToNock === '' ? { borderColor: '#ccc' } : { borderColor: '#053546' }}
+              label="Fra øye til nock (cm)"
               keyboardType="numeric"
-              placeholderText="F.eks. 10cm"
+              placeholderText="F.eks. 10"
+              maxLength={2}
               value={eyeToNock}
               onChangeText={(value) => dispatch({ type: 'SET_EYE_TO_NOCK', payload: value })}
             />
@@ -144,10 +150,12 @@ const BowForm = ({ modalVisible, setModalVisible, bow }: BowFormProps) => {
               onFocus={handleInputFocus}
               onBlur={handleInputBlur}
               textAlign="center"
-              inputStyle={{ width: 128 }}
-              label="Fra øye til sikte"
+              containerStyle={{ flex: 1 }}
+              inputStyle={eyeToAim === '' ? { borderColor: '#ccc' } : { borderColor: '#053546' }}
+              label="Fra øye til sikte (cm)"
               keyboardType="numeric"
-              placeholderText="F.eks. 90cm"
+              placeholderText="F.eks. 90"
+              maxLength={3}
               value={eyeToAim}
               onChangeText={(value) => dispatch({ type: 'SET_EYE_TO_AIM', payload: value })}
             />
@@ -157,28 +165,32 @@ const BowForm = ({ modalVisible, setModalVisible, bow }: BowFormProps) => {
               onFocus={handleInputFocus}
               onBlur={handleInputBlur}
               textAlign="center"
-              inputStyle={{ width: 128 }}
-              label="Vekt pil"
+              containerStyle={{ flex: 1, marginRight: 8 }}
+              inputStyle={arrowWeight === '' ? { borderColor: '#ccc' } : { borderColor: '#053546' }}
+              label="Vekt pil (g)"
               keyboardType="numeric"
-              placeholderText="F.eks. 10gram"
+              placeholderText="F.eks. 20"
+              maxLength={3}
               value={arrowWeight}
-              onChangeText={(value) => dispatch({ type: 'SET_ARROW_WEIGHT', payload: value })}
+              onChangeText={(value) => dispatch({ type: 'SET_ARROW_WEIGHT', payload: formatNumber(value) })}
             />
             <Input
               onFocus={handleInputFocus}
               onBlur={handleInputBlur}
               textAlign="center"
-              inputStyle={{ width: 128 }}
-              label="Diameter pil"
+              containerStyle={{ flex: 1 }}
+              inputStyle={arrowDiameter === '' ? { borderColor: '#ccc' } : { borderColor: '#053546' }}
+              label="Diameter pil (mm)"
               keyboardType="numeric"
-              placeholderText="F.eks. 4mm"
+              placeholderText="F.eks. 5"
+              maxLength={3}
               value={arrowDiameter}
-              onChangeText={(value) => dispatch({ type: 'SET_ARROW_DIAMETER', payload: value })}
+              onChangeText={(value) => dispatch({ type: 'SET_ARROW_DIAMETER', payload: formatNumber(value) })}
             />
           </View>
           {!(Platform.OS === 'android' && isInputFocused) && (
             <View style={{ marginTop: 'auto' }}>
-              <Button onPress={handleSubmit} label="Lagre" />
+              <Button disabled={!bowName} onPress={handleSubmit} label="Lagre" />
               <Button
                 type="outline"
                 onPress={() => {
@@ -194,6 +206,7 @@ const BowForm = ({ modalVisible, setModalVisible, bow }: BowFormProps) => {
     </Modal>
   );
 };
+
 export default BowForm;
 
 const styles = StyleSheet.create({
@@ -207,35 +220,32 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: 'medium',
   },
-  form: {
-    display: 'flex',
-    flexDirection: 'column',
-  },
-  inputs: {
-    display: 'flex',
-    flexDirection: 'column',
-    justifyContent: 'space-between',
-    height: 200,
-  },
   radioContainer: {
     marginTop: 32,
   },
-  placement: {
-    marginTop: 16,
-  },
   radioButtonContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginRight: 16,
-  },
-  radioButton: {
-    height: 20,
-    width: 20,
-    backgroundColor: '#FFF',
-    borderRadius: 10,
+    flex: 1,
+    borderRadius: 12,
     borderWidth: 1,
     borderColor: '#ccc',
-    marginRight: 10,
+    padding: 8,
+    flexDirection: 'column',
+    alignItems: 'center',
+    marginRight: 8,
+    marginBottom: 16,
+  },
+  radioButtonContainerSelected: {
+    borderColor: '#053546',
+  },
+  radioButton: {
+    height: 16,
+    width: 16,
+    backgroundColor: '#FFF',
+    borderRadius: 20,
+    borderWidth: 1,
+    borderColor: '#ccc',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   radioButtonSelected: {
     backgroundColor: '#053546',
@@ -243,6 +253,8 @@ const styles = StyleSheet.create({
   radioButtonLabel: {
     color: '#053546',
     fontWeight: '500',
+    marginTop: 8,
+    textAlign: 'center',
   },
   bowTypeLabel: {
     color: '#053546',
@@ -251,10 +263,3 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
 });
-
-const test = {
-  arrow_mass_gram: 21.2,
-  arrow_diameter_mm: 5.69,
-  length_eye_sight_cm: 97,
-  length_nock_eye_cm: 12,
-};

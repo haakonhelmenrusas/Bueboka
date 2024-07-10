@@ -45,7 +45,7 @@ const Input = ({
       paddingHorizontal: 12,
       height: 40,
       width: '100%',
-      borderColor: '#053546',
+      borderColor: '#ccc',
       borderWidth: 1,
       borderRadius: 8,
     },
