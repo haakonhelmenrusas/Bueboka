@@ -47,6 +47,13 @@ const CalculateMarksModal = ({
     dispatch({ type: 'SET_ANGLES', payload: newAngles });
   }
 
+  function clearForm() {
+    dispatch({ type: 'SET_DISTANCE_FROM', payload: '' });
+    dispatch({ type: 'SET_DISTANCE_TO', payload: '' });
+    dispatch({ type: 'SET_INTERVAL', payload: '' });
+    dispatch({ type: 'SET_ANGLES', payload: [] });
+  }
+
   async function calculateMarksFunc(distanceFrom: number, distanceTo: number, interval: number) {
     if (ballistics) {
       const body = {
@@ -61,10 +68,7 @@ const CalculateMarksModal = ({
         const marks = await getLocalStorage<MarksResult>('calculatedMarks');
         setCalculatedMarks(marks);
       });
-      dispatch({ type: 'SET_DISTANCE_FROM', payload: '' });
-      dispatch({ type: 'SET_DISTANCE_TO', payload: '' });
-      dispatch({ type: 'SET_INTERVAL', payload: '' });
-      dispatch({ type: 'SET_ANGLES', payload: [] });
+      clearForm();
       Keyboard.dismiss();
       closeModal();
     }
@@ -94,6 +98,7 @@ const CalculateMarksModal = ({
             style={{ padding: 16, margin: -8 }}
             onPress={() => {
               Keyboard.dismiss();
+              clearForm();
               closeModal();
             }}>
             <Text>
@@ -105,10 +110,10 @@ const CalculateMarksModal = ({
           <Input
             inputStyle={{ width: 100 }}
             labelStyle={{ textAlign: 'center' }}
-            maxLength={100}
             label="Fra avstand"
             onBlur={() => dispatch({ type: 'SET_DISTANCE_FROM_ERROR', payload: false })}
             keyboardType="numeric"
+            maxLength={5}
             value={distanceFrom}
             error={distanceFromError}
             errorMessage="Verdi mangler"
@@ -118,10 +123,10 @@ const CalculateMarksModal = ({
           <Input
             inputStyle={{ width: 100 }}
             labelStyle={{ textAlign: 'center' }}
-            maxLength={100}
             onBlur={() => dispatch({ type: 'SET_DISTANCE_TO_ERROR', payload: false })}
             label="Til avstand"
             keyboardType="numeric"
+            maxLength={6}
             value={distanceTo}
             error={distanceToError}
             onChangeText={(value) => handleDistanceToChange(formatNumber(value))}
@@ -131,10 +136,10 @@ const CalculateMarksModal = ({
           <Input
             inputStyle={{ width: 100 }}
             labelStyle={{ textAlign: 'center' }}
-            maxLength={100}
             label="Intevall"
             onBlur={() => dispatch({ type: 'SET_INTERVAL_ERROR', payload: false })}
             keyboardType="numeric"
+            maxLength={5}
             value={interval}
             error={intervalError}
             onChangeText={(value) => handleIntervalChange(formatNumber(value))}
@@ -154,7 +159,6 @@ const CalculateMarksModal = ({
               textAlign="center"
               inputStyle={{ width: 80 }}
               labelStyle={{ textAlign: 'center' }}
-              maxLength={100}
               label="Vinkel"
               keyboardType="numbers-and-punctuation"
               onChange={(event) => handleAngleChange(event.nativeEvent.text, 0)}
@@ -163,7 +167,6 @@ const CalculateMarksModal = ({
               textAlign="center"
               inputStyle={{ width: 80 }}
               labelStyle={{ textAlign: 'center' }}
-              maxLength={100}
               label="Vinkel"
               keyboardType="numbers-and-punctuation"
               onChange={(event) => handleAngleChange(event.nativeEvent.text, 1)}
@@ -172,7 +175,6 @@ const CalculateMarksModal = ({
               textAlign="center"
               inputStyle={{ width: 80 }}
               labelStyle={{ textAlign: 'center' }}
-              maxLength={100}
               label="Vinkel"
               keyboardType="numbers-and-punctuation"
               onChange={(event) => handleAngleChange(event.nativeEvent.text, 2)}
@@ -181,7 +183,15 @@ const CalculateMarksModal = ({
         )}
         <View style={styles.bottons}>
           <Button loading={status === 'pending'} width="auto" label="Beregn" onPress={handleSave} />
-          <Button type="outline" width="auto" label="Lukk" onPress={closeModal} />
+          <Button
+            type="outline"
+            width="auto"
+            label="Lukk"
+            onPress={() => {
+              clearForm();
+              closeModal();
+            }}
+          />
         </View>
       </View>
     </Modal>

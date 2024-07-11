@@ -48,7 +48,6 @@ const MarksForm: FC<MarksFormProps> = ({ sendMarks, status, onInputFocusChange }
       <View style={styles.inputs}>
         <Input
           textAlign="center"
-          maxLength={2}
           label="Avstand"
           onBlur={() => {
             dispatch({ type: 'SET_DISTANCE_ERROR', payload: false });
@@ -56,6 +55,7 @@ const MarksForm: FC<MarksFormProps> = ({ sendMarks, status, onInputFocusChange }
           }}
           onFocus={() => onInputFocusChange(true)}
           placeholderText="F.eks. 20"
+          maxLength={5}
           keyboardType="numeric"
           error={distanceError}
           errorMessage="Fyll inn"
@@ -66,7 +66,6 @@ const MarksForm: FC<MarksFormProps> = ({ sendMarks, status, onInputFocusChange }
         />
         <Input
           textAlign="center"
-          maxLength={3}
           label="Merke"
           onBlur={() => {
             dispatch({ type: 'SET_AIM_ERROR', payload: false });
@@ -74,6 +73,7 @@ const MarksForm: FC<MarksFormProps> = ({ sendMarks, status, onInputFocusChange }
           }}
           onFocus={() => onInputFocusChange(true)}
           placeholderText="F.eks. 2.3"
+          maxLength={4}
           keyboardType="numeric"
           value={aimValue}
           error={aimError}
