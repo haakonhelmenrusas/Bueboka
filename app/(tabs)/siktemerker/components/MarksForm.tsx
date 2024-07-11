@@ -73,7 +73,7 @@ const MarksForm: FC<MarksFormProps> = ({ sendMarks, status, onInputFocusChange }
           }}
           onFocus={() => onInputFocusChange(true)}
           placeholderText="F.eks. 2.3"
-          maxLength={4}
+          maxLength={5}
           keyboardType="numeric"
           value={aimValue}
           error={aimError}
