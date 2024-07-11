@@ -6,7 +6,7 @@ interface ButtonProps extends PressableProps {
   textStyle?: TextStyle;
   label: string;
   width?: number | DimensionValue;
-  icon?: React.ReactNode;
+  icon?: any;
   disabled?: boolean;
   type?: 'filled' | 'outline';
   loading?: boolean;
@@ -30,11 +30,11 @@ const Button: React.FC<ButtonProps> = ({
 
   const renderContent = () => {
     const content = [
-      iconPosition === 'left' && icon,
+      icon && React.isValidElement(icon) && iconPosition === 'left' && React.cloneElement(icon, { key: 'icon-left' }),
       <Text key="label" style={[textStyle, { color: textColor, marginLeft: icon ? 8 : 0, marginRight: icon ? 8 : 0 }]}>
         {label}
       </Text>,
-      iconPosition === 'right' && icon,
+      icon && React.isValidElement(icon) && iconPosition === 'right' && React.cloneElement(icon, { key: 'icon-right' }),
     ];
 
     return content.filter(Boolean);
