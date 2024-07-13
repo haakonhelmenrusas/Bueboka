@@ -6,6 +6,9 @@ interface ButtonProps extends PressableProps {
   textStyle?: TextStyle;
   label: string;
   width?: number | DimensionValue;
+  /**
+   * FontAwesome icon component to render inside the button (optional)
+   */
   icon?: any;
   disabled?: boolean;
   type?: 'filled' | 'outline';
