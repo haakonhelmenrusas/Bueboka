@@ -1,19 +1,22 @@
 import { useEffect, useState } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { ScrollView, StyleSheet, View } from 'react-native';
+import { ScrollView, StyleSheet, View, Platform } from 'react-native';
 import { Button, Message } from '@/components/common';
 import { CalculatedMarks, MarksResult } from '@/types';
 import { getLocalStorage } from '@/utils';
 import CalculateMarksModal from '../components/CalculateMarksModal';
 import CalculatedMarksTable from '../components/CalculatedMarksTable';
 import { faTrash } from '@fortawesome/free-solid-svg-icons/faTrash';
+import { faChartLine } from '@fortawesome/free-solid-svg-icons/faChartLine';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
+import ChartScreen from './ChartScreen';
 
 interface MarksScreenProps {
   setScreen: (screen: string) => void;
 }
 
 export default function MarksScreen({ setScreen }: MarksScreenProps) {
+  const [showGraph, setShowGraph] = useState(false);
   const [ballistics, setBallistics] = useState<CalculatedMarks | null>(null);
   const [calculatedMarks, setCalculatedMarks] = useState<MarksResult | null>(null);
   const [modalVisible, setModalVisible] = useState(false);
@@ -85,14 +88,31 @@ export default function MarksScreen({ setScreen }: MarksScreenProps) {
   }
 
   return (
-    <View style={styles.page}>
-      <ScrollView style={styles.scrollView}>{renderContent()}</ScrollView>
+    <View style={Platform.OS === 'ios' ? styles.ios : styles.page}>
+      {showGraph ? (
+        <ChartScreen data={calculatedMarks} />
+      ) : (
+        <ScrollView style={styles.scrollView}>{renderContent()}</ScrollView>
+      )}
       {calculatedMarks && (
         <View style={{ flex: 1 }}>
           <View style={{ marginTop: 'auto' }}>
             <View style={styles.buttons}>
-              <FontAwesomeIcon style={{ marginRight: -8 }} icon={faTrash} color="#227B9A" />
-              <Button type="outline" label="Fjern siktemerker" onPress={handleRemoveMarks} />
+              <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                <FontAwesomeIcon style={{ marginRight: -8 }} icon={faTrash} color="#227B9A" />
+                <Button type="outline" label="Fjern siktemerker" onPress={handleRemoveMarks} />
+              </View>
+              {!showGraph ? (
+                <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                  <FontAwesomeIcon style={{ marginRight: -8 }} icon={faChartLine} color="#227B9A" />
+                  <Button type="outline" label="Vis diagram" onPress={() => setShowGraph(true)} />
+                </View>
+              ) : (
+                <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                  <FontAwesomeIcon style={{ marginRight: 0 }} icon={faChartLine} color="#227B9A" />
+                  <Button type="outline" label="Vis tabell" onPress={() => setShowGraph(false)} />
+                </View>
+              )}
             </View>
           </View>
         </View>
@@ -112,14 +132,20 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#F2F2F2',
   },
+  ios: {
+    flex: 1,
+    backgroundColor: '#F2F2F2',
+    marginBottom: -34,
+  },
   scrollView: {
     flex: 1,
     minHeight: '60%',
   },
   buttons: {
     flexDirection: 'row',
-    justifyContent: 'center',
+    justifyContent: 'space-around',
     alignItems: 'center',
     marginTop: 16,
+    padding: 8,
   },
 });

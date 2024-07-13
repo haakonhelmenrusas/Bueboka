@@ -63,7 +63,7 @@ export default function CalculateScreen() {
   }
 
   return (
-    <Pressable style={{ flex: 1 }} onPress={() => Keyboard.dismiss()}>
+    <Pressable style={Platform.OS === 'ios' ? styles.ios : styles.page} onPress={() => Keyboard.dismiss()}>
       <KeyboardAvoidingView
         keyboardVerticalOffset={124}
         style={{ flex: 1 }}
@@ -92,9 +92,17 @@ export default function CalculateScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: {
+  page: {
     flex: 1,
     backgroundColor: '#F2F2F2',
+  },
+  ios: {
+    flex: 1,
+    backgroundColor: '#F2F2F2',
+    marginBottom: -34,
+  },
+  container: {
+    flex: 1,
   },
   remove: {
     color: '#227B9A',
