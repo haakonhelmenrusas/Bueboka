@@ -99,18 +99,33 @@ export default function MarksScreen({ setScreen }: MarksScreenProps) {
           <View style={{ marginTop: 'auto' }}>
             <View style={styles.buttons}>
               <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                <FontAwesomeIcon style={{ marginRight: -8 }} icon={faTrash} color="#227B9A" />
-                <Button type="outline" label="Fjern siktemerker" onPress={handleRemoveMarks} />
+                <Button
+                  iconPosition="left"
+                  icon={<FontAwesomeIcon icon={faTrash} color="#227B9A" />}
+                  type="outline"
+                  label="Fjern siktemerker"
+                  onPress={handleRemoveMarks}
+                />
               </View>
               {!showGraph ? (
                 <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                  <FontAwesomeIcon style={{ marginRight: -8 }} icon={faChartLine} color="#227B9A" />
-                  <Button type="outline" label="Vis diagram" onPress={() => setShowGraph(true)} />
+                  <Button
+                    iconPosition="left"
+                    icon={<FontAwesomeIcon icon={faChartLine} color="#227B9A" />}
+                    type="outline"
+                    label="Vis diagram"
+                    onPress={() => setShowGraph(true)}
+                  />
                 </View>
               ) : (
                 <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                  <FontAwesomeIcon style={{ marginRight: 0 }} icon={faChartLine} color="#227B9A" />
-                  <Button type="outline" label="Vis tabell" onPress={() => setShowGraph(false)} />
+                  <Button
+                    iconPosition="left"
+                    icon={<FontAwesomeIcon icon={faChartLine} color="#227B9A" />}
+                    type="outline"
+                    label="Vis tabell"
+                    onPress={() => setShowGraph(false)}
+                  />
                 </View>
               )}
             </View>
