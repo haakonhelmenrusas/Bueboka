@@ -1,11 +1,16 @@
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { MarksResult } from '@/types';
+import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
+import { faArrowRight } from '@fortawesome/free-solid-svg-icons/faArrowRight';
+import { useState } from 'react';
 
 interface CalculatedMarksProps {
   marksData: MarksResult | null;
 }
 
 export default function CalculatedMarksTable({ marksData }: CalculatedMarksProps) {
+  const [showSpeed, setShowSpeed] = useState(false);
+
   const renderMarksResultTable = () => {
     if (marksData) {
       return marksData.distances.map((distance, index) => (
@@ -18,10 +23,14 @@ export default function CalculatedMarksTable({ marksData }: CalculatedMarksProps
               return (
                 <View key={key} style={styles.trDataColumn}>
                   <Text style={[styles.trData, { fontWeight: '600', fontSize: 16 }]}>
-                    {marksData.sight_marks_by_hill_angle[angle][index].toFixed(1)}
+                    {marksData.sight_marks_by_hill_angle[angle][index].toFixed(2)}
                   </Text>
-                  <View style={{ height: 1, margin: 2, backgroundColor: '#053546' }} />
-                  <Text style={styles.trData}>{marksData.arrow_speed_by_angle[speed][index].toFixed(1)} m/s</Text>
+                  {showSpeed && (
+                    <>
+                      <View style={{ height: 1, margin: 2, backgroundColor: '#053546' }} />
+                      <Text style={styles.trData}>{marksData.arrow_speed_by_angle[speed][index].toFixed(1)} m/s</Text>
+                    </>
+                  )}
                 </View>
               );
             })}
@@ -43,6 +52,10 @@ export default function CalculatedMarksTable({ marksData }: CalculatedMarksProps
               </Text>
             );
           })}
+        <TouchableOpacity style={styles.icon} onPress={() => setShowSpeed(!showSpeed)}>
+          <FontAwesomeIcon icon={faArrowRight} size={20} color="#053546" />
+          <Text style={{ color: '#053546', fontSize: 14, fontWeight: '600' }}>m/s</Text>
+        </TouchableOpacity>
       </View>
       {renderMarksResultTable()}
     </View>
@@ -60,6 +73,7 @@ const styles = StyleSheet.create({
     display: 'flex',
     flexDirection: 'row',
     justifyContent: 'space-between',
+    alignItems: 'center',
   },
   trDataColumn: {
     display: 'flex',
@@ -93,5 +107,13 @@ const styles = StyleSheet.create({
     flex: 1,
     textAlign: 'center',
     marginBottom: 8,
+  },
+  icon: {
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: 8,
+    color: '#053546',
   },
 });
