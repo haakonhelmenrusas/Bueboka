@@ -29,6 +29,21 @@ const CalculateMarksModal = ({
   ] = useCalcMarksForm();
   const { calculateMarks, status } = useCalculateMarks();
 
+  function handleNumberChange(value: string, key: any) {
+    const cleanValue = value.replace(/[^0-9.]/g, '');
+    const parsedValue = parseFloat(cleanValue);
+    // check if the value has no more then three decimals
+    const valueArray = cleanValue.split('.');
+    if (valueArray[1] && valueArray[1].length > 3) {
+      return;
+    }
+    if (!isNaN(parsedValue)) {
+      dispatch({ type: key, payload: formatNumber(value) });
+    } else {
+      dispatch({ type: key, payload: '' });
+    }
+  }
+
   const handleDistanceFromChange = (value: string) => {
     dispatch({ type: 'SET_DISTANCE_FROM', payload: value });
   };
@@ -111,13 +126,13 @@ const CalculateMarksModal = ({
             inputStyle={{ width: 100 }}
             labelStyle={{ textAlign: 'center' }}
             label="Fra avstand"
+            placeholder="F.eks. 10"
             onBlur={() => dispatch({ type: 'SET_DISTANCE_FROM_ERROR', payload: false })}
             keyboardType="numeric"
-            maxLength={5}
             value={distanceFrom}
             error={distanceFromError}
             errorMessage="Verdi mangler"
-            onChangeText={(value) => handleDistanceFromChange(formatNumber(value))}
+            onChangeText={(value) => handleNumberChange(value, 'SET_DISTANCE_FROM')}
             icon={<FontAwesomeIcon icon={faRulerHorizontal} color="#227B9A" />}
           />
           <Input
@@ -125,11 +140,11 @@ const CalculateMarksModal = ({
             labelStyle={{ textAlign: 'center' }}
             onBlur={() => dispatch({ type: 'SET_DISTANCE_TO_ERROR', payload: false })}
             label="Til avstand"
+            placeholder="F.eks. 90"
             keyboardType="numeric"
-            maxLength={6}
             value={distanceTo}
             error={distanceToError}
-            onChangeText={(value) => handleDistanceToChange(formatNumber(value))}
+            onChangeText={(value) => handleNumberChange(value, 'SET_DISTANCE_TO')}
             errorMessage="Verdi mangler"
             icon={<FontAwesomeIcon icon={faRulerHorizontal} color="#227B9A" />}
           />
@@ -137,12 +152,12 @@ const CalculateMarksModal = ({
             inputStyle={{ width: 100 }}
             labelStyle={{ textAlign: 'center' }}
             label="Intevall"
+            placeholder="F.eks. 10"
             onBlur={() => dispatch({ type: 'SET_INTERVAL_ERROR', payload: false })}
             keyboardType="numeric"
-            maxLength={5}
             value={interval}
             error={intervalError}
-            onChangeText={(value) => handleIntervalChange(formatNumber(value))}
+            onChangeText={(value) => handleNumberChange(value, 'SET_INTERVAL')}
             errorMessage="Verdi mangler"
             icon={<FontAwesomeIcon icon={faCrosshairs} color="#227B9A" />}
           />
@@ -157,25 +172,28 @@ const CalculateMarksModal = ({
           <View style={styles.angles}>
             <Input
               textAlign="center"
-              inputStyle={{ width: 80 }}
-              labelStyle={{ textAlign: 'center' }}
+              inputStyle={{ width: 100 }}
+              labelStyle={{ textAlign: 'center', color: '#053546' }}
               label="Vinkel"
+              placeholder="F.eks. -30"
               keyboardType="numbers-and-punctuation"
               onChange={(event) => handleAngleChange(event.nativeEvent.text, 0)}
             />
             <Input
               textAlign="center"
-              inputStyle={{ width: 80 }}
-              labelStyle={{ textAlign: 'center' }}
+              inputStyle={{ width: 100 }}
+              labelStyle={{ textAlign: 'center', color: '#053546' }}
               label="Vinkel"
+              placeholder="F.eks. 0"
               keyboardType="numbers-and-punctuation"
               onChange={(event) => handleAngleChange(event.nativeEvent.text, 1)}
             />
             <Input
               textAlign="center"
-              inputStyle={{ width: 80 }}
-              labelStyle={{ textAlign: 'center' }}
+              inputStyle={{ width: 100 }}
+              labelStyle={{ textAlign: 'center', color: '#053546' }}
               label="Vinkel"
+              placeholder="F.eks. 30"
               keyboardType="numbers-and-punctuation"
               onChange={(event) => handleAngleChange(event.nativeEvent.text, 2)}
             />

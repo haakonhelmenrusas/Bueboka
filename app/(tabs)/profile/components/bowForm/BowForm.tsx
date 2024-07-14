@@ -31,6 +31,21 @@ const BowForm = ({ modalVisible, setModalVisible, bow }: BowFormProps) => {
     }
   }, [bow]);
 
+  function handleNumberChange(value: string, key: any) {
+    const cleanValue = value.replace(/[^0-9.]/g, '');
+    const parsedValue = parseFloat(cleanValue);
+    // check if the value has no more then three decimals
+    const valueArray = cleanValue.split('.');
+    if (valueArray[1] && valueArray[1].length > 3) {
+      return;
+    }
+    if (!isNaN(parsedValue)) {
+      dispatch({ type: key, payload: formatNumber(value) });
+    } else {
+      dispatch({ type: key, payload: '' });
+    }
+  }
+
   async function handleSubmit() {
     if (!bowName) {
       dispatch({ type: 'SET_BOW_NAME_ERROR', payload: true });
@@ -142,9 +157,8 @@ const BowForm = ({ modalVisible, setModalVisible, bow }: BowFormProps) => {
               label="Fra øye til nock (cm)"
               keyboardType="numeric"
               placeholderText="F.eks. 10"
-              maxLength={2}
               value={eyeToNock}
-              onChangeText={(value) => dispatch({ type: 'SET_EYE_TO_NOCK', payload: value })}
+              onChangeText={(value) => handleNumberChange(value, 'SET_EYE_TO_NOCK')}
             />
             <Input
               onFocus={handleInputFocus}
@@ -155,9 +169,8 @@ const BowForm = ({ modalVisible, setModalVisible, bow }: BowFormProps) => {
               label="Fra øye til sikte (cm)"
               keyboardType="numeric"
               placeholderText="F.eks. 90"
-              maxLength={3}
               value={eyeToAim}
-              onChangeText={(value) => dispatch({ type: 'SET_EYE_TO_AIM', payload: value })}
+              onChangeText={(value) => handleNumberChange(value, 'SET_EYE_TO_AIM')}
             />
           </View>
           <View style={{ flexDirection: 'row', justifyContent: 'space-around', marginTop: 24 }}>
@@ -170,9 +183,8 @@ const BowForm = ({ modalVisible, setModalVisible, bow }: BowFormProps) => {
               label="Vekt pil (g)"
               keyboardType="numeric"
               placeholderText="F.eks. 20"
-              maxLength={3}
               value={arrowWeight}
-              onChangeText={(value) => dispatch({ type: 'SET_ARROW_WEIGHT', payload: formatNumber(value) })}
+              onChangeText={(value) => handleNumberChange(value, 'SET_ARROW_WEIGHT')}
             />
             <Input
               onFocus={handleInputFocus}
@@ -183,9 +195,8 @@ const BowForm = ({ modalVisible, setModalVisible, bow }: BowFormProps) => {
               label="Diameter pil (mm)"
               keyboardType="numeric"
               placeholderText="F.eks. 5"
-              maxLength={3}
               value={arrowDiameter}
-              onChangeText={(value) => dispatch({ type: 'SET_ARROW_DIAMETER', payload: formatNumber(value) })}
+              onChangeText={(value) => handleNumberChange(value, 'SET_ARROW_DIAMETER')}
             />
           </View>
           {!(Platform.OS === 'android' && isInputFocused) && (
