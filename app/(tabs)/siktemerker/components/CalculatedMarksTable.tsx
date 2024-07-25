@@ -15,7 +15,7 @@ export default function CalculatedMarksTable({ marksData }: CalculatedMarksProps
     if (marksData) {
       return marksData.distances.map((distance, index) => (
         <View style={[styles.tr, index % 2 === 0 ? styles.evenRow : styles.oddRow]} key={index}>
-          <Text style={styles.trData}>{distance.toFixed(1)}m</Text>
+          <Text style={styles.trData}>{distance.toFixed(1)} m</Text>
           {Object.keys(marksData.sight_marks_by_hill_angle)
             .sort()
             .map((angle, key) => {
@@ -34,6 +34,7 @@ export default function CalculatedMarksTable({ marksData }: CalculatedMarksProps
                 </View>
               );
             })}
+          <View />
         </View>
       ));
     }
