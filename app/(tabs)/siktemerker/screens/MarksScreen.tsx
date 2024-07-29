@@ -90,7 +90,7 @@ export default function MarksScreen({ setScreen }: MarksScreenProps) {
   return (
     <View style={Platform.OS === 'ios' ? styles.ios : styles.page}>
       {showGraph ? (
-        <ChartScreen data={calculatedMarks} />
+        <ChartScreen calculatedMarks={calculatedMarks} marks={ballistics} />
       ) : (
         <ScrollView style={styles.scrollView}>{renderContent()}</ScrollView>
       )}
@@ -103,7 +103,7 @@ export default function MarksScreen({ setScreen }: MarksScreenProps) {
                   iconPosition="left"
                   icon={<FontAwesomeIcon icon={faTrash} color="#227B9A" />}
                   type="outline"
-                  label="Fjern siktemerker"
+                  label="Tøm liste"
                   onPress={handleRemoveMarks}
                 />
               </View>
