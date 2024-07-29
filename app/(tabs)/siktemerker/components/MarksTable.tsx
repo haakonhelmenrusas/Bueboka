@@ -29,6 +29,7 @@ export default function MarksTable({ ballistics, removeMark }: CalculationTableP
             <Text style={styles.trData}>{ballistics.calculated_marks[index].toFixed(2)}</Text>
           </View>
           <Button
+            buttonStyle={{ marginRight: -16 }}
             icon={<FontAwesomeIcon icon={faTrash} color="#227B9A" />}
             label=""
             type="outline"
