@@ -60,9 +60,9 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFF',
     borderRadius: 12,
     marginBottom: 12,
-    shadowColor: '#000',
+    shadowColor: '#999',
     shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.2,
+    shadowOpacity: 0.1,
     shadowRadius: 4,
     elevation: 5,
   },
@@ -87,6 +87,7 @@ const styles = StyleSheet.create({
   trData: {
     flex: 1,
     fontSize: 18,
+    fontWeight: '500',
     textAlign: 'center',
   },
   thead: {
