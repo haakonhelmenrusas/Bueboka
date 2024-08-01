@@ -1,16 +1,12 @@
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
 import { MarksResult } from '@/types';
-import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
-import { faArrowRight } from '@fortawesome/free-solid-svg-icons/faArrowRight';
-import { useState } from 'react';
 
 interface CalculatedMarksProps {
   marksData: MarksResult | null;
+  showSpeed?: boolean;
 }
 
-export default function CalculatedMarksTable({ marksData }: CalculatedMarksProps) {
-  const [showSpeed, setShowSpeed] = useState(false);
-
+export default function CalculatedMarksTable({ marksData, showSpeed }: CalculatedMarksProps) {
   const renderMarksResultTable = () => {
     if (marksData) {
       return marksData.distances.map((distance, index) => (
@@ -26,9 +22,7 @@ export default function CalculatedMarksTable({ marksData }: CalculatedMarksProps
                     {marksData.sight_marks_by_hill_angle[angle][index].toFixed(2)}
                   </Text>
                   {showSpeed && (
-                    <>
-                      <Text style={styles.trData}>{marksData.arrow_speed_by_angle[speed][index].toFixed(1)} m/s</Text>
-                    </>
+                    <Text style={styles.trData}>{marksData.arrow_speed_by_angle[speed][index].toFixed(1)} m/s</Text>
                   )}
                 </View>
               );
@@ -41,12 +35,6 @@ export default function CalculatedMarksTable({ marksData }: CalculatedMarksProps
   return (
     <View style={styles.page}>
       <View style={styles.container}>
-        <View style={{ alignSelf: 'flex-end' }}>
-          <TouchableOpacity style={styles.icon} onPress={() => setShowSpeed(!showSpeed)}>
-            <FontAwesomeIcon icon={faArrowRight} size={20} color="#053546" />
-            <Text style={{ color: '#053546', fontSize: 14, fontWeight: '600' }}>m/s</Text>
-          </TouchableOpacity>
-        </View>
         <View style={styles.angles}>
           <View />
           {Object.keys(marksData?.sight_marks_by_hill_angle)
@@ -113,13 +101,5 @@ const styles = StyleSheet.create({
     flex: 1,
     textAlign: 'center',
     marginBottom: 8,
-  },
-  icon: {
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    justifyContent: 'center',
-    padding: 8,
-    color: '#053546',
   },
 });

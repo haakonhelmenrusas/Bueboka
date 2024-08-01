@@ -8,6 +8,7 @@ import CalculateMarksModal from '../components/CalculateMarksModal';
 import CalculatedMarksTable from '../components/CalculatedMarksTable';
 import { faTrash } from '@fortawesome/free-solid-svg-icons/faTrash';
 import { faChartLine } from '@fortawesome/free-solid-svg-icons/faChartLine';
+import { faWind } from '@fortawesome/free-solid-svg-icons/faWind';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import ChartScreen from './ChartScreen';
 
@@ -16,6 +17,7 @@ interface MarksScreenProps {
 }
 
 export default function MarksScreen({ setScreen }: MarksScreenProps) {
+  const [showSpeed, setShowSpeed] = useState(false);
   const [showGraph, setShowGraph] = useState(false);
   const [ballistics, setBallistics] = useState<CalculatedMarks | null>(null);
   const [calculatedMarks, setCalculatedMarks] = useState<MarksResult | null>(null);
@@ -39,7 +41,7 @@ export default function MarksScreen({ setScreen }: MarksScreenProps) {
 
   function renderContent() {
     if (calculatedMarks) {
-      return <CalculatedMarksTable marksData={calculatedMarks} />;
+      return <CalculatedMarksTable marksData={calculatedMarks} showSpeed={showSpeed} />;
     } else if (ballistics) {
       if (ballistics.given_distances.length > 1) {
         return (
@@ -90,13 +92,22 @@ export default function MarksScreen({ setScreen }: MarksScreenProps) {
   return (
     <View style={Platform.OS === 'ios' ? styles.ios : styles.page}>
       {showGraph ? (
-        <ChartScreen calculatedMarks={calculatedMarks} marks={ballistics} />
+        <ChartScreen calculatedMarks={calculatedMarks} marks={ballistics} setModalVisible={setModalVisible} />
       ) : (
         <ScrollView style={styles.scrollView}>{renderContent()}</ScrollView>
       )}
       {calculatedMarks && (
         <View style={{ flex: 1 }}>
           <View style={{ marginTop: 'auto' }}>
+            {!showGraph && (
+              <Button
+                iconPosition="left"
+                type="outline"
+                icon={<FontAwesomeIcon icon={faWind} size={20} color="#053546" />}
+                label="Vis hastigheter"
+                onPress={() => setShowSpeed(!showSpeed)}
+              />
+            )}
             <View style={styles.buttons}>
               <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                 <Button
@@ -154,7 +165,7 @@ const styles = StyleSheet.create({
   },
   scrollView: {
     flex: 1,
-    minHeight: '60%',
+    minHeight: '50%',
   },
   buttons: {
     flexDirection: 'row',
