@@ -18,12 +18,19 @@ interface MarksFormProps {
 const MarksForm: FC<MarksFormProps> = ({ sendMarks, status, onInputFocusChange }) => {
   const [{ aimError, aimValue, distanceError, distanceValue }, dispatch] = useCalcForm();
 
-  function handleDistanceChange(value: string) {
-    dispatch({ type: 'SET_DISTANCE_VALUE', payload: value });
-  }
-
-  function handleAimChange(value: string) {
-    dispatch({ type: 'SET_AIM_VALUE', payload: value });
+  function handleNumberChange(value: string, key: any) {
+    const cleanValue = value.replace(/[^0-9.]/g, '');
+    const parsedValue = parseFloat(cleanValue);
+    // check if the value has no more then three decimals
+    const valueArray = cleanValue.split('.');
+    if (valueArray[1] && valueArray[1].length > 3) {
+      return;
+    }
+    if (!isNaN(parsedValue)) {
+      dispatch({ type: key, payload: formatNumber(value) });
+    } else {
+      dispatch({ type: key, payload: '' });
+    }
   }
 
   async function handleAddMark() {
@@ -55,12 +62,11 @@ const MarksForm: FC<MarksFormProps> = ({ sendMarks, status, onInputFocusChange }
           }}
           onFocus={() => onInputFocusChange(true)}
           placeholderText="F.eks. 20"
-          maxLength={5}
           keyboardType="numeric"
           error={distanceError}
           errorMessage="Fyll inn"
           value={distanceValue}
-          onChangeText={(value) => handleDistanceChange(formatNumber(value))}
+          onChangeText={(value) => handleNumberChange(value, 'SET_DISTANCE_VALUE')}
           icon={<FontAwesomeIcon icon={faRulerHorizontal} color="#227B9A" />}
           inputStyle={{ width: 160 }}
         />
@@ -73,12 +79,11 @@ const MarksForm: FC<MarksFormProps> = ({ sendMarks, status, onInputFocusChange }
           }}
           onFocus={() => onInputFocusChange(true)}
           placeholderText="F.eks. 2.3"
-          maxLength={5}
           keyboardType="numeric"
           value={aimValue}
           error={aimError}
           errorMessage="Fyll inn"
-          onChangeText={(value) => handleAimChange(formatNumber(value))}
+          onChangeText={(value) => handleNumberChange(value, 'SET_AIM_VALUE')}
           icon={<FontAwesomeIcon icon={faCrosshairs} color="#227B9A" />}
           inputStyle={{ width: 160 }}
         />

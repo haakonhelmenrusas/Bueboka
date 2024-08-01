@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Keyboard, Pressable, KeyboardAvoidingView, View, StyleSheet, Text, Platform } from 'react-native';
+import { Keyboard, Pressable, KeyboardAvoidingView, View, StyleSheet, Text, Platform, ScrollView } from 'react-native';
 import { AimDistanceMark, Bow, CalculatedMarks, MarkValue } from '@/types';
 import { Ballistics, getLocalStorage, storeLocalStorage, useBallisticsParams } from '@/utils';
 import { ConfirmRemoveMarks, MarksForm, MarksTable } from '../components';
@@ -63,12 +63,12 @@ export default function CalculateScreen() {
   }
 
   return (
-    <Pressable style={{ flex: 1 }} onPress={() => Keyboard.dismiss()}>
-      <KeyboardAvoidingView
-        keyboardVerticalOffset={124}
-        style={{ flex: 1 }}
-        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
-        <View style={styles.container}>
+    <KeyboardAvoidingView
+      keyboardVerticalOffset={24}
+      style={Platform.OS === 'ios' ? styles.ios : styles.page}
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
+      <ScrollView>
+        <Pressable onPress={() => Keyboard.dismiss()}>
           {error && <View style={{ marginBottom: 8, padding: 8 }}>Oisann, noe gikk galt. Prøv igjen!</View>}
           <MarksTable ballistics={ballistics} removeMark={handleRemoveMark} />
           <View style={styles.centeredContainer}>
@@ -79,28 +79,33 @@ export default function CalculateScreen() {
               </Text>
             )}
           </View>
-          <MarksForm sendMarks={sendMarks} status={status} onInputFocusChange={setInputFocused} />
-          <ConfirmRemoveMarks
-            modalVisible={conformationModalVisible}
-            setBallistics={setBallistics}
-            closeModal={() => setConformationModalVisible(false)}
-          />
-        </View>
-      </KeyboardAvoidingView>
-    </Pressable>
+        </Pressable>
+      </ScrollView>
+      <MarksForm sendMarks={sendMarks} status={status} onInputFocusChange={setInputFocused} />
+      <ConfirmRemoveMarks
+        modalVisible={conformationModalVisible}
+        setBallistics={setBallistics}
+        closeModal={() => setConformationModalVisible(false)}
+      />
+    </KeyboardAvoidingView>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
+  page: {
     flex: 1,
     backgroundColor: '#F2F2F2',
+  },
+  ios: {
+    flex: 1,
+    backgroundColor: '#F2F2F2',
+    marginBottom: -34,
   },
   remove: {
     color: '#227B9A',
   },
   centeredContainer: {
     alignItems: 'center',
-    marginVertical: 32,
+    marginVertical: 16,
   },
 });

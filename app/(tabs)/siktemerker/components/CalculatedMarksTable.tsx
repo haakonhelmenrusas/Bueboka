@@ -3,14 +3,15 @@ import { MarksResult } from '@/types';
 
 interface CalculatedMarksProps {
   marksData: MarksResult | null;
+  showSpeed?: boolean;
 }
 
-export default function CalculatedMarksTable({ marksData }: CalculatedMarksProps) {
+export default function CalculatedMarksTable({ marksData, showSpeed }: CalculatedMarksProps) {
   const renderMarksResultTable = () => {
     if (marksData) {
       return marksData.distances.map((distance, index) => (
-        <View style={[styles.tr, index % 2 === 0 ? styles.evenRow : styles.oddRow]} key={index}>
-          <Text style={styles.trData}>{distance.toFixed(1)}m</Text>
+        <View style={styles.tr} key={index}>
+          <Text style={styles.trData}>{distance.toFixed(1)} m</Text>
           {Object.keys(marksData.sight_marks_by_hill_angle)
             .sort()
             .map((angle, key) => {
@@ -18,10 +19,11 @@ export default function CalculatedMarksTable({ marksData }: CalculatedMarksProps
               return (
                 <View key={key} style={styles.trDataColumn}>
                   <Text style={[styles.trData, { fontWeight: '600', fontSize: 16 }]}>
-                    {marksData.sight_marks_by_hill_angle[angle][index].toFixed(1)}
+                    {marksData.sight_marks_by_hill_angle[angle][index].toFixed(2)}
                   </Text>
-                  <View style={{ height: 1, margin: 2, backgroundColor: '#053546' }} />
-                  <Text style={styles.trData}>{marksData.arrow_speed_by_angle[speed][index].toFixed(1)} m/s</Text>
+                  {showSpeed && (
+                    <Text style={styles.trData}>{marksData.arrow_speed_by_angle[speed][index].toFixed(1)} m/s</Text>
+                  )}
                 </View>
               );
             })}
@@ -33,16 +35,18 @@ export default function CalculatedMarksTable({ marksData }: CalculatedMarksProps
   return (
     <View style={styles.page}>
       <View style={styles.container}>
-        <Text style={[styles.thead, styles.heading]}>Avstand</Text>
-        {Object.keys(marksData?.sight_marks_by_hill_angle)
-          .sort()
-          .map((angle) => {
-            return (
-              <Text key={angle} style={[styles.thead, styles.heading]}>
-                {angle}°
-              </Text>
-            );
-          })}
+        <View style={styles.angles}>
+          <View />
+          {Object.keys(marksData?.sight_marks_by_hill_angle)
+            .sort()
+            .map((angle) => {
+              return (
+                <Text key={angle} style={styles.angle}>
+                  {angle}°
+                </Text>
+              );
+            })}
+        </View>
       </View>
       {renderMarksResultTable()}
     </View>
@@ -51,42 +55,46 @@ export default function CalculatedMarksTable({ marksData }: CalculatedMarksProps
 
 const styles = StyleSheet.create({
   page: {
-    margin: 16,
-    backgroundColor: '#FFF',
-    padding: 8,
-    borderRadius: 12,
+    padding: 16,
   },
   container: {
-    display: 'flex',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-  },
-  trDataColumn: {
     display: 'flex',
     flexDirection: 'column',
   },
   tr: {
     display: 'flex',
-    height: 64,
+    height: 72,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-around',
+    backgroundColor: '#FFF',
     borderRadius: 12,
-    padding: 12,
+    padding: 8,
+    marginBottom: 12,
+  },
+  trDataColumn: {
+    display: 'flex',
+    height: '100%',
+    width: 80,
+    flexDirection: 'column',
+    alignItems: 'center',
+    justifyContent: 'space-around',
+    borderRadius: 12,
+    backgroundColor: '#D8F5FF',
   },
   trData: {
     fontSize: 16,
     textAlign: 'center',
   },
-  evenRow: {
-    backgroundColor: '#D8F5FF',
+  angles: {
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    marginBottom: 8,
   },
-  oddRow: {
-    backgroundColor: '#FFF',
-  },
-  thead: {
+  angle: {
     fontWeight: 'bold',
-    fontSize: 16,
+    fontSize: 18,
     marginTop: 8,
   },
   heading: {

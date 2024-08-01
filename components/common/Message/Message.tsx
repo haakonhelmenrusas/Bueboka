@@ -25,7 +25,7 @@ const Message: React.FC<MessageProps> = ({ title, description, onPress, buttonLa
 
 const styles = StyleSheet.create({
   messageContainer: {
-    backgroundColor: '#FFF',
+    backgroundColor: '#D8F5FF',
     borderRadius: 12,
     padding: 16,
     alignItems: 'center',
@@ -33,14 +33,16 @@ const styles = StyleSheet.create({
     height: 'auto',
   },
   messageTitle: {
+    color: '#053546',
     fontSize: 20,
     fontWeight: '500',
     marginBottom: 16,
   },
   icon: {
-    color: '#f0ad4e',
+    color: '#053546',
   },
   messageText: {
+    color: '#053546',
     fontSize: 16,
     marginBottom: 16,
   },

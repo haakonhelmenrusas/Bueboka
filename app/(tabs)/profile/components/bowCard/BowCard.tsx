@@ -33,21 +33,21 @@ const BowCard: FC<BowCardProps> = ({ bow, openFormWithData }) => {
           </View>
           <View>
             <Text style={styles.head}>Fra øye til nock</Text>
-            <Text style={styles.text}>{eyeToNock ? eyeToNock + 'cm' : 'Ingen data'}</Text>
+            <Text style={styles.text}>{eyeToNock ? eyeToNock + ' cm' : 'Ingen data'}</Text>
           </View>
         </View>
         <View style={styles.column}>
           <View>
             <Text style={styles.head}>Vekt pil</Text>
-            <Text style={styles.text}>{arrowWeight ? arrowWeight + 'gram' : 'Ingen data'}</Text>
+            <Text style={styles.text}>{arrowWeight ? arrowWeight + ' gram' : 'Ingen data'}</Text>
           </View>
           <View>
             <Text style={styles.head}>Fra øye til sikte</Text>
-            <Text style={styles.text}>{eyeToAim ? eyeToAim + 'cm' : 'Ingen data'}</Text>
+            <Text style={styles.text}>{eyeToAim ? eyeToAim + ' cm' : 'Ingen data'}</Text>
           </View>
           <View>
             <Text style={styles.head}>Diameter pil</Text>
-            <Text style={styles.text}>{arrowDiameter ? arrowDiameter + 'mm' : 'Ingen data'}</Text>
+            <Text style={styles.text}>{arrowDiameter ? arrowDiameter + ' mm' : 'Ingen data'}</Text>
           </View>
         </View>
       </View>
