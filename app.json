@@ -1,6 +1,6 @@
 {
   "expo": {
-    "scheme": "acme",
+    "scheme": "bueboka",
     "web": {
       "bundler": "metro"
     },
@@ -19,38 +19,37 @@
     },
     "android": {
       "package": "com.aaronshade.bueboka",
-      "versionCode": 9,
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/icon.png",
         "backgroundColor": "#FFFFFF"
       }
     },
     "ios": {
-      "buildNumber": "1.6.0",
       "bundleIdentifier": "com.aaronshade.bueboka",
       "infoPlist": {
         "CFBundleIconName": "./assets/images/ipad.png"
       }
     },
-    "runtimeVersion": {
-      "policy": "sdkVersion"
-    },
+    "runtimeVersion": "1.0.0",
     "updates": {
       "url": "https://u.expo.dev/a740b024-fdf9-420d-9998-a6ae076ebc43"
     },
     "plugins": [
-      "sentry-expo"
-    ],
-    "hooks": {
-      "postPublish": [
+      "expo-font",
+      "expo-router",
+      [
+        "expo-build-properties",
         {
-          "file": "sentry-expo/upload-sourcemaps",
-          "config": {
-            "organization": "EXPO_PUBLIC_SENTRY_ORG",
-            "project": "EXPO_PUBLIC_SENTRY_PROJECT"
+          "android": {
+            "compileSdkVersion": 34,
+            "targetSdkVersion": 34,
+            "buildToolsVersion": "34.0.0"
+          },
+          "ios": {
+            "deploymentTarget": "13.4"
           }
         }
       ]
-    }
+    ]
   }
 }

@@ -1,5 +1,4 @@
 import { useState } from 'react';
-
 import { AimDistanceMark, CalculatedMarks, Status } from '../../types';
 
 const calcBallisticsParams = (body: AimDistanceMark) => {

@@ -1,40 +1,50 @@
-import { faBars } from '@fortawesome/free-solid-svg-icons/faBars';
+import { Platform } from 'react-native';
 import { faBullseye } from '@fortawesome/free-solid-svg-icons/faBullseye';
-import { faChartLine } from '@fortawesome/free-solid-svg-icons/faChartLine';
+import { faUser } from '@fortawesome/free-solid-svg-icons/faUser';
+import { faCircleQuestion } from '@fortawesome/free-solid-svg-icons/faCircleQuestion';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { Tabs } from 'expo-router';
 
 export default function AppLayout() {
   return (
-    <Tabs>
+    <Tabs
+      screenOptions={{
+        tabBarActiveTintColor: '#053546',
+        tabBarInactiveTintColor: 'grey',
+        tabBarHideOnKeyboard: true,
+        tabBarStyle: {
+          height: Platform.OS === 'ios' ? 84 : 64,
+          paddingBottom: Platform.OS === 'ios' ? 20 : 0,
+        },
+      }}>
       <Tabs.Screen
         name="siktemerker"
         options={{
-          tabBarIcon: () => <FontAwesomeIcon icon={faChartLine} />,
+          tabBarIcon: ({ focused }) => <FontAwesomeIcon icon={faBullseye} color={focused ? '#053546' : 'grey'} />,
           headerShadowVisible: false,
           headerShown: false,
           tabBarLabel: 'Siktemerker',
-          tabBarLabelStyle: { fontSize: 14, marginBottom: 4 },
+          tabBarLabelStyle: { fontSize: 14, marginBottom: 8 },
         }}
       />
       <Tabs.Screen
-        name="bueskyting"
+        name="profile"
         options={{
-          tabBarIcon: () => <FontAwesomeIcon icon={faBullseye} />,
+          tabBarIcon: ({ focused }) => <FontAwesomeIcon icon={faUser} color={focused ? '#053546' : 'grey'} />,
           headerShadowVisible: false,
           headerShown: false,
-          tabBarLabel: 'Bueskyting',
-          tabBarLabelStyle: { fontSize: 14, marginBottom: 4 },
+          tabBarLabel: 'Profil',
+          tabBarLabelStyle: { fontSize: 14, marginBottom: 8 },
         }}
       />
       <Tabs.Screen
-        name="omOss"
+        name="about"
         options={{
-          tabBarIcon: () => <FontAwesomeIcon icon={faBars} />,
+          tabBarIcon: ({ focused }) => <FontAwesomeIcon icon={faCircleQuestion} color={focused ? '#053546' : 'grey'} />,
           headerShadowVisible: false,
           headerShown: false,
           tabBarLabel: 'Om oss',
-          tabBarLabelStyle: { fontSize: 14, marginBottom: 4 },
+          tabBarLabelStyle: { fontSize: 14, marginBottom: 8 },
         }}
       />
     </Tabs>

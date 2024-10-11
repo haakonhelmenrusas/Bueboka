@@ -1,4 +1,6 @@
-import Button from './Button';
-import Input from './Input';
+import Button from './Button/Button';
+import Input from './Input/Input';
+import Message from './Message/Message';
+import Checkbox from './Checkbox/Checkbox';
 
-export { Input, Button };
+export { Button, Input, Message, Checkbox };

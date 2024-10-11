@@ -4,7 +4,22 @@
     "promptToConfigurePushNotifications": false
   },
   "build": {
+    "base": {
+      "android": {
+        "image": "latest",
+        "env": {
+          "PLATFORM": "android"
+        }
+      },
+      "ios": {
+        "image": "latest",
+        "env": {
+          "PLATFORM": "ios"
+        }
+      }
+    },
     "development": {
+      "extends": "base",
       "developmentClient": true,
       "distribution": "internal",
       "ios": {
@@ -12,12 +27,14 @@
       }
     },
     "preview": {
+      "extends": "base",
       "distribution": "internal",
       "ios": {
         "resourceClass": "m-medium"
       }
     },
     "production": {
+      "extends": "base",
       "ios": {
         "channel": "main",
         "resourceClass": "m-medium"

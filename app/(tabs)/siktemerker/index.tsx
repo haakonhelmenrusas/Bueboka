@@ -1,137 +1,69 @@
-import * as Sentry from '@sentry/react-native';
 import { useState } from 'react';
-import { Keyboard, StyleSheet, Text, TouchableWithoutFeedback, View } from 'react-native';
-
-import { Button, Input } from '../../../components/common';
-import { AimDistanceMark, CalculatedMarks, MarkValue } from '../../../types';
-import { Ballistics, formatNumber, useBallisticsParams } from '../../../utils/';
-import MarksTable from './MarksTable';
-import { useCalcForm } from './useCalcForm';
+import { StyleSheet, Text, View } from 'react-native';
+import CalculateScreen from './screens/CalculateScreen';
+import MarksScreen from './screens/MarksScreen';
 
 export default function Calculate() {
-  const [calculatedMarks, setCalculatedMarks] = useState<CalculatedMarks>(null);
-  const { error, status, calculateBallisticsParams } = useBallisticsParams();
-  const [{ aimError, aimValue, distanceError, distanceValue }, dispatch] = useCalcForm();
-
-  async function sendMarks(newMark: MarkValue) {
-    const body: AimDistanceMark = {
-      ...Ballistics,
-      new_given_mark: newMark.aim,
-      new_given_distance: newMark.distance,
-    };
-
-    if (calculatedMarks) {
-      body.given_marks = calculatedMarks.given_marks;
-      body.given_distances = calculatedMarks.given_distances;
-    }
-    console.log('body', body);
-
-    try {
-      const aimMarkResponse = await calculateBallisticsParams(body);
-      if (aimMarkResponse) {
-        setCalculatedMarks(aimMarkResponse);
-        // TODO: Store in local storage
-      }
-    } catch (error) {
-      Sentry.captureException(error);
-    }
-  }
-
-  function handleDistanceChange(value: string) {
-    dispatch({ type: 'SET_DISTANCE_VALUE', payload: value });
-  }
-
-  function handleAimChange(value: string) {
-    dispatch({ type: 'SET_AIM_VALUE', payload: value });
-  }
-
-  async function handleAddMark() {
-    if (!aimValue) {
-      dispatch({ type: 'SET_AIM_ERROR', payload: true });
-    }
-    if (!distanceValue) {
-      dispatch({ type: 'SET_DISTANCE_ERROR', payload: true });
-    }
-    if (aimValue && distanceValue) {
-      const newEntry: MarkValue = { aim: parseFloat(aimValue), distance: parseFloat(distanceValue) };
-
-      await sendMarks(newEntry);
-      dispatch({ type: 'SET_AIM_VALUE', payload: '' });
-      dispatch({ type: 'SET_DISTANCE_VALUE', payload: '' });
-      Keyboard.dismiss();
-    }
-  }
-
-  async function handleRemoveMark(index: number) {
-    const newDistances = calculatedMarks.given_distances.filter((distance, i) => i === index);
-
-    await sendMarks({ aim: 9999, distance: newDistances[0] });
-  }
+  const [screen, setScreen] = useState('calculate');
 
   return (
-    <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
-      <View style={{ flex: 1 }}>
-        <Text style={styles.title}>Siktemerker</Text>
-        <View style={styles.form}>
-          <View>
-            <Input
-              textAlign="right"
-              maxLength={100}
-              label="Avstand"
-              onBlur={() => dispatch({ type: 'SET_DISTANCE_ERROR', payload: false })}
-              placeholderText="F.eks. 20"
-              keyboardType="numeric"
-              error={distanceError}
-              errorMessage="Fyll inn avstand"
-              value={distanceValue}
-              onChangeText={(value) => handleDistanceChange(formatNumber(value))}
-            />
-          </View>
-          <View>
-            <Input
-              textAlign="right"
-              maxLength={15}
-              label="Merke"
-              onBlur={() => dispatch({ type: 'SET_AIM_ERROR', payload: false })}
-              placeholderText="F.eks. 2.35"
-              keyboardType="numeric"
-              value={aimValue}
-              error={aimError}
-              errorMessage="Fyll inn siktemerke"
-              onChangeText={(value) => handleAimChange(formatNumber(value))}
-            />
-          </View>
-          <Button
-            type="filled"
-            width={100}
-            loading={status === 'pending'}
-            buttonStyle={{ marginLeft: 'auto', marginTop: 16 }}
-            onPress={handleAddMark}
-            label="Beregn"
-          />
+    <View style={styles.container}>
+      <Text style={styles.title}>Beregn siktemerker</Text>
+      <View style={styles.header}>
+        <View style={styles.headerItem}>
+          <Text
+            style={[styles.headerText, screen === 'calculate' ? styles.activeText : null]}
+            onPress={() => setScreen('calculate')}>
+            Innskyting
+          </Text>
+          {screen === 'calculate' && <View style={styles.activeLine} />}
         </View>
-        {error && (
-          <>
-            <View style={{ marginBottom: 8, padding: 8 }}>Obs, noe gikk galt. Prøv igjen senere.</View>
-          </>
-        )}
-        <MarksTable ballistics={calculatedMarks} removeMark={handleRemoveMark} />
+        <View style={styles.headerItem}>
+          <Text
+            style={[styles.headerText, screen === 'marks' ? styles.activeText : null]}
+            onPress={() => setScreen('marks')}>
+            Siktemerker
+          </Text>
+          {screen === 'marks' && <View style={styles.activeLine} />}
+        </View>
       </View>
-    </TouchableWithoutFeedback>
+      {screen === 'calculate' && <CalculateScreen />}
+      {screen === 'marks' && <MarksScreen setScreen={setScreen} />}
+    </View>
   );
 }
 const styles = StyleSheet.create({
-  title: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    marginBottom: 16,
-    marginTop: 16,
+  container: {
+    flex: 1,
   },
-  form: {
-    display: 'flex',
+  title: {
+    fontSize: 18,
+    fontWeight: '600',
+    marginBottom: 24,
+    marginTop: 24,
+    textAlign: 'center',
+  },
+  header: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    justifyContent: 'space-around',
+  },
+  headerItem: {
+    flexDirection: 'column',
     alignItems: 'center',
-    marginBottom: 16,
+    width: '50%',
+  },
+  headerText: {
+    fontSize: 18,
+    paddingBottom: 8,
+    fontWeight: '600',
+    color: '#666',
+  },
+  activeText: {
+    color: '#227B9A',
+  },
+  activeLine: {
+    height: 2,
+    width: '100%',
+    backgroundColor: '#227B9A',
   },
 });
