@@ -15,7 +15,7 @@
     "@react-native-picker/picker": "2.7.5",
     "@testing-library/react-native": "^12.3.1",
     "axios": "^1.7.4",
-    "expo": "^51.0.17",
+    "expo": "^51.0.37",
     "expo-application": "~5.9.1",
     "expo-build-properties": "~0.12.3",
     "expo-constants": "^16.0.2",
