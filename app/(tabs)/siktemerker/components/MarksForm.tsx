@@ -8,6 +8,7 @@ import { useCalcForm } from './useCalcForm';
 import { faRulerHorizontal } from '@fortawesome/free-solid-svg-icons/faRulerHorizontal';
 import { faCrosshairs } from '@fortawesome/free-solid-svg-icons/faCrosshairs';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
+import { checkDecimalCount } from '@/utils/helpers/checkDecimalCount';
 
 interface MarksFormProps {
   status: string;
@@ -21,9 +22,8 @@ const MarksForm: FC<MarksFormProps> = ({ sendMarks, status, onInputFocusChange }
   function handleNumberChange(value: string, key: any) {
     const cleanValue = value.replace(/[^0-9.]/g, '');
     const parsedValue = parseFloat(cleanValue);
-    // check if the value has no more then three decimals
-    const valueArray = cleanValue.split('.');
-    if (valueArray[1] && valueArray[1].length > 3) {
+
+    if (checkDecimalCount(cleanValue, 3)) {
       return;
     }
     if (!isNaN(parsedValue)) {
