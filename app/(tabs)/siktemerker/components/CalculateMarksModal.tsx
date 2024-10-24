@@ -69,7 +69,9 @@ const CalculateMarksModal = ({
 
       await storeLocalStorage(res, 'calculatedMarks').then(async () => {
         const marks = await getLocalStorage<MarksResult>('calculatedMarks');
-        setCalculatedMarks(marks);
+        if (marks) {
+          setCalculatedMarks(marks);
+        }
       });
       clearForm();
       Keyboard.dismiss();
