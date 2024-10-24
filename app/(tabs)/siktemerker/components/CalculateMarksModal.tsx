@@ -9,6 +9,7 @@ import { faRulerHorizontal } from '@fortawesome/free-solid-svg-icons/faRulerHori
 import { faCrosshairs } from '@fortawesome/free-solid-svg-icons/faCrosshairs';
 import { faChevronDown } from '@fortawesome/free-solid-svg-icons/faChevronDown';
 import { faChevronUp } from '@fortawesome/free-solid-svg-icons/faChevronUp';
+import { checkDecimalCount } from '@/utils/helpers/checkDecimalCount';
 
 interface CalculateMarksModalProps {
   modalVisible: boolean;
@@ -32,9 +33,8 @@ const CalculateMarksModal = ({
   function handleNumberChange(value: string, key: any) {
     const cleanValue = value.replace(/[^0-9.]/g, '');
     const parsedValue = parseFloat(cleanValue);
-    // check if the value has no more than three decimals
-    const valueArray = cleanValue.split('.');
-    if (valueArray[1] && valueArray[1].length > 3) {
+
+    if (checkDecimalCount(cleanValue, 3)) {
       return;
     }
     if (!isNaN(parsedValue)) {
