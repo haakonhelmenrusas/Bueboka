@@ -32,7 +32,7 @@ const CalculateMarksModal = ({
   function handleNumberChange(value: string, key: any) {
     const cleanValue = value.replace(/[^0-9.]/g, '');
     const parsedValue = parseFloat(cleanValue);
-    // check if the value has no more then three decimals
+    // check if the value has no more than three decimals
     const valueArray = cleanValue.split('.');
     if (valueArray[1] && valueArray[1].length > 3) {
       return;
@@ -42,18 +42,6 @@ const CalculateMarksModal = ({
     } else {
       dispatch({ type: key, payload: '' });
     }
-  }
-
-  const handleDistanceFromChange = (value: string) => {
-    dispatch({ type: 'SET_DISTANCE_FROM', payload: value });
-  };
-
-  function handleDistanceToChange(value: string) {
-    dispatch({ type: 'SET_DISTANCE_TO', payload: value });
-  }
-
-  function handleIntervalChange(value: string) {
-    dispatch({ type: 'SET_INTERVAL', payload: value });
   }
 
   function handleAngleChange(value: string, index: number) {
