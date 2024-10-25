@@ -18,7 +18,7 @@ interface CalculateMarksModalProps {
   setCalculatedMarks: (calculatedMarks: MarksResult) => void;
 }
 
-const CalculateMarksModal = ({
+export const CalculateMarksModal = ({
   modalVisible,
   closeModal,
   ballistics,
@@ -245,5 +245,3 @@ const styles = StyleSheet.create({
     gap: 16,
   },
 });
-
-export default CalculateMarksModal;
