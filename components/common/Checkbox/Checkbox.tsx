@@ -1,5 +1,3 @@
-// this component is a checkbox that can be checked or unchecked built with react native
-
 import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { Feather } from '@expo/vector-icons';
@@ -10,7 +8,7 @@ interface CheckboxProps {
   onPress: () => void;
 }
 
-export default function Checkbox({ label, checked, onPress }: CheckboxProps) {
+export default function Checkbox({ label, checked, onPress }: Readonly<CheckboxProps>) {
   return (
     <TouchableOpacity onPress={onPress}>
       <View style={styles.container}>

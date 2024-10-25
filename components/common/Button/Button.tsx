@@ -62,7 +62,7 @@ const Button: React.FC<ButtonProps> = ({
         },
         buttonStyle,
       ]}
-      disabled={disabled || loading}
+      disabled={disabled ?? loading}
       {...props}>
       {loading ? <ActivityIndicator testID="ActivityIndicator" size={16} color={textColor} /> : renderContent()}
     </Pressable>
