@@ -49,6 +49,14 @@
             "deploymentTarget": "13.4"
           }
         }
+      ],
+      [
+        "@sentry/react-native/expo",
+        {
+          "url": "https://sentry.io/",
+          "project": "bueboka",
+          "organization": "haakon-rusas"
+        }
       ]
     ]
   }
