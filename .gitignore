@@ -12,7 +12,7 @@ web-build/
 
 # macOS
 .DS_Store
-.env.*
+.env
 
 # Xcode
 xcuserdata/
@@ -110,3 +110,4 @@ build/
 
 # Windows file system files
 Thumbs.db
+.env.local

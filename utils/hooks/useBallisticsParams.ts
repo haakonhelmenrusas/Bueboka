@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { AimDistanceMark, CalculatedMarks, Status } from '../../types';
+import { AimDistanceMark, CalculatedMarks, Status } from '@/types';
 
 const calcBallisticsParams = (body: AimDistanceMark) => {
   return fetch('https://calculate-aim.azurewebsites.net/api/archerAim?task=CalcBallisticsPars', {
