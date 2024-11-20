@@ -1,4 +1,4 @@
-import { AimDistanceMark } from '../types';
+import { AimDistanceMark } from '@/types';
 
 export const Ballistics: AimDistanceMark = {
   new_given_mark: 0,

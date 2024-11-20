@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Keyboard, Pressable, KeyboardAvoidingView, View, StyleSheet, Text, Platform, ScrollView } from 'react-native';
+import { Keyboard, KeyboardAvoidingView, Platform, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { AimDistanceMark, Bow, CalculatedMarks, MarkValue } from '@/types';
 import { Ballistics, getLocalStorage, storeLocalStorage, useBallisticsParams } from '@/utils';
 import { ConfirmRemoveMarks, MarksForm, MarksTable } from '../components';

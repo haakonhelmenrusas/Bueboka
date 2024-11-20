@@ -1,4 +1,4 @@
-import { Ballistics } from '../utils/Ballistics';
+import { Ballistics } from '@/utils/Ballistics';
 
 export interface AimDistanceMark extends Ballistics {
   new_given_mark: number;
