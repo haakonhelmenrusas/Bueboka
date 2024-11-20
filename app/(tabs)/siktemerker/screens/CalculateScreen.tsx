@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Keyboard, Pressable, KeyboardAvoidingView, View, StyleSheet, Text, Platform, ScrollView } from 'react-native';
+import { Keyboard, KeyboardAvoidingView, Platform, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { AimDistanceMark, Bow, CalculatedMarks, MarkValue } from '@/types';
 import { Ballistics, getLocalStorage, storeLocalStorage, useBallisticsParams } from '@/utils';
 import { ConfirmRemoveMarks, MarksForm, MarksTable } from '../components';
@@ -31,11 +31,11 @@ export default function CalculateScreen() {
 
     if (bow) {
       body.bow_category = bow.bowType;
-      body.arrow_diameter_mm = bow.arrowDiameter;
-      body.arrow_mass_gram = bow.arrowWeight;
+      body.arrow_diameter_mm = bow.arrowDiameter ?? 0;
+      body.arrow_mass_gram = bow.arrowWeight ?? 0;
       body.feet_behind_or_center = bow.placement;
-      body.length_eye_sight_cm = bow.eyeToAim;
-      body.length_nock_eye_cm = bow.eyeToNock;
+      body.length_eye_sight_cm = bow.eyeToAim ?? 0;
+      body.length_nock_eye_cm = bow.eyeToNock ?? 0;
     }
 
     if (ballistics) {
@@ -57,9 +57,10 @@ export default function CalculateScreen() {
   }
 
   async function handleRemoveMark(index: number) {
-    const newDistances = ballistics.given_distances.filter((_distance: any, i: number) => i === index);
-
-    await sendMarks({ aim: 9999, distance: newDistances[0] });
+    if (ballistics) {
+      const newDistances = ballistics.given_distances.filter((_distance: any, i: number) => i === index);
+      await sendMarks({ aim: 9999, distance: newDistances[0] });
+    }
   }
 
   return (

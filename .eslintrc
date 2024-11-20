@@ -1,4 +1,20 @@
 {
+  "extends": [
+    "plugin:prettier/recommended",
+    "universe/shared/typescript-analysis"
+  ],
+  "overrides": [
+    {
+      "files": [
+        "*.ts",
+        "*.tsx",
+        "*.d.ts"
+      ],
+      "parserOptions": {
+        "project": "./tsconfig.json"
+      }
+    }
+  ],
   "rules": {
     "prettier/prettier": [
       "error",

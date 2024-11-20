@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { MarksResult, SightMarkCalc, Status } from '../../types';
+import { MarksResult, SightMarkCalc, Status } from '@/types';
 
 const calcMarks = (body: SightMarkCalc) => {
   return fetch('https://calculate-aim.azurewebsites.net/api/archerAim?task=CalcSightMarks', {

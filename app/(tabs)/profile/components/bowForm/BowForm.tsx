@@ -8,11 +8,11 @@ import { Bow } from '@/types';
 interface BowFormProps {
   modalVisible: boolean;
   setModalVisible: (visible: boolean) => void;
-  bow?: Bow;
+  bow: Bow | null;
 }
 
 const BowForm = ({ modalVisible, setModalVisible, bow }: BowFormProps) => {
-  const [isInputFocused, setInputFocused] = useState(false);
+  const [inputFocused, setInputFocused] = useState(false);
   const [{ bowName, bowNameError, bowType, placement, eyeToNock, eyeToAim, arrowWeight, arrowDiameter }, dispatch] =
     useBowForm();
 
@@ -24,10 +24,10 @@ const BowForm = ({ modalVisible, setModalVisible, bow }: BowFormProps) => {
       dispatch({ type: 'SET_BOW_NAME', payload: bow.bowName });
       dispatch({ type: 'SET_BOW_TYPE', payload: bow.bowType });
       dispatch({ type: 'SET_PLACEMENT', payload: bow.placement });
-      dispatch({ type: 'SET_EYE_TO_NOCK', payload: bow.eyeToNock?.toString() });
-      dispatch({ type: 'SET_EYE_TO_AIM', payload: bow.eyeToAim?.toString() });
-      dispatch({ type: 'SET_ARROW_WEIGHT', payload: bow.arrowWeight?.toString() });
-      dispatch({ type: 'SET_ARROW_DIAMETER', payload: bow.arrowDiameter?.toString() });
+      dispatch({ type: 'SET_EYE_TO_NOCK', payload: bow.eyeToNock?.toString() ?? '' });
+      dispatch({ type: 'SET_EYE_TO_AIM', payload: bow.eyeToAim?.toString() ?? '' });
+      dispatch({ type: 'SET_ARROW_WEIGHT', payload: bow.arrowWeight?.toString() ?? '' });
+      dispatch({ type: 'SET_ARROW_DIAMETER', payload: bow.arrowDiameter?.toString() ?? '' });
     }
   }, [bow]);
 
@@ -199,7 +199,7 @@ const BowForm = ({ modalVisible, setModalVisible, bow }: BowFormProps) => {
               onChangeText={(value) => handleNumberChange(value, 'SET_ARROW_DIAMETER')}
             />
           </View>
-          {!(Platform.OS === 'android' && isInputFocused) && (
+          {!(Platform.OS === 'android' && inputFocused) && (
             <View style={{ marginTop: 'auto' }}>
               <Button disabled={!bowName} onPress={handleSubmit} label="Lagre" />
               <Button

@@ -9,6 +9,7 @@ import { faRulerHorizontal } from '@fortawesome/free-solid-svg-icons/faRulerHori
 import { faCrosshairs } from '@fortawesome/free-solid-svg-icons/faCrosshairs';
 import { faChevronDown } from '@fortawesome/free-solid-svg-icons/faChevronDown';
 import { faChevronUp } from '@fortawesome/free-solid-svg-icons/faChevronUp';
+import { checkDecimalCount } from '@/utils/helpers/checkDecimalCount';
 
 interface CalculateMarksModalProps {
   modalVisible: boolean;
@@ -17,7 +18,7 @@ interface CalculateMarksModalProps {
   setCalculatedMarks: (calculatedMarks: MarksResult) => void;
 }
 
-const CalculateMarksModal = ({
+export const CalculateMarksModal = ({
   modalVisible,
   closeModal,
   ballistics,
@@ -32,9 +33,8 @@ const CalculateMarksModal = ({
   function handleNumberChange(value: string, key: any) {
     const cleanValue = value.replace(/[^0-9.]/g, '');
     const parsedValue = parseFloat(cleanValue);
-    // check if the value has no more then three decimals
-    const valueArray = cleanValue.split('.');
-    if (valueArray[1] && valueArray[1].length > 3) {
+
+    if (checkDecimalCount(cleanValue, 3)) {
       return;
     }
     if (!isNaN(parsedValue)) {
@@ -42,18 +42,6 @@ const CalculateMarksModal = ({
     } else {
       dispatch({ type: key, payload: '' });
     }
-  }
-
-  const handleDistanceFromChange = (value: string) => {
-    dispatch({ type: 'SET_DISTANCE_FROM', payload: value });
-  };
-
-  function handleDistanceToChange(value: string) {
-    dispatch({ type: 'SET_DISTANCE_TO', payload: value });
-  }
-
-  function handleIntervalChange(value: string) {
-    dispatch({ type: 'SET_INTERVAL', payload: value });
   }
 
   function handleAngleChange(value: string, index: number) {
@@ -81,7 +69,9 @@ const CalculateMarksModal = ({
 
       await storeLocalStorage(res, 'calculatedMarks').then(async () => {
         const marks = await getLocalStorage<MarksResult>('calculatedMarks');
-        setCalculatedMarks(marks);
+        if (marks) {
+          setCalculatedMarks(marks);
+        }
       });
       clearForm();
       Keyboard.dismiss();
@@ -255,5 +245,3 @@ const styles = StyleSheet.create({
     gap: 16,
   },
 });
-
-export default CalculateMarksModal;

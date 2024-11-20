@@ -4,8 +4,8 @@ import { CalculatedMarks, MarksResult } from '@/types';
 import { Message } from '@/components/common';
 
 interface ChartScreenProps {
-  calculatedMarks: MarksResult;
-  marks: CalculatedMarks;
+  calculatedMarks: MarksResult | null;
+  marks: CalculatedMarks | null;
   setModalVisible: (visible: boolean) => void;
 }
 
@@ -52,6 +52,7 @@ export default function ChartScreen({ calculatedMarks, marks, setModalVisible }:
   const marksData = () => {
     if (!marks) return [];
     if (marks.given_marks.length <= 0) return [];
+    if (!calculatedMarks) return [];
 
     return calculatedMarks.distances
       .map((distance) => {

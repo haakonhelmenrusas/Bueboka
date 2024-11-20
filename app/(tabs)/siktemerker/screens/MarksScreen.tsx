@@ -4,7 +4,7 @@ import { ScrollView, StyleSheet, View, Platform } from 'react-native';
 import { Button, Message } from '@/components/common';
 import { CalculatedMarks, MarksResult } from '@/types';
 import { getLocalStorage } from '@/utils';
-import CalculateMarksModal from '../components/CalculateMarksModal';
+import { CalculateMarksModal } from '../components/CalculateMarksModal';
 import CalculatedMarksTable from '../components/CalculatedMarksTable';
 import { faTrash } from '@fortawesome/free-solid-svg-icons/faTrash';
 import { faChartLine } from '@fortawesome/free-solid-svg-icons/faChartLine';
