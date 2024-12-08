@@ -1,5 +1,6 @@
 {
   "expo": {
+    "newArchEnabled": true,
     "scheme": "bueboka",
     "web": {
       "bundler": "metro"
