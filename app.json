@@ -2,6 +2,7 @@
   "expo": {
     "newArchEnabled": true,
     "scheme": "bueboka",
+    "owner": "aaronshade",
     "web": {
       "bundler": "metro"
     },
