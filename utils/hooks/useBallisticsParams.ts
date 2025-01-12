@@ -11,7 +11,17 @@ const calcBallisticsParams = (body: AimDistanceMark) => {
   });
 };
 
-const useBallisticsParams = () => {
+interface Ballistic {
+  status: Status;
+  error: any | null;
+  calculateBallisticsParams: (body: AimDistanceMark) => Promise<CalculatedMarks | undefined>;
+}
+
+/**
+ * Hook for calculating ballistics parameters
+ * @returns {Ballistic} status, error, calculateBallisticsParams
+ */
+const useBallisticsParams = (): Ballistic => {
   const [status, setStatus] = useState<Status>(Status.Idle);
   const [error, setError] = useState<any | null>(null);
 
