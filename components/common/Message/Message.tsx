@@ -1,8 +1,9 @@
 import { faInfoCircle } from '@fortawesome/free-solid-svg-icons/faInfoCircle';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { Text, View } from 'react-native';
 import Button from '../Button/Button';
+import { styles } from './MessageStyles';
 
 interface MessageProps {
   title: string;
@@ -22,30 +23,5 @@ const Message: React.FC<MessageProps> = ({ title, description, onPress, buttonLa
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-  messageContainer: {
-    backgroundColor: '#D8F5FF',
-    borderRadius: 12,
-    padding: 16,
-    alignItems: 'center',
-    justifyContent: 'center',
-    height: 'auto',
-  },
-  messageTitle: {
-    color: '#053546',
-    fontSize: 20,
-    fontWeight: '500',
-    marginBottom: 16,
-  },
-  icon: {
-    color: '#053546',
-  },
-  messageText: {
-    color: '#053546',
-    fontSize: 16,
-    marginBottom: 16,
-  },
-});
 
 export default Message;
