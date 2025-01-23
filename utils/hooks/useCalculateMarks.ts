@@ -11,7 +11,18 @@ const calcMarks = (body: SightMarkCalc) => {
   });
 };
 
-const useCalculateMarks = () => {
+interface Marks {
+  status: Status;
+  error: any | null;
+  calculateMarks: (body: SightMarkCalc) => Promise<MarksResult | undefined>;
+}
+
+/**
+ * Hook for calculating sight marks
+ * @returns {Marks}
+ *
+ */
+const useCalculateMarks = (): Marks => {
   const [status, setStatus] = useState<Status>(Status.Idle);
   const [error, setError] = useState<any | null>(null);
 

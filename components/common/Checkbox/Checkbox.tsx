@@ -1,6 +1,7 @@
 import React from 'react';
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Text, TouchableOpacity, View } from 'react-native';
 import { Feather } from '@expo/vector-icons';
+import styles from './CheckboxStyles';
 
 interface CheckboxProps {
   label: string;
@@ -23,15 +24,3 @@ export default function Checkbox({ label, checked, onPress }: Readonly<CheckboxP
     </TouchableOpacity>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 10,
-  },
-  label: {
-    fontSize: 16,
-    marginLeft: 10,
-  },
-});

@@ -1,29 +1,39 @@
-# Retningslinjer for bidragsytere
+# Guidelines for Contributors
 
-Vi som medlemmer, bidragsytere og ledere forplikter oss til å skape en trakasseringfri opplevelse for alle i vårt fellesskap, uavhengig av alder, kroppsfasong, synlig eller usynlig funksjonshemming, etnisitet, kjønnsidentitet og uttrykk, erfaring, utdannelse, sosioøkonomisk status, nasjonalitet, personlig utseende, rase, religion eller seksuell identitet og orientering.
+As members, contributors, and leaders, we are committed to creating a harassment-free experience for everyone in our
+community, regardless of age, body size, visible or invisible disabilities, ethnicity, gender identity and expression,
+experience, education, socioeconomic status, nationality, personal appearance, race, religion, or sexual identity and
+orientation.
 
-Vi forplikter oss til å handle og samhandle på måter som bidrar til et åpent, imøtekommende, mangfoldig, inkluderende og sunt fellesskap.
+> We pledge to act and interact in ways that contribute to an open, welcoming, diverse, inclusive, and healthy
+> community.
 
-## Våre standarer
+## Our Standards
 
-Eksempler på adferd som bidrar til et positivt miljø for fellesskapet vårt inkluderer:
+### Examples of behavior that contribute to a positive community environment include:
 
- - Vise empati og vennlighet overfor andre mennesker
- - Være respektfull overfor forskjellige meninger, synspunkter og erfaringer
- - Gi og akseptere konstruktiv tilbakemelding på en takknemlig måte
- - Ta ansvar og be om unnskyldning til de som er påvirket av våre feil, og lære av erfaringen
- - Fokusere på det som er best ikke bare for oss som individer, men for fellesskapet som helhet.
+- Showing empathy and kindness toward other people
+- Being respectful of differing opinions, viewpoints, and experiences
+- Giving and gracefully accepting constructive feedback
+- Taking responsibility for our mistakes, apologizing to those affected, and learning from the experience
+- Focusing on what is best not just for us as individuals but for the community as a whole
 
-## Eksempler på uakseptabel oppførsel inkluderer:
+### Examples of unacceptable behavior include:
 
- - Bruk av seksualisert språk eller bilde, og seksuell oppmerksomhet eller tilnærminger av noen slag
- - Trolling, fornærmende eller nedsettende kommentarer og personlige eller politiske angrep
- - Offentlig eller privat trakassering
- - Publisering av andres private informasjon, som fysisk eller e-postadresse, uten deres uttrykkelige tillatelse
- - Kontakte individuelle medlemmer, bidragsytere eller ledere privat, utenfor utpekt fellesskapsmekanismer, uten deres uttrykkelige tillatelse
- - Annen oppførsel som rimeligvis kan anses som upassende i en profesjonell sammenheng.
+- The use of sexualized language or imagery, and sexual attention or advances of any kind
+- Trolling, insulting or derogatory comments, and personal or political attacks
+- Public or private harassment
+- Publishing others’ private information, such as physical or email addresses, without their explicit permission
+- Contacting individual members, contributors, or leaders privately, outside designated community mechanisms, without
+  their explicit permission
+- Any other conduct that could reasonably be considered inappropriate in a professional context
 
-## Håndhevelsesansvar
-Fellesskapets ledere er ansvarlige for å avklare og håndheve våre standarder for akseptabel oppførsel og vil ta passende og rettferdig korrigerende tiltak som svar på enhver oppførsel som de anser som upassende, truende, støtende eller skadelig.
+## Enforcement Responsibilities
 
-Fellesskapets ledere har rett og ansvar til å fjerne, redigere eller avvise kommentarer, commits, kode, wiki-redigeringer, problemstillinger og andre bidrag som ikke er i tråd med denne oppførselsregelen, og vil kommunisere årsakene til modereringsavgjørelsene når det er hensiktsmessig.
+Community leaders are responsible for clarifying and enforcing our standards of acceptable behavior and will take
+appropriate and fair corrective action in response to any behavior they deem inappropriate, threatening, offensive, or
+harmful.
+
+Community leaders have the right and responsibility to remove, edit, or reject comments, commits, code, wiki edits,
+issues, and other contributions that are not aligned with this Code of Conduct, and will communicate the reasons for
+moderation decisions when appropriate.

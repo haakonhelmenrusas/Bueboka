@@ -1,20 +1,22 @@
-Bidra til Bueboka
+# Contribute to Bueboka
 
-Takk for at du vurderer å bidra til Bueboka! Vi setter pris på din hjelp til å forbedre denne tjenesten for alle bueskyttere i Norge.
-Hvordan bidra
+Thank you for considering contributing to Bueboka! We appreciate your help in improving this service for all archers in
+Norway.
 
-  1. Fork repositoriet: Lag en personlig fork og klon repositoriet til din lokale maskin.
-  2. Opprett en gren: Lag en ny gren for din funksjon eller feilretting.
-  3. Gjør endringer: Implementer endringene dine i henhold til våre kodestandarder.
-  4. Test endringene dine: Sørg for at endringene dine fungerer som forventet og at alle tester passerer.
-  5. Send en pull request: Push endringene dine til din fork og send en pull request til hovedrepositoriet.
+## How to Contribute
 
-Kodestandarder
+1. Fork the repository: Create a personal fork and clone the repository to your local machine.
+2. Create a branch: Make a new branch for your feature or bug fix.
+3. Make changes: Implement your changes following our coding standards.
+4. Test your changes: Ensure your changes work as expected and that all tests pass.
+5. Submit a pull request: Push your changes to your fork and submit a pull request to the main repository.
 
-  1. Følg den eksisterende kodestilen.
-  2. Skriv klare og konsise commit-meldinger.
-  3. Inkluder kommentarer der det er nødvendig for å forklare kompleks kode.
+## Coding Standards
 
-Trenger du hjelp?
+1. Follow the existing code style.
+2. Write clear and concise commit messages.
+3. Include comments where necessary to explain complex code.
 
-Hvis du har spørsmål eller trenger ytterligere assistanse, kan du åpne en issue eller kontakte vedlikeholderne.
+### Need Help?
+
+If you have questions or need further assistance, feel free to open an issue or contact the maintainers.
