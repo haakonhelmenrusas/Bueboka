@@ -66,10 +66,10 @@
   },
   "name": "bueboka",
   "version": "1.0.0",
-  "private": false,
+  "private": true,
   "author": {
     "name": "Rusås Design",
-    "email": "haakon.s.helmen@gmail.com",
+    "email": "kontakt@rusåsdesign.no",
     "url": "https://rusasdesign.no"
   },
   "description": "Bueboka - an app for all archers to track their progress and improve their skills"
