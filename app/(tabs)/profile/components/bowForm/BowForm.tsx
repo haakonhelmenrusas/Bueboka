@@ -1,9 +1,10 @@
-import { View, Text, StyleSheet, TouchableOpacity, Platform, Modal, Keyboard, Pressable } from 'react-native';
+import { Keyboard, Modal, Platform, Pressable, Text, TouchableOpacity, View } from 'react-native';
 import { useEffect, useState } from 'react';
-import { Input, Button } from '@/components/common';
+import { Button, Input } from '@/components/common';
 import { useBowForm } from './useBowForm';
 import { formatNumber, storeLocalStorage } from '@/utils';
 import { Bow } from '@/types';
+import { styles } from './BowFormStyles';
 
 interface BowFormProps {
   modalVisible: boolean;
@@ -34,7 +35,7 @@ const BowForm = ({ modalVisible, setModalVisible, bow }: BowFormProps) => {
   function handleNumberChange(value: string, key: any) {
     const cleanValue = value.replace(/[^0-9.]/g, '');
     const parsedValue = parseFloat(cleanValue);
-    // check if the value has no more then three decimals
+    // check if the value has no more than three decimals
     const valueArray = cleanValue.split('.');
     if (valueArray[1] && valueArray[1].length > 3) {
       return;
@@ -219,58 +220,3 @@ const BowForm = ({ modalVisible, setModalVisible, bow }: BowFormProps) => {
 };
 
 export default BowForm;
-
-const styles = StyleSheet.create({
-  modal: {
-    display: 'flex',
-    flex: 1,
-    padding: 24,
-    marginTop: Platform.OS === 'ios' ? 44 : 0,
-  },
-  title: {
-    fontSize: 20,
-    fontWeight: 'medium',
-  },
-  radioContainer: {
-    marginTop: 32,
-  },
-  radioButtonContainer: {
-    flex: 1,
-    borderRadius: 12,
-    borderWidth: 1,
-    borderColor: '#ccc',
-    padding: 8,
-    flexDirection: 'column',
-    alignItems: 'center',
-    marginRight: 8,
-    marginBottom: 16,
-  },
-  radioButtonContainerSelected: {
-    borderColor: '#053546',
-  },
-  radioButton: {
-    height: 16,
-    width: 16,
-    backgroundColor: '#FFF',
-    borderRadius: 20,
-    borderWidth: 1,
-    borderColor: '#ccc',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  radioButtonSelected: {
-    backgroundColor: '#053546',
-  },
-  radioButtonLabel: {
-    color: '#053546',
-    fontWeight: '500',
-    marginTop: 8,
-    textAlign: 'center',
-  },
-  bowTypeLabel: {
-    color: '#053546',
-    fontWeight: '500',
-    fontSize: 14,
-    marginBottom: 8,
-  },
-});

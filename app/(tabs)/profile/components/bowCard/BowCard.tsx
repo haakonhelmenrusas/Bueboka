@@ -1,9 +1,10 @@
-import { View, Image, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { Image, Text, TouchableOpacity, View } from 'react-native';
 import { Bow } from '@/types';
 import { capitalizeFirstLetter } from '@/utils';
 import { FC } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faCog } from '@fortawesome/free-solid-svg-icons/faCog';
+import { styles } from './BowCardStyles';
 
 interface BowCardProps {
   bow: Bow;
@@ -55,58 +56,3 @@ const BowCard: FC<BowCardProps> = ({ bow, openFormWithData }) => {
   );
 };
 export default BowCard;
-
-const styles = StyleSheet.create({
-  container: {
-    alignContent: 'center',
-    width: '100%',
-    marginHorizontal: 'auto',
-    backgroundColor: '#fff',
-    borderRadius: 12,
-    borderWidth: 2,
-    borderColor: '#053546',
-  },
-  header: {
-    display: 'flex',
-    flexDirection: 'row',
-    padding: 12,
-    alignItems: 'center',
-    borderTopEndRadius: 10,
-    borderTopStartRadius: 10,
-    backgroundColor: '#053546',
-  },
-  image: {
-    width: 28,
-    height: 28,
-    resizeMode: 'contain',
-    marginRight: 16,
-  },
-  title: {
-    fontSize: 24,
-    color: '#D8F5FF',
-    fontWeight: 'medium',
-  },
-  cogIcon: {
-    marginLeft: 'auto',
-    padding: 8,
-  },
-  body: {
-    display: 'flex',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    padding: 16,
-  },
-  column: {
-    flex: 1,
-    marginHorizontal: 8,
-  },
-  head: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    marginBottom: 4,
-  },
-  text: {
-    fontSize: 14,
-    marginBottom: 16,
-  },
-});

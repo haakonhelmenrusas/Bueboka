@@ -18,7 +18,7 @@ export default function AppLayout() {
         },
       }}>
       <Tabs.Screen
-        name="siktemerker"
+        name="sightMarks"
         options={{
           tabBarIcon: ({ focused }) => <FontAwesomeIcon icon={faBullseye} color={focused ? '#053546' : 'grey'} />,
           headerShadowVisible: false,
