@@ -31,6 +31,7 @@ export default function CalculateScreen() {
 
     if (bow) {
       body.bow_category = bow.bowType;
+      body.interval_sight_measured = bow.interval_sight_measured ?? 5;
       body.arrow_diameter_mm = bow.arrowDiameter ?? 0;
       body.arrow_mass_gram = bow.arrowWeight ?? 0;
       body.feet_behind_or_center = bow.placement;
