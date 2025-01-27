@@ -1,7 +1,8 @@
+import { StatusBar } from 'react-native';
 import { Stack, useNavigationContainerRef } from 'expo-router';
 import * as Sentry from '@sentry/react-native';
 import { isRunningInExpoGo } from 'expo';
-import { useEffect } from 'react';
+import React, { useEffect } from 'react';
 
 const navigationIntegration = Sentry.reactNavigationIntegration({
   enableTimeToInitialDisplay: !isRunningInExpoGo(),
@@ -27,9 +28,12 @@ function RootLayout() {
   }, [ref]);
 
   return (
-    <Stack>
-      <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-    </Stack>
+    <>
+      <StatusBar barStyle="dark-content" />
+      <Stack>
+        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+      </Stack>
+    </>
   );
 }
 
