@@ -6,4 +6,5 @@ export interface Bow {
   eyeToAim?: number;
   arrowWeight?: number;
   arrowDiameter?: number;
+  interval_sight_measured?: number;
 }
