@@ -1,9 +1,10 @@
-import { StyleSheet } from 'react-native';
+import { Platform, StyleSheet } from 'react-native';
 
 export const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'flex-end',
+    marginBottom: Platform.OS === 'ios' ? 32 : 0,
   },
   form: {
     display: 'flex',
