@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { Keyboard, KeyboardAvoidingView, Platform, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { AimDistanceMark, Bow, CalculatedMarks, MarkValue } from '@/types';
 import { Ballistics, getLocalStorage, storeLocalStorage, useBallisticsParams } from '@/utils';
@@ -83,7 +84,9 @@ export default function CalculateScreen() {
           </View>
         </Pressable>
       </ScrollView>
-      <MarksForm sendMarks={sendMarks} status={status} onInputFocusChange={setInputFocused} />
+      <GestureHandlerRootView style={{ flex: 1 }}>
+        <MarksForm sendMarks={sendMarks} status={status} onInputFocusChange={setInputFocused} />
+      </GestureHandlerRootView>
       <ConfirmRemoveMarks
         modalVisible={conformationModalVisible}
         setBallistics={setBallistics}
