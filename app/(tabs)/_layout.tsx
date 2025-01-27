@@ -1,4 +1,3 @@
-import { Platform } from 'react-native';
 import { faBullseye } from '@fortawesome/free-solid-svg-icons/faBullseye';
 import { faUser } from '@fortawesome/free-solid-svg-icons/faUser';
 import { faCircleQuestion } from '@fortawesome/free-solid-svg-icons/faCircleQuestion';
@@ -13,8 +12,7 @@ export default function AppLayout() {
         tabBarInactiveTintColor: 'grey',
         tabBarHideOnKeyboard: true,
         tabBarStyle: {
-          height: Platform.OS === 'ios' ? 84 : 64,
-          paddingBottom: Platform.OS === 'ios' ? 20 : 0,
+          height: 64,
         },
       }}>
       <Tabs.Screen
@@ -24,7 +22,7 @@ export default function AppLayout() {
           headerShadowVisible: false,
           headerShown: false,
           tabBarLabel: 'Siktemerker',
-          tabBarLabelStyle: { fontSize: 14, marginBottom: 8 },
+          tabBarLabelStyle: { fontSize: 14 },
         }}
       />
       <Tabs.Screen
@@ -34,7 +32,7 @@ export default function AppLayout() {
           headerShadowVisible: false,
           headerShown: false,
           tabBarLabel: 'Profil',
-          tabBarLabelStyle: { fontSize: 14, marginBottom: 8 },
+          tabBarLabelStyle: { fontSize: 14 },
         }}
       />
       <Tabs.Screen
@@ -44,7 +42,7 @@ export default function AppLayout() {
           headerShadowVisible: false,
           headerShown: false,
           tabBarLabel: 'Om oss',
-          tabBarLabelStyle: { fontSize: 14, marginBottom: 8 },
+          tabBarLabelStyle: { fontSize: 14 },
         }}
       />
     </Tabs>
