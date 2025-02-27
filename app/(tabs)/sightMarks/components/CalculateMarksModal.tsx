@@ -34,7 +34,7 @@ export const CalculateMarksModal = ({
     const cleanValue = value.replace(/[^0-9.]/g, '');
     const parsedValue = parseFloat(cleanValue);
 
-    if (checkDecimalCount(cleanValue, 3)) {
+    if (!checkDecimalCount(cleanValue, 3)) {
       return;
     }
     if (!isNaN(parsedValue)) {
