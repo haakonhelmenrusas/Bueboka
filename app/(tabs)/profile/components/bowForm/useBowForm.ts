@@ -9,6 +9,7 @@ interface BowTypeState {
   eyeToAim: string;
   arrowWeight: string;
   arrowDiameter: string;
+  interval_sight_real: string;
   intervalSightMeasure: string;
 }
 
@@ -21,6 +22,7 @@ export type Action =
   | { type: 'SET_EYE_TO_AIM'; payload: string }
   | { type: 'SET_ARROW_WEIGHT'; payload: string }
   | { type: 'SET_ARROW_DIAMETER'; payload: string }
+  | { type: 'SET_INTERVAL_SIGHT_REAL'; payload: string }
   | { type: 'SET_INTERVAL_SIGHT_MEASURE'; payload: string };
 
 function reducer(state: BowTypeState, action: Action): BowTypeState {
@@ -41,6 +43,8 @@ function reducer(state: BowTypeState, action: Action): BowTypeState {
       return { ...state, arrowWeight: action.payload };
     case 'SET_ARROW_DIAMETER':
       return { ...state, arrowDiameter: action.payload };
+    case 'SET_INTERVAL_SIGHT_REAL':
+      return { ...state, interval_sight_real: action.payload };
     case 'SET_INTERVAL_SIGHT_MEASURE':
       return { ...state, intervalSightMeasure: action.payload };
     default:
@@ -58,6 +62,7 @@ export const useBowForm = () => {
     eyeToAim: '',
     arrowWeight: '',
     arrowDiameter: '',
+    interval_sight_real: '',
     intervalSightMeasure: '',
   };
   return useReducer(reducer, INITIAL_STATE);
