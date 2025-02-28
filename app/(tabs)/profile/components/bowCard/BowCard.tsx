@@ -12,7 +12,7 @@ interface BowCardProps {
 }
 
 const BowCard: FC<BowCardProps> = ({ bow, openFormWithData }) => {
-  const { bowName, bowType, placement, eyeToAim, eyeToNock, arrowWeight, arrowDiameter } = bow;
+  const { bowName, bowType, placement, eyeToAim, eyeToNock, arrowWeight, arrowDiameter, interval_sight_real } = bow;
   return (
     <View style={styles.container}>
       <View style={styles.header}>
@@ -35,6 +35,10 @@ const BowCard: FC<BowCardProps> = ({ bow, openFormWithData }) => {
           <View>
             <Text style={styles.head}>Fra øye til nock</Text>
             <Text style={styles.text}>{eyeToNock ? eyeToNock + ' cm' : 'Ingen data'}</Text>
+          </View>
+          <View>
+            <Text style={styles.head}>Målt sikte</Text>
+            <Text style={styles.text}>{interval_sight_real ? interval_sight_real + ' cm' : 'Ingen data'}</Text>
           </View>
         </View>
         <View style={styles.column}>
