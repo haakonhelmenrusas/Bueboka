@@ -1,5 +1,6 @@
-import { Image, Text, View } from 'react-native';
+import { Image, ScrollView, Text, View } from 'react-native';
 import { useEffect, useState } from 'react';
+import * as Sentry from '@sentry/react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faPlus } from '@fortawesome/free-solid-svg-icons/faPlus';
@@ -30,12 +31,12 @@ export default function Profile() {
         setModalVisible(true);
       }
     } catch (error) {
-      console.error(error);
+      Sentry.captureException(error);
     }
   };
 
   return (
-    <View style={styles.container}>
+    <ScrollView style={styles.container}>
       {bow ? (
         <BowCard bow={bow} openFormWithData={openFormWithData} />
       ) : (
@@ -58,6 +59,6 @@ export default function Profile() {
           />
         </View>
       )}
-    </View>
+    </ScrollView>
   );
 }
