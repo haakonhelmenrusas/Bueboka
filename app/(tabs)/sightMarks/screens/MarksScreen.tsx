@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { Platform, ScrollView, StyleSheet, View } from 'react-native';
+import { ScrollView, StyleSheet, View } from 'react-native';
 import * as Sentry from '@sentry/react-native';
 import { Button, Message } from '@/components/common';
 import { CalculatedMarks, MarksResult } from '@/types';
@@ -91,7 +91,7 @@ export default function MarksScreen({ setScreen }: MarksScreenProps) {
   }
 
   return (
-    <View style={Platform.OS === 'ios' ? styles.ios : styles.page}>
+    <View style={styles.page}>
       {showGraph ? (
         <ChartScreen calculatedMarks={calculatedMarks} marks={ballistics} setModalVisible={setModalVisible} />
       ) : (
@@ -159,11 +159,6 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#F2F2F2',
   },
-  ios: {
-    flex: 1,
-    backgroundColor: '#F2F2F2',
-    marginBottom: -34,
-  },
   scrollView: {
     flex: 1,
     minHeight: '50%',
@@ -172,6 +167,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    padding: 8,
+    padding: 0,
   },
 });
