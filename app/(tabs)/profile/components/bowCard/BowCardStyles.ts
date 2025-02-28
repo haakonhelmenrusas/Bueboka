@@ -7,13 +7,14 @@ export const styles = StyleSheet.create({
     marginHorizontal: 'auto',
     backgroundColor: '#fff',
     borderRadius: 12,
-    borderWidth: 2,
+    borderWidth: 1,
     borderColor: '#053546',
   },
   header: {
     display: 'flex',
     flexDirection: 'row',
-    padding: 12,
+    paddingVertical: 8,
+    paddingHorizontal: 16,
     alignItems: 'center',
     borderTopEndRadius: 10,
     borderTopStartRadius: 10,
@@ -42,11 +43,10 @@ export const styles = StyleSheet.create({
   },
   column: {
     flex: 1,
-    marginHorizontal: 8,
   },
   head: {
     fontSize: 16,
-    fontWeight: 'bold',
+    fontWeight: '600',
     marginBottom: 4,
   },
   text: {
