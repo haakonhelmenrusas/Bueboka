@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Platform, ScrollView, StyleSheet, View } from 'react-native';
+import * as Sentry from '@sentry/react-native';
 import { Button, Message } from '@/components/common';
 import { CalculatedMarks, MarksResult } from '@/types';
 import { getLocalStorage } from '@/utils';
@@ -85,7 +86,7 @@ export default function MarksScreen({ setScreen }: MarksScreenProps) {
       await AsyncStorage.removeItem('calculatedMarks');
       setCalculatedMarks(null);
     } catch (error) {
-      console.error('Error removing data', error);
+      Sentry.captureException('Error removing data', error);
     }
   }
 
