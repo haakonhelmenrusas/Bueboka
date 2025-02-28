@@ -24,6 +24,7 @@ const BowForm = ({ modalVisible, setModalVisible, bow }: BowFormProps) => {
       eyeToAim,
       arrowWeight,
       arrowDiameter,
+      interval_sight_real,
       intervalSightMeasure,
     },
     dispatch,
@@ -41,6 +42,7 @@ const BowForm = ({ modalVisible, setModalVisible, bow }: BowFormProps) => {
       dispatch({ type: 'SET_EYE_TO_AIM', payload: bow.eyeToAim?.toString() ?? '' });
       dispatch({ type: 'SET_ARROW_WEIGHT', payload: bow.arrowWeight?.toString() ?? '' });
       dispatch({ type: 'SET_ARROW_DIAMETER', payload: bow.arrowDiameter?.toString() ?? '' });
+      dispatch({ type: 'SET_INTERVAL_SIGHT_REAL', payload: bow.interval_sight_real?.toString() ?? '' });
       dispatch({ type: 'SET_INTERVAL_SIGHT_MEASURE', payload: bow.interval_sight_measured?.toString() ?? '' });
     }
   }, [bow, dispatch]);
@@ -73,6 +75,7 @@ const BowForm = ({ modalVisible, setModalVisible, bow }: BowFormProps) => {
       eyeToAim: eyeToAim ? parseFloat(eyeToAim) : undefined,
       arrowWeight: arrowWeight ? parseFloat(arrowWeight) : undefined,
       arrowDiameter: arrowDiameter ? parseFloat(arrowDiameter) : undefined,
+      interval_sight_real: interval_sight_real ? parseFloat(interval_sight_real) : undefined,
       interval_sight_measured: intervalSightMeasure ? parseFloat(intervalSightMeasure) : undefined,
     };
 
@@ -90,6 +93,7 @@ const BowForm = ({ modalVisible, setModalVisible, bow }: BowFormProps) => {
     dispatch({ type: 'SET_EYE_TO_AIM', payload: '' });
     dispatch({ type: 'SET_ARROW_WEIGHT', payload: '' });
     dispatch({ type: 'SET_ARROW_DIAMETER', payload: '' });
+    dispatch({ type: 'SET_INTERVAL_SIGHT_REAL', payload: '' });
     dispatch({ type: 'SET_INTERVAL_SIGHT_MEASURE', payload: '' });
   }
 
@@ -214,6 +218,13 @@ const BowForm = ({ modalVisible, setModalVisible, bow }: BowFormProps) => {
                 placeholderText="F.eks. 5"
                 value={arrowDiameter}
                 onChangeText={(value) => handleNumberChange(value, 'SET_ARROW_DIAMETER')}
+              />
+            </View>
+            <View style={{ flexDirection: 'row', justifyContent: 'flex-start', marginTop: 24 }}>
+              <Input
+                label={'Intervall sikte (cm)'}
+                value={interval_sight_real}
+                onChangeText={(value) => handleNumberChange(value, 'SET_INTERVAL_SIGHT_REAL')}
               />
             </View>
             {!(Platform.OS === 'android' && inputFocused) && (
