@@ -1,4 +1,4 @@
-import { renderHook, act } from '@testing-library/react-native';
+import { act, renderHook } from '@testing-library/react-native';
 import { useBowForm } from './useBowForm';
 
 describe('useBowForm', () => {
@@ -13,6 +13,8 @@ describe('useBowForm', () => {
       eyeToAim: '',
       arrowWeight: '',
       arrowDiameter: '',
+      interval_sight_real: '',
+      intervalSightMeasure: '',
     });
   });
 
