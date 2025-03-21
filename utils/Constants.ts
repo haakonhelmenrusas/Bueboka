@@ -1,5 +1,9 @@
 import { AimDistanceMark } from '@/types';
 
+/**
+ * Standard values for Ballistics calculations. These values are used to calculate the aim distance marks.
+ * The user can change these values in the app.
+ */
 export const Ballistics: AimDistanceMark = {
   new_given_mark: 0,
   new_given_distance: 0,
