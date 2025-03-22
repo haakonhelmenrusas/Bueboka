@@ -16,7 +16,7 @@
     "@react-native-picker/picker": "2.9.0",
     "@sentry/react-native": "~6.3.0",
     "@testing-library/react-native": "^12.9.0",
-    "axios": "^1.7.4",
+    "axios": "^1.8.2",
     "eslint-config-expo": "~8.0.1",
     "expo": "~52.0.38",
     "expo-application": "~6.0.2",
