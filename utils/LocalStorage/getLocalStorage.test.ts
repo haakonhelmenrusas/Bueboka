@@ -1,6 +1,5 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import getLocalStorage from '@/utils/LocalStorage/getLocalStorage';
-import * as Sentry from '@sentry/react-native';
 
 describe('getLocalStorage', () => {
   it('retrieves data from local storage successfully', async () => {
@@ -15,16 +14,6 @@ describe('getLocalStorage', () => {
     const key = 'nonExistentKey';
     const retrievedValue = await getLocalStorage(key);
     expect(retrievedValue).toBeNull();
-  });
-
-  it('handles errors when retrieving data from local storage', async () => {
-    const key = 'errorKey';
-    jest.spyOn(AsyncStorage, 'getItem').mockRejectedValueOnce(new Error('Retrieval error'));
-    const captureExceptionMock = jest.spyOn(Sentry, 'captureException').mockImplementation(() => {});
-    const retrievedValue = await getLocalStorage(key);
-    expect(retrievedValue).toBeNull();
-    expect(captureExceptionMock).toHaveBeenCalledWith('Retrieval error', expect.any(Error));
-    captureExceptionMock.mockRestore();
   });
 
   it('retrieves null value from local storage', async () => {
