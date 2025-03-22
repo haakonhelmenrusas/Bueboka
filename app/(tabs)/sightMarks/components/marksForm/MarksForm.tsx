@@ -2,12 +2,11 @@ import React, { FC, useState } from 'react';
 import { Keyboard, View } from 'react-native';
 import { Button, Input, Notch } from '@/components/common';
 import { MarkValue } from '@/types';
-import { formatNumber } from '@/utils';
+import { handleNumberChange } from '@/utils';
 import { useCalcForm } from '../../hooks/useCalcForm';
 import { faRulerHorizontal } from '@fortawesome/free-solid-svg-icons/faRulerHorizontal';
 import { faCrosshairs } from '@fortawesome/free-solid-svg-icons/faCrosshairs';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
-import { checkDecimalCount } from '@/utils/helpers/checkDecimalCount';
 import { styles } from './MarksFormStyles';
 import Animated, { runOnJS, useAnimatedStyle, useSharedValue, withSpring, withTiming } from 'react-native-reanimated';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
@@ -52,20 +51,6 @@ const MarksForm: FC<MarksFormProps> = ({ sendMarks, status, onInputFocusChange }
       }
     });
 
-  function handleNumberChange(value: string, key: any) {
-    const cleanValue = value.replace(/[^0-9.]/g, '');
-    const parsedValue = parseFloat(cleanValue);
-
-    if (!checkDecimalCount(cleanValue, 3)) {
-      return;
-    }
-    if (!isNaN(parsedValue)) {
-      dispatch({ type: key, payload: formatNumber(value) });
-    } else {
-      dispatch({ type: key, payload: '' });
-    }
-  }
-
   async function handleAddMark() {
     if (!aimValue) {
       dispatch({ type: 'SET_AIM_ERROR', payload: true });
@@ -104,7 +89,7 @@ const MarksForm: FC<MarksFormProps> = ({ sendMarks, status, onInputFocusChange }
                 error={distanceError}
                 errorMessage="Fyll inn"
                 value={distanceValue}
-                onChangeText={(value) => handleNumberChange(value, 'SET_DISTANCE_VALUE')}
+                onChangeText={(value) => handleNumberChange(value, 'SET_DISTANCE_VALUE', dispatch)}
                 icon={<FontAwesomeIcon icon={faRulerHorizontal} color="#227B9A" />}
                 inputStyle={{ width: 160 }}
               />
@@ -121,7 +106,7 @@ const MarksForm: FC<MarksFormProps> = ({ sendMarks, status, onInputFocusChange }
                 value={aimValue}
                 error={aimError}
                 errorMessage="Fyll inn"
-                onChangeText={(value) => handleNumberChange(value, 'SET_AIM_VALUE')}
+                onChangeText={(value) => handleNumberChange(value, 'SET_AIM_VALUE', dispatch)}
                 icon={<FontAwesomeIcon icon={faCrosshairs} color="#227B9A" />}
                 inputStyle={{ width: 160 }}
               />

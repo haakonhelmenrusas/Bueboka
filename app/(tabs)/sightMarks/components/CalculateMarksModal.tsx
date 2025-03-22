@@ -3,13 +3,12 @@ import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { Keyboard, Modal, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { Button, Input } from '@/components/common';
 import { CalculatedMarks, MarksResult } from '@/types';
-import { formatNumber, getLocalStorage, storeLocalStorage, useCalculateMarks } from '@/utils';
+import { getLocalStorage, handleNumberChange, storeLocalStorage, useCalculateMarks } from '@/utils';
 import { useCalcMarksForm } from '../hooks/useCalcMarksForm';
 import { faRulerHorizontal } from '@fortawesome/free-solid-svg-icons/faRulerHorizontal';
 import { faCrosshairs } from '@fortawesome/free-solid-svg-icons/faCrosshairs';
 import { faChevronDown } from '@fortawesome/free-solid-svg-icons/faChevronDown';
 import { faChevronUp } from '@fortawesome/free-solid-svg-icons/faChevronUp';
-import { checkDecimalCount } from '@/utils/helpers/checkDecimalCount';
 
 interface CalculateMarksModalProps {
   modalVisible: boolean;
@@ -29,20 +28,6 @@ export const CalculateMarksModal = ({
     dispatch,
   ] = useCalcMarksForm();
   const { calculateMarks, status } = useCalculateMarks();
-
-  function handleNumberChange(value: string, key: any) {
-    const cleanValue = value.replace(/[^0-9.]/g, '');
-    const parsedValue = parseFloat(cleanValue);
-
-    if (!checkDecimalCount(cleanValue, 3)) {
-      return;
-    }
-    if (!isNaN(parsedValue)) {
-      dispatch({ type: key, payload: formatNumber(value) });
-    } else {
-      dispatch({ type: key, payload: '' });
-    }
-  }
 
   function handleAngleChange(value: string, index: number) {
     const newAngles = [...angles];
@@ -122,7 +107,7 @@ export const CalculateMarksModal = ({
             value={distanceFrom}
             error={distanceFromError}
             errorMessage="Verdi mangler"
-            onChangeText={(value) => handleNumberChange(value, 'SET_DISTANCE_FROM')}
+            onChangeText={(value) => handleNumberChange(value, 'SET_DISTANCE_FROM', dispatch)}
             icon={<FontAwesomeIcon icon={faRulerHorizontal} color="#227B9A" />}
           />
           <Input
@@ -134,7 +119,7 @@ export const CalculateMarksModal = ({
             keyboardType="numeric"
             value={distanceTo}
             error={distanceToError}
-            onChangeText={(value) => handleNumberChange(value, 'SET_DISTANCE_TO')}
+            onChangeText={(value) => handleNumberChange(value, 'SET_DISTANCE_TO', dispatch)}
             errorMessage="Verdi mangler"
             icon={<FontAwesomeIcon icon={faRulerHorizontal} color="#227B9A" />}
           />
@@ -147,7 +132,7 @@ export const CalculateMarksModal = ({
             keyboardType="numeric"
             value={interval}
             error={intervalError}
-            onChangeText={(value) => handleNumberChange(value, 'SET_INTERVAL')}
+            onChangeText={(value) => handleNumberChange(value, 'SET_INTERVAL', dispatch)}
             errorMessage="Verdi mangler"
             icon={<FontAwesomeIcon icon={faCrosshairs} color="#227B9A" />}
           />
