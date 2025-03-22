@@ -20,14 +20,12 @@
       }
     },
     "android": {
-      "package": "com.aaronshade.bueboka",
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/icon.png",
         "backgroundColor": "#FFFFFF"
       }
     },
     "ios": {
-      "buildNumber": "1.17.0",
       "bundleIdentifier": "com.aaronshade.bueboka",
       "infoPlist": {
         "CFBundleIconName": "./assets/images/ipad.png"

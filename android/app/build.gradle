@@ -93,7 +93,7 @@ android {
         applicationId 'com.aaronshade.bueboka'
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 20
+        versionCode 21
         versionName "1.2.0"
     }
     signingConfigs {
