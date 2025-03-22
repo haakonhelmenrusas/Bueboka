@@ -5,13 +5,15 @@ import { Message } from '@/components/common';
 import Button from '@/components/common/Button/Button';
 import { CalculatedMarks } from '@/types';
 import { styles } from './MarksTableStyles';
+import { faCircle } from '@fortawesome/free-solid-svg-icons/faCircle';
 
 interface CalculationTableProps {
   ballistics: CalculatedMarks | null;
   removeMark: (index: number) => void;
+  status: string;
 }
 
-export default function MarksTable({ ballistics, removeMark }: CalculationTableProps) {
+export default function MarksTable({ ballistics, removeMark, status }: CalculationTableProps) {
   const renderBallisticTable = () => {
     if (ballistics) {
       return ballistics.given_distances.map((distance, index) => (
@@ -30,7 +32,13 @@ export default function MarksTable({ ballistics, removeMark }: CalculationTableP
           </View>
           <Button
             buttonStyle={{ marginRight: -16 }}
-            icon={<FontAwesomeIcon icon={faTrash} color="#227B9A" />}
+            icon={
+              status === 'pending' ? (
+                <FontAwesomeIcon icon={faCircle} color="#227B9A" />
+              ) : (
+                <FontAwesomeIcon icon={faTrash} color="#227B9A" />
+              )
+            }
             label=""
             type="outline"
             onPress={() => removeMark(index)}

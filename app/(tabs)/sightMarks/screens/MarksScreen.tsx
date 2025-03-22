@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { ScrollView, StyleSheet, View } from 'react-native';
+import { ScrollView, View } from 'react-native';
 import * as Sentry from '@sentry/react-native';
 import { Button, Message } from '@/components/common';
 import { CalculatedMarks, MarksResult } from '@/types';
@@ -12,6 +12,7 @@ import { faChartLine } from '@fortawesome/free-solid-svg-icons/faChartLine';
 import { faWind } from '@fortawesome/free-solid-svg-icons/faWind';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import ChartScreen from './ChartScreen';
+import { styles } from './MarksScreenStyles';
 
 interface MarksScreenProps {
   setScreen: (screen: string) => void;
@@ -153,20 +154,3 @@ export default function MarksScreen({ setScreen }: MarksScreenProps) {
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  page: {
-    flex: 1,
-    backgroundColor: '#F2F2F2',
-  },
-  scrollView: {
-    flex: 1,
-    minHeight: '50%',
-  },
-  buttons: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    padding: 0,
-  },
-});

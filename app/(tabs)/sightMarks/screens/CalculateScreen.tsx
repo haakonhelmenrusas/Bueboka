@@ -1,11 +1,13 @@
 import { useEffect, useState } from 'react';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
-import { Keyboard, KeyboardAvoidingView, Platform, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { Keyboard, KeyboardAvoidingView, Platform, Pressable, ScrollView, Text, View } from 'react-native';
 import { AimDistanceMark, Bow, CalculatedMarks, MarkValue } from '@/types';
 import { Ballistics, getLocalStorage, storeLocalStorage, useBallisticsParams } from '@/utils';
 import { ConfirmRemoveMarks, MarksForm, MarksTable } from '../components';
 import { faTrash } from '@fortawesome/free-solid-svg-icons/faTrash';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
+import * as Sentry from '@sentry/react-native';
+import { styles } from './CalculateScreenStyles';
 
 export default function CalculateScreen() {
   const [conformationModalVisible, setConformationModalVisible] = useState(false);
@@ -55,13 +57,13 @@ export default function CalculateScreen() {
         });
       }
     } catch (error) {
-      console.log('Error', error);
+      Sentry.captureException('Error during calculation', error);
     }
   }
 
   async function handleRemoveMark(index: number) {
     if (ballistics) {
-      const newDistances = ballistics.given_distances.filter((_distance: any, i: number) => i === index);
+      const newDistances = ballistics.given_distances.filter((_distance, i) => i === index);
       await sendMarks({ aim: 9999, distance: newDistances[0] });
     }
   }
@@ -74,7 +76,7 @@ export default function CalculateScreen() {
       <ScrollView>
         <Pressable onPress={() => Keyboard.dismiss()}>
           {error && <View style={{ marginBottom: 8, padding: 8 }}>Oisann, noe gikk galt. Prøv igjen!</View>}
-          <MarksTable ballistics={ballistics} removeMark={handleRemoveMark} />
+          <MarksTable ballistics={ballistics} removeMark={handleRemoveMark} status={status} />
           <View style={styles.centeredContainer}>
             {ballistics && ballistics.given_marks.length > 0 && !isInputFocused && (
               <Text onPress={() => setConformationModalVisible(true)} style={styles.remove}>
@@ -96,22 +98,3 @@ export default function CalculateScreen() {
     </KeyboardAvoidingView>
   );
 }
-
-const styles = StyleSheet.create({
-  page: {
-    flex: 1,
-    backgroundColor: '#F2F2F2',
-  },
-  ios: {
-    flex: 1,
-    backgroundColor: '#F2F2F2',
-    marginBottom: -34,
-  },
-  remove: {
-    color: '#227B9A',
-  },
-  centeredContainer: {
-    alignItems: 'center',
-    marginVertical: 16,
-  },
-});
