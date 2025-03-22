@@ -20,10 +20,11 @@ describe('getLocalStorage', () => {
   it('handles errors when retrieving data from local storage', async () => {
     const key = 'errorKey';
     jest.spyOn(AsyncStorage, 'getItem').mockRejectedValueOnce(new Error('Retrieval error'));
-    jest.spyOn(Sentry, 'captureException');
+    const captureExceptionMock = jest.spyOn(Sentry, 'captureException').mockImplementation(() => {});
     const retrievedValue = await getLocalStorage(key);
     expect(retrievedValue).toBeNull();
-    expect(Sentry.captureException).toHaveBeenCalledWith('Error removing data', expect.any(Error));
+    expect(captureExceptionMock).toHaveBeenCalledWith('Retrieval error', expect.any(Error));
+    captureExceptionMock.mockRestore();
   });
 
   it('retrieves null value from local storage', async () => {
