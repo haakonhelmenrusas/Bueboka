@@ -20,6 +20,7 @@
       }
     },
     "android": {
+      "version": "1.3.0",
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/icon.png",
         "backgroundColor": "#FFFFFF"
@@ -29,6 +30,7 @@
     "ios": {
       "bundleIdentifier": "com.aaronshade.bueboka",
       "infoPlist": {
+        "CFBundleShortVersionString": "1.3.0",
         "CFBundleIconName": "./assets/images/ipad.png"
       }
     },
