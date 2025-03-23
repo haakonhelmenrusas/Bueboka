@@ -17,7 +17,8 @@
         "env": {
           "PLATFORM": "ios"
         }
-      }
+      },
+      "channel": "base"
     },
     "development": {
       "extends": "base",
@@ -25,14 +26,16 @@
       "distribution": "internal",
       "ios": {
         "resourceClass": "m-medium"
-      }
+      },
+      "channel": "development"
     },
     "preview": {
       "extends": "base",
       "distribution": "internal",
       "ios": {
         "resourceClass": "m-medium"
-      }
+      },
+      "channel": "preview"
     },
     "production": {
       "extends": "base",
@@ -43,7 +46,8 @@
       "android": {
         "channel": "main"
       },
-      "autoIncrement": true
+      "autoIncrement": true,
+      "channel": "production"
     }
   },
   "submit": {
