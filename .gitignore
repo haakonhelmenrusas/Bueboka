@@ -17,6 +17,8 @@ web-build/
 # Xcode
 xcuserdata/
 project.xcworkspace/
+android
+ios
 
 # Cocoapods
 Pods/
@@ -58,7 +60,6 @@ captures/
 .idea_modules/
 
 # Keystore files
-*.jks
 *.keystore
 
 # External native build folder generated in Android Studio 2.2 and later
@@ -77,7 +78,6 @@ com_crashlytics_export_strings.xml
 proguard/
 
 # Log Files
-*.log
 
 # Built APK files
 *.apk
@@ -95,17 +95,13 @@ gen/
 out/
 
 # Gradle files
-.gradle/
-build/
 
 # Signing files
 .signing/
 
 # User-specific configurations
-*.iml
 *.ipr
 *.iws
-.idea/
 
 # Windows file system files
 Thumbs.db
