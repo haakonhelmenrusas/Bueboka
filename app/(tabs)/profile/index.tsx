@@ -10,6 +10,7 @@ import BowForm from './components/bowForm/BowForm';
 import { Bow } from '@/types';
 import { getLocalStorage } from '@/utils';
 import { styles } from './ProfileStyles';
+import { colors } from '@/styles/colors';
 
 export default function Profile() {
   const [modalVisible, setModalVisible] = useState(false);
@@ -42,7 +43,7 @@ export default function Profile() {
       ) : (
         <View style={styles.bow}>
           <View style={styles.header}>
-            <Image source={require('@/assets/bow.png')} style={[styles.image, { tintColor: '#D8F5FF' }]} />
+            <Image source={require('@/assets/bow.png')} style={[styles.image, { tintColor: colors.tertiary }]} />
             <Text style={styles.title}>Ingen bue lagre</Text>
           </View>
         </View>
@@ -54,7 +55,7 @@ export default function Profile() {
             onPress={() => {
               setModalVisible(true);
             }}
-            icon={<FontAwesomeIcon icon={faPlus} size={20} color="#FFF" />}
+            icon={<FontAwesomeIcon icon={faPlus} size={20} color={colors.white} />}
             label="Legg til bue"
           />
         </View>
