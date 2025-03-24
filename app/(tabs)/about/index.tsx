@@ -30,11 +30,9 @@ export default function About() {
         <FontAwesomeIcon style={styles.feather} icon={faFeather} />
       </View>
       <View style={styles.links}>
+        <Text>Se prosjekt og koden bak på </Text>
         <TouchableOpacity onPress={() => Linking.openURL('https://github.com/haakonhelmenrusas/Bueboka/discussions')}>
           <Text style={styles.link}>GitHub</Text>
-        </TouchableOpacity>
-        <TouchableOpacity onPress={() => Linking.openURL('https://www.facebook.com/profile.php?id=61560373960234')}>
-          <Text style={styles.link}>Facebook</Text>
         </TouchableOpacity>
       </View>
       <ScrollView>
