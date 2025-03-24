@@ -5,7 +5,7 @@ import * as Sentry from '@sentry/react-native';
 import { Button, Message } from '@/components/common';
 import { CalculatedMarks, MarksResult } from '@/types';
 import { getLocalStorage } from '@/utils';
-import { CalculateMarksModal } from '../components/CalculateMarksModal';
+import { CalculateMarksModal } from '../components/calculateMarksModal/CalculateMarksModal';
 import CalculatedMarksTable from '../components/calculatedMarksTable/CalculatedMarksTable';
 import { faTrash } from '@fortawesome/free-solid-svg-icons/faTrash';
 import { faChartLine } from '@fortawesome/free-solid-svg-icons/faChartLine';
@@ -13,6 +13,7 @@ import { faWind } from '@fortawesome/free-solid-svg-icons/faWind';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import ChartScreen from './ChartScreen';
 import { styles } from './MarksScreenStyles';
+import { colors } from '@/styles/colors';
 
 interface MarksScreenProps {
   setScreen: (screen: string) => void;
@@ -105,7 +106,7 @@ export default function MarksScreen({ setScreen }: MarksScreenProps) {
               <Button
                 iconPosition="left"
                 type="outline"
-                icon={<FontAwesomeIcon icon={faWind} size={20} color="#053546" />}
+                icon={<FontAwesomeIcon icon={faWind} size={20} color={colors.primary} />}
                 label="Vis hastigheter"
                 onPress={() => setShowSpeed(!showSpeed)}
               />
@@ -114,7 +115,7 @@ export default function MarksScreen({ setScreen }: MarksScreenProps) {
               <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                 <Button
                   iconPosition="left"
-                  icon={<FontAwesomeIcon icon={faTrash} color="#227B9A" />}
+                  icon={<FontAwesomeIcon icon={faTrash} color={colors.secondary} />}
                   type="outline"
                   label="Tøm liste"
                   onPress={handleRemoveMarks}
@@ -124,7 +125,7 @@ export default function MarksScreen({ setScreen }: MarksScreenProps) {
                 <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                   <Button
                     iconPosition="left"
-                    icon={<FontAwesomeIcon icon={faChartLine} color="#227B9A" />}
+                    icon={<FontAwesomeIcon icon={faChartLine} color={colors.secondary} />}
                     type="outline"
                     label="Vis diagram"
                     onPress={() => setShowGraph(true)}
@@ -134,7 +135,7 @@ export default function MarksScreen({ setScreen }: MarksScreenProps) {
                 <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                   <Button
                     iconPosition="left"
-                    icon={<FontAwesomeIcon icon={faChartLine} color="#227B9A" />}
+                    icon={<FontAwesomeIcon icon={faChartLine} color={colors.secondary} />}
                     type="outline"
                     label="Vis tabell"
                     onPress={() => setShowGraph(false)}

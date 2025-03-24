@@ -1,8 +1,9 @@
 import { StyleSheet } from 'react-native';
+import { colors } from '@/styles/colors';
 
 export const styles = StyleSheet.create({
   messageContainer: {
-    backgroundColor: '#D8F5FF',
+    backgroundColor: colors.tertiary,
     borderRadius: 12,
     padding: 16,
     alignItems: 'center',
@@ -10,16 +11,16 @@ export const styles = StyleSheet.create({
     height: 'auto',
   },
   messageTitle: {
-    color: '#053546',
+    color: colors.primary,
     fontSize: 20,
     fontWeight: '500',
     marginBottom: 16,
   },
   icon: {
-    color: '#053546',
+    color: colors.primary,
   },
   messageText: {
-    color: '#053546',
+    color: colors.primary,
     fontSize: 16,
     marginBottom: 16,
   },

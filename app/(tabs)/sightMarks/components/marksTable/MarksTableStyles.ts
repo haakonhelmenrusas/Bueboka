@@ -1,10 +1,11 @@
 import { StyleSheet } from 'react-native';
+import { colors } from '@/styles/colors';
 
 export const styles = StyleSheet.create({
   container: {
     flex: 1,
     margin: 16,
-    backgroundColor: '#F2F2F2',
+    backgroundColor: colors.background,
   },
   tr: {
     display: 'flex',
@@ -12,10 +13,10 @@ export const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    backgroundColor: '#FFF',
+    backgroundColor: colors.white,
     borderRadius: 12,
     marginBottom: 12,
-    shadowColor: '#999',
+    shadowColor: colors.inactive,
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 4,
@@ -35,7 +36,7 @@ export const styles = StyleSheet.create({
     paddingBottom: 4,
     paddingLeft: 2,
     paddingRight: 2,
-    backgroundColor: '#D8F5FF',
+    backgroundColor: colors.tertiary,
     borderRadius: 12,
     margin: 8,
   },
@@ -47,7 +48,7 @@ export const styles = StyleSheet.create({
   },
   thead: {
     fontWeight: '400',
-    color: '#227B9A',
+    color: colors.secondary,
     textAlign: 'center',
     fontSize: 14,
   },

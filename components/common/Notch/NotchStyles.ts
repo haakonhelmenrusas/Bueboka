@@ -1,4 +1,5 @@
 import { StyleSheet } from 'react-native';
+import { colors } from '@/styles/colors';
 
 export const styles = StyleSheet.create({
   notchContainer: {
@@ -8,7 +9,7 @@ export const styles = StyleSheet.create({
   notch: {
     width: 40,
     height: 4,
-    backgroundColor: '#ccc',
+    backgroundColor: colors.dimmed,
     borderRadius: 2.5,
   },
 });

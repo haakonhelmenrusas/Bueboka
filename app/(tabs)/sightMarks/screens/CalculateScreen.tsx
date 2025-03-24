@@ -8,6 +8,7 @@ import { faTrash } from '@fortawesome/free-solid-svg-icons/faTrash';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import * as Sentry from '@sentry/react-native';
 import { styles } from './CalculateScreenStyles';
+import { colors } from '@/styles/colors';
 
 export default function CalculateScreen() {
   const [conformationModalVisible, setConformationModalVisible] = useState(false);
@@ -76,11 +77,11 @@ export default function CalculateScreen() {
       <ScrollView>
         <Pressable onPress={() => Keyboard.dismiss()}>
           {error && <View style={{ marginBottom: 8, padding: 8 }}>Oisann, noe gikk galt. Prøv igjen!</View>}
-          <MarksTable ballistics={ballistics} removeMark={handleRemoveMark} status={status} />
+          <MarksTable ballistics={ballistics} removeMark={handleRemoveMark} />
           <View style={styles.centeredContainer}>
             {ballistics && ballistics.given_marks.length > 0 && !isInputFocused && (
               <Text onPress={() => setConformationModalVisible(true)} style={styles.remove}>
-                <FontAwesomeIcon icon={faTrash} color="#227B9A" />
+                <FontAwesomeIcon icon={faTrash} color={colors.secondary} />
                 Tøm liste
               </Text>
             )}

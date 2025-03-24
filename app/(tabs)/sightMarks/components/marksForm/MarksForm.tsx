@@ -10,6 +10,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { styles } from './MarksFormStyles';
 import Animated, { runOnJS, useAnimatedStyle, useSharedValue, withSpring, withTiming } from 'react-native-reanimated';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
+import { colors } from '@/styles/colors';
 
 interface MarksFormProps {
   status: string;
@@ -65,6 +66,7 @@ const MarksForm: FC<MarksFormProps> = ({ sendMarks, status, onInputFocusChange }
       dispatch({ type: 'SET_AIM_VALUE', payload: '' });
       dispatch({ type: 'SET_DISTANCE_VALUE', payload: '' });
       Keyboard.dismiss();
+      setIsFormVisible(false);
     }
   }
 
@@ -90,7 +92,7 @@ const MarksForm: FC<MarksFormProps> = ({ sendMarks, status, onInputFocusChange }
                 errorMessage="Fyll inn"
                 value={distanceValue}
                 onChangeText={(value) => handleNumberChange(value, 'SET_DISTANCE_VALUE', dispatch)}
-                icon={<FontAwesomeIcon icon={faRulerHorizontal} color="#227B9A" />}
+                icon={<FontAwesomeIcon icon={faRulerHorizontal} color={colors.secondary} />}
                 inputStyle={{ width: 160 }}
               />
               <Input
@@ -107,7 +109,7 @@ const MarksForm: FC<MarksFormProps> = ({ sendMarks, status, onInputFocusChange }
                 error={aimError}
                 errorMessage="Fyll inn"
                 onChangeText={(value) => handleNumberChange(value, 'SET_AIM_VALUE', dispatch)}
-                icon={<FontAwesomeIcon icon={faCrosshairs} color="#227B9A" />}
+                icon={<FontAwesomeIcon icon={faCrosshairs} color={colors.secondary} />}
                 inputStyle={{ width: 160 }}
               />
             </View>

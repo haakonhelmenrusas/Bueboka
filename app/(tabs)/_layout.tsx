@@ -3,13 +3,14 @@ import { faUser } from '@fortawesome/free-solid-svg-icons/faUser';
 import { faCircleQuestion } from '@fortawesome/free-solid-svg-icons/faCircleQuestion';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { Tabs } from 'expo-router';
+import { colors } from '@/styles/colors';
 
 export default function AppLayout() {
   return (
     <Tabs
       screenOptions={{
-        tabBarActiveTintColor: '#053546',
-        tabBarInactiveTintColor: 'grey',
+        tabBarActiveTintColor: colors.primary,
+        tabBarInactiveTintColor: colors.inactive,
         tabBarHideOnKeyboard: true,
         tabBarStyle: {
           height: 64,
@@ -18,7 +19,9 @@ export default function AppLayout() {
       <Tabs.Screen
         name="sightMarks"
         options={{
-          tabBarIcon: ({ focused }) => <FontAwesomeIcon icon={faBullseye} color={focused ? '#053546' : 'grey'} />,
+          tabBarIcon: ({ focused }) => (
+            <FontAwesomeIcon icon={faBullseye} color={focused ? colors.primary : colors.inactive} />
+          ),
           headerShadowVisible: false,
           headerShown: false,
           tabBarLabel: 'Siktemerker',
@@ -28,7 +31,9 @@ export default function AppLayout() {
       <Tabs.Screen
         name="profile"
         options={{
-          tabBarIcon: ({ focused }) => <FontAwesomeIcon icon={faUser} color={focused ? '#053546' : 'grey'} />,
+          tabBarIcon: ({ focused }) => (
+            <FontAwesomeIcon icon={faUser} color={focused ? colors.primary : colors.inactive} />
+          ),
           headerShadowVisible: false,
           headerShown: false,
           tabBarLabel: 'Profil',
@@ -38,7 +43,9 @@ export default function AppLayout() {
       <Tabs.Screen
         name="about"
         options={{
-          tabBarIcon: ({ focused }) => <FontAwesomeIcon icon={faCircleQuestion} color={focused ? '#053546' : 'grey'} />,
+          tabBarIcon: ({ focused }) => (
+            <FontAwesomeIcon icon={faCircleQuestion} color={focused ? colors.primary : colors.inactive} />
+          ),
           headerShadowVisible: false,
           headerShown: false,
           tabBarLabel: 'Om oss',
