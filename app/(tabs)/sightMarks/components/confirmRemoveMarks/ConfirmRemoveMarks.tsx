@@ -1,7 +1,8 @@
-import { Modal, StyleSheet, Text, View } from 'react-native';
+import { Modal, Text, View } from 'react-native';
 import { Button } from '@/components/common';
 import { CalculatedMarks } from '@/types';
 import { storeLocalStorage } from '@/utils';
+import { styles } from './ConfirmRemoveMarksStyles';
 
 interface Props {
   modalVisible: boolean;
@@ -29,30 +30,5 @@ const ConfirmRemoveMarks = ({ modalVisible, setBallistics, closeModal }: Props) 
     </Modal>
   );
 };
-
-const styles = StyleSheet.create({
-  modal: {
-    marginTop: 'auto',
-    marginBottom: '30%',
-    marginLeft: 'auto',
-    marginRight: 'auto',
-    height: 160,
-    width: '90%',
-    justifyContent: 'space-around',
-    alignItems: 'center',
-    shadowColor: 'black',
-    shadowOpacity: 0.25,
-    shadowRadius: 8,
-    shadowOffset: { width: 0, height: 2 },
-    elevation: 5,
-    borderRadius: 8,
-    backgroundColor: 'white',
-  },
-  buttons: {
-    width: '100%',
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-  },
-});
 
 export default ConfirmRemoveMarks;

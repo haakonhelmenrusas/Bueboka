@@ -1,4 +1,5 @@
 import { StyleSheet } from 'react-native';
+import { colors } from '@/styles/colors';
 
 export const styles = StyleSheet.create({
   container: {
@@ -21,17 +22,17 @@ export const styles = StyleSheet.create({
     width: '50%',
   },
   headerText: {
-    fontSize: 18,
+    fontSize: 16,
     paddingBottom: 8,
-    fontWeight: '600',
-    color: '#666',
+    fontWeight: '500',
+    color: colors.dark_primary,
   },
   activeText: {
-    color: '#227B9A',
+    color: colors.secondary,
   },
   activeLine: {
     height: 2,
     width: '100%',
-    backgroundColor: '#227B9A',
+    backgroundColor: colors.secondary,
   },
 });

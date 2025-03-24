@@ -1,14 +1,15 @@
 import { StyleSheet } from 'react-native';
+import { colors } from '@/styles/colors';
 
 export const styles = StyleSheet.create({
   container: {
     alignContent: 'center',
     width: '100%',
     marginHorizontal: 'auto',
-    backgroundColor: '#fff',
+    backgroundColor: colors.white,
     borderRadius: 12,
     borderWidth: 1,
-    borderColor: '#053546',
+    borderColor: colors.primary,
   },
   header: {
     display: 'flex',
@@ -18,7 +19,7 @@ export const styles = StyleSheet.create({
     alignItems: 'center',
     borderTopEndRadius: 10,
     borderTopStartRadius: 10,
-    backgroundColor: '#053546',
+    backgroundColor: colors.primary,
   },
   image: {
     width: 28,
@@ -28,7 +29,7 @@ export const styles = StyleSheet.create({
   },
   title: {
     fontSize: 24,
-    color: '#D8F5FF',
+    color: colors.tertiary,
     fontWeight: 'medium',
   },
   cogIcon: {

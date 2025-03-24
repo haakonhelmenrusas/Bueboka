@@ -1,4 +1,5 @@
 import { Platform, StyleSheet } from 'react-native';
+import { colors } from '@/styles/colors';
 
 export const styles = StyleSheet.create({
   container: {
@@ -9,11 +10,11 @@ export const styles = StyleSheet.create({
   form: {
     display: 'flex',
     flexDirection: 'column',
-    backgroundColor: '#FFF',
+    backgroundColor: colors.white,
     padding: 24,
     borderTopLeftRadius: 16,
     borderTopRightRadius: 16,
-    shadowColor: '#000',
+    shadowColor: colors.dark_primary,
     shadowOffset: { width: 0, height: -2 },
     shadowOpacity: 0.25,
     shadowRadius: 4,

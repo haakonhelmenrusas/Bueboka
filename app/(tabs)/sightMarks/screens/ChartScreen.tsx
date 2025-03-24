@@ -1,7 +1,8 @@
-import { View, StyleSheet, Text, ScrollView } from 'react-native';
+import { ScrollView, StyleSheet, Text, View } from 'react-native';
 import { LineChart } from 'react-native-gifted-charts';
 import { CalculatedMarks, MarksResult } from '@/types';
 import { Message } from '@/components/common';
+import { colors } from '@/styles/colors';
 
 interface ChartScreenProps {
   calculatedMarks: MarksResult | null;
@@ -16,10 +17,10 @@ export default function ChartScreen({ calculatedMarks, marks, setModalVisible }:
         style={{
           width: 12,
           height: 12,
-          backgroundColor: 'white',
+          backgroundColor: colors.white,
           borderWidth: 3,
           borderRadius: 6,
-          borderColor: '#07BAD1',
+          borderColor: colors.secondary,
         }}
       />
     );
@@ -28,7 +29,7 @@ export default function ChartScreen({ calculatedMarks, marks, setModalVisible }:
   const customLabel = (val: number) => {
     return (
       <View style={{ width: 64, marginLeft: 16 }}>
-        <Text style={{ color: '#053546', fontWeight: '500' }}>{val}m</Text>
+        <Text style={{ color: colors.primary, fontWeight: '500' }}>{val}m</Text>
       </View>
     );
   };
@@ -94,7 +95,7 @@ export default function ChartScreen({ calculatedMarks, marks, setModalVisible }:
           textShiftY={-12}
           textShiftX={-12}
           textFontSize={14}
-          textColor="#053546"
+          textColor={colors.primary}
           showVerticalLines
           hideRules
           showValuesAsDataPointsText
@@ -103,7 +104,7 @@ export default function ChartScreen({ calculatedMarks, marks, setModalVisible }:
           height={400}
           data={calculatedData()}
           data2={marksData()}
-          color2="#FFF"
+          color2={colors.white}
           thickness={2}
         />
       )}
@@ -117,6 +118,6 @@ const styles = StyleSheet.create({
     marginTop: 16,
     minHeight: '60%',
     padding: 8,
-    backgroundColor: '#FFF',
+    backgroundColor: colors.white,
   },
 });

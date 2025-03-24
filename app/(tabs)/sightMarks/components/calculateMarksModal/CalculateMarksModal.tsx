@@ -1,14 +1,16 @@
 import { faMultiply } from '@fortawesome/free-solid-svg-icons/faMultiply';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
-import { Keyboard, Modal, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Keyboard, Modal, Text, TouchableOpacity, View } from 'react-native';
 import { Button, Input } from '@/components/common';
 import { CalculatedMarks, MarksResult } from '@/types';
 import { getLocalStorage, handleNumberChange, storeLocalStorage, useCalculateMarks } from '@/utils';
-import { useCalcMarksForm } from '../hooks/useCalcMarksForm';
+import { useCalcMarksForm } from '../../hooks/useCalcMarksForm';
 import { faRulerHorizontal } from '@fortawesome/free-solid-svg-icons/faRulerHorizontal';
 import { faCrosshairs } from '@fortawesome/free-solid-svg-icons/faCrosshairs';
 import { faChevronDown } from '@fortawesome/free-solid-svg-icons/faChevronDown';
 import { faChevronUp } from '@fortawesome/free-solid-svg-icons/faChevronUp';
+import { colors } from '@/styles/colors';
+import { styles } from './CalculateMarksModalStyles';
 
 interface CalculateMarksModalProps {
   modalVisible: boolean;
@@ -108,7 +110,7 @@ export const CalculateMarksModal = ({
             error={distanceFromError}
             errorMessage="Verdi mangler"
             onChangeText={(value) => handleNumberChange(value, 'SET_DISTANCE_FROM', dispatch)}
-            icon={<FontAwesomeIcon icon={faRulerHorizontal} color="#227B9A" />}
+            icon={<FontAwesomeIcon icon={faRulerHorizontal} color={colors.secondary} />}
           />
           <Input
             inputStyle={{ width: 100 }}
@@ -121,7 +123,7 @@ export const CalculateMarksModal = ({
             error={distanceToError}
             onChangeText={(value) => handleNumberChange(value, 'SET_DISTANCE_TO', dispatch)}
             errorMessage="Verdi mangler"
-            icon={<FontAwesomeIcon icon={faRulerHorizontal} color="#227B9A" />}
+            icon={<FontAwesomeIcon icon={faRulerHorizontal} color={colors.secondary} />}
           />
           <Input
             inputStyle={{ width: 100 }}
@@ -134,13 +136,13 @@ export const CalculateMarksModal = ({
             error={intervalError}
             onChangeText={(value) => handleNumberChange(value, 'SET_INTERVAL', dispatch)}
             errorMessage="Verdi mangler"
-            icon={<FontAwesomeIcon icon={faCrosshairs} color="#227B9A" />}
+            icon={<FontAwesomeIcon icon={faCrosshairs} color={colors.secondary} />}
           />
         </View>
         <TouchableOpacity
           style={styles.checkBox}
           onPress={() => dispatch({ type: 'SET_ANGLES_VISIBLE', payload: !anglesVisible })}>
-          <FontAwesomeIcon icon={anglesVisible ? faChevronUp : faChevronDown} color="#227B9A" />
+          <FontAwesomeIcon icon={anglesVisible ? faChevronUp : faChevronDown} color={colors.secondary} />
           <Text> Flere vinkler</Text>
         </TouchableOpacity>
         {anglesVisible && (
@@ -148,7 +150,7 @@ export const CalculateMarksModal = ({
             <Input
               textAlign="center"
               inputStyle={{ width: 100 }}
-              labelStyle={{ textAlign: 'center', color: '#053546' }}
+              labelStyle={{ textAlign: 'center', color: colors.primary }}
               label="Vinkel"
               placeholder="F.eks. -30"
               keyboardType="numbers-and-punctuation"
@@ -157,7 +159,7 @@ export const CalculateMarksModal = ({
             <Input
               textAlign="center"
               inputStyle={{ width: 100 }}
-              labelStyle={{ textAlign: 'center', color: '#053546' }}
+              labelStyle={{ textAlign: 'center', color: colors.primary }}
               label="Vinkel"
               placeholder="F.eks. 0"
               keyboardType="numbers-and-punctuation"
@@ -166,7 +168,7 @@ export const CalculateMarksModal = ({
             <Input
               textAlign="center"
               inputStyle={{ width: 100 }}
-              labelStyle={{ textAlign: 'center', color: '#053546' }}
+              labelStyle={{ textAlign: 'center', color: colors.primary }}
               label="Vinkel"
               placeholder="F.eks. 30"
               keyboardType="numbers-and-punctuation"
@@ -190,43 +192,3 @@ export const CalculateMarksModal = ({
     </Modal>
   );
 };
-
-const styles = StyleSheet.create({
-  modal: {
-    display: 'flex',
-    flex: 1,
-    alignItems: 'center',
-    padding: 24,
-    marginTop: 64,
-  },
-  header: {
-    width: '100%',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-  },
-  inputs: {
-    width: '100%',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginTop: 16,
-  },
-  checkBox: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    width: '100%',
-    marginTop: 32,
-  },
-  angles: {
-    width: '100%',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginBottom: 24,
-    marginTop: 16,
-  },
-  bottons: {
-    width: '100%',
-    flexDirection: 'column',
-    marginTop: 32,
-    gap: 16,
-  },
-});

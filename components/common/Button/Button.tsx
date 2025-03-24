@@ -1,5 +1,6 @@
 import React from 'react';
 import { ActivityIndicator, DimensionValue, Pressable, PressableProps, Text, TextStyle, ViewStyle } from 'react-native';
+import { colors } from '@/styles/colors';
 
 interface ButtonProps extends PressableProps {
   buttonStyle?: ViewStyle;
@@ -28,8 +29,8 @@ const Button: React.FC<ButtonProps> = ({
   iconPosition = 'left',
   ...props
 }) => {
-  const buttonColor = type === 'outline' ? 'transparent' : '#053546';
-  const textColor = type === 'outline' ? '#053546' : 'white';
+  const buttonColor = type === 'outline' ? colors.transparent : colors.primary;
+  const textColor = type === 'outline' ? colors.primary : colors.white;
 
   const renderContent = () => {
     const content = [

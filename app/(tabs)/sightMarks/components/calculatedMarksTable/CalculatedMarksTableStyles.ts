@@ -1,4 +1,5 @@
 import { StyleSheet } from 'react-native';
+import { colors } from '@/styles/colors';
 
 export const styles = StyleSheet.create({
   page: {
@@ -14,7 +15,7 @@ export const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-around',
-    backgroundColor: '#FFF',
+    backgroundColor: colors.white,
     borderRadius: 12,
     padding: 8,
     marginBottom: 12,
@@ -27,7 +28,7 @@ export const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-around',
     borderRadius: 12,
-    backgroundColor: '#D8F5FF',
+    backgroundColor: colors.tertiary,
   },
   trData: {
     fontSize: 16,

@@ -12,6 +12,14 @@ interface MessageProps {
   buttonLabel?: string;
 }
 
+/**
+ * Message component
+ * @param title
+ * @param description
+ * @param onPress
+ * @param buttonLabel
+ *
+ */
 const Message: React.FC<MessageProps> = ({ title, description, onPress, buttonLabel }) => {
   return (
     <View style={styles.messageContainer}>

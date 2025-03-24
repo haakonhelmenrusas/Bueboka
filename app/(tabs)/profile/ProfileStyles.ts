@@ -1,4 +1,5 @@
 import { StyleSheet } from 'react-native';
+import { colors } from '@/styles/colors';
 
 export const styles = StyleSheet.create({
   container: {
@@ -8,10 +9,10 @@ export const styles = StyleSheet.create({
   },
   bow: {
     height: 240,
-    backgroundColor: '#fff',
+    backgroundColor: colors.white,
     borderRadius: 12,
     borderWidth: 2,
-    borderColor: '#9697B6',
+    borderColor: colors.inactive,
   },
   header: {
     display: 'flex',
@@ -21,7 +22,7 @@ export const styles = StyleSheet.create({
     alignItems: 'flex-end',
     borderTopEndRadius: 10,
     borderTopStartRadius: 10,
-    backgroundColor: '#9697B6',
+    backgroundColor: colors.inactive,
   },
   image: {
     width: 28,
@@ -31,7 +32,7 @@ export const styles = StyleSheet.create({
   },
   title: {
     fontSize: 20,
-    color: '#D8F5FF',
+    color: colors.tertiary,
     fontWeight: 'medium',
   },
 });

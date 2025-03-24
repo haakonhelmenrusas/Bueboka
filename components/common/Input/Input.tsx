@@ -1,6 +1,7 @@
 import React from 'react';
 import { Platform, StyleProp, Text, TextInput, TextInputProps, TextStyle, View, ViewStyle } from 'react-native';
 import { defaultStyles } from './InputStyles';
+import { colors } from '@/styles/colors';
 
 const isAndroid = Platform.OS === 'android';
 
@@ -38,10 +39,10 @@ const Input = ({
         testID="input"
         style={[defaultStyles.input, inputStyle]}
         placeholder={placeholderText}
-        placeholderTextColor="#494949"
+        placeholderTextColor={colors.secondary}
         {...props}
       />
-      {error && <Text style={{ color: 'red', fontSize: 12 }}>{errorMessage}</Text>}
+      {error && <Text style={{ color: colors.error, fontSize: 12 }}>{errorMessage}</Text>}
     </View>
   );
 };

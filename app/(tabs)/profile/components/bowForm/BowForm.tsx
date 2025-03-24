@@ -2,7 +2,7 @@ import { Keyboard, KeyboardAvoidingView, Modal, Platform, Pressable, Text, Touch
 import { useEffect, useState } from 'react';
 import { Button, Input } from '@/components/common';
 import { useBowForm } from './useBowForm';
-import { formatNumber, storeLocalStorage } from '@/utils';
+import { handleNumberChange, storeLocalStorage } from '@/utils';
 import { Bow } from '@/types';
 import { styles } from './BowFormStyles';
 
@@ -46,21 +46,6 @@ const BowForm = ({ modalVisible, setModalVisible, bow }: BowFormProps) => {
       dispatch({ type: 'SET_INTERVAL_SIGHT_MEASURE', payload: bow.interval_sight_measured?.toString() ?? '' });
     }
   }, [bow, dispatch]);
-
-  function handleNumberChange(value: string, key: any) {
-    const cleanValue = value.replace(/[^0-9.]/g, '');
-    const parsedValue = parseFloat(cleanValue);
-    // check if the value has no more than three decimals
-    const valueArray = cleanValue.split('.');
-    if (valueArray[1] && valueArray[1].length > 3) {
-      return;
-    }
-    if (!isNaN(parsedValue)) {
-      dispatch({ type: key, payload: formatNumber(value) });
-    } else {
-      dispatch({ type: key, payload: '' });
-    }
-  }
 
   async function handleSubmit() {
     if (!bowName) {
@@ -179,7 +164,7 @@ const BowForm = ({ modalVisible, setModalVisible, bow }: BowFormProps) => {
                 keyboardType="numeric"
                 placeholderText="F.eks. 10"
                 value={eyeToNock}
-                onChangeText={(value) => handleNumberChange(value, 'SET_EYE_TO_NOCK')}
+                onChangeText={(value) => handleNumberChange(value, 'SET_EYE_TO_NOCK', dispatch)}
               />
               <Input
                 onFocus={handleInputFocus}
@@ -191,7 +176,7 @@ const BowForm = ({ modalVisible, setModalVisible, bow }: BowFormProps) => {
                 keyboardType="numeric"
                 placeholderText="F.eks. 90"
                 value={eyeToAim}
-                onChangeText={(value) => handleNumberChange(value, 'SET_EYE_TO_AIM')}
+                onChangeText={(value) => handleNumberChange(value, 'SET_EYE_TO_AIM', dispatch)}
               />
             </View>
             <View style={{ flexDirection: 'row', justifyContent: 'space-around', marginTop: 24 }}>
@@ -205,7 +190,7 @@ const BowForm = ({ modalVisible, setModalVisible, bow }: BowFormProps) => {
                 keyboardType="numeric"
                 placeholderText="F.eks. 20"
                 value={arrowWeight}
-                onChangeText={(value) => handleNumberChange(value, 'SET_ARROW_WEIGHT')}
+                onChangeText={(value) => handleNumberChange(value, 'SET_ARROW_WEIGHT', dispatch)}
               />
               <Input
                 onFocus={handleInputFocus}
@@ -217,14 +202,14 @@ const BowForm = ({ modalVisible, setModalVisible, bow }: BowFormProps) => {
                 keyboardType="numeric"
                 placeholderText="F.eks. 5"
                 value={arrowDiameter}
-                onChangeText={(value) => handleNumberChange(value, 'SET_ARROW_DIAMETER')}
+                onChangeText={(value) => handleNumberChange(value, 'SET_ARROW_DIAMETER', dispatch)}
               />
             </View>
             <View style={{ flexDirection: 'row', justifyContent: 'flex-start', marginTop: 24 }}>
               <Input
                 label={'Intervall sikte (cm)'}
                 value={interval_sight_real}
-                onChangeText={(value) => handleNumberChange(value, 'SET_INTERVAL_SIGHT_REAL')}
+                onChangeText={(value) => handleNumberChange(value, 'SET_INTERVAL_SIGHT_REAL', dispatch)}
               />
             </View>
             {!(Platform.OS === 'android' && inputFocused) && (

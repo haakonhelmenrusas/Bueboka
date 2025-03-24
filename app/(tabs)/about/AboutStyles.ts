@@ -1,4 +1,5 @@
 import { StyleSheet } from 'react-native';
+import { colors } from '@/styles/colors';
 
 export const styles = StyleSheet.create({
   container: {
@@ -9,7 +10,7 @@ export const styles = StyleSheet.create({
     height: '50%',
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#D8F5FF',
+    backgroundColor: colors.tertiary,
     margin: -16,
     paddingTop: 24,
     marginTop: -32,
@@ -28,18 +29,18 @@ export const styles = StyleSheet.create({
     marginBottom: 16,
   },
   box: {
-    backgroundColor: '#053546',
+    backgroundColor: colors.primary,
     borderRadius: 10,
     padding: 24,
     textAlign: 'center',
   },
   feather: {
-    color: '#fff',
+    color: colors.white,
     fontSize: 32,
     alignSelf: 'center',
   },
   text: {
-    color: '#fff',
+    color: colors.white,
     textAlign: 'center',
     fontSize: 18,
     marginBottom: 16,
@@ -54,7 +55,7 @@ export const styles = StyleSheet.create({
   },
   link: {
     fontSize: 16,
-    color: 'blue',
+    color: colors.secondary,
   },
   sponsorContainer: {
     flexDirection: 'column',
@@ -63,7 +64,7 @@ export const styles = StyleSheet.create({
   },
   sponsor: {
     fontSize: 14,
-    color: '#227B9A',
+    color: colors.secondary,
     textAlign: 'center',
   },
   logo: {
