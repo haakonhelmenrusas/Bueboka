@@ -29,22 +29,10 @@
       },
       "channel": "development"
     },
-    "preview": {
-      "extends": "base",
-      "distribution": "internal",
-      "ios": {
-        "resourceClass": "m-medium"
-      },
-      "channel": "preview"
-    },
     "production": {
       "extends": "base",
       "ios": {
-        "channel": "main",
         "resourceClass": "m-medium"
-      },
-      "android": {
-        "channel": "main"
       },
       "autoIncrement": true,
       "channel": "production"
