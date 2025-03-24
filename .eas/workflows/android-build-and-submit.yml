@@ -1,18 +1,18 @@
-on:
-  push:
-    branches: [ 'main' ]
-
-jobs:
-  build_android:
-    name: Build Android app
-    type: build
-    params:
-      platform: android
-      profile: production
-
-  submit_android:
-    name: Submit to Google Play Store
-    type: submit
-    params:
-      platform: android
-      build_id: ${{ needs.build_android.outputs.build_id }}
+#on:
+#  push:
+#    branches: [ 'main' ]
+#
+#jobs:
+#  build_android:
+#    name: Build Android app
+#    type: build
+#    params:
+#      platform: android
+#      profile: production
+#
+#  submit_android:
+#    name: Submit to Google Play Store
+#    type: submit
+#    params:
+#      platform: android
+#      build_id: ${{ needs.build_android.outputs.build_id }}
