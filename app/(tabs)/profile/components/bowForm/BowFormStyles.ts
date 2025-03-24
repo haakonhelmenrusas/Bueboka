@@ -1,4 +1,5 @@
 import { Platform, StyleSheet } from 'react-native';
+import { colors } from '@/styles/colors';
 
 export const styles = StyleSheet.create({
   modal: {
@@ -18,7 +19,7 @@ export const styles = StyleSheet.create({
     flex: 1,
     borderRadius: 12,
     borderWidth: 1,
-    borderColor: '#ccc',
+    borderColor: colors.inactive,
     padding: 8,
     flexDirection: 'column',
     alignItems: 'center',
@@ -26,29 +27,29 @@ export const styles = StyleSheet.create({
     marginBottom: 16,
   },
   radioButtonContainerSelected: {
-    borderColor: '#053546',
+    borderColor: colors.primary,
   },
   radioButton: {
     height: 16,
     width: 16,
-    backgroundColor: '#FFF',
+    backgroundColor: colors.white,
     borderRadius: 20,
     borderWidth: 1,
-    borderColor: '#ccc',
+    borderColor: colors.inactive,
     justifyContent: 'center',
     alignItems: 'center',
   },
   radioButtonSelected: {
-    backgroundColor: '#053546',
+    backgroundColor: colors.primary,
   },
   radioButtonLabel: {
-    color: '#053546',
+    color: colors.primary,
     fontWeight: '500',
     marginTop: 8,
     textAlign: 'center',
   },
   bowTypeLabel: {
-    color: '#053546',
+    color: colors.primary,
     fontWeight: '500',
     fontSize: 14,
     marginBottom: 8,

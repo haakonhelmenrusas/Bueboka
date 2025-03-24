@@ -5,6 +5,7 @@ import { FC } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faCog } from '@fortawesome/free-solid-svg-icons/faCog';
 import { styles } from './BowCardStyles';
+import { colors } from '@/styles/colors';
 
 interface BowCardProps {
   bow: Bow;
@@ -16,10 +17,10 @@ const BowCard: FC<BowCardProps> = ({ bow, openFormWithData }) => {
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <Image source={require('@/assets/bow.png')} style={[styles.image, { tintColor: '#D8F5FF' }]} />
+        <Image source={require('@/assets/bow.png')} style={[styles.image, { tintColor: colors.tertiary }]} />
         <Text style={styles.title}>{bowName}</Text>
         <TouchableOpacity onPress={openFormWithData} style={styles.cogIcon}>
-          <FontAwesomeIcon icon={faCog} size={24} color="#FFF" />
+          <FontAwesomeIcon icon={faCog} size={24} color={colors.white} />
         </TouchableOpacity>
       </View>
       <View style={styles.body}>
