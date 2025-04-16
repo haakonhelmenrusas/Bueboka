@@ -3,7 +3,7 @@ import { Keyboard, View } from 'react-native';
 import { Button, Input, Notch } from '@/components/common';
 import { MarkValue } from '@/types';
 import { handleNumberChange } from '@/utils';
-import { useCalcForm } from '../../hooks/useCalcForm';
+import { useCalcForm } from '@/components/sightMarks/hooks/useCalcForm';
 import { faRulerHorizontal } from '@fortawesome/free-solid-svg-icons/faRulerHorizontal';
 import { faCrosshairs } from '@fortawesome/free-solid-svg-icons/faCrosshairs';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';

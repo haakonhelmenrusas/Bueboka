@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import { Text, View } from 'react-native';
-import CalculateScreen from './screens/CalculateScreen';
-import MarksScreen from './screens/MarksScreen';
-import { styles } from './SightMarksStyles';
+import CalculateScreen from '@/components/sightMarks/screens/CalculateScreen';
+import MarksScreen from '@/components/sightMarks/screens/MarksScreen';
+import { styles } from '@/components/sightMarks/SightMarksStyles';
 
 export default function SightMarks() {
   const [screen, setScreen] = useState('calculate');

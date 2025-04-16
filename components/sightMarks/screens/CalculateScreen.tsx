@@ -3,12 +3,14 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { Keyboard, KeyboardAvoidingView, Platform, Pressable, ScrollView, Text, View } from 'react-native';
 import { AimDistanceMark, Bow, CalculatedMarks, MarkValue } from '@/types';
 import { Ballistics, getLocalStorage, storeLocalStorage, useBallisticsParams } from '@/utils';
-import { ConfirmRemoveMarks, MarksForm, MarksTable } from '../components';
 import { faTrash } from '@fortawesome/free-solid-svg-icons/faTrash';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import * as Sentry from '@sentry/react-native';
 import { styles } from './CalculateScreenStyles';
 import { colors } from '@/styles/colors';
+import MarksTable from '@/components/sightMarks/marksTable/MarksTable';
+import MarksForm from '@/components/sightMarks/marksForm/MarksForm';
+import ConfirmRemoveMarks from '@/components/sightMarks/confirmRemoveMarks/ConfirmRemoveMarks';
 
 export default function CalculateScreen() {
   const [conformationModalVisible, setConformationModalVisible] = useState(false);

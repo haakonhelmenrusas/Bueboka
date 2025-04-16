@@ -4,7 +4,7 @@ import { Keyboard, Modal, Text, TouchableOpacity, View } from 'react-native';
 import { Button, Input } from '@/components/common';
 import { CalculatedMarks, MarksResult } from '@/types';
 import { getLocalStorage, handleNumberChange, storeLocalStorage, useCalculateMarks } from '@/utils';
-import { useCalcMarksForm } from '../../hooks/useCalcMarksForm';
+import { useCalcMarksForm } from '@/components/sightMarks/hooks/useCalcMarksForm';
 import { faRulerHorizontal } from '@fortawesome/free-solid-svg-icons/faRulerHorizontal';
 import { faCrosshairs } from '@fortawesome/free-solid-svg-icons/faCrosshairs';
 import { faChevronDown } from '@fortawesome/free-solid-svg-icons/faChevronDown';
