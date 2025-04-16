@@ -2,7 +2,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faFeather } from '@fortawesome/free-solid-svg-icons/faFeather';
 import { Image } from 'expo-image';
 import { Linking, ScrollView, Text, TouchableOpacity, View } from 'react-native';
-import { styles } from './AboutStyles';
+import { styles } from '@/components/about/AboutStyles';
 
 export default function About() {
   const sponsor = require('../../../assets/images/arcticBueLogo.png');

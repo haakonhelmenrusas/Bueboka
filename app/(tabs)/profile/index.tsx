@@ -4,12 +4,12 @@ import * as Sentry from '@sentry/react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faPlus } from '@fortawesome/free-solid-svg-icons/faPlus';
-import BowCard from './components/bowCard/BowCard';
+import BowCard from '@/components/profile/bowCard/BowCard';
 import { Button } from '@/components/common';
-import BowForm from './components/bowForm/BowForm';
+import BowForm from '@/components/profile/bowForm/BowForm';
 import { Bow } from '@/types';
 import { getLocalStorage } from '@/utils';
-import { styles } from './ProfileStyles';
+import { styles } from '@/components/profile/ProfileStyles';
 import { colors } from '@/styles/colors';
 
 export default function Profile() {
