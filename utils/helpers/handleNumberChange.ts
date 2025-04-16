@@ -1,7 +1,7 @@
 import { checkDecimalCount, formatNumber } from '@/utils';
 
 /**
- * Check decimal count in number input from user
+ * Check decimal count in number input from the user
  * @param value
  * @param key
  * @param dispatch

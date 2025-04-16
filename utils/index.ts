@@ -6,4 +6,4 @@ export { capitalizeFirstLetter } from './helpers/capitalizeFirstLetter';
 export { default as useBallisticsParams } from './hooks/useBallisticsParams';
 export { default as useCalculateMarks } from './hooks/useCalculateMarks';
 export { checkDecimalCount } from './helpers/checkDecimalCount';
-export { handleNumberChange } from './helpers/inputNumberTransform';
+export { handleNumberChange } from './helpers/handleNumberChange';
