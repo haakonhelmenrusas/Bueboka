@@ -26,7 +26,7 @@ export default function MarksTable({ ballistics, removeMark }: CalculationTableP
             <Text style={styles.trData}>{ballistics.given_marks[index].toFixed(2)}</Text>
           </View>
           <View style={styles.sectionCalc}>
-            <Text style={styles.thead}>Beregnet</Text>
+            <Text style={styles.theadBlack}>Beregnet</Text>
             <Text style={styles.trData}>{ballistics.calculated_marks[index].toFixed(2)}</Text>
           </View>
           <Button

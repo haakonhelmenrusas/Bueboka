@@ -52,6 +52,12 @@ export const styles = StyleSheet.create({
     textAlign: 'center',
     fontSize: 14,
   },
+  theadBlack: {
+    fontWeight: '400',
+    color: colors.dark_primary,
+    textAlign: 'center',
+    fontSize: 14,
+  },
   heading: {
     flex: 1,
     textAlign: 'center',

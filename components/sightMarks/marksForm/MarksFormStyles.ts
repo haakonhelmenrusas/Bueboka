@@ -1,11 +1,12 @@
-import { Platform, StyleSheet } from 'react-native';
+import { StyleSheet } from 'react-native';
 import { colors } from '@/styles/colors';
 
 export const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'flex-end',
-    marginBottom: Platform.OS === 'ios' ? 32 : 0,
+    flexDirection: 'column',
+    justifyContent: 'space-around',
+    //marginBottom: Platform.OS === 'ios' ? 8 : 0,
   },
   form: {
     display: 'flex',
