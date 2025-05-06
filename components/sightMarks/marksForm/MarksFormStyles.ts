@@ -6,6 +6,7 @@ export const styles = StyleSheet.create({
     flex: 1,
     flexDirection: 'column',
     justifyContent: 'space-around',
+    //TODO: Fix this for iOS
     //marginBottom: Platform.OS === 'ios' ? 8 : 0,
   },
   form: {
