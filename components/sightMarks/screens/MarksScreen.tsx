@@ -61,7 +61,7 @@ export default function MarksScreen({ setScreen }: MarksScreenProps) {
         return (
           <View style={{ marginTop: 'auto', padding: 16 }}>
             <Message
-              title="Få tilgjengelige avstander"
+              title="For få tilgjengelige avstander"
               description="Du trenger flere avstander for å beregne siktemerker."
               onPress={() => setScreen('calculate')}
               buttonLabel="Gå til innskyting"
