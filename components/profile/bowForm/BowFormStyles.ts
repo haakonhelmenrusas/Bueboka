@@ -5,19 +5,26 @@ export const styles = StyleSheet.create({
   modal: {
     display: 'flex',
     flex: 1,
-    padding: 24,
-    marginTop: Platform.OS === 'ios' ? 44 : 0,
+    padding: 16,
+    marginTop: Platform.OS === 'ios' ? 16 : 0,
+  },
+  titleContainer: {
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 16,
   },
   title: {
     fontSize: 20,
-    fontWeight: 'medium',
+    fontWeight: '600',
   },
   radioContainer: {
     marginTop: 32,
   },
   radioButtonContainer: {
     flex: 1,
-    borderRadius: 12,
+    borderRadius: 8,
     borderWidth: 1,
     borderColor: colors.inactive,
     padding: 8,
