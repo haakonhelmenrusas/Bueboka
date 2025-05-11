@@ -15,11 +15,10 @@ import { colors } from '@/styles/colors';
 interface MarksFormProps {
   status: string;
   sendMarks: (newMark: MarkValue) => Promise<void>;
-  onInputFocusChange: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-const MarksForm: FC<MarksFormProps> = ({ sendMarks, status, onInputFocusChange }) => {
-  const [{ aimError, aimValue, distanceError, distanceValue }, dispatch] = useCalcForm();
+const MarksForm: FC<MarksFormProps> = ({ sendMarks, status }) => {
+  const [{ aimValue, distanceValue }, dispatch] = useCalcForm();
   const translateY = useSharedValue(300);
   const [isFormVisible, setIsFormVisible] = useState(false);
 
@@ -53,15 +52,8 @@ const MarksForm: FC<MarksFormProps> = ({ sendMarks, status, onInputFocusChange }
     });
 
   async function handleAddMark() {
-    if (!aimValue) {
-      dispatch({ type: 'SET_AIM_ERROR', payload: true });
-    }
-    if (!distanceValue) {
-      dispatch({ type: 'SET_DISTANCE_ERROR', payload: true });
-    }
     if (aimValue && distanceValue) {
       const newEntry: MarkValue = { aim: parseFloat(aimValue), distance: parseFloat(distanceValue) };
-
       await sendMarks(newEntry);
       dispatch({ type: 'SET_AIM_VALUE', payload: '' });
       dispatch({ type: 'SET_DISTANCE_VALUE', payload: '' });
@@ -80,16 +72,10 @@ const MarksForm: FC<MarksFormProps> = ({ sendMarks, status, onInputFocusChange }
             <View style={styles.inputs}>
               <Input
                 textAlign="center"
+                labelStyle={{ justifyContent: 'center' }}
                 label="Avstand"
-                onBlur={() => {
-                  dispatch({ type: 'SET_DISTANCE_ERROR', payload: false });
-                  onInputFocusChange(false);
-                }}
-                onFocus={() => onInputFocusChange(true)}
                 placeholderText="F.eks. 20"
                 keyboardType="numeric"
-                error={distanceError}
-                errorMessage="Fyll inn"
                 value={distanceValue}
                 onChangeText={(value) => handleNumberChange(value, 'SET_DISTANCE_VALUE', dispatch)}
                 icon={<FontAwesomeIcon icon={faRulerHorizontal} color={colors.secondary} />}
@@ -97,17 +83,11 @@ const MarksForm: FC<MarksFormProps> = ({ sendMarks, status, onInputFocusChange }
               />
               <Input
                 textAlign="center"
+                labelStyle={{ justifyContent: 'center' }}
                 label="Merke"
-                onBlur={() => {
-                  dispatch({ type: 'SET_AIM_ERROR', payload: false });
-                  onInputFocusChange(false);
-                }}
-                onFocus={() => onInputFocusChange(true)}
                 placeholderText="F.eks. 2.3"
                 keyboardType="numeric"
                 value={aimValue}
-                error={aimError}
-                errorMessage="Fyll inn"
                 onChangeText={(value) => handleNumberChange(value, 'SET_AIM_VALUE', dispatch)}
                 icon={<FontAwesomeIcon icon={faCrosshairs} color={colors.secondary} />}
                 inputStyle={{ width: 160 }}

@@ -48,9 +48,9 @@ const Input = ({
     <View
       style={[defaultStyles.container, containerStyle]}
       accessibilityLabel={isAndroid ? label : `${label}${': Disabled!'}`}>
-      <View style={defaultStyles.labelContainer}>
+      <View style={[defaultStyles.labelContainer, labelStyle]}>
         {icon && <View style={defaultStyles.icon}>{icon}</View>}
-        <Text style={[defaultStyles.label, labelStyle]}>{label}</Text>
+        <Text style={defaultStyles.label}>{label}</Text>
       </View>
       <TextInput
         testID="input"
