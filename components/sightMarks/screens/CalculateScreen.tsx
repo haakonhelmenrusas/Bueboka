@@ -16,7 +16,6 @@ export default function CalculateScreen() {
   const [conformationModalVisible, setConformationModalVisible] = useState(false);
   const { error, status, calculateBallisticsParams } = useBallisticsParams();
   const [ballistics, setBallistics] = useState<CalculatedMarks | null>(null);
-  const [isInputFocused, setInputFocused] = useState(false);
 
   useEffect(() => {
     getLocalStorage<CalculatedMarks>('ballistics').then((data) => {
@@ -81,7 +80,7 @@ export default function CalculateScreen() {
           {error && <View style={{ marginBottom: 8, padding: 8 }}>Oisann, noe gikk galt. Prøv igjen!</View>}
           <MarksTable ballistics={ballistics} removeMark={handleRemoveMark} />
           <View style={styles.centeredContainer}>
-            {ballistics && ballistics.given_marks.length > 0 && !isInputFocused && (
+            {ballistics && ballistics.given_marks.length > 0 && (
               <Text onPress={() => setConformationModalVisible(true)} style={styles.remove}>
                 <FontAwesomeIcon icon={faTrash} color={colors.secondary} />
                 Tøm liste
@@ -91,7 +90,7 @@ export default function CalculateScreen() {
         </Pressable>
       </ScrollView>
       <GestureHandlerRootView style={{ flex: 1 }}>
-        <MarksForm sendMarks={sendMarks} status={status} onInputFocusChange={setInputFocused} />
+        <MarksForm sendMarks={sendMarks} status={status} />
       </GestureHandlerRootView>
       <ConfirmRemoveMarks
         modalVisible={conformationModalVisible}
