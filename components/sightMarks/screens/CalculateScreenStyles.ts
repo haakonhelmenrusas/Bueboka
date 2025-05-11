@@ -16,6 +16,5 @@ export const styles = StyleSheet.create({
   },
   centeredContainer: {
     alignItems: 'center',
-    marginVertical: 16,
   },
 });
