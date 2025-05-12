@@ -1,4 +1,4 @@
-function checkDecimalCount(value: string, maxDecimals: number): boolean {
+export function checkDecimalCount(value: string, maxDecimals: number): boolean {
   const decimalCount = (value.split('.')[1] || []).length;
   return decimalCount < maxDecimals;
 }

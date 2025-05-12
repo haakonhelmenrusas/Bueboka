@@ -18,7 +18,7 @@ export const styles = StyleSheet.create({
     backgroundColor: colors.white,
     borderRadius: 12,
     padding: 8,
-    marginBottom: 12,
+    marginBottom: 8,
   },
   trDataColumn: {
     display: 'flex',
