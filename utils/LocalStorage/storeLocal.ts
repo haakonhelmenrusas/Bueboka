@@ -11,7 +11,9 @@ import * as Sentry from '@sentry/react-native';
 export const storeLocalStorage = async (value, key: string) => {
   try {
     const jsonValue = value !== undefined ? JSON.stringify(value) : null;
-    await AsyncStorage.setItem(key, jsonValue);
+    if (jsonValue != null) {
+      await AsyncStorage.setItem(key, jsonValue);
+    }
   } catch (error) {
     Sentry.captureException('Error storing data', error);
   }
