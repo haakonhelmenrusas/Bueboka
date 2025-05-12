@@ -2,8 +2,6 @@ import React, { FC, useState } from 'react';
 import { Keyboard, View } from 'react-native';
 import { Button, Input, Notch } from '@/components/common';
 import { MarkValue } from '@/types';
-import { handleNumberChange } from '@/utils';
-import { useCalcForm } from '@/components/sightMarks/hooks/useCalcForm';
 import { faRulerHorizontal } from '@fortawesome/free-solid-svg-icons/faRulerHorizontal';
 import { faCrosshairs } from '@fortawesome/free-solid-svg-icons/faCrosshairs';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
@@ -11,6 +9,7 @@ import { styles } from './MarksFormStyles';
 import Animated, { runOnJS, useAnimatedStyle, useSharedValue, withSpring, withTiming } from 'react-native-reanimated';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 import { colors } from '@/styles/colors';
+import { checkDecimalCount } from '@/utils';
 
 interface MarksFormProps {
   status: string;
@@ -18,7 +17,8 @@ interface MarksFormProps {
 }
 
 const MarksForm: FC<MarksFormProps> = ({ sendMarks, status }) => {
-  const [{ aimValue, distanceValue }, dispatch] = useCalcForm();
+  const [aimValue, setAimValue] = useState('');
+  const [distanceValue, setDistance] = useState('');
   const translateY = useSharedValue(300);
   const [isFormVisible, setIsFormVisible] = useState(false);
 
@@ -55,10 +55,38 @@ const MarksForm: FC<MarksFormProps> = ({ sendMarks, status }) => {
     if (aimValue && distanceValue) {
       const newEntry: MarkValue = { aim: parseFloat(aimValue), distance: parseFloat(distanceValue) };
       await sendMarks(newEntry);
-      dispatch({ type: 'SET_AIM_VALUE', payload: '' });
-      dispatch({ type: 'SET_DISTANCE_VALUE', payload: '' });
+      setAimValue('');
+      setDistance('');
       Keyboard.dismiss();
       setIsFormVisible(false);
+    }
+  }
+
+  function handleDistanceChange(value: string) {
+    const cleanValue = value.replace(/[^0-9.]/g, '');
+    const parsedValue = parseFloat(cleanValue);
+
+    if (!checkDecimalCount(cleanValue, 3)) {
+      return;
+    }
+    if (!isNaN(parsedValue)) {
+      setDistance(value.replace(',', '.'));
+    } else {
+      setDistance('');
+    }
+  }
+
+  function handleAimChange(value: string) {
+    const cleanValue = value.replace(/[^0-9.]/g, '');
+    const parsedValue = parseFloat(cleanValue);
+
+    if (!checkDecimalCount(cleanValue, 3)) {
+      return;
+    }
+    if (!isNaN(parsedValue)) {
+      setAimValue(value.replace(',', '.'));
+    } else {
+      setAimValue('');
     }
   }
 
@@ -77,7 +105,7 @@ const MarksForm: FC<MarksFormProps> = ({ sendMarks, status }) => {
                 placeholderText="F.eks. 20"
                 keyboardType="numeric"
                 value={distanceValue}
-                onChangeText={(value) => handleNumberChange(value, 'SET_DISTANCE_VALUE', dispatch)}
+                onChangeText={(value) => handleDistanceChange(value)}
                 icon={<FontAwesomeIcon icon={faRulerHorizontal} color={colors.secondary} />}
                 inputStyle={{ width: 160 }}
               />
@@ -88,7 +116,7 @@ const MarksForm: FC<MarksFormProps> = ({ sendMarks, status }) => {
                 placeholderText="F.eks. 2.3"
                 keyboardType="numeric"
                 value={aimValue}
-                onChangeText={(value) => handleNumberChange(value, 'SET_AIM_VALUE', dispatch)}
+                onChangeText={(value) => handleAimChange(value)}
                 icon={<FontAwesomeIcon icon={faCrosshairs} color={colors.secondary} />}
                 inputStyle={{ width: 160 }}
               />
