@@ -4,6 +4,8 @@ import { colors } from '@/styles/colors';
 export const styles = StyleSheet.create({
   container: {
     flex: 1,
+    flexDirection: 'column',
+    justifyContent: 'space-between',
     padding: 16,
     marginTop: 32,
   },
