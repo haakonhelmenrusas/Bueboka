@@ -6,7 +6,7 @@ import { faRulerHorizontal } from '@fortawesome/free-solid-svg-icons/faRulerHori
 import { faCrosshairs } from '@fortawesome/free-solid-svg-icons/faCrosshairs';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { styles } from './MarksFormStyles';
-import Animated, { runOnJS, useAnimatedStyle, useSharedValue, withSpring, withTiming } from 'react-native-reanimated';
+import Animated, { runOnJS, SharedValue, useAnimatedStyle, withSpring, withTiming } from 'react-native-reanimated';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 import { colors } from '@/styles/colors';
 import { checkDecimalCount } from '@/utils';
@@ -14,27 +14,22 @@ import { checkDecimalCount } from '@/utils';
 interface MarksFormProps {
   status: string;
   sendMarks: (newMark: MarkValue) => Promise<void>;
+  setIsFormVisible: (visible: boolean) => void;
+  translateY: SharedValue<number>;
 }
 
-const MarksForm: FC<MarksFormProps> = ({ sendMarks, status }) => {
+const MarksForm: FC<MarksFormProps> = ({ sendMarks, status, setIsFormVisible, translateY }) => {
   const [aimValue, setAimValue] = useState('');
   const [distanceValue, setDistance] = useState('');
-  const translateY = useSharedValue(300);
-  const [isFormVisible, setIsFormVisible] = useState(false);
 
   const animatedStyle = useAnimatedStyle(() => ({
     transform: [{ translateY: translateY.value }],
   }));
 
   const closeForm = () => {
-    translateY.value = withTiming(300, { duration: 300 }, () => {
+    translateY.value = withTiming(300, { duration: 200 }, () => {
       runOnJS(setIsFormVisible)(false);
     });
-  };
-
-  const openForm = () => {
-    setIsFormVisible(true);
-    translateY.value = withTiming(0, { duration: 300 });
   };
 
   const gesture = Gesture.Pan()
@@ -92,45 +87,42 @@ const MarksForm: FC<MarksFormProps> = ({ sendMarks, status }) => {
 
   return (
     <View style={styles.container}>
-      {!isFormVisible && <Button label="Åpne skjema" onPress={openForm} buttonStyle={styles.formButton} />}
-      {isFormVisible && (
-        <GestureDetector gesture={gesture}>
-          <Animated.View style={[styles.form, animatedStyle]}>
-            <Notch />
-            <View style={styles.inputs}>
-              <Input
-                textAlign="center"
-                labelStyle={{ justifyContent: 'center' }}
-                label="Avstand"
-                placeholderText="F.eks. 20"
-                keyboardType="numeric"
-                value={distanceValue}
-                onChangeText={(value) => handleDistanceChange(value)}
-                icon={<FontAwesomeIcon icon={faRulerHorizontal} color={colors.secondary} />}
-                inputStyle={{ width: 160 }}
-              />
-              <Input
-                textAlign="center"
-                labelStyle={{ justifyContent: 'center' }}
-                label="Merke"
-                placeholderText="F.eks. 2.3"
-                keyboardType="numeric"
-                value={aimValue}
-                onChangeText={(value) => handleAimChange(value)}
-                icon={<FontAwesomeIcon icon={faCrosshairs} color={colors.secondary} />}
-                inputStyle={{ width: 160 }}
-              />
-            </View>
-            <Button
-              disabled={aimValue === '' || distanceValue === ''}
-              loading={status === 'pending'}
-              buttonStyle={styles.button}
-              onPress={handleAddMark}
-              label="Beregn"
+      <GestureDetector gesture={gesture}>
+        <Animated.View style={[styles.form, animatedStyle]}>
+          <Notch />
+          <View style={styles.inputs}>
+            <Input
+              textAlign="center"
+              labelStyle={{ justifyContent: 'center' }}
+              label="Avstand"
+              placeholderText="F.eks. 20"
+              keyboardType="numeric"
+              value={distanceValue}
+              onChangeText={(value) => handleDistanceChange(value)}
+              icon={<FontAwesomeIcon icon={faRulerHorizontal} color={colors.secondary} />}
+              inputStyle={{ width: 160 }}
             />
-          </Animated.View>
-        </GestureDetector>
-      )}
+            <Input
+              textAlign="center"
+              labelStyle={{ justifyContent: 'center' }}
+              label="Merke"
+              placeholderText="F.eks. 2.3"
+              keyboardType="numeric"
+              value={aimValue}
+              onChangeText={(value) => handleAimChange(value)}
+              icon={<FontAwesomeIcon icon={faCrosshairs} color={colors.secondary} />}
+              inputStyle={{ width: 160 }}
+            />
+          </View>
+          <Button
+            disabled={aimValue === '' || distanceValue === ''}
+            loading={status === 'pending'}
+            buttonStyle={styles.button}
+            onPress={handleAddMark}
+            label="Beregn"
+          />
+        </Animated.View>
+      </GestureDetector>
     </View>
   );
 };
