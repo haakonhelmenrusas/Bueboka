@@ -41,9 +41,8 @@ export const styles = StyleSheet.create({
     margin: 8,
   },
   trData: {
-    flex: 1,
-    fontSize: 18,
-
+    fontSize: 16,
+    lineHeight: 18,
     fontWeight: '500',
     textAlign: 'center',
   },

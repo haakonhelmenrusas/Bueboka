@@ -30,6 +30,7 @@ export default function MarksTable({ ballistics, removeMark }: CalculationTableP
             <Text style={styles.trData}>{ballistics.calculated_marks[index].toFixed(2)}</Text>
           </View>
           <Button
+            buttonStyle={{ width: 40 }}
             icon={<FontAwesomeIcon icon={faTrash} color={colors.secondary} />}
             label=""
             aria-label="Fjern siktemerke"
