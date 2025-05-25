@@ -3,7 +3,6 @@ import { colors } from '@/styles/colors';
 
 export const styles = StyleSheet.create({
   container: {
-    flex: 1,
     margin: 16,
     backgroundColor: colors.background,
   },
