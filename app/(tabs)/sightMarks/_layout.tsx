@@ -5,7 +5,7 @@ import { colors } from '@/styles/colors';
 
 const Layout = () => {
   return (
-    <SafeAreaView style={styles.safeArea}>
+    <SafeAreaView style={styles.safeArea} edges={['top', 'left', 'right']}>
       <Slot />
     </SafeAreaView>
   );
