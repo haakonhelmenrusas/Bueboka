@@ -33,6 +33,7 @@ export default function MarksTable({ ballistics, removeMark }: CalculationTableP
             buttonStyle={{ marginRight: -16 }}
             icon={<FontAwesomeIcon icon={faTrash} color={colors.secondary} />}
             label=""
+            aria-label="Fjern siktemerke"
             type="outline"
             onPress={() => removeMark(index)}
           />
