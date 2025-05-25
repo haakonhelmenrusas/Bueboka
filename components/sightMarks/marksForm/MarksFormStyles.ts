@@ -22,6 +22,7 @@ export const styles = StyleSheet.create({
   },
   inputs: {
     display: 'flex',
+    flexGrow: 1,
     flexDirection: 'row',
     justifyContent: 'space-around',
   },

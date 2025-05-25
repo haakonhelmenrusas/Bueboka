@@ -1,5 +1,5 @@
 import React, { FC, useState } from 'react';
-import { Keyboard, View } from 'react-native';
+import { Keyboard, KeyboardAvoidingView, Platform, ScrollView, View } from 'react-native';
 import { Button, Input, Notch } from '@/components/common';
 import { MarkValue } from '@/types';
 import { faRulerHorizontal } from '@fortawesome/free-solid-svg-icons/faRulerHorizontal';
@@ -90,30 +90,32 @@ const MarksForm: FC<MarksFormProps> = ({ sendMarks, status, setIsFormVisible, tr
       <GestureDetector gesture={gesture}>
         <Animated.View style={[styles.form, animatedStyle]}>
           <Notch />
-          <View style={styles.inputs}>
-            <Input
-              textAlign="center"
-              labelStyle={{ justifyContent: 'center' }}
-              label="Avstand"
-              placeholderText="F.eks. 20"
-              keyboardType="numeric"
-              value={distanceValue}
-              onChangeText={(value) => handleDistanceChange(value)}
-              icon={<FontAwesomeIcon icon={faRulerHorizontal} color={colors.secondary} />}
-              inputStyle={{ width: 160 }}
-            />
-            <Input
-              textAlign="center"
-              labelStyle={{ justifyContent: 'center' }}
-              label="Merke"
-              placeholderText="F.eks. 2.3"
-              keyboardType="numeric"
-              value={aimValue}
-              onChangeText={(value) => handleAimChange(value)}
-              icon={<FontAwesomeIcon icon={faCrosshairs} color={colors.secondary} />}
-              inputStyle={{ width: 160 }}
-            />
-          </View>
+          <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
+            <ScrollView contentContainerStyle={styles.inputs}>
+              <Input
+                textAlign="center"
+                labelStyle={{ justifyContent: 'center' }}
+                label="Avstand"
+                placeholderText="F.eks. 20"
+                keyboardType="numeric"
+                value={distanceValue}
+                onChangeText={(value) => handleDistanceChange(value)}
+                icon={<FontAwesomeIcon icon={faRulerHorizontal} color={colors.secondary} />}
+                inputStyle={{ width: 160 }}
+              />
+              <Input
+                textAlign="center"
+                labelStyle={{ justifyContent: 'center' }}
+                label="Merke"
+                placeholderText="F.eks. 2.3"
+                keyboardType="numeric"
+                value={aimValue}
+                onChangeText={(value) => handleAimChange(value)}
+                icon={<FontAwesomeIcon icon={faCrosshairs} color={colors.secondary} />}
+                inputStyle={{ width: 160 }}
+              />
+            </ScrollView>
+          </KeyboardAvoidingView>
           <Button
             disabled={aimValue === '' || distanceValue === ''}
             loading={status === 'pending'}
