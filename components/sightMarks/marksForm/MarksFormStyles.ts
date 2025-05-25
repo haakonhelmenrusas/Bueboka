@@ -6,7 +6,6 @@ export const styles = StyleSheet.create({
     flex: 1,
     flexDirection: 'column',
     justifyContent: 'space-around',
-    //marginBottom: Platform.OS === 'ios' ? 80 : 0,
   },
   form: {
     display: 'flex',
@@ -28,8 +27,5 @@ export const styles = StyleSheet.create({
   },
   button: {
     marginTop: 24,
-  },
-  formButton: {
-    margin: 16,
   },
 });

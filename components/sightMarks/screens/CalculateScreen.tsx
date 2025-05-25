@@ -1,7 +1,7 @@
-import { useEffect, useState } from 'react';
-import { GestureHandlerRootView } from 'react-native-gesture-handler';
-import { Keyboard, KeyboardAvoidingView, Platform, Pressable, ScrollView, Text, View } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { Keyboard, KeyboardAvoidingView, Platform, Pressable, ScrollView, View } from 'react-native';
 import { AimDistanceMark, Bow, CalculatedMarks, MarkValue } from '@/types';
+import { useSharedValue, withTiming } from 'react-native-reanimated';
 import { Ballistics, getLocalStorage, storeLocalStorage, useBallisticsParams } from '@/utils';
 import { faTrash } from '@fortawesome/free-solid-svg-icons/faTrash';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
@@ -11,11 +11,15 @@ import { colors } from '@/styles/colors';
 import MarksTable from '@/components/sightMarks/marksTable/MarksTable';
 import MarksForm from '@/components/sightMarks/marksForm/MarksForm';
 import ConfirmRemoveMarks from '@/components/sightMarks/confirmRemoveMarks/ConfirmRemoveMarks';
+import { Button } from '@/components/common';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 export default function CalculateScreen() {
   const [conformationModalVisible, setConformationModalVisible] = useState(false);
   const { error, status, calculateBallisticsParams } = useBallisticsParams();
+  const translateY = useSharedValue(300);
   const [ballistics, setBallistics] = useState<CalculatedMarks | null>(null);
+  const [isFormVisible, setIsFormVisible] = useState(false);
 
   useEffect(() => {
     getLocalStorage<CalculatedMarks>('ballistics').then((data) => {
@@ -63,6 +67,11 @@ export default function CalculateScreen() {
     }
   }
 
+  function handleOpenForm() {
+    setIsFormVisible(true);
+    translateY.value = withTiming(0, { duration: 200 });
+  }
+
   async function handleRemoveMark(index: number) {
     if (ballistics) {
       const newDistances = ballistics.given_distances.filter((_distance, i) => i === index);
@@ -71,32 +80,41 @@ export default function CalculateScreen() {
   }
 
   return (
-    <KeyboardAvoidingView
-      keyboardVerticalOffset={24}
-      style={Platform.OS === 'ios' ? styles.ios : styles.page}
-      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
-      <ScrollView>
-        <Pressable onPress={() => Keyboard.dismiss()}>
-          {error && <View style={{ marginBottom: 8, padding: 8 }}>Oisann, noe gikk galt. Prøv igjen!</View>}
-          <MarksTable ballistics={ballistics} removeMark={handleRemoveMark} />
-          <View style={styles.centeredContainer}>
+    <GestureHandlerRootView style={{ flex: 1 }}>
+      <KeyboardAvoidingView
+        style={styles.page}
+        keyboardVerticalOffset={24}
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
+        <ScrollView>
+          <Pressable onPress={() => Keyboard.dismiss()}>
+            {error && <View style={{ marginBottom: 8, padding: 8 }}>Oisann, noe gikk galt. Prøv igjen!</View>}
+            <MarksTable ballistics={ballistics} removeMark={handleRemoveMark} />
             {ballistics && ballistics.given_marks.length > 0 && (
-              <Text onPress={() => setConformationModalVisible(true)} style={styles.remove}>
-                <FontAwesomeIcon icon={faTrash} color={colors.secondary} />
-                Tøm liste
-              </Text>
+              <Button
+                label="Tøm liste"
+                type="outline"
+                icon={<FontAwesomeIcon icon={faTrash} color={colors.secondary} />}
+                onPress={() => setConformationModalVisible(true)}
+              />
             )}
-          </View>
-        </Pressable>
-      </ScrollView>
-      <GestureHandlerRootView style={{ flex: 1 }}>
-        <MarksForm sendMarks={sendMarks} status={status} />
-      </GestureHandlerRootView>
-      <ConfirmRemoveMarks
-        modalVisible={conformationModalVisible}
-        setBallistics={setBallistics}
-        closeModal={() => setConformationModalVisible(false)}
-      />
-    </KeyboardAvoidingView>
+          </Pressable>
+        </ScrollView>
+        {!isFormVisible ? (
+          <Button label="Åpne skjema" onPress={handleOpenForm} />
+        ) : (
+          <MarksForm
+            sendMarks={sendMarks}
+            status={status}
+            setIsFormVisible={setIsFormVisible}
+            translateY={translateY}
+          />
+        )}
+        <ConfirmRemoveMarks
+          modalVisible={conformationModalVisible}
+          setBallistics={setBallistics}
+          closeModal={() => setConformationModalVisible(false)}
+        />
+      </KeyboardAvoidingView>
+    </GestureHandlerRootView>
   );
 }
