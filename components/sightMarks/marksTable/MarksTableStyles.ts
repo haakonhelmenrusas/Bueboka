@@ -4,6 +4,7 @@ import { colors } from '@/styles/colors';
 export const styles = StyleSheet.create({
   container: {
     flex: 1,
+    margin: 16,
     backgroundColor: colors.background,
   },
   tr: {
@@ -42,6 +43,7 @@ export const styles = StyleSheet.create({
   trData: {
     flex: 1,
     fontSize: 18,
+
     fontWeight: '500',
     textAlign: 'center',
   },

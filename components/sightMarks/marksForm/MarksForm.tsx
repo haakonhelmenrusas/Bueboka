@@ -1,5 +1,5 @@
 import React, { FC, useState } from 'react';
-import { Keyboard, KeyboardAvoidingView, Platform, ScrollView, View } from 'react-native';
+import { Keyboard, KeyboardAvoidingView, Platform, View } from 'react-native';
 import { Button, Input, Notch } from '@/components/common';
 import { MarkValue } from '@/types';
 import { faRulerHorizontal } from '@fortawesome/free-solid-svg-icons/faRulerHorizontal';
@@ -91,7 +91,7 @@ const MarksForm: FC<MarksFormProps> = ({ sendMarks, status, setIsFormVisible, tr
         <Animated.View style={[styles.form, animatedStyle]}>
           <Notch />
           <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
-            <ScrollView contentContainerStyle={styles.inputs}>
+            <View style={styles.inputs}>
               <Input
                 textAlign="center"
                 labelStyle={{ justifyContent: 'center' }}
@@ -114,7 +114,7 @@ const MarksForm: FC<MarksFormProps> = ({ sendMarks, status, setIsFormVisible, tr
                 icon={<FontAwesomeIcon icon={faCrosshairs} color={colors.secondary} />}
                 inputStyle={{ width: 160 }}
               />
-            </ScrollView>
+            </View>
           </KeyboardAvoidingView>
           <Button
             disabled={aimValue === '' || distanceValue === ''}

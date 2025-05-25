@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Keyboard, KeyboardAvoidingView, Platform, Pressable, ScrollView, View } from 'react-native';
+import { Keyboard, Pressable, View } from 'react-native';
 import { AimDistanceMark, Bow, CalculatedMarks, MarkValue } from '@/types';
 import { useSharedValue, withTiming } from 'react-native-reanimated';
 import { Ballistics, getLocalStorage, storeLocalStorage, useBallisticsParams } from '@/utils';
@@ -80,41 +80,31 @@ export default function CalculateScreen() {
   }
 
   return (
-    <GestureHandlerRootView style={{ flex: 1 }}>
-      <KeyboardAvoidingView
-        style={styles.page}
-        keyboardVerticalOffset={24}
-        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
-        <ScrollView>
-          <Pressable onPress={() => Keyboard.dismiss()}>
-            {error && <View style={{ marginBottom: 8, padding: 8 }}>Oisann, noe gikk galt. Prøv igjen!</View>}
-            <MarksTable ballistics={ballistics} removeMark={handleRemoveMark} />
-            {ballistics && ballistics.given_marks.length > 0 && (
-              <Button
-                label="Tøm liste"
-                type="outline"
-                icon={<FontAwesomeIcon icon={faTrash} color={colors.secondary} />}
-                onPress={() => setConformationModalVisible(true)}
-              />
-            )}
-          </Pressable>
-        </ScrollView>
-        {!isFormVisible ? (
-          <Button label="Åpne skjema" onPress={handleOpenForm} />
-        ) : (
-          <MarksForm
-            sendMarks={sendMarks}
-            status={status}
-            setIsFormVisible={setIsFormVisible}
-            translateY={translateY}
-          />
-        )}
-        <ConfirmRemoveMarks
-          modalVisible={conformationModalVisible}
-          setBallistics={setBallistics}
-          closeModal={() => setConformationModalVisible(false)}
-        />
-      </KeyboardAvoidingView>
+    <GestureHandlerRootView style={styles.page}>
+      <View style={{ flex: 1 }}>
+        <Pressable style={{ flex: 1 }} onPress={() => Keyboard.dismiss()}>
+          {error && <View style={{ marginBottom: 8, padding: 8 }}>Oisann, noe gikk galt. Prøv igjen!</View>}
+          <MarksTable ballistics={ballistics} removeMark={handleRemoveMark} />
+          {ballistics && ballistics.given_marks.length > 0 && !isFormVisible && (
+            <Button
+              label="Tøm liste"
+              type="outline"
+              icon={<FontAwesomeIcon icon={faTrash} color={colors.secondary} />}
+              onPress={() => setConformationModalVisible(true)}
+            />
+          )}
+        </Pressable>
+      </View>
+      {!isFormVisible ? (
+        <Button label="Åpne skjema" onPress={handleOpenForm} buttonStyle={{ marginHorizontal: 16, marginBottom: 16 }} />
+      ) : (
+        <MarksForm sendMarks={sendMarks} status={status} setIsFormVisible={setIsFormVisible} translateY={translateY} />
+      )}
+      <ConfirmRemoveMarks
+        modalVisible={conformationModalVisible}
+        setBallistics={setBallistics}
+        closeModal={() => setConformationModalVisible(false)}
+      />
     </GestureHandlerRootView>
   );
 }
