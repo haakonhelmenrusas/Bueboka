@@ -31,6 +31,7 @@ export const styles = StyleSheet.create({
   },
   sectionCalc: {
     flex: 1,
+    maxWidth: 80,
     paddingTop: 4,
     paddingBottom: 4,
     paddingLeft: 2,
@@ -40,7 +41,7 @@ export const styles = StyleSheet.create({
     margin: 8,
   },
   trData: {
-    fontSize: 16,
+    fontSize: 18,
     lineHeight: 18,
     fontWeight: '500',
     textAlign: 'center',
@@ -49,7 +50,7 @@ export const styles = StyleSheet.create({
     fontWeight: '400',
     color: colors.secondary,
     textAlign: 'center',
-    fontSize: 14,
+    fontSize: 16,
   },
   theadBlack: {
     fontWeight: '400',
