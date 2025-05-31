@@ -43,6 +43,7 @@ export const styles = StyleSheet.create({
   trData: {
     fontSize: 18,
     lineHeight: 18,
+    marginTop: 4,
     fontWeight: '500',
     textAlign: 'center',
   },

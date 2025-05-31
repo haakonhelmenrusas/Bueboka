@@ -1,6 +1,6 @@
 import { faTrash } from '@fortawesome/free-solid-svg-icons/faTrash';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
-import { ScrollView, Text, View } from 'react-native';
+import { Text, View } from 'react-native';
 import { Message } from '@/components/common';
 import Button from '@/components/common/Button/Button';
 import { CalculatedMarks } from '@/types';
@@ -44,5 +44,5 @@ export default function MarksTable({ ballistics, removeMark }: CalculationTableP
     }
   };
 
-  return <ScrollView style={styles.container}>{renderBallisticTable()}</ScrollView>;
+  return <View style={styles.container}>{renderBallisticTable()}</View>;
 }
