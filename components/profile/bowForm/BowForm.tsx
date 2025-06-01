@@ -108,7 +108,7 @@ const BowForm = ({ modalVisible, setModalVisible, bow }: BowFormProps) => {
         clearForm();
         setModalVisible(false);
       }}>
-      <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={{ flex: 1 }}>
+      <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={{ flex: 1, marginTop: 24 }}>
         <ScrollView keyboardShouldPersistTaps="handled" contentContainerStyle={{ flexGrow: 1 }}>
           <Pressable style={{ flex: 1 }} onPress={() => Keyboard.dismiss()}>
             <View style={styles.modal}>
@@ -209,7 +209,7 @@ const BowForm = ({ modalVisible, setModalVisible, bow }: BowFormProps) => {
                   onChangeText={(value) => handleNumberChange(value, 'SET_ARROW_DIAMETER', dispatch)}
                 />
               </View>
-              <View style={{ flexDirection: 'row', justifyContent: 'flex-start', marginTop: 24 }}>
+              <View style={{ flexDirection: 'row', justifyContent: 'flex-start', marginTop: 24, marginBottom: 24 }}>
                 <Input
                   label={'Intervall sikte (cm)'}
                   value={interval_sight_real}
@@ -217,7 +217,7 @@ const BowForm = ({ modalVisible, setModalVisible, bow }: BowFormProps) => {
                   onChangeText={(value) => handleNumberChange(value, 'SET_INTERVAL_SIGHT_REAL', dispatch)}
                 />
               </View>
-              <View style={{ marginTop: 24 }}>
+              <View style={{ marginTop: 'auto' }}>
                 <Button disabled={!bowName} onPress={handleSubmit} label="Lagre" />
                 <Button
                   type="outline"
