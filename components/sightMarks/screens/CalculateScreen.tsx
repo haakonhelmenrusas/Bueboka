@@ -95,11 +95,22 @@ export default function CalculateScreen() {
           )}
         </Pressable>
       </View>
-      {!isFormVisible ? (
-        <Button label="Åpne skjema" onPress={handleOpenForm} buttonStyle={{ marginHorizontal: 16, marginBottom: 16 }} />
-      ) : (
-        <MarksForm sendMarks={sendMarks} status={status} setIsFormVisible={setIsFormVisible} translateY={translateY} />
-      )}
+      <View style={{ flex: 1, justifyContent: 'flex-end' }}>
+        {!isFormVisible ? (
+          <Button
+            label="Åpne skjema"
+            onPress={handleOpenForm}
+            buttonStyle={{ marginHorizontal: 16, marginBottom: 16 }}
+          />
+        ) : (
+          <MarksForm
+            sendMarks={sendMarks}
+            status={status}
+            setIsFormVisible={setIsFormVisible}
+            translateY={translateY}
+          />
+        )}
+      </View>
       <ConfirmRemoveMarks
         modalVisible={conformationModalVisible}
         setBallistics={setBallistics}

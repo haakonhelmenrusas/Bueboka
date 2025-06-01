@@ -86,36 +86,37 @@ const MarksForm: FC<MarksFormProps> = ({ sendMarks, status, setIsFormVisible, tr
   }
 
   return (
-    <View style={styles.container}>
+    <KeyboardAvoidingView
+      enabled={Platform.OS === 'ios'}
+      style={styles.container}
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
       <GestureDetector gesture={gesture}>
         <Animated.View style={[styles.form, animatedStyle]}>
           <Notch />
-          <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
-            <View style={styles.inputs}>
-              <Input
-                textAlign="center"
-                labelStyle={{ justifyContent: 'center' }}
-                label="Avstand"
-                placeholderText="F.eks. 20"
-                keyboardType="numeric"
-                value={distanceValue}
-                onChangeText={(value) => handleDistanceChange(value)}
-                icon={<FontAwesomeIcon icon={faRulerHorizontal} color={colors.secondary} />}
-                inputStyle={{ width: 160 }}
-              />
-              <Input
-                textAlign="center"
-                labelStyle={{ justifyContent: 'center' }}
-                label="Merke"
-                placeholderText="F.eks. 2.3"
-                keyboardType="numeric"
-                value={aimValue}
-                onChangeText={(value) => handleAimChange(value)}
-                icon={<FontAwesomeIcon icon={faCrosshairs} color={colors.secondary} />}
-                inputStyle={{ width: 160 }}
-              />
-            </View>
-          </KeyboardAvoidingView>
+          <View style={styles.inputs}>
+            <Input
+              textAlign="center"
+              labelStyle={{ justifyContent: 'center' }}
+              label="Avstand"
+              placeholderText="F.eks. 20"
+              keyboardType="numeric"
+              value={distanceValue}
+              onChangeText={(value) => handleDistanceChange(value)}
+              icon={<FontAwesomeIcon icon={faRulerHorizontal} color={colors.secondary} />}
+              inputStyle={{ width: 160 }}
+            />
+            <Input
+              textAlign="center"
+              labelStyle={{ justifyContent: 'center' }}
+              label="Merke"
+              placeholderText="F.eks. 2.3"
+              keyboardType="numeric"
+              value={aimValue}
+              onChangeText={(value) => handleAimChange(value)}
+              icon={<FontAwesomeIcon icon={faCrosshairs} color={colors.secondary} />}
+              inputStyle={{ width: 160 }}
+            />
+          </View>
           <Button
             disabled={aimValue === '' || distanceValue === ''}
             loading={status === 'pending'}
@@ -125,7 +126,7 @@ const MarksForm: FC<MarksFormProps> = ({ sendMarks, status, setIsFormVisible, tr
           />
         </Animated.View>
       </GestureDetector>
-    </View>
+    </KeyboardAvoidingView>
   );
 };
 
