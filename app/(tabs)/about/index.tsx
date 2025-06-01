@@ -44,7 +44,7 @@ export default function About() {
           <TouchableOpacity
             style={styles.link}
             onPress={() => Linking.openURL('https://github.com/haakonhelmenrusas/Bueboka/discussions')}>
-            <Text>GitHub</Text>
+            <Text style={{ color: colors.secondary }}>GitHub</Text>
             <FontAwesomeIcon size={14} style={{ color: colors.secondary }} icon={faExternalLink} />
           </TouchableOpacity>
         </View>
