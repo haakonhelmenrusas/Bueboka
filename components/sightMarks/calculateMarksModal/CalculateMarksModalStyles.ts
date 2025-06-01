@@ -6,7 +6,7 @@ export const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     padding: 24,
-    marginTop: 64,
+    marginTop: 24,
   },
   header: {
     width: '100%',
@@ -32,10 +32,10 @@ export const styles = StyleSheet.create({
     marginBottom: 24,
     marginTop: 16,
   },
-  bottons: {
+  buttons: {
     width: '100%',
     flexDirection: 'column',
-    marginTop: 32,
+    marginTop: 'auto',
     gap: 16,
   },
 });

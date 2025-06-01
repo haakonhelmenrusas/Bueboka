@@ -5,8 +5,8 @@ import * as Sentry from '@sentry/react-native';
 import { Button, Message } from '@/components/common';
 import { CalculatedMarks, MarksResult } from '@/types';
 import { getLocalStorage } from '@/utils';
-import { CalculateMarksModal } from '../components/calculateMarksModal/CalculateMarksModal';
-import CalculatedMarksTable from '../components/calculatedMarksTable/CalculatedMarksTable';
+import { CalculateMarksModal } from '@/components/sightMarks/calculateMarksModal/CalculateMarksModal';
+import CalculatedMarksTable from '@/components/sightMarks/calculatedMarksTable/CalculatedMarksTable';
 import { faTrash } from '@fortawesome/free-solid-svg-icons/faTrash';
 import { faChartLine } from '@fortawesome/free-solid-svg-icons/faChartLine';
 import { faWind } from '@fortawesome/free-solid-svg-icons/faWind';
@@ -61,7 +61,7 @@ export default function MarksScreen({ setScreen }: MarksScreenProps) {
         return (
           <View style={{ marginTop: 'auto', padding: 16 }}>
             <Message
-              title="Få tilgjengelige avstander"
+              title="For få tilgjengelige avstander"
               description="Du trenger flere avstander for å beregne siktemerker."
               onPress={() => setScreen('calculate')}
               buttonLabel="Gå til innskyting"

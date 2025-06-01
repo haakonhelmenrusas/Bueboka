@@ -3,7 +3,6 @@ import { colors } from '@/styles/colors';
 
 export const styles = StyleSheet.create({
   container: {
-    flex: 1,
     margin: 16,
     backgroundColor: colors.background,
   },
@@ -15,7 +14,7 @@ export const styles = StyleSheet.create({
     justifyContent: 'space-between',
     backgroundColor: colors.white,
     borderRadius: 12,
-    marginBottom: 12,
+    marginBottom: 8,
     shadowColor: colors.inactive,
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
@@ -32,6 +31,7 @@ export const styles = StyleSheet.create({
   },
   sectionCalc: {
     flex: 1,
+    maxWidth: 80,
     paddingTop: 4,
     paddingBottom: 4,
     paddingLeft: 2,
@@ -41,14 +41,21 @@ export const styles = StyleSheet.create({
     margin: 8,
   },
   trData: {
-    flex: 1,
     fontSize: 18,
+    lineHeight: 18,
+    marginTop: 4,
     fontWeight: '500',
     textAlign: 'center',
   },
   thead: {
     fontWeight: '400',
     color: colors.secondary,
+    textAlign: 'center',
+    fontSize: 16,
+  },
+  theadBlack: {
+    fontWeight: '400',
+    color: colors.dark_primary,
     textAlign: 'center',
     fontSize: 14,
   },

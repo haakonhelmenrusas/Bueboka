@@ -4,8 +4,9 @@ import { Keyboard, Modal, Text, TouchableOpacity, View } from 'react-native';
 import { Button, Input } from '@/components/common';
 import { CalculatedMarks, MarksResult } from '@/types';
 import { getLocalStorage, handleNumberChange, storeLocalStorage, useCalculateMarks } from '@/utils';
-import { useCalcMarksForm } from '../../hooks/useCalcMarksForm';
+import { useCalcMarksForm } from '@/components/sightMarks/hooks/useCalcMarksForm';
 import { faRulerHorizontal } from '@fortawesome/free-solid-svg-icons/faRulerHorizontal';
+import { faRuler } from '@fortawesome/free-solid-svg-icons/faRuler';
 import { faCrosshairs } from '@fortawesome/free-solid-svg-icons/faCrosshairs';
 import { faChevronDown } from '@fortawesome/free-solid-svg-icons/faChevronDown';
 import { faChevronUp } from '@fortawesome/free-solid-svg-icons/faChevronUp';
@@ -150,6 +151,7 @@ export const CalculateMarksModal = ({
             <Input
               textAlign="center"
               inputStyle={{ width: 100 }}
+              icon={<FontAwesomeIcon icon={faRuler} color={colors.secondary} />}
               labelStyle={{ textAlign: 'center', color: colors.primary }}
               label="Vinkel"
               placeholder="F.eks. -30"
@@ -159,6 +161,7 @@ export const CalculateMarksModal = ({
             <Input
               textAlign="center"
               inputStyle={{ width: 100 }}
+              icon={<FontAwesomeIcon icon={faRuler} color={colors.secondary} />}
               labelStyle={{ textAlign: 'center', color: colors.primary }}
               label="Vinkel"
               placeholder="F.eks. 0"
@@ -168,6 +171,7 @@ export const CalculateMarksModal = ({
             <Input
               textAlign="center"
               inputStyle={{ width: 100 }}
+              icon={<FontAwesomeIcon icon={faRuler} color={colors.secondary} />}
               labelStyle={{ textAlign: 'center', color: colors.primary }}
               label="Vinkel"
               placeholder="F.eks. 30"
@@ -176,7 +180,7 @@ export const CalculateMarksModal = ({
             />
           </View>
         )}
-        <View style={styles.bottons}>
+        <View style={styles.buttons}>
           <Button loading={status === 'pending'} width="auto" label="Beregn" onPress={handleSave} />
           <Button
             type="outline"

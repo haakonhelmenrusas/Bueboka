@@ -2,7 +2,10 @@ import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faFeather } from '@fortawesome/free-solid-svg-icons/faFeather';
 import { Image } from 'expo-image';
 import { Linking, ScrollView, Text, TouchableOpacity, View } from 'react-native';
-import { styles } from './AboutStyles';
+import { styles } from '@/components/about/AboutStyles';
+import { faCrosshairs } from '@fortawesome/free-solid-svg-icons/faCrosshairs';
+import { faExternalLink } from '@fortawesome/free-solid-svg-icons/faExternalLink';
+import { colors } from '@/styles/colors';
 
 export default function About() {
   const sponsor = require('../../../assets/images/arcticBueLogo.png');
@@ -26,27 +29,34 @@ export default function About() {
         <Text style={styles.sub}>Bueboka er en tjeneste for alle bueskyttere i Norge.</Text>
       </View>
       <View style={styles.box}>
-        <Text style={styles.text}>Beregne dine siktemerker</Text>
-        <FontAwesomeIcon style={styles.feather} icon={faFeather} />
-      </View>
-      <View style={styles.links}>
-        <Text>Se prosjekt og koden bak på </Text>
-        <TouchableOpacity onPress={() => Linking.openURL('https://github.com/haakonhelmenrusas/Bueboka/discussions')}>
-          <Text style={styles.link}>GitHub</Text>
-        </TouchableOpacity>
+        <View>
+          <Text style={styles.text}>Lagre din bue</Text>
+          <FontAwesomeIcon style={styles.feather} icon={faFeather} />
+        </View>
+        <View>
+          <Text style={styles.text}>Beregne dine siktemerker</Text>
+          <FontAwesomeIcon style={styles.feather} icon={faCrosshairs} />
+        </View>
       </View>
       <ScrollView>
-        <View style={styles.sponsorContainer}>
-          <Text style={styles.sponsor}>Sponset av</Text>
-          <Image
-            style={styles.sponsorLogo}
-            contentFit="contain"
-            source={sponsor}
-            transition={200}
-            placeholder={blurhash}
-            accessibilityLabel="Arctic Buesport AS Logo"
-          />
+        <View style={styles.links}>
+          <Text>Se prosjekt og koden bak på </Text>
+          <TouchableOpacity
+            style={styles.link}
+            onPress={() => Linking.openURL('https://github.com/haakonhelmenrusas/Bueboka/discussions')}>
+            <Text>GitHub</Text>
+            <FontAwesomeIcon size={14} style={{ color: colors.secondary }} icon={faExternalLink} />
+          </TouchableOpacity>
         </View>
+        <Text style={styles.sponsor}>Sponset av</Text>
+        <Image
+          style={styles.sponsorLogo}
+          contentFit="contain"
+          source={sponsor}
+          transition={200}
+          placeholder={blurhash}
+          accessibilityLabel="Arctic Buesport AS Logo"
+        />
       </ScrollView>
     </View>
   );

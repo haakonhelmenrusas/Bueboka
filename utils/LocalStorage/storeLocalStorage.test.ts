@@ -19,4 +19,11 @@ describe('storeLocalStorage', () => {
     const storedValue = await AsyncStorage.getItem(key);
     expect(storedValue).toBe(JSON.stringify(newValue));
   });
+
+  it('handles undefined value gracefully', async () => {
+    const key = 'undefinedKey';
+    await storeLocalStorage(undefined, key);
+    const storedValue = await AsyncStorage.getItem(key);
+    expect(storedValue).toBeNull();
+  });
 });

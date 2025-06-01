@@ -9,12 +9,14 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { Button, Input } from '@/components/common';
 import { useBowForm } from './useBowForm';
 import { handleNumberChange, storeLocalStorage } from '@/utils';
 import { Bow } from '@/types';
 import { styles } from './BowFormStyles';
+import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
+import { faXmark } from '@fortawesome/free-solid-svg-icons/faXmark';
 
 interface BowFormProps {
   modalVisible: boolean;
@@ -23,7 +25,6 @@ interface BowFormProps {
 }
 
 const BowForm = ({ modalVisible, setModalVisible, bow }: BowFormProps) => {
-  const [inputFocused, setInputFocused] = useState(false);
   const [
     {
       bowName,
@@ -39,9 +40,6 @@ const BowForm = ({ modalVisible, setModalVisible, bow }: BowFormProps) => {
     },
     dispatch,
   ] = useBowForm();
-
-  const handleInputFocus = () => setInputFocused(true);
-  const handleInputBlur = () => setInputFocused(false);
 
   useEffect(() => {
     if (bow) {
@@ -110,20 +108,24 @@ const BowForm = ({ modalVisible, setModalVisible, bow }: BowFormProps) => {
         clearForm();
         setModalVisible(false);
       }}>
-      <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={{ flex: 1 }}>
-        <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
+      <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={{ flex: 1, marginTop: 24 }}>
+        <ScrollView keyboardShouldPersistTaps="handled" contentContainerStyle={{ flexGrow: 1 }}>
           <Pressable style={{ flex: 1 }} onPress={() => Keyboard.dismiss()}>
             <View style={styles.modal}>
-              <Text style={styles.title}>Din bue</Text>
+              <View style={styles.titleContainer}>
+                <Text style={styles.title}>Din bue</Text>
+                <Pressable
+                  onPress={() => {
+                    clearForm();
+                    setModalVisible(false);
+                  }}>
+                  <FontAwesomeIcon size={20} icon={faXmark} />
+                </Pressable>
+              </View>
               <Input
                 value={bowName}
                 onChangeText={(value) => dispatch({ type: 'SET_BOW_NAME', payload: value })}
                 inputStyle={bowName === '' ? { borderColor: '#ccc' } : { borderColor: '#053546' }}
-                onFocus={handleInputFocus}
-                onBlur={() => {
-                  dispatch({ type: 'SET_BOW_NAME_ERROR', payload: false });
-                  setInputFocused(false);
-                }}
                 placeholderText="F.eks. Hoyt"
                 label="Navn på bue"
                 error={bowNameError}
@@ -169,9 +171,6 @@ const BowForm = ({ modalVisible, setModalVisible, bow }: BowFormProps) => {
               </View>
               <View style={{ flexDirection: 'row', justifyContent: 'space-around', marginTop: 16 }}>
                 <Input
-                  onFocus={handleInputFocus}
-                  onBlur={handleInputBlur}
-                  textAlign="center"
                   containerStyle={{ flex: 1, marginRight: 8 }}
                   inputStyle={eyeToNock === '' ? { borderColor: '#ccc' } : { borderColor: '#053546' }}
                   label="Fra øye til nock (cm)"
@@ -181,9 +180,6 @@ const BowForm = ({ modalVisible, setModalVisible, bow }: BowFormProps) => {
                   onChangeText={(value) => handleNumberChange(value, 'SET_EYE_TO_NOCK', dispatch)}
                 />
                 <Input
-                  onFocus={handleInputFocus}
-                  onBlur={handleInputBlur}
-                  textAlign="center"
                   containerStyle={{ flex: 1 }}
                   inputStyle={eyeToAim === '' ? { borderColor: '#ccc' } : { borderColor: '#053546' }}
                   label="Fra øye til sikte (cm)"
@@ -195,9 +191,6 @@ const BowForm = ({ modalVisible, setModalVisible, bow }: BowFormProps) => {
               </View>
               <View style={{ flexDirection: 'row', justifyContent: 'space-around', marginTop: 24 }}>
                 <Input
-                  onFocus={handleInputFocus}
-                  onBlur={handleInputBlur}
-                  textAlign="center"
                   containerStyle={{ flex: 1, marginRight: 8 }}
                   inputStyle={arrowWeight === '' ? { borderColor: '#ccc' } : { borderColor: '#053546' }}
                   label="Vekt pil (g)"
@@ -207,9 +200,6 @@ const BowForm = ({ modalVisible, setModalVisible, bow }: BowFormProps) => {
                   onChangeText={(value) => handleNumberChange(value, 'SET_ARROW_WEIGHT', dispatch)}
                 />
                 <Input
-                  onFocus={handleInputFocus}
-                  onBlur={handleInputBlur}
-                  textAlign="center"
                   containerStyle={{ flex: 1 }}
                   inputStyle={arrowDiameter === '' ? { borderColor: '#ccc' } : { borderColor: '#053546' }}
                   label="Diameter pil (mm)"
@@ -219,26 +209,25 @@ const BowForm = ({ modalVisible, setModalVisible, bow }: BowFormProps) => {
                   onChangeText={(value) => handleNumberChange(value, 'SET_ARROW_DIAMETER', dispatch)}
                 />
               </View>
-              <View style={{ flexDirection: 'row', justifyContent: 'flex-start', marginTop: 24 }}>
+              <View style={{ flexDirection: 'row', justifyContent: 'flex-start', marginTop: 24, marginBottom: 24 }}>
                 <Input
                   label={'Intervall sikte (cm)'}
                   value={interval_sight_real}
+                  placeholderText="F.eks. 5"
                   onChangeText={(value) => handleNumberChange(value, 'SET_INTERVAL_SIGHT_REAL', dispatch)}
                 />
               </View>
-              {!(Platform.OS === 'android' && inputFocused) && (
-                <View style={{ marginTop: 'auto' }}>
-                  <Button disabled={!bowName} onPress={handleSubmit} label="Lagre" />
-                  <Button
-                    type="outline"
-                    onPress={() => {
-                      clearForm();
-                      setModalVisible(false);
-                    }}
-                    label="Avbryt"
-                  />
-                </View>
-              )}
+              <View style={{ marginTop: 'auto' }}>
+                <Button disabled={!bowName} onPress={handleSubmit} label="Lagre" />
+                <Button
+                  type="outline"
+                  onPress={() => {
+                    clearForm();
+                    setModalVisible(false);
+                  }}
+                  label="Avbryt"
+                />
+              </View>
             </View>
           </Pressable>
         </ScrollView>

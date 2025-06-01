@@ -1,15 +1,15 @@
-import { Image, ScrollView, Text, View } from 'react-native';
+import { View } from 'react-native';
 import { useEffect, useState } from 'react';
 import * as Sentry from '@sentry/react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faPlus } from '@fortawesome/free-solid-svg-icons/faPlus';
-import BowCard from './components/bowCard/BowCard';
-import { Button } from '@/components/common';
-import BowForm from './components/bowForm/BowForm';
+import BowCard from '@/components/profile/bowCard/BowCard';
+import { Button, Message } from '@/components/common';
+import BowForm from '@/components/profile/bowForm/BowForm';
 import { Bow } from '@/types';
 import { getLocalStorage } from '@/utils';
-import { styles } from './ProfileStyles';
+import { styles } from '@/components/profile/ProfileStyles';
 import { colors } from '@/styles/colors';
 
 export default function Profile() {
@@ -37,20 +37,15 @@ export default function Profile() {
   };
 
   return (
-    <ScrollView style={styles.container}>
+    <View style={styles.container}>
       {bow ? (
         <BowCard bow={bow} openFormWithData={openFormWithData} />
       ) : (
-        <View style={styles.bow}>
-          <View style={styles.header}>
-            <Image source={require('@/assets/bow.png')} style={[styles.image, { tintColor: colors.tertiary }]} />
-            <Text style={styles.title}>Ingen bue lagre</Text>
-          </View>
-        </View>
+        <Message title="Ingen bue" description="Du har ikke lagt til noen bue enda." />
       )}
       <BowForm modalVisible={modalVisible} setModalVisible={setModalVisible} bow={bow} />
       {!bow && (
-        <View style={{ marginTop: 'auto' }}>
+        <View style={{ marginTop: 16 }}>
           <Button
             onPress={() => {
               setModalVisible(true);
@@ -60,6 +55,6 @@ export default function Profile() {
           />
         </View>
       )}
-    </ScrollView>
+    </View>
   );
 }
