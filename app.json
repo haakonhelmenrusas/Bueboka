@@ -8,7 +8,7 @@
     },
     "name": "Bueboka",
     "slug": "bueboka",
-    "version": "1.4.0",
+    "version": "1.4.1",
     "icon": "./assets/images/icon.png",
     "splash": {
       "image": "./assets/images/splash.png",
@@ -21,6 +21,7 @@
       }
     },
     "android": {
+      "edgeToEdgeEnabled": true,
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/icon.png",
         "backgroundColor": "#FFFFFF"
@@ -30,7 +31,7 @@
     "ios": {
       "bundleIdentifier": "com.aaronshade.bueboka",
       "infoPlist": {
-        "CFBundleShortVersionString": "1.4.0",
+        "CFBundleShortVersionString": "1.4.1",
         "CFBundleIconName": "./assets/images/ipad.png",
         "ITSAppUsesNonExemptEncryption": false
       }
