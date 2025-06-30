@@ -76,19 +76,17 @@ export default function Profile() {
       <ArrowForm modalVisible={arrowModalVisible} setArrowModalVisible={setArrowModalVisible} arrowSet={arrowSet} />
       <View style={styles.buttons}>
         <Button
-          type="outline"
           onPress={() => {
             setArrowModalVisible(true);
           }}
-          icon={<FontAwesomeIcon icon={faPlus} size={20} color={colors.primary} />}
+          icon={<FontAwesomeIcon icon={faPlus} size={20} color={colors.white} />}
           label="Legg til pilsett"
         />
         <Button
-          type="outline"
           onPress={() => {
             setBowModalVisible(true);
           }}
-          icon={<FontAwesomeIcon icon={faPlus} size={20} color={colors.primary} />}
+          icon={<FontAwesomeIcon icon={faPlus} size={20} color={colors.white} />}
           label="Legg til bue"
         />
       </View>
