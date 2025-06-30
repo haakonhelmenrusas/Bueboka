@@ -9,7 +9,7 @@ export const defaultStyles = StyleSheet.create({
     marginBottom: 8,
     justifyContent: 'flex-start',
   },
-  label: { color: colors.primary, fontWeight: '500', fontSize: 14 },
+  label: { color: colors.primary, fontWeight: '500', fontSize: 16 },
   input: {
     backgroundColor: colors.white,
     paddingHorizontal: 12,
