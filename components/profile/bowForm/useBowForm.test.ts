@@ -11,8 +11,6 @@ describe('useBowForm', () => {
       placement: 'behind',
       eyeToNock: '',
       eyeToAim: '',
-      arrowWeight: '',
-      arrowDiameter: '',
       interval_sight_real: '',
       intervalSightMeasure: '',
     });
@@ -64,21 +62,5 @@ describe('useBowForm', () => {
       result.current[1]({ type: 'SET_EYE_TO_AIM', payload: '25' });
     });
     expect(result.current[0].eyeToAim).toBe('25');
-  });
-
-  it('sets arrow weight', () => {
-    const { result } = renderHook(() => useBowForm());
-    act(() => {
-      result.current[1]({ type: 'SET_ARROW_WEIGHT', payload: '500' });
-    });
-    expect(result.current[0].arrowWeight).toBe('500');
-  });
-
-  it('sets arrow diameter', () => {
-    const { result } = renderHook(() => useBowForm());
-    act(() => {
-      result.current[1]({ type: 'SET_ARROW_DIAMETER', payload: '9.3' });
-    });
-    expect(result.current[0].arrowDiameter).toBe('9.3');
   });
 });
