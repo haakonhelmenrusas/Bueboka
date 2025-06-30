@@ -9,7 +9,7 @@ export const styles = StyleSheet.create({
         backgroundColor: colors.white,
         borderRadius: 8,
         borderWidth: 1,
-        borderColor: colors.primary,
+        borderColor: colors.secondary,
     },
     header: {
         display: 'flex',
@@ -19,7 +19,7 @@ export const styles = StyleSheet.create({
         alignItems: 'center',
         borderTopEndRadius: 8,
         borderTopStartRadius: 8,
-        backgroundColor: colors.primary,
+        backgroundColor: colors.secondary,
     },
     image: {
         width: 20,
