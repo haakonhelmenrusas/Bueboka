@@ -31,16 +31,18 @@ export default function ArrowCard({ arrowSet, openFormWithData }: Props) {
             <Text style={styles.head}>Vekt</Text>
             <Text style={styles.text}>{weight ? weight : 'Ingen data'}</Text>
           </View>
+        </View>
+        <View style={styles.column}>
           <View>
             <Text style={styles.head}>Diameter</Text>
             <Text style={styles.text}>{diameter ? diameter + ' mm' : 'Ingen data'}</Text>
           </View>
-        </View>
-        <View style={styles.column}>
           <View>
             <Text style={styles.head}>Material</Text>
             <Text style={styles.text}>{material}</Text>
           </View>
+        </View>
+        <View style={styles.column}>
           <View>
             <Text style={styles.head}>Lengde</Text>
             <Text style={styles.text}>{length ? length + ' cm' : 'Ingen data'}</Text>

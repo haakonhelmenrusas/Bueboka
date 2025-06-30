@@ -82,7 +82,7 @@ export default function ArrowForm ({ modalVisible, setArrowModalVisible, arrowSe
               />
               <View style={{ flexDirection: 'row', justifyContent: 'space-around', marginTop: 24 }}>
                 <Select
-                  containerStyle={{ flex: 1, marginRight: 8}}
+                  containerStyle={{ flex: 1, marginRight: 8 }}
                   label="Materiale"
                   selectedValue={material}
                   options={[

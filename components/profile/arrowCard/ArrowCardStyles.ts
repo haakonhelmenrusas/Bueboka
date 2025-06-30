@@ -43,7 +43,7 @@ export const styles = StyleSheet.create({
         padding: 16,
     },
     column: {
-        flex: 1,
+
     },
     head: {
         fontSize: 16,

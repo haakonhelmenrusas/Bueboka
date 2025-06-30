@@ -1,4 +1,4 @@
-import { View } from 'react-native';
+import { Text, View } from 'react-native';
 import { useEffect, useState } from 'react';
 import * as Sentry from '@sentry/react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -62,16 +62,22 @@ export default function Profile() {
 
   return (
     <View style={styles.container}>
+      <View>
+        <Text style={styles.subtitle}>Bue</Text>
       {bow ? (
         <BowCard bow={bow} openFormWithData={openBowFormWithData} />
       ) : (
         <Message title="Ingen bue" description="Du har ikke lagt til noen bue enda." />
       )}
+      </View>
+      <View>
+        <Text style={styles.subtitle}>Pilsett</Text>
       {arrowSet ? (
         <ArrowCard arrowSet={arrowSet} openFormWithData={openArrowFormWithData} />
       ) : (
         <Message title="Ingen piler" description="Du har ikke lagt til noen piler enda." />
       )}
+      </View>
       <BowForm modalVisible={bowModalVisible} setModalVisible={setBowModalVisible} bow={bow} />
       <ArrowForm modalVisible={arrowModalVisible} setArrowModalVisible={setArrowModalVisible} arrowSet={arrowSet} />
       <View style={styles.buttons}>
