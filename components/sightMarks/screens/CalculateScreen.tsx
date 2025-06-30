@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Keyboard, Pressable, View } from 'react-native';
-import { AimDistanceMark, Bow, CalculatedMarks, MarkValue } from '@/types';
+import { AimDistanceMark, ArrowSet, Bow, CalculatedMarks, MarkValue } from '@/types';
 import { useSharedValue, withTiming } from 'react-native-reanimated';
 import { Ballistics, getLocalStorage, storeLocalStorage, useBallisticsParams } from '@/utils';
 import { faTrash } from '@fortawesome/free-solid-svg-icons/faTrash';
@@ -31,6 +31,7 @@ export default function CalculateScreen() {
 
   async function sendMarks(newMark: MarkValue) {
     const bow = await getLocalStorage<Bow>('bow');
+    const arrowSet = await getLocalStorage<ArrowSet>('arrowSet');
 
     const body: AimDistanceMark = {
       ...Ballistics,
@@ -42,8 +43,8 @@ export default function CalculateScreen() {
       body.bow_category = bow.bowType;
       body.interval_sight_real = bow.interval_sight_real ?? 5;
       body.interval_sight_measured = bow.interval_sight_measured ?? 5;
-      body.arrow_diameter_mm = bow.arrowDiameter ?? 0;
-      body.arrow_mass_gram = bow.arrowWeight ?? 0;
+      body.arrow_diameter_mm = arrowSet?.diameter ?? 0;
+      body.arrow_mass_gram = arrowSet?.weight ?? 0;
       body.feet_behind_or_center = bow.placement;
       body.length_eye_sight_cm = bow.eyeToAim ?? 0;
       body.length_nock_eye_cm = bow.eyeToNock ?? 0;
