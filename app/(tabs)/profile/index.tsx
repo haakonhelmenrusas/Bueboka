@@ -34,7 +34,7 @@ export default function Profile() {
         setArrowSet(arrowSet);
       }
     })
-  }, []);
+  }, [arrowModalVisible]);
 
   const openBowFormWithData = async () => {
     try {

@@ -33,8 +33,6 @@ const BowForm = ({ modalVisible, setModalVisible, bow }: BowFormProps) => {
       placement,
       eyeToNock,
       eyeToAim,
-      arrowWeight,
-      arrowDiameter,
       interval_sight_real,
       intervalSightMeasure,
     },
@@ -48,8 +46,6 @@ const BowForm = ({ modalVisible, setModalVisible, bow }: BowFormProps) => {
       dispatch({ type: 'SET_PLACEMENT', payload: bow.placement });
       dispatch({ type: 'SET_EYE_TO_NOCK', payload: bow.eyeToNock?.toString() ?? '' });
       dispatch({ type: 'SET_EYE_TO_AIM', payload: bow.eyeToAim?.toString() ?? '' });
-      dispatch({ type: 'SET_ARROW_WEIGHT', payload: bow.arrowWeight?.toString() ?? '' });
-      dispatch({ type: 'SET_ARROW_DIAMETER', payload: bow.arrowDiameter?.toString() ?? '' });
       dispatch({ type: 'SET_INTERVAL_SIGHT_REAL', payload: bow.interval_sight_real?.toString() ?? '' });
       dispatch({ type: 'SET_INTERVAL_SIGHT_MEASURE', payload: bow.interval_sight_measured?.toString() ?? '' });
     }
@@ -66,8 +62,6 @@ const BowForm = ({ modalVisible, setModalVisible, bow }: BowFormProps) => {
       placement,
       eyeToNock: eyeToNock ? parseFloat(eyeToNock) : undefined,
       eyeToAim: eyeToAim ? parseFloat(eyeToAim) : undefined,
-      arrowWeight: arrowWeight ? parseFloat(arrowWeight) : undefined,
-      arrowDiameter: arrowDiameter ? parseFloat(arrowDiameter) : undefined,
       interval_sight_real: interval_sight_real ? parseFloat(interval_sight_real) : undefined,
       interval_sight_measured: intervalSightMeasure ? parseFloat(intervalSightMeasure) : undefined,
     };
@@ -84,8 +78,6 @@ const BowForm = ({ modalVisible, setModalVisible, bow }: BowFormProps) => {
     dispatch({ type: 'SET_PLACEMENT', payload: 'behind' });
     dispatch({ type: 'SET_EYE_TO_NOCK', payload: '' });
     dispatch({ type: 'SET_EYE_TO_AIM', payload: '' });
-    dispatch({ type: 'SET_ARROW_WEIGHT', payload: '' });
-    dispatch({ type: 'SET_ARROW_DIAMETER', payload: '' });
     dispatch({ type: 'SET_INTERVAL_SIGHT_REAL', payload: '' });
     dispatch({ type: 'SET_INTERVAL_SIGHT_MEASURE', payload: '' });
   }
@@ -187,26 +179,6 @@ const BowForm = ({ modalVisible, setModalVisible, bow }: BowFormProps) => {
                   placeholderText="F.eks. 90"
                   value={eyeToAim}
                   onChangeText={(value) => handleNumberChange(value, 'SET_EYE_TO_AIM', dispatch)}
-                />
-              </View>
-              <View style={{ flexDirection: 'row', justifyContent: 'space-around', marginTop: 24 }}>
-                <Input
-                  containerStyle={{ flex: 1, marginRight: 8 }}
-                  inputStyle={arrowWeight === '' ? { borderColor: '#ccc' } : { borderColor: '#053546' }}
-                  label="Vekt pil (g)"
-                  keyboardType="numeric"
-                  placeholderText="F.eks. 20"
-                  value={arrowWeight}
-                  onChangeText={(value) => handleNumberChange(value, 'SET_ARROW_WEIGHT', dispatch)}
-                />
-                <Input
-                  containerStyle={{ flex: 1 }}
-                  inputStyle={arrowDiameter === '' ? { borderColor: '#ccc' } : { borderColor: '#053546' }}
-                  label="Diameter pil (mm)"
-                  keyboardType="numeric"
-                  placeholderText="F.eks. 5"
-                  value={arrowDiameter}
-                  onChangeText={(value) => handleNumberChange(value, 'SET_ARROW_DIAMETER', dispatch)}
                 />
               </View>
               <View style={{ flexDirection: 'row', justifyContent: 'flex-start', marginTop: 24, marginBottom: 24 }}>

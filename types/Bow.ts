@@ -28,16 +28,6 @@ export interface Bow {
   eyeToAim?: number;
 
   /**
-   * The weight of the arrow (optional).
-   */
-  arrowWeight?: number;
-
-  /**
-   * The diameter of the arrow in mm (optional).
-   */
-  arrowDiameter?: number;
-
-  /**
    * The real interval sight measurement (optional).
    */
   interval_sight_real?: number;
