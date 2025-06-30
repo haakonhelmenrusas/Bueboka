@@ -7,6 +7,7 @@ interface ArrowSetState {
   length: string;
   material: Material;
   spine: string;
+  diameter: string;
 }
 
 export type Action =
@@ -14,6 +15,7 @@ export type Action =
   | { type: 'SET_ARROW_WEIGHT'; payload: string }
   | { type: 'SET_ARROW_LENGTH'; payload: string }
   | { type: 'SET_MATERIAL'; payload: Material }
+  | { type: 'SET_DIAMETER'; payload: string }
   | { type: 'SET_SPINE'; payload: string };
 
 function reducer(state: ArrowSetState, action: Action): ArrowSetState {
@@ -26,6 +28,8 @@ function reducer(state: ArrowSetState, action: Action): ArrowSetState {
       return { ...state, length: action.payload };
     case 'SET_MATERIAL':
       return { ...state, material: action.payload };
+    case 'SET_DIAMETER':
+      return { ...state, diameter: action.payload };
     case 'SET_SPINE':
       return { ...state, spine: action.payload };
     default:
@@ -40,6 +44,7 @@ export const useArrowForm = () => {
     length: '',
     material: Material.Carbon,
     spine: '',
+    diameter: '',
   };
   return useReducer(reducer, INITIAL_STATE);
 };

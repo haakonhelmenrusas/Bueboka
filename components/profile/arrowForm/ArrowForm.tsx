@@ -15,14 +15,15 @@ interface Props {
 }
 
 export default function ArrowForm ({ modalVisible, setArrowModalVisible, arrowSet }: Props) {
-  const [{ name, material, weight, spine, length}, dispatch] = useArrowForm();
+  const [{ name, material, weight, spine, length, diameter }, dispatch] = useArrowForm();
 
   useEffect(() => {
     if (arrowSet) {
       dispatch({ type: 'SET_ARROW_NAME', payload: arrowSet.name });
-      dispatch({ type: 'SET_ARROW_WEIGHT', payload: arrowSet.weight });
-      dispatch({ type: 'SET_ARROW_LENGTH', payload: arrowSet.weight });
-      dispatch({ type: 'SET_SPINE', payload: arrowSet.spine });
+      dispatch({ type: 'SET_ARROW_WEIGHT', payload: arrowSet.weight + "" });
+      dispatch({ type: 'SET_ARROW_LENGTH', payload: arrowSet.length + "" });
+      dispatch({ type: 'SET_DIAMETER', payload: arrowSet.diameter + "" })
+      dispatch({ type: 'SET_SPINE', payload: arrowSet.spine + "" });
       dispatch({ type: 'SET_MATERIAL', payload: arrowSet.material });
     }
   }, [arrowSet, dispatch]);
@@ -31,9 +32,10 @@ export default function ArrowForm ({ modalVisible, setArrowModalVisible, arrowSe
     let arrowSet: ArrowSet = {
       name,
       material,
-      weight,
-      spine,
-      length,
+      diameter: parseFloat(diameter),
+      weight: parseFloat(weight),
+      spine: parseFloat(spine),
+      length: parseFloat(length),
     };
 
     await storeLocalStorage(arrowSet, 'arrowSet');
@@ -46,6 +48,7 @@ export default function ArrowForm ({ modalVisible, setArrowModalVisible, arrowSe
     dispatch({ type: 'SET_ARROW_WEIGHT', payload: '' });
     dispatch({ type: 'SET_ARROW_LENGTH', payload: '' });
     dispatch({ type: 'SET_MATERIAL', payload: Material.Carbon });
+    dispatch({ type: 'SET_DIAMETER', payload: '' });
   }
 
   return (
@@ -91,18 +94,18 @@ export default function ArrowForm ({ modalVisible, setArrowModalVisible, arrowSe
                 />
                 <Input
                   containerStyle={{ flex: 1}}
-                  inputStyle={length === '' ? { borderColor: '#ccc' } : { borderColor: '#053546' }}
+                  inputStyle={length ? { borderColor: '#ccc' } : { borderColor: '#053546' }}
                   label="Lengde (cm)"
                   keyboardType="numeric"
                   placeholderText="F.eks. 90"
                   value={length}
-                  onChangeText={(value) => handleNumberChange(value, 'SET_ARROW_LENGTH', dispatch)}
+                  onChangeText={(value) => dispatch({type: 'SET_ARROW_LENGTH',payload: value})}
                 />
               </View>
               <View style={{ flexDirection: 'row', justifyContent: 'space-around', marginTop: 24 }}>
                 <Input
                   containerStyle={{ flex: 1, marginRight: 8 }}
-                  inputStyle={weight === '' ? { borderColor: '#ccc' } : { borderColor: '#053546' }}
+                  inputStyle={weight ? { borderColor: '#ccc' } : { borderColor: '#053546' }}
                   label="Vekt (g)"
                   keyboardType="numeric"
                   placeholderText="F.eks. 20"
@@ -111,12 +114,23 @@ export default function ArrowForm ({ modalVisible, setArrowModalVisible, arrowSe
                 />
                 <Input
                   containerStyle={{ flex: 1}}
-                  inputStyle={spine === '' ? { borderColor: '#ccc' } : { borderColor: '#053546' }}
+                  inputStyle={spine ? { borderColor: '#ccc' } : { borderColor: '#053546' }}
                   label="Spine"
                   keyboardType="numeric"
                   placeholderText="F.eks. 250"
                   value={spine}
                   onChangeText={(value) => handleNumberChange(value, 'SET_SPINE', dispatch)}
+                />
+              </View>
+              <View style={{ flexDirection: 'row', justifyContent: 'space-around', marginTop: 24 }}>
+                <Input
+                  containerStyle={{ flex: 1, marginRight: 8 }}
+                  inputStyle={weight ? { borderColor: '#ccc' } : { borderColor: '#053546' }}
+                  label="Diameter (mm)"
+                  keyboardType="numeric"
+                  placeholderText="F.eks. 6"
+                  value={diameter}
+                  onChangeText={(value) => handleNumberChange(value, 'SET_DIAMETER', dispatch)}
                 />
               </View>
               <View style={{ marginTop: 'auto' }}>

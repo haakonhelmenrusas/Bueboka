@@ -11,7 +11,7 @@ interface Props {
 }
 
 export default function ArrowCard({ arrowSet, openFormWithData }: Props) {
-  const { name, spine, weight, length, material } = arrowSet;
+  const { name, spine, weight, length, material, diameter } = arrowSet;
   return (
     <View style={styles.container}>
       <View style={styles.header}>
@@ -30,6 +30,10 @@ export default function ArrowCard({ arrowSet, openFormWithData }: Props) {
           <View>
             <Text style={styles.head}>Vekt</Text>
             <Text style={styles.text}>{weight ? weight : 'Ingen data'}</Text>
+          </View>
+          <View>
+            <Text style={styles.head}>Diameter</Text>
+            <Text style={styles.text}>{diameter ? diameter + ' mm' : 'Ingen data'}</Text>
           </View>
         </View>
         <View style={styles.column}>

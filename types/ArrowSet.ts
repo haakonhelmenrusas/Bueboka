@@ -7,8 +7,9 @@ export enum Material {
 
 export interface ArrowSet {
   name: string;
-  weight: string;
-  length: string;
+  weight: number;
+  length: number;
+  diameter: number;
   material: Material;
-  spine: string;
+  spine: number;
 }
