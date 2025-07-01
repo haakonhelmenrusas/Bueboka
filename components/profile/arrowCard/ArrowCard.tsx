@@ -29,7 +29,7 @@ export default function ArrowCard({ arrowSet, openFormWithData }: Props) {
           </View>
           <View>
             <Text style={styles.head}>Vekt</Text>
-            <Text style={styles.text}>{weight ? weight : 'Ingen data'}</Text>
+            <Text style={styles.text}>{weight ? weight + ' gram' : 'Ingen data'}</Text>
           </View>
         </View>
         <View style={styles.column}>
