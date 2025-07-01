@@ -1,8 +1,8 @@
 
 export enum Material {
-  Carbon = 'carbon',
-  Aluminum = 'aluminum',
-  Wood = 'wood',
+  Karbon = 'Karbon',
+  Aluminum = 'Aluminum',
+  Treverk = 'Treverk',
 }
 
 export interface ArrowSet {
