@@ -7,6 +7,10 @@ import {
   Pressable, StyleProp, ViewStyle,
 } from 'react-native';
 import styles from './SelectStyles';
+import { colors } from '@/styles/colors';
+import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
+import { faChevronDown } from '@fortawesome/free-solid-svg-icons/faChevronDown';
+import { faChevronUp } from '@fortawesome/free-solid-svg-icons/faChevronUp';
 
 type Option = {
   label: string;
@@ -42,6 +46,7 @@ export const Select: React.FC<Props> = ({ label, options, selectedValue, onValue
         activeOpacity={0.7}
       >
         <Text style={styles.selectText}>{selectedLabel}</Text>
+        <FontAwesomeIcon icon={open ? faChevronUp : faChevronDown} size={20} color={colors.primary} />
       </TouchableOpacity>
       {open && (
         <>

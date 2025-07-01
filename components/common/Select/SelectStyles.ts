@@ -12,11 +12,13 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   selectBox: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    padding: 8,
     borderWidth: 1,
-    height: 40,
     borderColor: colors.secondary,
     borderRadius: 4,
-    padding: 8,
     backgroundColor: '#fff',
   },
   selectText: {
@@ -29,7 +31,7 @@ const styles = StyleSheet.create({
   },
   dropdown: {
     position: 'absolute',
-    top: 54,
+    top: 72,
     left: 0,
     right: 0,
     backgroundColor: '#fff',
