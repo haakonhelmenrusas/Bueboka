@@ -117,7 +117,6 @@ const BowForm = ({ modalVisible, setModalVisible, bow }: BowFormProps) => {
               <Input
                 value={bowName}
                 onChangeText={(value) => dispatch({ type: 'SET_BOW_NAME', payload: value })}
-                inputStyle={bowName === '' ? { borderColor: '#ccc' } : { borderColor: '#053546' }}
                 placeholderText="F.eks. Hoyt"
                 label="Navn på bue"
                 error={bowNameError}
@@ -164,7 +163,6 @@ const BowForm = ({ modalVisible, setModalVisible, bow }: BowFormProps) => {
               <View style={{ flexDirection: 'row', justifyContent: 'space-around', marginTop: 16 }}>
                 <Input
                   containerStyle={{ flex: 1, marginRight: 8 }}
-                  inputStyle={eyeToNock === '' ? { borderColor: '#ccc' } : { borderColor: '#053546' }}
                   label="Fra øye til nock (cm)"
                   keyboardType="numeric"
                   placeholderText="F.eks. 10"
@@ -173,7 +171,6 @@ const BowForm = ({ modalVisible, setModalVisible, bow }: BowFormProps) => {
                 />
                 <Input
                   containerStyle={{ flex: 1 }}
-                  inputStyle={eyeToAim === '' ? { borderColor: '#ccc' } : { borderColor: '#053546' }}
                   label="Fra øye til sikte (cm)"
                   keyboardType="numeric"
                   placeholderText="F.eks. 90"
@@ -181,8 +178,9 @@ const BowForm = ({ modalVisible, setModalVisible, bow }: BowFormProps) => {
                   onChangeText={(value) => handleNumberChange(value, 'SET_EYE_TO_AIM', dispatch)}
                 />
               </View>
-              <View style={{ flexDirection: 'row', justifyContent: 'flex-start', marginTop: 24, marginBottom: 24 }}>
+              <View style={{ marginTop: 24, marginBottom: 24 }}>
                 <Input
+                  containerStyle={{ flex: 1, width: "50%" }}
                   label={'Intervall sikte (cm)'}
                   value={interval_sight_real}
                   placeholderText="F.eks. 5"

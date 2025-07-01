@@ -6,7 +6,7 @@ export const styles = StyleSheet.create({
     display: 'flex',
     flex: 1,
     padding: 16,
-    marginTop: Platform.OS === 'ios' ? 16 : 0,
+    marginTop: Platform.OS === 'ios' ? 24 : 0,
   },
   titleContainer: {
     display: 'flex',
@@ -58,7 +58,7 @@ export const styles = StyleSheet.create({
   bowTypeLabel: {
     color: colors.primary,
     fontWeight: '500',
-    fontSize: 14,
-    marginBottom: 8,
+    fontSize: 16,
+    marginBottom: 4,
   },
 });
