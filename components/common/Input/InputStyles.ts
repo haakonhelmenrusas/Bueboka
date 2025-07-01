@@ -6,7 +6,7 @@ export const defaultStyles = StyleSheet.create({
   labelContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 8,
+    marginBottom: 4,
     justifyContent: 'flex-start',
   },
   label: { color: colors.primary, fontWeight: '500', fontSize: 16 },

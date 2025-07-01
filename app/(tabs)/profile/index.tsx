@@ -83,6 +83,7 @@ export default function Profile() {
       <View style={styles.buttons}>
         <Button
           onPress={() => {
+            setArrowSet(null);
             setArrowModalVisible(true);
           }}
           icon={<FontAwesomeIcon icon={faPlus} size={20} color={colors.white} />}
@@ -90,6 +91,7 @@ export default function Profile() {
         />
         <Button
           onPress={() => {
+            setBow(null);
             setBowModalVisible(true);
           }}
           icon={<FontAwesomeIcon icon={faPlus} size={20} color={colors.white} />}

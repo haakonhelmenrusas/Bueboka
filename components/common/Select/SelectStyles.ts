@@ -9,17 +9,23 @@ const styles = StyleSheet.create({
   label: {
     fontSize: 16,
     fontWeight: '500',
-    marginBottom: 8,
+    marginBottom: 4,
   },
   selectBox: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
     padding: 8,
+    borderRadius: 4,
     borderWidth: 1,
     borderColor: colors.secondary,
-    borderRadius: 4,
     backgroundColor: '#fff',
+  },
+  option: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    paddingVertical: 12,
+    paddingHorizontal: 16,
   },
   selectText: {
     fontSize: 16,
@@ -44,10 +50,6 @@ const styles = StyleSheet.create({
   },
   scrollList: {
     paddingVertical: 6,
-  },
-  option: {
-    paddingVertical: 12,
-    paddingHorizontal: 16,
   },
   optionText: {
     fontSize: 16,
