@@ -5,4 +5,5 @@ export type { MarkValue } from './MarkValue';
 export type { MarksResult } from './MarksResult';
 export type { SightMarkCalc } from './SightMarkCalc';
 export type { Bow } from './Bow';
+export type { Training } from './Training';
 export { Status } from './Status';

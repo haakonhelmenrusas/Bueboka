@@ -17,6 +17,18 @@ export default function AppLayout() {
         },
       }}>
       <Tabs.Screen
+        name="training"
+        options={{
+          tabBarIcon: ({ focused }) => (
+            <FontAwesomeIcon icon={faBullseye} color={focused ? colors.primary : colors.inactive} />
+          ),
+          headerShadowVisible: false,
+          headerShown: false,
+          tabBarLabel: 'Trening',
+          tabBarLabelStyle: { fontSize: 14 },
+        }}
+      />
+      <Tabs.Screen
         name="sightMarks"
         options={{
           tabBarIcon: ({ focused }) => (
