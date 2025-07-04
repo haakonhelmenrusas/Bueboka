@@ -18,15 +18,20 @@ export default function ArrowForm ({ modalVisible, setArrowModalVisible, arrowSe
   const [{ name, material, weight, spine, length, diameter }, dispatch] = useArrowForm();
 
   useEffect(() => {
+    if (!modalVisible) return;
+
     if (arrowSet) {
       dispatch({ type: 'SET_ARROW_NAME', payload: arrowSet.name });
-      dispatch({ type: 'SET_ARROW_WEIGHT', payload: arrowSet.weight + "" });
-      dispatch({ type: 'SET_ARROW_LENGTH', payload: arrowSet.length + "" });
-      dispatch({ type: 'SET_DIAMETER', payload: arrowSet.diameter + "" })
-      dispatch({ type: 'SET_SPINE', payload: arrowSet.spine + "" });
+      dispatch({ type: 'SET_ARROW_WEIGHT', payload: arrowSet.weight ? arrowSet.weight.toString() : '' });
+      dispatch({ type: 'SET_ARROW_LENGTH', payload: arrowSet.length ? arrowSet.length.toString() : '' });
+      dispatch({ type: 'SET_DIAMETER', payload: arrowSet.diameter ? arrowSet.diameter.toString() : '' });
+      dispatch({ type: 'SET_SPINE', payload: arrowSet.spine ? arrowSet.spine.toString() : "" });
       dispatch({ type: 'SET_MATERIAL', payload: arrowSet.material });
+    } else {
+      clearForm();
     }
-  }, [arrowSet, dispatch]);
+  }, [modalVisible, arrowSet]);
+
 
   async function handleSubmit() {
     let arrowSet: ArrowSet = {
@@ -47,7 +52,7 @@ export default function ArrowForm ({ modalVisible, setArrowModalVisible, arrowSe
     dispatch({ type: 'SET_ARROW_NAME', payload: '' });
     dispatch({ type: 'SET_ARROW_WEIGHT', payload: '' });
     dispatch({ type: 'SET_ARROW_LENGTH', payload: '' });
-    dispatch({ type: 'SET_MATERIAL', payload: Material.Carbon });
+    dispatch({ type: 'SET_MATERIAL', payload: Material.Karbon });
     dispatch({ type: 'SET_DIAMETER', payload: '' });
   }
 
@@ -76,7 +81,6 @@ export default function ArrowForm ({ modalVisible, setArrowModalVisible, arrowSe
               <Input
                 value={name}
                 onChangeText={(value) => dispatch({ type: 'SET_ARROW_NAME', payload: value })}
-                inputStyle={name === '' ? { borderColor: '#ccc' } : { borderColor: '#053546' }}
                 placeholderText="F.eks. Hoyt"
                 label="Navn på pilsett"
               />
@@ -86,15 +90,14 @@ export default function ArrowForm ({ modalVisible, setArrowModalVisible, arrowSe
                   label="Materiale"
                   selectedValue={material}
                   options={[
-                    { label: "Treverk", value: "Wood" },
-                    { label: "Karbon", value: "Carbon" },
+                    { label: "Treverk", value: "Treverk" },
+                    { label: "Karbon", value: "Karbon" },
                     { label: "Aluminium", value: "Aluminium" },
                   ]}
-                  onValueChange={(value) => dispatch({  type: 'SET_MATERIAL', payload: value })}
+                  onValueChange={(value) => dispatch({ type: 'SET_MATERIAL', payload: value })}
                 />
                 <Input
                   containerStyle={{ flex: 1}}
-                  inputStyle={length ? { borderColor: '#ccc' } : { borderColor: '#053546' }}
                   label="Lengde (cm)"
                   keyboardType="numeric"
                   placeholderText="F.eks. 90"
@@ -105,7 +108,6 @@ export default function ArrowForm ({ modalVisible, setArrowModalVisible, arrowSe
               <View style={{ flexDirection: 'row', justifyContent: 'space-around', marginTop: 24 }}>
                 <Input
                   containerStyle={{ flex: 1, marginRight: 8 }}
-                  inputStyle={weight ? { borderColor: '#ccc' } : { borderColor: '#053546' }}
                   label="Vekt (g)"
                   keyboardType="numeric"
                   placeholderText="F.eks. 20"
@@ -114,7 +116,6 @@ export default function ArrowForm ({ modalVisible, setArrowModalVisible, arrowSe
                 />
                 <Input
                   containerStyle={{ flex: 1}}
-                  inputStyle={spine ? { borderColor: '#ccc' } : { borderColor: '#053546' }}
                   label="Spine"
                   keyboardType="numeric"
                   placeholderText="F.eks. 250"
@@ -122,10 +123,9 @@ export default function ArrowForm ({ modalVisible, setArrowModalVisible, arrowSe
                   onChangeText={(value) => handleNumberChange(value, 'SET_SPINE', dispatch)}
                 />
               </View>
-              <View style={{ flexDirection: 'row', justifyContent: 'space-around', marginTop: 24 }}>
+              <View style={{ marginTop: 24 }}>
                 <Input
-                  containerStyle={{ flex: 1, marginRight: 8 }}
-                  inputStyle={weight ? { borderColor: '#ccc' } : { borderColor: '#053546' }}
+                  containerStyle={{ flex: 1, width: "50%" }}
                   label="Diameter (mm)"
                   keyboardType="numeric"
                   placeholderText="F.eks. 6"
