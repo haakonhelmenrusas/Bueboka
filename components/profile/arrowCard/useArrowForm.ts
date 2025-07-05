@@ -42,7 +42,7 @@ export const useArrowForm = () => {
     name: '',
     weight: '',
     length: '',
-    material: Material.Carbon,
+    material: Material.Karbon,
     spine: '',
     diameter: '',
   };
