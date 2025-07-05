@@ -12,9 +12,10 @@ interface Props {
   modalVisible: boolean;
   setArrowModalVisible: (visible: boolean) => void;
   arrowSet: ArrowSet | null;
+  existingArrowSets: ArrowSet[];
 }
 
-export default function ArrowForm ({ modalVisible, setArrowModalVisible, arrowSet }: Props) {
+export default function ArrowForm ({ modalVisible, setArrowModalVisible, arrowSet, existingArrowSets }: Props) {
   const [{ name, material, weight, spine, length, diameter }, dispatch] = useArrowForm();
 
   useEffect(() => {
@@ -34,7 +35,7 @@ export default function ArrowForm ({ modalVisible, setArrowModalVisible, arrowSe
 
 
   async function handleSubmit() {
-    let arrowSet: ArrowSet = {
+    const newArrowSet: ArrowSet = {
       name,
       material,
       diameter: parseFloat(diameter),
@@ -43,7 +44,23 @@ export default function ArrowForm ({ modalVisible, setArrowModalVisible, arrowSe
       length: parseFloat(length),
     };
 
-    await storeLocalStorage(arrowSet, 'arrowSet');
+    let updatedList: ArrowSet[];
+
+    if (arrowSet) {
+      // Edit mode: replace the existing one by name
+      updatedList = existingArrowSets.map(set =>
+        set.name === arrowSet.name ? newArrowSet : set
+      );
+    } else {
+      // Create mode: add new set, prevent duplicate names
+      const isDuplicate = existingArrowSets.some(set => set.name === newArrowSet.name);
+      updatedList = isDuplicate
+        ? existingArrowSets
+        : [...existingArrowSets, newArrowSet];
+    }
+
+    await storeLocalStorage(updatedList,'arrowSets');
+
     clearForm();
     setArrowModalVisible(false);
   }
@@ -53,6 +70,7 @@ export default function ArrowForm ({ modalVisible, setArrowModalVisible, arrowSe
     dispatch({ type: 'SET_ARROW_WEIGHT', payload: '' });
     dispatch({ type: 'SET_ARROW_LENGTH', payload: '' });
     dispatch({ type: 'SET_MATERIAL', payload: Material.Karbon });
+    dispatch({ type: 'SET_SPINE', payload: '' });
     dispatch({ type: 'SET_DIAMETER', payload: '' });
   }
 
