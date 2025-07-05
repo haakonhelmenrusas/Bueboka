@@ -6,6 +6,7 @@ export const styles = StyleSheet.create({
         alignContent: 'center',
         width: '100%',
         marginHorizontal: 'auto',
+        marginBottom: 8,
         backgroundColor: colors.white,
         borderRadius: 8,
         borderWidth: 1,
@@ -54,4 +55,30 @@ export const styles = StyleSheet.create({
         fontSize: 14,
         marginBottom: 16,
     },
+    trashIcon: {
+        marginLeft: 12,
+        padding: 4,
+    },
+    confirmOverlay: {
+        flex: 1,
+        backgroundColor: 'rgba(0,0,0,0.4)',
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    confirmBox: {
+        backgroundColor: '#fff',
+        padding: 20,
+        borderRadius: 10,
+        width: '80%',
+    },
+    confirmText: {
+        fontSize: 16,
+        textAlign: 'center',
+        marginBottom: 20,
+    },
+    confirmActions: {
+        flexDirection: 'row',
+        justifyContent: 'space-around',
+    },
+
 });
