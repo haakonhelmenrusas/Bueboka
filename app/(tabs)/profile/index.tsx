@@ -1,4 +1,4 @@
-import { Text, View } from 'react-native';
+import { ScrollView, Text, View } from 'react-native';
 import { useEffect, useState } from 'react';
 import * as Sentry from '@sentry/react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -18,7 +18,8 @@ export default function Profile() {
   const [bowModalVisible, setBowModalVisible] = useState(false);
   const [arrowModalVisible, setArrowModalVisible] = useState(false);
   const [bow, setBow] = useState<Bow | null>(null);
-  const [arrowSet, setArrowSet] = useState<ArrowSet | null>(null);
+  const [arrowSets, setArrowSets] = useState<ArrowSet[]>([]);
+  const [selectedArrowSet, setSelectedArrowSet] = useState<ArrowSet | null>(null);
 
   useEffect(() => {
     getLocalStorage<Bow>('bow').then((bow) => {
@@ -29,11 +30,9 @@ export default function Profile() {
   }, [bowModalVisible]);
 
   useEffect(() => {
-    getLocalStorage<ArrowSet>('arrowSet').then((arrowSet) => {
-      if (arrowSet) {
-        setArrowSet(arrowSet);
-      }
-    })
+    getLocalStorage<ArrowSet[]>('arrowSets').then((data) => {
+      if (data) setArrowSets(data);
+    });
   }, [arrowModalVisible]);
 
   const openBowFormWithData = async () => {
@@ -48,21 +47,15 @@ export default function Profile() {
     }
   };
 
-  const openArrowFormWithData = async () => {
-    try {
-      const storedData = await AsyncStorage.getItem('arrowSet');
-      if (storedData !== null) {
-        setArrowSet(JSON.parse(storedData));
-        setArrowModalVisible(true);
-      }
-    } catch (error) {
-      Sentry.captureException(error);
-    }
+  const handleDeleteArrowSet = async (target: ArrowSet) => {
+    const updatedList = arrowSets.filter(set => set.name !== target.name);
+    setArrowSets(updatedList);
+    await AsyncStorage.setItem('arrowSets', JSON.stringify(updatedList));
   };
 
   return (
     <View style={styles.container}>
-      <View>
+      <View style={styles.bowContainer}>
         <Text style={styles.subtitle}>Bue</Text>
       {bow ? (
         <BowCard bow={bow} openFormWithData={openBowFormWithData} />
@@ -72,21 +65,38 @@ export default function Profile() {
       </View>
       <View>
         <Text style={styles.subtitle}>Pilsett</Text>
-      {arrowSet ? (
-        <ArrowCard arrowSet={arrowSet} openFormWithData={openArrowFormWithData} />
-      ) : (
-        <Message title="Ingen piler" description="Du har ikke lagt til noen piler enda." />
-      )}
+        <ScrollView style={styles.scrollList} contentContainerStyle={{ paddingBottom: 16 }}>
+          {Array.isArray(arrowSets) && arrowSets.length > 0 ? (
+            arrowSets.map((arrowSet, index) => (
+              <ArrowCard
+                key={index}
+                arrowSet={arrowSet}
+                onEdit={() => {
+                  setSelectedArrowSet(arrowSet);
+                  setArrowModalVisible(true);
+                }}
+                onDelete={handleDeleteArrowSet}
+              />
+            ))
+          ) : (
+            <Message title="Ingen piler" description="Du har ikke lagt til noen piler enda." />
+          )}
+        </ScrollView>
       </View>
       <BowForm modalVisible={bowModalVisible} setModalVisible={setBowModalVisible} bow={bow} />
-      <ArrowForm modalVisible={arrowModalVisible} setArrowModalVisible={setArrowModalVisible} arrowSet={arrowSet} />
+      <ArrowForm
+        modalVisible={arrowModalVisible}
+        setArrowModalVisible={setArrowModalVisible}
+        arrowSet={selectedArrowSet}
+        existingArrowSets={arrowSets}
+      />
       <View style={styles.buttons}>
         <Button
           onPress={() => {
-            setArrowSet(null);
+            setSelectedArrowSet(null);
             setArrowModalVisible(true);
           }}
-          icon={<FontAwesomeIcon icon={faPlus} size={20} color={colors.white} />}
+          icon={<FontAwesomeIcon icon={faPlus} size={16} color={colors.white} />}
           label="Legg til pilsett"
         />
         <Button
@@ -94,7 +104,7 @@ export default function Profile() {
             setBow(null);
             setBowModalVisible(true);
           }}
-          icon={<FontAwesomeIcon icon={faPlus} size={20} color={colors.white} />}
+          icon={<FontAwesomeIcon icon={faPlus} size={16} color={colors.white} />}
           label="Legg til bue"
         />
       </View>

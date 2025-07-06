@@ -8,7 +8,17 @@ export const styles = StyleSheet.create({
     padding: 16,
     marginTop: 32,
   },
+  bowContainer: {
+    marginTop: 16,
+    marginBottom: 16,
+  },
+  scrollList: {
+    flexGrow: 0,
+    maxHeight: 200,
+    marginBottom: 16,
+  },
   buttons: {
+    marginTop: 16,
     display: 'flex',
     flexDirection: 'row',
     alignItems: 'center',
