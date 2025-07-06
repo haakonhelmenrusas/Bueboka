@@ -12,4 +12,5 @@ export interface ArrowSet {
   diameter: number;
   material: Material;
   spine: number;
+  numberOfArrows: number;
 }

@@ -18,7 +18,7 @@ interface Props {
 export default function ArrowCard({ arrowSet, onEdit, onDelete }: Props) {
   const [confirmVisible, setConfirmVisible] = useState(false);
 
-  const { name, spine, weight, length, material, diameter } = arrowSet;
+  const { name, spine, weight, length, material, diameter, numberOfArrows } = arrowSet;
   return (
     <View style={styles.container}>
       <View style={styles.header}>
@@ -56,6 +56,10 @@ export default function ArrowCard({ arrowSet, onEdit, onDelete }: Props) {
           <View>
             <Text style={styles.head}>Lengde</Text>
             <Text style={styles.text}>{length ? length + ' cm' : 'Ingen data'}</Text>
+          </View>
+          <View>
+            <Text style={styles.head}>Antall piler</Text>
+            <Text style={styles.text}>{numberOfArrows ? numberOfArrows : 'Ingen data'}</Text>
           </View>
         </View>
       </View>

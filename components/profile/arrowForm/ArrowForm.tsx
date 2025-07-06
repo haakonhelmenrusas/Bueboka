@@ -16,7 +16,7 @@ interface Props {
 }
 
 export default function ArrowForm ({ modalVisible, setArrowModalVisible, arrowSet, existingArrowSets }: Props) {
-  const [{ name, material, weight, spine, length, diameter }, dispatch] = useArrowForm();
+  const [{ name, material, weight, spine, length, diameter, numberOfArrows }, dispatch] = useArrowForm();
 
   useEffect(() => {
     if (!modalVisible) return;
@@ -28,6 +28,7 @@ export default function ArrowForm ({ modalVisible, setArrowModalVisible, arrowSe
       dispatch({ type: 'SET_DIAMETER', payload: arrowSet.diameter ? arrowSet.diameter.toString() : '' });
       dispatch({ type: 'SET_SPINE', payload: arrowSet.spine ? arrowSet.spine.toString() : "" });
       dispatch({ type: 'SET_MATERIAL', payload: arrowSet.material });
+      dispatch({ type: 'SET_NUMBER_OF_ARROWS', payload: arrowSet.numberOfArrows ? arrowSet.numberOfArrows.toString() : '' });
     } else {
       clearForm();
     }
@@ -42,6 +43,7 @@ export default function ArrowForm ({ modalVisible, setArrowModalVisible, arrowSe
       weight: parseFloat(weight),
       spine: parseFloat(spine),
       length: parseFloat(length),
+      numberOfArrows: parseFloat(numberOfArrows),
     };
 
     let updatedList: ArrowSet[];
@@ -72,6 +74,7 @@ export default function ArrowForm ({ modalVisible, setArrowModalVisible, arrowSe
     dispatch({ type: 'SET_MATERIAL', payload: Material.Karbon });
     dispatch({ type: 'SET_SPINE', payload: '' });
     dispatch({ type: 'SET_DIAMETER', payload: '' });
+    dispatch({ type: 'SET_NUMBER_OF_ARROWS', payload: '' });
   }
 
   return (
@@ -149,6 +152,14 @@ export default function ArrowForm ({ modalVisible, setArrowModalVisible, arrowSe
                   placeholderText="F.eks. 6"
                   value={diameter}
                   onChangeText={(value) => handleNumberChange(value, 'SET_DIAMETER', dispatch)}
+                />
+              <Input
+                  containerStyle={{ flex: 1, width: "50%" }}
+                  label="Antall piler"
+                  keyboardType="numeric"
+                  placeholderText="F.eks. 6"
+                  value={numberOfArrows}
+                  onChangeText={(value) => handleNumberChange(value, 'SET_NUMBER_OF_ARROWS', dispatch)}
                 />
               </View>
               <View style={{ marginTop: 'auto' }}>
