@@ -31,7 +31,11 @@ export default function CalculateScreen() {
 
   async function sendMarks(newMark: MarkValue) {
     const bow = await getLocalStorage<Bow>('bow');
-    const arrowSet = await getLocalStorage<ArrowSet>('arrowSet');
+    const arrowSets = await getLocalStorage<ArrowSet[]>('arrowSets');
+    const arrowSet = Array.isArray(arrowSets)
+      ? arrowSets.find((set) => set.isFavorite)
+      : null;
+
 
     const body: AimDistanceMark = {
       ...Ballistics,
