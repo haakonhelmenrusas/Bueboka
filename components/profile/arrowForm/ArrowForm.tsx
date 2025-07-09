@@ -1,12 +1,16 @@
 import { Keyboard, KeyboardAvoidingView, Modal, Platform, Pressable, ScrollView, Text, View } from 'react-native';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { Button, Input, Select } from '@/components/common';
-import { handleNumberChange, storeLocalStorage } from '@/utils';
+import { handleNumberChange, setFavoriteArrowSet, storeLocalStorage } from '@/utils';
 import { ArrowSet, Material } from '@/types';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faXmark } from '@fortawesome/free-solid-svg-icons/faXmark';
 import { useArrowForm } from '@/components/profile/arrowCard/useArrowForm';
 import { styles } from './ArrowFormStyles';
+import { faStar, faStarHalf } from '@fortawesome/free-solid-svg-icons';
+import { colors } from '@/styles/colors';
+import { faTrash } from '@fortawesome/free-solid-svg-icons/faTrash';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 interface Props {
   modalVisible: boolean;
@@ -16,7 +20,8 @@ interface Props {
 }
 
 export default function ArrowForm ({ modalVisible, setArrowModalVisible, arrowSet, existingArrowSets }: Props) {
-  const [{ name, material, weight, spine, length, diameter, numberOfArrows }, dispatch] = useArrowForm();
+  const [confirmVisible, setConfirmVisible] = useState(false);
+  const [{ name, material, weight, spine, length, diameter, numberOfArrows, isFavorite }, dispatch] = useArrowForm();
 
   useEffect(() => {
     if (!modalVisible) return;
@@ -29,11 +34,18 @@ export default function ArrowForm ({ modalVisible, setArrowModalVisible, arrowSe
       dispatch({ type: 'SET_SPINE', payload: arrowSet.spine ? arrowSet.spine.toString() : "" });
       dispatch({ type: 'SET_MATERIAL', payload: arrowSet.material });
       dispatch({ type: 'SET_NUMBER_OF_ARROWS', payload: arrowSet.numberOfArrows ? arrowSet.numberOfArrows.toString() : '' });
+      dispatch({ type: 'SET_FAVORITE', payload: arrowSet.isFavorite ?? false })
     } else {
       clearForm();
     }
   }, [modalVisible, arrowSet]);
 
+  const handleDeleteArrowSet = async (target: ArrowSet) => {
+    const updatedList = existingArrowSets.filter(set => set.name !== target.name);
+    await AsyncStorage.setItem('arrowSets', JSON.stringify(updatedList));
+    clearForm();
+    setArrowModalVisible(false);
+  };
 
   async function handleSubmit() {
     const newArrowSet: ArrowSet = {
@@ -44,6 +56,7 @@ export default function ArrowForm ({ modalVisible, setArrowModalVisible, arrowSe
       spine: parseFloat(spine),
       length: parseFloat(length),
       numberOfArrows: parseFloat(numberOfArrows),
+      isFavorite: isFavorite,
     };
 
     let updatedList: ArrowSet[];
@@ -56,9 +69,8 @@ export default function ArrowForm ({ modalVisible, setArrowModalVisible, arrowSe
     } else {
       // Create mode: add new set, prevent duplicate names
       const isDuplicate = existingArrowSets.some(set => set.name === newArrowSet.name);
-      updatedList = isDuplicate
-        ? existingArrowSets
-        : [...existingArrowSets, newArrowSet];
+
+      updatedList = isDuplicate ? existingArrowSets : [...existingArrowSets, newArrowSet];
     }
 
     await storeLocalStorage(updatedList,'arrowSets');
@@ -75,6 +87,7 @@ export default function ArrowForm ({ modalVisible, setArrowModalVisible, arrowSe
     dispatch({ type: 'SET_SPINE', payload: '' });
     dispatch({ type: 'SET_DIAMETER', payload: '' });
     dispatch({ type: 'SET_NUMBER_OF_ARROWS', payload: '' });
+    dispatch({ type: 'SET_FAVORITE', payload: false })
   }
 
   return (
@@ -144,9 +157,9 @@ export default function ArrowForm ({ modalVisible, setArrowModalVisible, arrowSe
                   onChangeText={(value) => handleNumberChange(value, 'SET_SPINE', dispatch)}
                 />
               </View>
-              <View style={{ marginTop: 24 }}>
+              <View style={{ flex: 1, flexDirection: 'row', marginTop: 24 }}>
                 <Input
-                  containerStyle={{ flex: 1, width: "50%" }}
+                  containerStyle={{ flex: 1, marginRight: 8 }}
                   label="Diameter (mm)"
                   keyboardType="numeric"
                   placeholderText="F.eks. 6"
@@ -154,7 +167,7 @@ export default function ArrowForm ({ modalVisible, setArrowModalVisible, arrowSe
                   onChangeText={(value) => handleNumberChange(value, 'SET_DIAMETER', dispatch)}
                 />
               <Input
-                  containerStyle={{ flex: 1, width: "50%" }}
+                  containerStyle={{ flex: 1 }}
                   label="Antall piler"
                   keyboardType="numeric"
                   placeholderText="F.eks. 6"
@@ -162,6 +175,15 @@ export default function ArrowForm ({ modalVisible, setArrowModalVisible, arrowSe
                   onChangeText={(value) => handleNumberChange(value, 'SET_NUMBER_OF_ARROWS', dispatch)}
                 />
               </View>
+              <Pressable style={styles.favorite} onPress={() => dispatch({type: 'SET_FAVORITE',payload: !isFavorite})}>
+                <FontAwesomeIcon icon={isFavorite ? faStar : faStarHalf} size={20} color={colors.warning} />
+                <Text>{arrowSet?.isFavorite ? "Favoritt" : "Gjør til favoritt"}</Text>
+              </Pressable>
+              {arrowSet && (
+                <Button label="Slett" onPress={() => setConfirmVisible(true)} type="outline">
+                  <FontAwesomeIcon icon={faTrash} size={16} color={colors.warning} />
+                </Button>
+              )}
               <View style={{ marginTop: 'auto' }}>
                 <Button disabled={!name} onPress={handleSubmit} label="Lagre" />
                 <Button
@@ -177,6 +199,23 @@ export default function ArrowForm ({ modalVisible, setArrowModalVisible, arrowSe
           </Pressable>
         </ScrollView>
       </KeyboardAvoidingView>
+      <Modal visible={confirmVisible} transparent animationType="fade">
+        <View style={styles.confirmOverlay}>
+          <View style={styles.confirmBox}>
+            <Text style={styles.confirmText}>Vil du slette dette pilsettet?</Text>
+            <View style={styles.confirmActions}>
+              <Button label="Avbryt" type="outline" onPress={() => setConfirmVisible(false)} />
+              <Button
+                label="Slett"
+                onPress={() => {
+                  handleDeleteArrowSet(arrowSet!);
+                  setConfirmVisible(false);
+                }}
+              />
+            </View>
+          </View>
+        </View>
+      </Modal>
     </Modal>
   );
 };
