@@ -9,7 +9,6 @@ export async function setFavoriteArrowSet(targetName: string) {
     ...set,
     isFavorite: set.name === targetName,
   }));
-
   await AsyncStorage.setItem('arrowSets', JSON.stringify(updated));
   return updated;
 }

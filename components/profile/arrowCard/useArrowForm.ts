@@ -9,6 +9,7 @@ interface ArrowSetState {
   spine: string;
   diameter: string;
   numberOfArrows: string;
+  isFavorite: boolean;
 }
 
 export type Action =
@@ -18,7 +19,8 @@ export type Action =
   | { type: 'SET_MATERIAL'; payload: Material }
   | { type: 'SET_DIAMETER'; payload: string }
   | { type: 'SET_NUMBER_OF_ARROWS'; payload: string }
-  | { type: 'SET_SPINE'; payload: string };
+  | { type: 'SET_SPINE'; payload: string }
+| { type: 'SET_FAVORITE'; payload: boolean };
 
 function reducer(state: ArrowSetState, action: Action): ArrowSetState {
   switch (action.type) {
@@ -36,6 +38,8 @@ function reducer(state: ArrowSetState, action: Action): ArrowSetState {
       return { ...state, spine: action.payload };
     case 'SET_NUMBER_OF_ARROWS':
       return { ...state, numberOfArrows: action.payload }
+    case 'SET_FAVORITE':
+      return { ...state, isFavorite: action.payload };
     default:
       return state;
   }
@@ -50,6 +54,7 @@ export const useArrowForm = () => {
     spine: '',
     diameter: '',
     numberOfArrows: '',
+    isFavorite: false,
   };
   return useReducer(reducer, INITIAL_STATE);
 };

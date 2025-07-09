@@ -47,12 +47,6 @@ export default function Profile() {
     }
   };
 
-  const handleDeleteArrowSet = async (target: ArrowSet) => {
-    const updatedList = arrowSets.filter(set => set.name !== target.name);
-    setArrowSets(updatedList);
-    await AsyncStorage.setItem('arrowSets', JSON.stringify(updatedList));
-  };
-
   return (
     <View style={styles.container}>
       <View style={styles.bowContainer}>
@@ -75,7 +69,6 @@ export default function Profile() {
                   setSelectedArrowSet(arrowSet);
                   setArrowModalVisible(true);
                 }}
-                onDelete={handleDeleteArrowSet}
               />
             ))
           ) : (

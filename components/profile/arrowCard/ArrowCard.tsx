@@ -1,34 +1,26 @@
-import { Image, Text, TouchableOpacity, View } from 'react-native';
-import { faTrash } from '@fortawesome/free-solid-svg-icons/faTrash';
-import { Modal } from 'react-native';
+import { Text, TouchableOpacity, View } from 'react-native';
 import { ArrowSet } from '@/types';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faCog } from '@fortawesome/free-solid-svg-icons/faCog';
 import { styles } from './ArrowCardStyles';
 import { colors } from '@/styles/colors';
-import { useState } from 'react';
-import { Button } from '@/components/common';
+import { faStar } from '@fortawesome/free-solid-svg-icons';
 
 interface Props {
   arrowSet: ArrowSet;
   onEdit: () => void;
-  onDelete: (arrowSet: ArrowSet) => void;
 }
 
-export default function ArrowCard({ arrowSet, onEdit, onDelete }: Props) {
-  const [confirmVisible, setConfirmVisible] = useState(false);
-
-  const { name, spine, weight, length, material, diameter, numberOfArrows } = arrowSet;
+export default function ArrowCard({ arrowSet, onEdit }: Props) {
+  const { name, spine, weight, length, material, diameter, numberOfArrows, isFavorite } = arrowSet;
+  console.log(arrowSet);
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <Image source={require('@/assets/bow.png')} style={[styles.image, { tintColor: colors.tertiary }]} />
+        {isFavorite && <FontAwesomeIcon icon={faStar} size={20} color={colors.warning} />}
         <Text style={styles.title}>{name}</Text>
         <TouchableOpacity onPress={onEdit} style={styles.cogIcon}>
           <FontAwesomeIcon icon={faCog} size={16} color={colors.white} />
-        </TouchableOpacity>
-        <TouchableOpacity onPress={() => setConfirmVisible(true)} style={styles.trashIcon}>
-          <FontAwesomeIcon icon={faTrash} size={16} color={colors.white} />
         </TouchableOpacity>
       </View>
       <View style={styles.body}>
@@ -63,23 +55,6 @@ export default function ArrowCard({ arrowSet, onEdit, onDelete }: Props) {
           </View>
         </View>
       </View>
-      <Modal visible={confirmVisible} transparent animationType="fade">
-        <View style={styles.confirmOverlay}>
-          <View style={styles.confirmBox}>
-            <Text style={styles.confirmText}>Vil du slette dette pilsettet?</Text>
-            <View style={styles.confirmActions}>
-              <Button label="Avbryt" type="outline" onPress={() => setConfirmVisible(false)} />
-              <Button
-                label="Slett"
-                onPress={() => {
-                  onDelete(arrowSet);
-                  setConfirmVisible(false);
-                }}
-              />
-            </View>
-          </View>
-        </View>
-      </Modal>
     </View>
   );
 };

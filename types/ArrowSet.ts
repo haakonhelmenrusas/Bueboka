@@ -13,4 +13,5 @@ export interface ArrowSet {
   material: Material;
   spine: number;
   numberOfArrows: number;
+  isFavorite?: boolean;
 }

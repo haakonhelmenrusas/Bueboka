@@ -22,12 +22,6 @@ export const styles = StyleSheet.create({
         borderTopStartRadius: 8,
         backgroundColor: colors.secondary,
     },
-    image: {
-        width: 20,
-        height: 20,
-        resizeMode: 'contain',
-        marginRight: 16,
-    },
     title: {
         fontSize: 20,
         color: colors.tertiary,
@@ -52,33 +46,7 @@ export const styles = StyleSheet.create({
         marginBottom: 4,
     },
     text: {
-        fontSize: 14,
+        fontSize: 16,
         marginBottom: 16,
     },
-    trashIcon: {
-        marginLeft: 12,
-        padding: 4,
-    },
-    confirmOverlay: {
-        flex: 1,
-        backgroundColor: 'rgba(0,0,0,0.4)',
-        justifyContent: 'center',
-        alignItems: 'center',
-    },
-    confirmBox: {
-        backgroundColor: '#fff',
-        padding: 20,
-        borderRadius: 10,
-        width: '80%',
-    },
-    confirmText: {
-        fontSize: 16,
-        textAlign: 'center',
-        marginBottom: 20,
-    },
-    confirmActions: {
-        flexDirection: 'row',
-        justifyContent: 'space-around',
-    },
-
 });

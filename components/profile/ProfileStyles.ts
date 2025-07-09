@@ -14,7 +14,7 @@ export const styles = StyleSheet.create({
   },
   scrollList: {
     flexGrow: 0,
-    maxHeight: 200,
+    maxHeight: 240,
     marginBottom: 16,
   },
   buttons: {
