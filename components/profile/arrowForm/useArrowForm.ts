@@ -1,7 +1,7 @@
 import { useReducer } from 'react';
 import { Material } from '@/types';
 
-interface ArrowSetState {
+export interface ArrowSetState {
   name: string;
   weight: string;
   length: string;
@@ -22,7 +22,7 @@ export type Action =
   | { type: 'SET_SPINE'; payload: string }
 | { type: 'SET_FAVORITE'; payload: boolean };
 
-function reducer(state: ArrowSetState, action: Action): ArrowSetState {
+export function reducer(state: ArrowSetState, action: Action): ArrowSetState {
   switch (action.type) {
     case 'SET_ARROW_NAME':
       return { ...state, name: action.payload };
