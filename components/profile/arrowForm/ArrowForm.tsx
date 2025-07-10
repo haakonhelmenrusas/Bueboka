@@ -1,11 +1,11 @@
 import { Keyboard, KeyboardAvoidingView, Modal, Platform, Pressable, ScrollView, Text, View } from 'react-native';
 import { useEffect, useState } from 'react';
 import { Button, Input, Select } from '@/components/common';
-import { handleNumberChange, setFavoriteArrowSet, storeLocalStorage } from '@/utils';
+import { handleNumberChange, storeLocalStorage } from '@/utils';
 import { ArrowSet, Material } from '@/types';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faXmark } from '@fortawesome/free-solid-svg-icons/faXmark';
-import { useArrowForm } from '@/components/profile/arrowCard/useArrowForm';
+import { useArrowForm } from '@/components/profile/arrowForm/useArrowForm';
 import { styles } from './ArrowFormStyles';
 import { faStar, faStarHalf } from '@fortawesome/free-solid-svg-icons';
 import { colors } from '@/styles/colors';
@@ -71,6 +71,13 @@ export default function ArrowForm ({ modalVisible, setArrowModalVisible, arrowSe
       const isDuplicate = existingArrowSets.some(set => set.name === newArrowSet.name);
 
       updatedList = isDuplicate ? existingArrowSets : [...existingArrowSets, newArrowSet];
+    }
+
+    if (newArrowSet.isFavorite) {
+      updatedList = updatedList.map(set => ({
+        ...set,
+        isFavorite: set.name === newArrowSet.name
+      }));
     }
 
     await storeLocalStorage(updatedList,'arrowSets');
