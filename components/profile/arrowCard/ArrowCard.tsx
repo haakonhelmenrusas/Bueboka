@@ -13,18 +13,18 @@ interface Props {
 
 export default function ArrowCard({ arrowSet, onEdit }: Props) {
   const { name, spine, weight, length, material, diameter, numberOfArrows, isFavorite } = arrowSet;
-  console.log(arrowSet);
+
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        {isFavorite && <FontAwesomeIcon icon={faStar} size={20} color={colors.warning} />}
+        {isFavorite && <FontAwesomeIcon testID="favorite-icon" style={{ marginRight: 4 }} icon={faStar} size={18} color={colors.warning} />}
         <Text style={styles.title}>{name}</Text>
         <TouchableOpacity onPress={onEdit} style={styles.cogIcon}>
           <FontAwesomeIcon icon={faCog} size={16} color={colors.white} />
         </TouchableOpacity>
       </View>
       <View style={styles.body}>
-        <View style={styles.column}>
+        <View>
           <View>
             <Text style={styles.head}>Spine</Text>
             <Text style={styles.text}>{spine ? spine : 'Ingen data'}</Text>
@@ -34,7 +34,7 @@ export default function ArrowCard({ arrowSet, onEdit }: Props) {
             <Text style={styles.text}>{weight ? weight + ' gram' : 'Ingen data'}</Text>
           </View>
         </View>
-        <View style={styles.column}>
+        <View>
           <View>
             <Text style={styles.head}>Diameter</Text>
             <Text style={styles.text}>{diameter ? diameter + ' mm' : 'Ingen data'}</Text>
@@ -44,7 +44,7 @@ export default function ArrowCard({ arrowSet, onEdit }: Props) {
             <Text style={styles.text}>{material}</Text>
           </View>
         </View>
-        <View style={styles.column}>
+        <View>
           <View>
             <Text style={styles.head}>Lengde</Text>
             <Text style={styles.text}>{length ? length + ' cm' : 'Ingen data'}</Text>

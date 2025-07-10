@@ -5,12 +5,14 @@ export const styles = StyleSheet.create({
     container: {
         alignContent: 'center',
         width: '100%',
-        marginHorizontal: 'auto',
         marginBottom: 8,
         backgroundColor: colors.white,
         borderRadius: 8,
-        borderWidth: 1,
-        borderColor: colors.secondary,
+        shadowColor: '#000',
+        shadowOffset: { width: 2, height: 2 },
+        shadowOpacity: 0.15,
+        shadowRadius: 4,
+        elevation: 3,
     },
     header: {
         display: 'flex',
@@ -36,9 +38,6 @@ export const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'space-between',
         padding: 16,
-    },
-    column: {
-
     },
     head: {
         fontSize: 16,

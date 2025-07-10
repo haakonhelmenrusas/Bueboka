@@ -59,7 +59,7 @@ export default function Profile() {
       </View>
       <View>
         <Text style={styles.subtitle}>Pilsett</Text>
-        <ScrollView style={styles.scrollList} contentContainerStyle={{ paddingBottom: 16 }}>
+        <ScrollView style={styles.scrollList} contentContainerStyle={{ paddingBottom: 8, paddingHorizontal: 4 }}>
           {Array.isArray(arrowSets) && arrowSets.length > 0 ? (
             arrowSets.map((arrowSet, index) => (
               <ArrowCard
