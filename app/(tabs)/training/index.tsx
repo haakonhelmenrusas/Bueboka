@@ -7,8 +7,12 @@ import { Button } from '@/components/common';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faPlus } from '@fortawesome/free-solid-svg-icons/faPlus';
 import { useState } from 'react';
+import { Training } from '@/types';
 
-export default function Training() {
+const trainings: Training[] = [{date: new Date("2025-06-29"), arrows: 83}, {date: new Date("2025-06-30"), arrows: 80}, {date: new Date("2025-07-03"), arrows: 67}, {date: new Date("2025-06-02"), arrows: 53}]
+
+
+export default function TrainingScreen() {
     // Komponenter: tittel, statistikk/oppsummering, liste av treninger, ny trening
   const [modalVisible, setModalVisible] = useState(false);
   return (
@@ -17,7 +21,7 @@ export default function Training() {
         <Text style={styles.title}>Treninger</Text>
       </View>
       
-      <Summary/>
+      <Summary trainings={trainings} />
       <TrainingList/>
 
       <Button 
