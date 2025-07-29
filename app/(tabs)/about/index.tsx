@@ -1,7 +1,7 @@
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faFeather } from '@fortawesome/free-solid-svg-icons/faFeather';
 import { Image } from 'expo-image';
-import { Linking, ScrollView, Text, TouchableOpacity, View } from 'react-native';
+import { Linking, Text, TouchableOpacity, View } from 'react-native';
 import { styles } from '@/components/about/AboutStyles';
 import { faCrosshairs } from '@fortawesome/free-solid-svg-icons/faCrosshairs';
 import { faExternalLink } from '@fortawesome/free-solid-svg-icons/faExternalLink';
@@ -30,7 +30,7 @@ export default function About() {
       </View>
       <View style={styles.box}>
         <View>
-          <Text style={styles.text}>Lagre din bue</Text>
+          <Text style={styles.text}>Lagre din bue og pilsett</Text>
           <FontAwesomeIcon style={styles.feather} icon={faFeather} />
         </View>
         <View>
@@ -38,7 +38,6 @@ export default function About() {
           <FontAwesomeIcon style={styles.feather} icon={faCrosshairs} />
         </View>
       </View>
-      <ScrollView>
         <View style={styles.links}>
           <Text>Se prosjekt og koden bak på </Text>
           <TouchableOpacity
@@ -57,7 +56,6 @@ export default function About() {
           placeholder={blurhash}
           accessibilityLabel="Arctic Buesport AS Logo"
         />
-      </ScrollView>
     </View>
   );
 }

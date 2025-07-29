@@ -6,17 +6,16 @@ export const styles = StyleSheet.create({
     flex: 1,
   },
   header: {
-    flex: 8,
+    flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: colors.tertiary,
   },
   title: {
     fontSize: 32,
     fontWeight: 'bold',
     textAlign: 'center',
     marginBottom: 16,
-    marginTop: 24,
+    marginTop: 16,
   },
   sub: {
     fontSize: 16,
