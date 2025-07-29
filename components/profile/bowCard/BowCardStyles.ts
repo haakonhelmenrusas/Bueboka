@@ -8,8 +8,11 @@ export const styles = StyleSheet.create({
     marginHorizontal: 'auto',
     backgroundColor: colors.white,
     borderRadius: 8,
-    borderWidth: 1,
-    borderColor: colors.primary,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 0 },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 3,
   },
   header: {
     display: 'flex',
