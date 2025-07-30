@@ -9,7 +9,7 @@ import { faPlus } from '@fortawesome/free-solid-svg-icons/faPlus';
 import { useState } from 'react';
 import { Training } from '@/types';
 
-const trainings: Training[] = [{date: new Date("2025-06-29"), arrows: 83}, {date: new Date("2025-06-30"), arrows: 80}, {date: new Date("2025-07-03"), arrows: 67}, {date: new Date("2025-06-02"), arrows: 53}]
+const trainings: Training[] = [{date: new Date(), arrows: 83}, {date: new Date("2025-06-30"), arrows: 80}, {date: new Date("2025-07-03"), arrows: 67}, {date: new Date("2025-06-02"), arrows: 53}]
 
 
 export default function TrainingScreen() {
@@ -22,7 +22,9 @@ export default function TrainingScreen() {
       </View>
       
       <Summary trainings={trainings} />
-      <TrainingList/>
+      <ScrollView style={{flex: 1}}>
+        <TrainingList trainings={trainings} />
+      </ScrollView>
 
       <Button 
         onPress={() => {
