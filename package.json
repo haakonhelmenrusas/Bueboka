@@ -17,6 +17,7 @@
     "@sentry/react-native": "~6.10.0",
     "@testing-library/react-native": "^12.9.0",
     "axios": "1.8.2",
+    "date-fns": "^4.1.0",
     "eslint-config-expo": "~9.2.0",
     "expo": "~53.0.5",
     "expo-application": "~6.1.4",
