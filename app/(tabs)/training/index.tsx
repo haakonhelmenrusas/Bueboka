@@ -8,6 +8,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faPlus } from '@fortawesome/free-solid-svg-icons/faPlus';
 import { useState } from 'react';
 import { Training } from '@/types';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 const trainings: Training[] = [{date: new Date(), arrows: 83}, {date: new Date("2025-06-30"), arrows: 80}, {date: new Date("2025-07-03"), arrows: 67}, {date: new Date("2025-06-02"), arrows: 53}]
 
@@ -16,15 +17,11 @@ export default function TrainingScreen() {
     // Komponenter: tittel, statistikk/oppsummering, liste av treninger, ny trening
   const [modalVisible, setModalVisible] = useState(false);
   return (
-    <View style={styles.container}>
-      <View style={styles.header}>
-        <Text style={styles.title}>Treninger</Text>
-      </View>
-      
+    <GestureHandlerRootView style={styles.container}>
+      <Text style={styles.title}>Treninger</Text>
+  
       <Summary trainings={trainings} />
-      <ScrollView style={{flex: 1}}>
-        <TrainingList trainings={trainings} />
-      </ScrollView>
+      <TrainingList trainings={trainings} />
 
       <Button 
         onPress={() => {
@@ -32,7 +29,6 @@ export default function TrainingScreen() {
         }}
         icon={<FontAwesomeIcon icon={faPlus} size={20} color={colors.white} />} 
         label={'Ny trening'}/>
-
-    </View>
+    </GestureHandlerRootView>
   );
 }
