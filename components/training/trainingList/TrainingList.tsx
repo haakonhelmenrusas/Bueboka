@@ -21,9 +21,9 @@ export default function TrainingList({ trainings }: TrainingListProps) {
           {trainings.map((training, index) =>
             isSameDay(today, training.date) ? (
               <View key={index}>
-                <Text style= {styles.subtitleToday} >I dag</Text>
+                <Text style={styles.subtitleToday} >I dag</Text>
                 <TrainingCard training={training} />
-                <Text style= {styles.subtitlePast} >Eldre treninger</Text>
+                <Text style={styles.subtitlePast} >Eldre treninger</Text>
               </View>
             ) : (
               <TrainingCard key={index} training={training} />
@@ -38,9 +38,9 @@ export default function TrainingList({ trainings }: TrainingListProps) {
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Liste av treninger</Text>
-    <ScrollView >
-      {renderTrainingList()}
-    </ScrollView>
+      <ScrollView >
+        {renderTrainingList()}
+      </ScrollView>
     </View>
   );
 }

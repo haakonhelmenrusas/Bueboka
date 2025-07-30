@@ -1,6 +1,5 @@
 import { View, Text, TouchableOpacity } from "react-native";
 import { Training } from "@/types";
-import { Button } from "../common";
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import { faInfoCircle } from "@fortawesome/free-solid-svg-icons/faInfoCircle";
 import { styles } from "./TrainingCardStyles";
