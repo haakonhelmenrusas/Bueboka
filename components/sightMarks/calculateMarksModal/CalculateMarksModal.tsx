@@ -1,6 +1,6 @@
 import { faMultiply } from '@fortawesome/free-solid-svg-icons/faMultiply';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
-import { Keyboard, Modal, Text, TouchableOpacity, View } from 'react-native';
+import { Keyboard, KeyboardAvoidingView, Modal, Platform, Text, TouchableOpacity, View } from 'react-native';
 import { Button, Input } from '@/components/common';
 import { CalculatedMarks, MarksResult } from '@/types';
 import { getLocalStorage, handleNumberChange, storeLocalStorage, useCalculateMarks } from '@/utils';
@@ -83,116 +83,118 @@ export const CalculateMarksModal = ({
   };
 
   return (
-    <Modal onRequestClose={closeModal} visible={modalVisible} animationType="slide">
-      <View style={styles.modal}>
-        <View style={styles.header}>
-          <Text style={{ fontSize: 20, fontWeight: '500' }}>Beregn siktemerker</Text>
-          <TouchableOpacity
-            style={{ padding: 16, margin: -8 }}
-            onPress={() => {
-              Keyboard.dismiss();
-              clearForm();
-              closeModal();
-            }}>
-            <Text>
-              <FontAwesomeIcon icon={faMultiply} size={20} />
-            </Text>
-          </TouchableOpacity>
-        </View>
-        <View style={styles.inputs}>
-          <Input
-            inputStyle={{ width: 100 }}
-            labelStyle={{ textAlign: 'center' }}
-            label="Fra avstand"
-            placeholder="F.eks. 10"
-            onBlur={() => dispatch({ type: 'SET_DISTANCE_FROM_ERROR', payload: false })}
-            keyboardType="numeric"
-            value={distanceFrom}
-            error={distanceFromError}
-            errorMessage="Verdi mangler"
-            onChangeText={(value) => handleNumberChange(value, 'SET_DISTANCE_FROM', dispatch)}
-            icon={<FontAwesomeIcon icon={faRulerHorizontal} color={colors.secondary} />}
-          />
-          <Input
-            inputStyle={{ width: 100 }}
-            labelStyle={{ textAlign: 'center' }}
-            onBlur={() => dispatch({ type: 'SET_DISTANCE_TO_ERROR', payload: false })}
-            label="Til avstand"
-            placeholder="F.eks. 90"
-            keyboardType="numeric"
-            value={distanceTo}
-            error={distanceToError}
-            onChangeText={(value) => handleNumberChange(value, 'SET_DISTANCE_TO', dispatch)}
-            errorMessage="Verdi mangler"
-            icon={<FontAwesomeIcon icon={faRulerHorizontal} color={colors.secondary} />}
-          />
-          <Input
-            inputStyle={{ width: 100 }}
-            labelStyle={{ textAlign: 'center' }}
-            label="Intevall"
-            placeholder="F.eks. 10"
-            onBlur={() => dispatch({ type: 'SET_INTERVAL_ERROR', payload: false })}
-            keyboardType="numeric"
-            value={interval}
-            error={intervalError}
-            onChangeText={(value) => handleNumberChange(value, 'SET_INTERVAL', dispatch)}
-            errorMessage="Verdi mangler"
-            icon={<FontAwesomeIcon icon={faCrosshairs} color={colors.secondary} />}
-          />
-        </View>
-        <TouchableOpacity
-          style={styles.checkBox}
-          onPress={() => dispatch({ type: 'SET_ANGLES_VISIBLE', payload: !anglesVisible })}>
-          <FontAwesomeIcon icon={anglesVisible ? faChevronUp : faChevronDown} color={colors.secondary} />
-          <Text> Flere vinkler</Text>
-        </TouchableOpacity>
-        {anglesVisible && (
-          <View style={styles.angles}>
+    <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === 'ios' ? 'padding': 'height'}>
+      <Modal onRequestClose={closeModal} visible={modalVisible} animationType="slide">
+        <View style={styles.modal}>
+          <View style={styles.header}>
+            <Text style={{ fontSize: 20, fontWeight: '500' }}>Beregn siktemerker</Text>
+            <TouchableOpacity
+              style={{ padding: 16, margin: -8 }}
+              onPress={() => {
+                Keyboard.dismiss();
+                clearForm();
+                closeModal();
+              }}>
+              <Text>
+                <FontAwesomeIcon icon={faMultiply} size={20} />
+              </Text>
+            </TouchableOpacity>
+          </View>
+          <View style={styles.inputs}>
             <Input
-              textAlign="center"
               inputStyle={{ width: 100 }}
-              icon={<FontAwesomeIcon icon={faRuler} color={colors.secondary} />}
-              labelStyle={{ textAlign: 'center', color: colors.primary }}
-              label="Vinkel"
-              placeholder="F.eks. -30"
-              keyboardType="numbers-and-punctuation"
-              onChange={(event) => handleAngleChange(event.nativeEvent.text, 0)}
+              labelStyle={{ textAlign: 'center' }}
+              label="Fra avstand"
+              placeholder="F.eks. 10"
+              onBlur={() => dispatch({ type: 'SET_DISTANCE_FROM_ERROR', payload: false })}
+              keyboardType="numeric"
+              value={distanceFrom}
+              error={distanceFromError}
+              errorMessage="Verdi mangler"
+              onChangeText={(value) => handleNumberChange(value, 'SET_DISTANCE_FROM', dispatch)}
+              icon={<FontAwesomeIcon icon={faRulerHorizontal} color={colors.secondary} />}
             />
             <Input
-              textAlign="center"
               inputStyle={{ width: 100 }}
-              icon={<FontAwesomeIcon icon={faRuler} color={colors.secondary} />}
-              labelStyle={{ textAlign: 'center', color: colors.primary }}
-              label="Vinkel"
-              placeholder="F.eks. 0"
-              keyboardType="numbers-and-punctuation"
-              onChange={(event) => handleAngleChange(event.nativeEvent.text, 1)}
+              labelStyle={{ textAlign: 'center' }}
+              onBlur={() => dispatch({ type: 'SET_DISTANCE_TO_ERROR', payload: false })}
+              label="Til avstand"
+              placeholder="F.eks. 90"
+              keyboardType="numeric"
+              value={distanceTo}
+              error={distanceToError}
+              onChangeText={(value) => handleNumberChange(value, 'SET_DISTANCE_TO', dispatch)}
+              errorMessage="Verdi mangler"
+              icon={<FontAwesomeIcon icon={faRulerHorizontal} color={colors.secondary} />}
             />
             <Input
-              textAlign="center"
               inputStyle={{ width: 100 }}
-              icon={<FontAwesomeIcon icon={faRuler} color={colors.secondary} />}
-              labelStyle={{ textAlign: 'center', color: colors.primary }}
-              label="Vinkel"
-              placeholder="F.eks. 30"
-              keyboardType="numbers-and-punctuation"
-              onChange={(event) => handleAngleChange(event.nativeEvent.text, 2)}
+              labelStyle={{ textAlign: 'center' }}
+              label="Intevall"
+              placeholder="F.eks. 10"
+              onBlur={() => dispatch({ type: 'SET_INTERVAL_ERROR', payload: false })}
+              keyboardType="numeric"
+              value={interval}
+              error={intervalError}
+              onChangeText={(value) => handleNumberChange(value, 'SET_INTERVAL', dispatch)}
+              errorMessage="Verdi mangler"
+              icon={<FontAwesomeIcon icon={faCrosshairs} color={colors.secondary} />}
             />
           </View>
-        )}
-        <View style={styles.buttons}>
-          <Button loading={status === 'pending'} width="auto" label="Beregn" onPress={handleSave} />
-          <Button
-            type="outline"
-            width="auto"
-            label="Lukk"
-            onPress={() => {
-              clearForm();
-              closeModal();
-            }}
-          />
+          <TouchableOpacity
+            style={styles.checkBox}
+            onPress={() => dispatch({ type: 'SET_ANGLES_VISIBLE', payload: !anglesVisible })}>
+            <FontAwesomeIcon icon={anglesVisible ? faChevronUp : faChevronDown} color={colors.secondary} />
+            <Text> Flere vinkler</Text>
+          </TouchableOpacity>
+          {anglesVisible && (
+            <View style={styles.angles}>
+              <Input
+                textAlign="center"
+                inputStyle={{ width: 100 }}
+                icon={<FontAwesomeIcon icon={faRuler} color={colors.secondary} />}
+                labelStyle={{ textAlign: 'center', color: colors.primary }}
+                label="Vinkel"
+                placeholder="F.eks. -30"
+                keyboardType="numbers-and-punctuation"
+                onChange={(event) => handleAngleChange(event.nativeEvent.text, 0)}
+              />
+              <Input
+                textAlign="center"
+                inputStyle={{ width: 100 }}
+                icon={<FontAwesomeIcon icon={faRuler} color={colors.secondary} />}
+                labelStyle={{ textAlign: 'center', color: colors.primary }}
+                label="Vinkel"
+                placeholder="F.eks. 0"
+                keyboardType="numbers-and-punctuation"
+                onChange={(event) => handleAngleChange(event.nativeEvent.text, 1)}
+              />
+              <Input
+                textAlign="center"
+                inputStyle={{ width: 100 }}
+                icon={<FontAwesomeIcon icon={faRuler} color={colors.secondary} />}
+                labelStyle={{ textAlign: 'center', color: colors.primary }}
+                label="Vinkel"
+                placeholder="F.eks. 30"
+                keyboardType="numbers-and-punctuation"
+                onChange={(event) => handleAngleChange(event.nativeEvent.text, 2)}
+              />
+            </View>
+          )}
+          <View style={styles.buttons}>
+            <Button loading={status === 'pending'} width="auto" label="Beregn" onPress={handleSave} />
+            <Button
+              type="outline"
+              width="auto"
+              label="Lukk"
+              onPress={() => {
+                clearForm();
+                closeModal();
+              }}
+            />
+          </View>
         </View>
-      </View>
-    </Modal>
+     </Modal>
+    </KeyboardAvoidingView>
   );
 };
