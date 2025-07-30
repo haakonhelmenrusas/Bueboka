@@ -15,13 +15,14 @@ export const styles = StyleSheet.create({
   arrowCount: {
     fontSize: 24,
     color: colors.dark_primary,
-    fontWeight: 'bold',
+    fontWeight: 500,
     textAlign: 'left',
     marginTop: 0,
   },
   trainingCard: {
     padding: 16,
-    margin: 8,
+    margin: 1,
+    marginVertical: 4,
     backgroundColor: colors.white,
     borderRadius: 8,
     shadowColor: colors.dark_primary,
@@ -34,6 +35,7 @@ export const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
   },
+
   
   
 });

@@ -12,6 +12,7 @@ interface TrainingListProps {
 }
 
 export default function TrainingList({ trainings }: TrainingListProps) {
+  trainings.sort((a, b) => b.date.getTime() - a.date.getTime()); // Sort trainings by date descending
   const renderTrainingList = () => {
     if (trainings && trainings.length > 0) {
       let today = new Date();
@@ -20,9 +21,9 @@ export default function TrainingList({ trainings }: TrainingListProps) {
           {trainings.map((training, index) =>
             isSameDay(today, training.date) ? (
               <View key={index}>
-                <Text >Dagens trening:</Text>
+                <Text style= {styles.subtitleToday} >I dag</Text>
                 <TrainingCard training={training} />
-                <Text> Eldre treninger:</Text>
+                <Text style= {styles.subtitlePast} >Eldre treninger</Text>
               </View>
             ) : (
               <TrainingCard key={index} training={training} />
