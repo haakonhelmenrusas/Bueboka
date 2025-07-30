@@ -15,7 +15,6 @@ export default function Summary({ trainings }: SummaryProps) {
         <View style={styles.textLine}><Text style={styles.subtitle}>Denne måneden </Text> <Text style={styles.arrowCount}> {sumArrows(trainings, "month")} </Text></View>
         <View style={styles.textLine}><Text style={styles.subtitle}>Totalt </Text> <Text style={styles.arrowCount}> {sumArrows(trainings)} </Text></View>
       </View>
-      
     </View>
   );
 }

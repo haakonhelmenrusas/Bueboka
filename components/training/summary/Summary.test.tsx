@@ -1,65 +1,63 @@
 import React from "react";
 import { render } from "@testing-library/react-native";
 import Summary from "./Summary";
-import { sumArrows } from "../helpers/sumArrows";
 import { Training } from "@/types";
-
-// Mock sumArrows
-jest.mock("../helpers/sumArrows");
-const mockedSumArrows = sumArrows as jest.MockedFunction<typeof sumArrows>;
-
-const mockTrainings: Training[] = [
-    { id: 1, arrows: 10, date: new Date("2024-06-01") } as Training,
-    { id: 2, arrows: 20, date: new Date("2024-06-02") } as Training,
-];
+import * as helpers from "../helpers/sumArrows";
 
 describe("Summary", () => {
+    const trainings: Training[] = [
+        // Add mock training objects as needed for your tests
+        { date: new Date("2024-07-01"), arrows: 10 },
+        { date: new Date("2024-07-28"), arrows: 15 },
+        { date: new Date("2024-06-05"), arrows: 20 },
+        { date: new Date("2024-05-20"), arrows: 5 },
+    ];
+
     beforeEach(() => {
-        mockedSumArrows.mockReset();
+        jest.spyOn(helpers, "sumArrows").mockImplementation((trainings, period) => {
+            if (period === "7days") return 15;
+            if (period === "month") return 25;
+            return 35;
+        });
     });
 
-    it("renders the title", () => {
-        mockedSumArrows.mockReturnValue(0);
-        const { getByText } = render(<Summary trainings={mockTrainings} />);
+    afterEach(() => {
+        jest.restoreAllMocks();
+    });
+
+    it("renders the summary title", () => {
+        const { getByText } = render(<Summary trainings={trainings} />);
         expect(getByText("Oppsummering")).toBeTruthy();
     });
 
-    it("calls sumArrows with '7days' and displays the result", () => {
-        mockedSumArrows.mockImplementation((trainings, period) => {
-            if (period === "7days") return 15;
-            return 0;
-        });
-        const { getByText } = render(<Summary trainings={mockTrainings} />);
-        expect(getByText(/Siste 7 dagene: 15/)).toBeTruthy();
-        expect(mockedSumArrows).toHaveBeenCalledWith(mockTrainings, "7days");
+    it("renders arrow counts for last 7 days", () => {
+        const { getByText } = render(<Summary trainings={trainings} />);
+        expect(getByText("Siste 7 dagene")).toBeTruthy();
+        expect(getByText("15")).toBeTruthy();
     });
 
-    it("calls sumArrows with 'month' and displays the result", () => {
-        mockedSumArrows.mockImplementation((trainings, period) => {
-            if (period === "month") return 25;
-            return 0;
-        });
-        const { getByText } = render(<Summary trainings={mockTrainings} />);
-        expect(getByText(/Denne måneden: 25/)).toBeTruthy();
-        expect(mockedSumArrows).toHaveBeenCalledWith(mockTrainings, "month");
+    it("renders arrow counts for this month", () => {
+        const { getByText } = render(<Summary trainings={trainings} />);
+        expect(getByText("Denne måneden")).toBeTruthy();
+        expect(getByText("25")).toBeTruthy();
     });
 
-    it("calls sumArrows with no period for total and displays the result", () => {
-        mockedSumArrows.mockImplementation((trainings, period) => {
-            if (!period) return 30;
-            return 0;
-        });
-        const { getByText } = render(<Summary trainings={mockTrainings} />);
-        expect(getByText(/Totalt: 30/)).toBeTruthy();
-        expect(mockedSumArrows).toHaveBeenCalledWith(mockTrainings);
+    it("renders total arrow count", () => {
+        const { getByText } = render(<Summary trainings={trainings} />);
+        expect(getByText("Totalt")).toBeTruthy();
+        expect(getByText("35")).toBeTruthy();
     });
 
-    it("renders correctly with empty trainings", () => {
-        mockedSumArrows.mockReturnValue(0);
-        const { getByText } = render(<Summary trainings={[]} />);
-        expect(getByText(/Siste 7 dagene: 0/)).toBeTruthy();
-        expect(getByText(/Denne måneden: 0/)).toBeTruthy();
-        expect(getByText(/Totalt: 0/)).toBeTruthy();
+    it("calls sumArrows with correct arguments", () => {
+        render(<Summary trainings={trainings} />);
+        expect(helpers.sumArrows).toHaveBeenCalledWith(trainings, "7days");
+        expect(helpers.sumArrows).toHaveBeenCalledWith(trainings, "month");
+        expect(helpers.sumArrows).toHaveBeenCalledWith(trainings);
+    });
+
+    it("renders correctly with empty trainings array", () => {
+        jest.spyOn(helpers, "sumArrows").mockImplementation(() => 0);
+        const { getAllByText } = render(<Summary trainings={[]} />);
+        expect(getAllByText("0")).toHaveLength(3);
     });
 });
-
