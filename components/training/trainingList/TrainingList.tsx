@@ -4,6 +4,7 @@ import { styles } from "./TrainingListStyles";
 import TrainingCard from "@/components/trainingCard/TrainingCard";
 import { Message } from "@/components/common";
 import { isSameDay } from 'date-fns';
+import { ScrollView } from "react-native-gesture-handler";
 
 
 interface TrainingListProps {
@@ -16,7 +17,6 @@ export default function TrainingList({ trainings }: TrainingListProps) {
       let today = new Date();
       return (
         <>
-          <Text style={styles.title}>Liste av treninger</Text>
           {trainings.map((training, index) =>
             isSameDay(today, training.date) ? (
               <View key={index}>
@@ -36,7 +36,10 @@ export default function TrainingList({ trainings }: TrainingListProps) {
   }
   return (
     <View style={styles.container}>
+      <Text style={styles.title}>Liste av treninger</Text>
+    <ScrollView >
       {renderTrainingList()}
+    </ScrollView>
     </View>
   );
 }

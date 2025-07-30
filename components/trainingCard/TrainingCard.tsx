@@ -1,4 +1,4 @@
-import { View, Text } from "react-native";
+import { View, Text, TouchableOpacity } from "react-native";
 import { Training } from "@/types";
 import { Button } from "../common";
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
@@ -11,13 +11,19 @@ interface TrainingCardProps {
 }
 export default function TrainingCard({ training }: TrainingCardProps) {
   return (
-    <View >
+    <View style={styles.trainingCard}>
       <View>
-        <Text>{training.date.toDateString()}</Text>
-        <Text>{training.arrows} piler</Text>
-        <Button label="" onPress={() => {}}> <FontAwesomeIcon style={styles.icon} icon={faInfoCircle} /></Button>
+        <Text style={styles.date}>{training.date.toLocaleDateString('nb-NO', {
+          year: 'numeric',
+          month: 'long',
+          day: 'numeric'
+        })}
+        </Text>
+        <Text style={styles.arrowCount}>{training.arrows} piler</Text>
       </View>
-      
+      <TouchableOpacity onPress={() => { }}>
+        <FontAwesomeIcon style={styles.icon} icon={faInfoCircle} />
+      </TouchableOpacity>
     </View>
   );
 }
