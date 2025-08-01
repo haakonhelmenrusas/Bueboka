@@ -17,6 +17,7 @@ import { Bow } from '@/types';
 import { styles } from './BowFormStyles';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faXmark } from '@fortawesome/free-solid-svg-icons/faXmark';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 interface BowFormProps {
   modalVisible: boolean;
@@ -100,7 +101,8 @@ const BowForm = ({ modalVisible, setModalVisible, bow }: BowFormProps) => {
         clearForm();
         setModalVisible(false);
       }}>
-      <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={{ flex: 1, marginTop: 24 }}>
+      <SafeAreaView style={{ flex: 1}}>
+      <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={{ flex: 1 }}>
         <ScrollView keyboardShouldPersistTaps="handled" contentContainerStyle={{ flexGrow: 1 }}>
           <Pressable style={{ flex: 1 }} onPress={() => Keyboard.dismiss()}>
             <View style={styles.modal}>
@@ -202,6 +204,7 @@ const BowForm = ({ modalVisible, setModalVisible, bow }: BowFormProps) => {
           </Pressable>
         </ScrollView>
       </KeyboardAvoidingView>
+      </SafeAreaView>
     </Modal>
   );
 };
