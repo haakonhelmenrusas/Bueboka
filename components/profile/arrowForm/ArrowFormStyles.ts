@@ -1,11 +1,9 @@
-import { Platform, StyleSheet } from 'react-native';
+import { StyleSheet } from 'react-native';
 
 export const styles = StyleSheet.create({
   modal: {
-    display: 'flex',
     flex: 1,
     padding: 16,
-    marginTop: Platform.OS === 'ios' ? 16 : 0,
   },
   titleContainer: {
     display: 'flex',
@@ -23,6 +21,7 @@ export const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     paddingVertical: 16,
+    marginTop: 'auto'
   },
   confirmOverlay: {
     flex: 1,

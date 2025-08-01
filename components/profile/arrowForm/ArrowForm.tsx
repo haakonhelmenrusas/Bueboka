@@ -7,10 +7,12 @@ import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faXmark } from '@fortawesome/free-solid-svg-icons/faXmark';
 import { useArrowForm } from '@/components/profile/arrowForm/useArrowForm';
 import { styles } from './ArrowFormStyles';
-import { faStar, faStarHalf } from '@fortawesome/free-solid-svg-icons';
+import { faStar } from '@fortawesome/free-solid-svg-icons';
+import { faStar as star } from '@fortawesome/free-regular-svg-icons';
 import { colors } from '@/styles/colors';
 import { faTrash } from '@fortawesome/free-solid-svg-icons/faTrash';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 interface Props {
   modalVisible: boolean;
@@ -105,10 +107,10 @@ export default function ArrowForm ({ modalVisible, setArrowModalVisible, arrowSe
         clearForm();
         setArrowModalVisible(false);
       }}>
-      <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={{ flex: 1, marginTop: 40 }}>
+      <SafeAreaView style={{ flex: 1}}>
+      <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={styles.modal}>
         <ScrollView keyboardShouldPersistTaps="handled" contentContainerStyle={{ flexGrow: 1 }}>
           <Pressable style={{ flex: 1 }} onPress={() => Keyboard.dismiss()}>
-            <View style={styles.modal}>
               <View style={styles.titleContainer}>
                 <Text style={styles.title}>Nytt pilsett</Text>
                 <Pressable
@@ -183,11 +185,11 @@ export default function ArrowForm ({ modalVisible, setArrowModalVisible, arrowSe
                 />
               </View>
               <Pressable style={styles.favorite} onPress={() => dispatch({type: 'SET_FAVORITE',payload: !isFavorite})}>
-                <FontAwesomeIcon icon={isFavorite ? faStar : faStarHalf} size={20} color={colors.warning} />
+                <FontAwesomeIcon icon={isFavorite ? faStar : star} size={20} color={colors.warning} />
                 <Text>{arrowSet?.isFavorite ? "Favoritt" : "Gjør til favoritt"}</Text>
               </Pressable>
               {arrowSet && (
-                <Button label="Slett" onPress={() => setConfirmVisible(true)} type="outline">
+                <Button variant='warning' label="Slett" onPress={() => setConfirmVisible(true)} type="outline">
                   <FontAwesomeIcon icon={faTrash} size={16} color={colors.warning} />
                 </Button>
               )}
@@ -202,7 +204,6 @@ export default function ArrowForm ({ modalVisible, setArrowModalVisible, arrowSe
                   label="Avbryt"
                 />
               </View>
-            </View>
           </Pressable>
         </ScrollView>
       </KeyboardAvoidingView>
@@ -223,6 +224,7 @@ export default function ArrowForm ({ modalVisible, setArrowModalVisible, arrowSe
           </View>
         </View>
       </Modal>
+      </SafeAreaView>
     </Modal>
   );
 };
