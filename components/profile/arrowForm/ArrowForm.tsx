@@ -24,9 +24,14 @@ interface Props {
 export default function ArrowForm ({ modalVisible, setArrowModalVisible, arrowSet, existingArrowSets }: Props) {
   const [confirmVisible, setConfirmVisible] = useState(false);
   const [{ name, material, weight, spine, length, diameter, numberOfArrows, isFavorite }, dispatch] = useArrowForm();
+  const [prevArrowSet, setPrevArrowSet] = useState<ArrowSet | null>(null);
 
   useEffect(() => {
     if (!modalVisible) return;
+
+    if (prevArrowSet !== null && arrowSet === null) {
+      clearForm();
+    }
 
     if (arrowSet) {
       dispatch({ type: 'SET_ARROW_NAME', payload: arrowSet.name });
@@ -37,9 +42,10 @@ export default function ArrowForm ({ modalVisible, setArrowModalVisible, arrowSe
       dispatch({ type: 'SET_MATERIAL', payload: arrowSet.material });
       dispatch({ type: 'SET_NUMBER_OF_ARROWS', payload: arrowSet.numberOfArrows ? arrowSet.numberOfArrows.toString() : '' });
       dispatch({ type: 'SET_FAVORITE', payload: arrowSet.isFavorite ?? false })
-    } else {
-      clearForm();
     }
+
+    setPrevArrowSet(arrowSet);
+
   }, [modalVisible, arrowSet]);
 
   const handleDeleteArrowSet = async (target: ArrowSet) => {
