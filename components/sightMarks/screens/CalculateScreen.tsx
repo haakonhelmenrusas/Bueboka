@@ -13,6 +13,7 @@ import MarksForm from '@/components/sightMarks/marksForm/MarksForm';
 import ConfirmRemoveMarks from '@/components/sightMarks/confirmRemoveMarks/ConfirmRemoveMarks';
 import { Button } from '@/components/common';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import { faPlus } from '@fortawesome/free-solid-svg-icons/faPlus';
 
 export default function CalculateScreen() {
   const [conformationModalVisible, setConformationModalVisible] = useState(false);
@@ -86,7 +87,7 @@ export default function CalculateScreen() {
 
   return (
     <GestureHandlerRootView style={styles.page}>
-      <View style={{ flex: 1 }}>
+      <View style={{ flex: 1, marginHorizontal: 8 }}>
         <Pressable style={{ flex: 1 }} onPress={() => {
           Keyboard.dismiss();
           setIsFormVisible(false);
@@ -95,6 +96,7 @@ export default function CalculateScreen() {
           <MarksTable ballistics={ballistics} removeMark={handleRemoveMark} />
           {ballistics && ballistics.given_marks.length > 0 && !isFormVisible && (
             <Button
+              buttonStyle={{ marginTop: 8 }}
               label="Tøm liste"
               type="outline"
               icon={<FontAwesomeIcon icon={faTrash} color={colors.secondary} />}
@@ -106,7 +108,9 @@ export default function CalculateScreen() {
       <View style={{ flex: 1, justifyContent: 'flex-end' }}>
         {!isFormVisible ? (
           <Button
-            label="Åpne skjema"
+            icon={<FontAwesomeIcon icon={faPlus} color={colors.tertiary} />}
+            iconPosition={'left'}
+            label="Nytt siktemerke"
             onPress={handleOpenForm}
             buttonStyle={{ marginHorizontal: 16, marginBottom: 16 }}
           />
