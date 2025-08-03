@@ -15,6 +15,7 @@ interface ButtonProps extends PressableProps {
   type?: 'filled' | 'outline';
   loading?: boolean;
   iconPosition?: 'left' | 'right';
+  variant?: 'standard' | 'warning';
 }
 
 const Button: React.FC<ButtonProps> = ({
@@ -27,10 +28,26 @@ const Button: React.FC<ButtonProps> = ({
   type = 'filled',
   loading = false,
   iconPosition = 'left',
+  variant = 'standard',
   ...props
 }) => {
-  const buttonColor = type === 'outline' ? colors.transparent : colors.primary;
-  const textColor = type === 'outline' ? colors.primary : colors.white;
+  const getColors = () => {
+    switch (variant) {
+      case 'warning':
+        return {
+          main: type === 'outline' ? colors.transparent : colors.error,
+          text: type === 'outline' ? colors.error : colors.white,
+        };
+      case 'standard':
+      default:
+        return {
+          main: type === 'outline' ? colors.transparent : colors.primary,
+          text: type === 'outline' ? colors.primary : colors.white,
+        };
+    }
+  };
+
+  const { main: buttonColor, text: textColor } = getColors();
 
   const renderContent = () => {
     const content = [
@@ -49,7 +66,7 @@ const Button: React.FC<ButtonProps> = ({
       style={({ pressed }) => [
         {
           opacity: disabled || loading ? 0.6 : pressed ? 0.8 : 1,
-          backgroundColor: buttonColor,
+          backgroundColor: type === 'outline' ? colors.transparent : buttonColor,
           justifyContent: 'center',
           alignItems: 'center',
           flexDirection: 'row',
