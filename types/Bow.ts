@@ -2,6 +2,7 @@
  * Interface representing a Bow.
  */
 export interface Bow {
+  id: string;
   /**
    * The name of the bow.
    */

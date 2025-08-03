@@ -9,7 +9,7 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { Button, Input } from '@/components/common';
 import { useBowForm } from './useBowForm';
 import { handleNumberChange, storeLocalStorage } from '@/utils';
@@ -18,14 +18,18 @@ import { styles } from './BowFormStyles';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faXmark } from '@fortawesome/free-solid-svg-icons/faXmark';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { faTrash } from '@fortawesome/free-solid-svg-icons/faTrash';
+import { colors } from '@/styles/colors';
 
 interface BowFormProps {
   modalVisible: boolean;
   setModalVisible: (visible: boolean) => void;
   bow: Bow | null;
+  existingBows: Bow[];
 }
 
-const BowForm = ({ modalVisible, setModalVisible, bow }: BowFormProps) => {
+const BowForm = ({ modalVisible, setModalVisible, bow, existingBows }: BowFormProps) => {
+  const [confirmVisible, setConfirmVisible] = useState(false);
   const [
     {
       bowName,
@@ -40,7 +44,16 @@ const BowForm = ({ modalVisible, setModalVisible, bow }: BowFormProps) => {
     dispatch,
   ] = useBowForm();
 
+  const [prevBow, setPrevBow] = useState<Bow | null>(null);
+
   useEffect(() => {
+    if (!modalVisible) return;
+
+    // Clear form if we're switching from editing to creating new
+    if (prevBow !== null && bow === null) {
+      clearForm();
+    }
+
     if (bow) {
       dispatch({ type: 'SET_BOW_NAME', payload: bow.bowName });
       dispatch({ type: 'SET_BOW_TYPE', payload: bow.bowType });
@@ -50,6 +63,9 @@ const BowForm = ({ modalVisible, setModalVisible, bow }: BowFormProps) => {
       dispatch({ type: 'SET_INTERVAL_SIGHT_REAL', payload: bow.interval_sight_real?.toString() ?? '' });
       dispatch({ type: 'SET_INTERVAL_SIGHT_MEASURE', payload: bow.interval_sight_measured?.toString() ?? '' });
     }
+
+    setPrevBow(bow);
+
   }, [bow, dispatch]);
 
   async function handleSubmit() {
@@ -57,7 +73,8 @@ const BowForm = ({ modalVisible, setModalVisible, bow }: BowFormProps) => {
       dispatch({ type: 'SET_BOW_NAME_ERROR', payload: true });
       return;
     }
-    let bow: Bow = {
+    let newBow: Bow = {
+      id: bow?.id || Date.now().toString(),
       bowName,
       bowType,
       placement,
@@ -67,10 +84,32 @@ const BowForm = ({ modalVisible, setModalVisible, bow }: BowFormProps) => {
       interval_sight_measured: intervalSightMeasure ? parseFloat(intervalSightMeasure) : undefined,
     };
 
-    await storeLocalStorage(bow, 'bow');
+    let updatedBows: Bow[];
+
+    if (bow) {
+      // Edit mode: replace the existing one by id
+      updatedBows = existingBows.map(b => b.id === bow.id ? newBow : b);
+    } else {
+      // Create mode: add new bow if limit not reached
+      if (existingBows.length >= 5) {
+        // Optional: show an error message here
+        return;
+      }
+      updatedBows = [...existingBows, newBow];
+    }
+
+    await storeLocalStorage(updatedBows, 'bows');
     clearForm();
     setModalVisible(false);
   }
+
+  const handleDelete = async () => {
+    if (!bow) return;
+    const updatedBows = existingBows.filter(b => b.id !== bow.id);
+    await storeLocalStorage(updatedBows, 'bows');
+    clearForm();
+    setModalVisible(false);
+  };
 
   function clearForm() {
     dispatch({ type: 'SET_BOW_NAME', payload: '' });
@@ -86,6 +125,11 @@ const BowForm = ({ modalVisible, setModalVisible, bow }: BowFormProps) => {
   const bowTypes = [
     { label: 'Recurve', value: 'recurve' },
     { label: 'Compound', value: 'compound' },
+    { label: 'Tradisjonell', value: 'tradisjonell' },
+    { label: 'Langbue', value: 'langbue' },
+    { label: 'Kyudo', value: 'kyudo' },
+    { label: 'Barebow', value: 'barebow' },
+    { label: 'Rytterbue', value: 'rytterbue' },
     { label: 'Annet', value: 'annet' },
   ];
   const alignment = [
@@ -190,6 +234,17 @@ const BowForm = ({ modalVisible, setModalVisible, bow }: BowFormProps) => {
                 />
               </View>
               <View style={{ marginTop: 'auto' }}>
+                {bow && (
+                  <Button
+                    variant="warning"
+                    label="Slett"
+                    onPress={() => setConfirmVisible(true)}
+                    type="outline"
+                  >
+                    <FontAwesomeIcon icon={faTrash} size={16} color={colors.warning} />
+                  </Button>
+                )}
+
                 <Button disabled={!bowName} onPress={handleSubmit} label="Lagre" />
                 <Button
                   type="outline"
@@ -205,6 +260,24 @@ const BowForm = ({ modalVisible, setModalVisible, bow }: BowFormProps) => {
         </ScrollView>
       </KeyboardAvoidingView>
       </SafeAreaView>
+      <Modal visible={confirmVisible} transparent animationType="fade">
+        <View style={styles.confirmOverlay}>
+          <View style={styles.confirmBox}>
+            <Text style={styles.confirmText}>Vil du slette denne buen?</Text>
+            <View style={styles.confirmActions}>
+              <Button label="Avbryt" type="outline" onPress={() => setConfirmVisible(false)} />
+              <Button
+                label="Slett"
+                onPress={() => {
+                  handleDelete();
+                  setConfirmVisible(false);
+                }}
+              />
+            </View>
+          </View>
+        </View>
+      </Modal>
+
     </Modal>
   );
 };

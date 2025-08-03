@@ -26,5 +26,11 @@ export const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: 'bold',
     marginBottom: 16,
-  }
+  },
+  bowList: {
+    flexGrow: 0,
+    maxHeight: 200,
+    marginBottom: 16,
+  },
+
 });

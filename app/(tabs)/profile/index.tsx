@@ -17,14 +17,15 @@ import ArrowForm from '@/components/profile/arrowForm/ArrowForm';
 export default function Profile() {
   const [bowModalVisible, setBowModalVisible] = useState(false);
   const [arrowModalVisible, setArrowModalVisible] = useState(false);
-  const [bow, setBow] = useState<Bow | null>(null);
+  const [bows, setBows] = useState<Bow[]>([]);
+  const [selectedBow, setSelectedBow] = useState<Bow | null>(null);
   const [arrowSets, setArrowSets] = useState<ArrowSet[]>([]);
   const [selectedArrowSet, setSelectedArrowSet] = useState<ArrowSet | null>(null);
 
   useEffect(() => {
-    getLocalStorage<Bow>('bow').then((bow) => {
-      if (bow) {
-        setBow(bow);
+    getLocalStorage<Bow[]>('bows').then((bows) => {
+      if (bows) {
+        setBows(bows);
       }
     });
   }, [bowModalVisible]);
@@ -35,27 +36,28 @@ export default function Profile() {
     });
   }, [arrowModalVisible]);
 
-  const openBowFormWithData = async () => {
-    try {
-      const storedData = await AsyncStorage.getItem('bow');
-      if (storedData !== null) {
-        setBow(JSON.parse(storedData));
-        setBowModalVisible(true);
-      }
-    } catch (error) {
-      Sentry.captureException(error);
-    }
+  const openBowFormWithData = (bow: Bow) => {
+    setSelectedBow(bow);
+    setBowModalVisible(true);
   };
 
   return (
     <View style={styles.container}>
       <View style={styles.bowContainer}>
         <Text style={styles.subtitle}>Bue</Text>
-      {bow ? (
-        <BowCard bow={bow} openFormWithData={openBowFormWithData} />
+        <ScrollView style={styles.bowList} contentContainerStyle={{ paddingBottom: 8, paddingHorizontal: 4 }}>
+          {bows.length > 0 ? (
+            bows.map((bow) => (
+              <BowCard
+                key={bow.id}
+                bow={bow}
+                openFormWithData={() => openBowFormWithData(bow)}
+              />
+            ))
       ) : (
         <Message title="Ingen bue" description="Du har ikke lagt til noen bue enda." />
       )}
+        </ScrollView>
       </View>
       <View>
         <Text style={styles.subtitle}>Pilsett</Text>
@@ -76,7 +78,12 @@ export default function Profile() {
           )}
         </ScrollView>
       </View>
-      <BowForm modalVisible={bowModalVisible} setModalVisible={setBowModalVisible} bow={bow} />
+      <BowForm
+        modalVisible={bowModalVisible}
+         setModalVisible={setBowModalVisible}
+         bow={selectedBow}
+         existingBows={bows}
+      />
       <ArrowForm
         modalVisible={arrowModalVisible}
         setArrowModalVisible={setArrowModalVisible}
@@ -94,7 +101,7 @@ export default function Profile() {
         />
         <Button
           onPress={() => {
-            setBow(null);
+            setSelectedBow(null);
             setBowModalVisible(true);
           }}
           icon={<FontAwesomeIcon icon={faPlus} size={16} color={colors.white} />}
