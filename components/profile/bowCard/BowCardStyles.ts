@@ -22,8 +22,8 @@ export const styles = StyleSheet.create({
     position: 'relative',
   },
   image: {
-    width: '50%',
-    height: 100,
+    width: '80%',
+    height: 80,
     marginBottom: 12,
   },
   name: {

@@ -2,14 +2,16 @@ import { Dimensions, StyleSheet } from 'react-native';
 import { colors } from '@/styles/colors';
 
 const windowWidth = Dimensions.get('window').width;
-const cardWidth = (windowWidth - 48) / 2; // 48 = padding (16) * 2 + gap between cards (16)
+const containerPadding = 16;
+const gridGap = 8;
+const cardWidth = (windowWidth - (containerPadding * 2) - (gridGap * 2)) / 3;
 
 export const styles = StyleSheet.create({
     container: {
         width: cardWidth,
         backgroundColor: colors.white,
         borderRadius: 12,
-        padding: 16,
+        padding: 12,
         alignItems: 'center',
         shadowColor: colors.dark_primary,
         shadowOffset: {
@@ -23,17 +25,18 @@ export const styles = StyleSheet.create({
     },
     image: {
         width: '50%',
-        height: 100,
+        height: 64,
         marginBottom: 12,
     },
     name: {
-        fontSize: 16,
+        fontSize: 14,
         fontWeight: '600',
         marginBottom: 4,
     },
     type: {
-        fontSize: 14,
+        fontSize: 12,
         color: colors.secondary,
+        textAlign: 'center',
     },
     starContainer: {
         position: 'absolute',
