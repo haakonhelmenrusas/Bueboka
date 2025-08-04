@@ -13,6 +13,7 @@ import ArrowCard from '@/components/profile/arrowCard/ArrowCard';
 import ArrowForm from '@/components/profile/arrowForm/ArrowForm';
 import BowDetails from '@/components/profile/bowDetails/BowDetails';
 import ArrowSetDetails from '@/components/profile/arrowSetDetails/ArrowSetDetails';
+import ProfileBox from '@/components/profile/profile/ProfileBox';
 
 export default function Profile() {
   const [bowModalVisible, setBowModalVisible] = useState(false);
@@ -23,6 +24,7 @@ export default function Profile() {
   const [selectedArrowSet, setSelectedArrowSet] = useState<ArrowSet | null>(null);
   const [selectedBowForDetails, setSelectedBowForDetails] = useState<Bow | null>(null);
   const [selectedArrowSetForDetails, setSelectedArrowSetForDetails] = useState<ArrowSet | null>(null);
+  const [isProfileModalVisible, setIsProfileModalVisible] = useState(false);
 
   useEffect(() => {
     getLocalStorage<Bow[]>('bows').then((bows) => {
@@ -43,9 +45,33 @@ export default function Profile() {
 
   return (
     <View style={styles.container}>
+      <ScrollView showsVerticalScrollIndicator={false}>
+        <ProfileBox
+          name="John Doe" // Replace with actual user data
+          club="Archery Club" // Replace with actual user data
+          onEdit={() => setIsProfileModalVisible(true)}
+        />
+        <View style={styles.actionButtons}>
+          <Button
+            onPress={() => {
+              setSelectedBow(null);
+              setBowModalVisible(true);
+            }}
+            icon={<FontAwesomeIcon icon={faPlus} size={16} color={colors.white} />}
+            label="Legg til bue"
+          />
+          <Button
+            onPress={() => {
+              setSelectedArrowSet(null);
+              setArrowModalVisible(true);
+            }}
+            icon={<FontAwesomeIcon icon={faPlus} size={16} color={colors.white} />}
+            label="Legg til pilsett"
+          />
+        </View>
       <View style={styles.bowContainer}>
         <Text style={styles.subtitle}>Bue</Text>
-        <ScrollView contentContainerStyle={styles.bowGrid}>
+        <View style={styles.bowGrid}>
           {sortedBows.length > 0 ? (
             sortedBows.map((bow) => (
               <BowCard
@@ -57,11 +83,11 @@ export default function Profile() {
       ) : (
         <Message title="Ingen bue" description="Du har ikke lagt til noen bue enda." />
       )}
-        </ScrollView>
+        </View>
       </View>
-      <View>
+      <View style={styles.arrowContainer}>
         <Text style={styles.subtitle}>Pilsett</Text>
-        <ScrollView contentContainerStyle={styles.arrowGrid}>
+        <View style={styles.arrowGrid}>
           {Array.isArray(sortedArrowSets) && sortedArrowSets.length > 0 ? (
             sortedArrowSets.map((arrowSet, index) => (
               <ArrowCard
@@ -73,8 +99,9 @@ export default function Profile() {
           ) : (
             <Message title="Ingen piler" description="Du har ikke lagt til noen piler enda." />
           )}
-        </ScrollView>
+        </View>
       </View>
+      </ScrollView>
       <BowForm
         modalVisible={bowModalVisible}
          setModalVisible={setBowModalVisible}
@@ -87,24 +114,6 @@ export default function Profile() {
         arrowSet={selectedArrowSet}
         existingArrowSets={arrowSets}
       />
-      <View style={styles.buttons}>
-        <Button
-          onPress={() => {
-            setSelectedArrowSet(null);
-            setArrowModalVisible(true);
-          }}
-          icon={<FontAwesomeIcon icon={faPlus} size={16} color={colors.white} />}
-          label="Legg til pilsett"
-        />
-        <Button
-          onPress={() => {
-            setSelectedBow(null);
-            setBowModalVisible(true);
-          }}
-          icon={<FontAwesomeIcon icon={faPlus} size={16} color={colors.white} />}
-          label="Legg til bue"
-        />
-      </View>
       {selectedBowForDetails && (
         <BowDetails
           bow={selectedBowForDetails}
