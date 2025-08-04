@@ -15,6 +15,7 @@ import BowDetails from '@/components/profile/bowDetails/BowDetails';
 import ArrowSetDetails from '@/components/profile/arrowSetDetails/ArrowSetDetails';
 import ProfileBox from '@/components/profile/profile/ProfileBox';
 import ProfileForm from '@/components/profile/profileForm/ProfileForm';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function Profile() {
   const [bowModalVisible, setBowModalVisible] = useState(false);
@@ -26,7 +27,8 @@ export default function Profile() {
   const [selectedBowForDetails, setSelectedBowForDetails] = useState<Bow | null>(null);
   const [selectedArrowSetForDetails, setSelectedArrowSetForDetails] = useState<ArrowSet | null>(null);
   const [isProfileModalVisible, setIsProfileModalVisible] = useState(false);
-  const [user, setUser] = useState<User>({ name: 'John Doe', club: 'Archery Club' });
+  const [user, setUser] = useState<User | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     getLocalStorage<Bow[]>('bows').then((bows) => {
@@ -43,10 +45,27 @@ export default function Profile() {
   }, [arrowModalVisible]);
 
   useEffect(() => {
-      getLocalStorage<User>('user').then((userData) => {
-        if (userData) setUser(userData);
-      });
+    const loadUser = async () => {
+      try {
+        const userData = await getLocalStorage<User>('user');
+        if (userData) {
+          setUser(userData);
+        } else {
+          // Set default user if no stored data
+          setUser({ name: 'Artemis Archer', club: 'Bueklubben' });
+        }
+      } catch (error) {
+        console.error('Error loading user data:', error);
+        // Set default user on error
+        setUser({ name: 'Artemis Archer', club: 'Bueklubben' });
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    loadUser();
   }, []);
+
 
   const handleProfileUpdate = async (updatedUser: User) => {
     setUser(updatedUser);
@@ -59,6 +78,15 @@ export default function Profile() {
 
   const sortedBows = useMemo(() => sortItems(bows), [bows]);
   const sortedArrowSets = useMemo(() => sortItems(arrowSets), [arrowSets]);
+
+  // Don't render the main content until we have user data
+  if (isLoading || !user) {
+    return (
+      <View style={styles.container}>
+        <Text>Laster...</Text>
+      </View>
+    );
+  }
 
   return (
     <View style={styles.container}>

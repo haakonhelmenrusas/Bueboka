@@ -33,7 +33,7 @@ export const styles = StyleSheet.create({
   },
   type: {
     fontSize: 14,
-    color: colors.inactive,
+    color: colors.secondary,
   },
   starContainer: {
     position: 'absolute',

@@ -4,22 +4,22 @@ import { colors } from '@/styles/colors';
 export const styles = StyleSheet.create({
   container: {
     backgroundColor: colors.white,
-    borderRadius: 16,
+    borderRadius: 8,
     padding: 24,
-    margin: 24,
+    margin: 16,
     shadowColor: colors.dark_primary,
     shadowOffset: {
       width: 2,
       height: 2,
     },
-    shadowOpacity: 0.3,
+    shadowOpacity: 0.15,
     shadowRadius: 3,
     elevation: 4,
   },
   content: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 16,
+    marginBottom: 8,
   },
   avatar: {
     width: 72,
@@ -44,7 +44,7 @@ export const styles = StyleSheet.create({
     flex: 1,
   },
   name: {
-    fontSize: 24,
+    fontSize: 20,
     fontWeight: 'bold',
     marginBottom: 4,
   },
