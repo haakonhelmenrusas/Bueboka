@@ -15,7 +15,6 @@ import BowDetails from '@/components/profile/bowDetails/BowDetails';
 import ArrowSetDetails from '@/components/profile/arrowSetDetails/ArrowSetDetails';
 import ProfileBox from '@/components/profile/profile/ProfileBox';
 import ProfileForm from '@/components/profile/profileForm/ProfileForm';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function Profile() {
   const [bowModalVisible, setBowModalVisible] = useState(false);
