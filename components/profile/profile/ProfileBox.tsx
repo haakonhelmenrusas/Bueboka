@@ -36,7 +36,7 @@ export default function ProfileBox({ user, avatarUrl, onEdit }: Props) {
         iconPosition='left'
         type='outline'
         icon={<FontAwesomeIcon icon={faPencil} size={16} />}
-        label='Rediger profile'
+        label='Rediger profil'
         onPress={onEdit}
       />
     </View>
