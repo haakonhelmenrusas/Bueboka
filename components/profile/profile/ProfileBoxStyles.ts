@@ -3,7 +3,7 @@ import { colors } from '@/styles/colors';
 
 export const styles = StyleSheet.create({
   container: {
-    backgroundColor: colors.white,
+    backgroundColor: colors.primary,
     borderRadius: 8,
     padding: 24,
     margin: 16,
@@ -25,7 +25,7 @@ export const styles = StyleSheet.create({
     width: 72,
     height: 72,
     borderRadius: 36,
-    backgroundColor: colors.primary,
+    backgroundColor: colors.secondary,
     justifyContent: 'center',
     alignItems: 'center',
     marginRight: 16,
@@ -47,9 +47,10 @@ export const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: 'bold',
     marginBottom: 4,
+    color: colors.white,
   },
   club: {
     fontSize: 16,
-    color: colors.secondary,
+    color: colors.tertiary,
   },
 });

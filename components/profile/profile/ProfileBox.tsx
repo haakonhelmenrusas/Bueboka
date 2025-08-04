@@ -4,6 +4,7 @@ import { faPencil } from '@fortawesome/free-solid-svg-icons';
 import { styles } from './ProfileBoxStyles';
 import { Button } from '@/components/common';
 import { User } from '@/types';
+import { colors } from '@/styles/colors';
 
 interface Props {
   user: User;
@@ -33,6 +34,8 @@ export default function ProfileBox({ user, avatarUrl, onEdit }: Props) {
         </View>
       </View>
       <Button
+        size='small'
+        buttonStyle={{ backgroundColor: colors.background}}
         iconPosition='left'
         type='outline'
         icon={<FontAwesomeIcon icon={faPencil} size={16} />}
