@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef } from 'react';
 import {
   View,
   Text,
@@ -8,7 +8,7 @@ import {
   Animated,
   Easing,
   StyleProp,
-  ViewStyle,
+  ViewStyle, Platform,
 } from 'react-native';
 import styles from './SelectStyles';
 import { colors } from '@/styles/colors';
@@ -75,21 +75,34 @@ export const Select: React.FC<Props> = ({ label, options, selectedValue, onValue
         <>
           <Pressable style={styles.overlay} onPress={toggleDropdown} />
           <View style={styles.dropdown}>
-            <ScrollView style={styles.scrollList}>
-              {options.map((item) => {
-                const isSelected = item.value === selectedValue;
-                return (
-                  <TouchableOpacity key={item.value} style={styles.option} onPress={() => handleSelect(item.value)}>
-                    <Text style={styles.optionText}>{item.label}</Text>
-                    {isSelected && (
-                      <FontAwesomeIcon icon={faCheck} size={16} color={colors.primary} />
-                    )}
-                  </TouchableOpacity>
-                );
-              })}
-            </ScrollView>
+              <ScrollView
+                style={styles.scrollContainer}
+                contentContainerStyle={styles.scrollContentContainer}
+                showsVerticalScrollIndicator={true}
+                nestedScrollEnabled
+                keyboardShouldPersistTaps="handled"
+              >
+                <View style={styles.optionsContainer}>
+                  {options.map((item) => (
+                    <Pressable
+                      key={item.value}
+                      style={[
+                        styles.option,
+                        item.value === selectedValue && { backgroundColor: colors.background }
+                      ]}
+                      onPress={() => handleSelect(item.value)}
+                      android_ripple={{ color: colors.tertiary }}
+                    >
+                      <Text style={styles.optionText}>{item.label}</Text>
+                      {item.value === selectedValue && (
+                        <FontAwesomeIcon icon={faCheck} size={16} color={colors.primary} />
+                      )}
+                    </Pressable>
+                  ))}
+                </View>
+              </ScrollView>
           </View>
-        </>
+          </>
       )}
     </View>
   );

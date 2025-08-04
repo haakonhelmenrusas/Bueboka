@@ -10,7 +10,7 @@ import {
   View,
 } from 'react-native';
 import { useEffect, useState } from 'react';
-import { Button, Input } from '@/components/common';
+import { Button, Input, Select } from '@/components/common';
 import { useBowForm } from './useBowForm';
 import { handleNumberChange, storeLocalStorage } from '@/utils';
 import { Bow } from '@/types';
@@ -134,21 +134,6 @@ const BowForm = ({ modalVisible, setModalVisible, bow, existingBows }: BowFormPr
     dispatch({ type: 'SET_FAVORITE', payload: false });
   }
 
-  const bowTypes = [
-    { label: 'Recurve', value: 'recurve' },
-    { label: 'Compound', value: 'compound' },
-    { label: 'Tradisjonell', value: 'tradisjonell' },
-    { label: 'Langbue', value: 'langbue' },
-    { label: 'Kyudo', value: 'kyudo' },
-    { label: 'Barebow', value: 'barebow' },
-    { label: 'Rytterbue', value: 'rytterbue' },
-    { label: 'Annet', value: 'annet' },
-  ];
-  const alignment = [
-    { label: 'Bak linja', value: 'behind' },
-    { label: 'Over linja', value: '' },
-  ];
-
   return (
     <Modal
       animationType="slide"
@@ -176,48 +161,36 @@ const BowForm = ({ modalVisible, setModalVisible, bow, existingBows }: BowFormPr
                 value={bowName}
                 onChangeText={(value) => dispatch({ type: 'SET_BOW_NAME', payload: value })}
                 placeholderText="F.eks. Hoyt"
-                label="Navn på bue"
+                label="Navn på bue (obligatorisk)"
                 error={bowNameError}
                 errorMessage="Du må fylle inn navn på bue"
               />
-              <View style={styles.radioContainer}>
-                <Text style={styles.bowTypeLabel}>Buetype</Text>
-                <View style={{ flexDirection: 'row' }}>
-                  {bowTypes.map((bow) => (
-                    <TouchableOpacity
-                      key={bow.value}
-                      style={[
-                        styles.radioButtonContainer,
-                        bowType === bow.value && styles.radioButtonContainerSelected,
-                      ]}
-                      onPress={() => {
-                        dispatch({ type: 'SET_BOW_TYPE', payload: bow.value });
-                      }}>
-                      <View style={[styles.radioButton, bowType === bow.value && styles.radioButtonSelected]} />
-                      <Text style={styles.radioButtonLabel}>{bow.label}</Text>
-                    </TouchableOpacity>
-                  ))}
-                </View>
+              <View style={{ zIndex: 2000, marginTop: 16 }}>
+                <Select
+                  label="Buetype"
+                  selectedValue={bowType}
+                  options={[
+                    { label: 'Recurve', value: 'recurve' },
+                    { label: 'Compound', value: 'compound' },
+                    { label: 'Tradisjonell', value: 'tradisjonell' },
+                    { label: 'Langbue', value: 'langbue' },
+                    { label: 'Kyudo', value: 'kyudo' },
+                    { label: 'Barebow', value: 'barebow' },
+                    { label: 'Rytterbue', value: 'rytterbue' },
+                    { label: 'Annet', value: 'annet' },
+                  ]}
+                  onValueChange={(value) => dispatch({ type: 'SET_BOW_TYPE', payload: value })}
+                />
               </View>
-              <View>
-                <Text style={styles.bowTypeLabel}>Plassering</Text>
-                <View style={{ flexDirection: 'row', justifyContent: 'space-around' }}>
-                  {alignment.map((place) => (
-                    <TouchableOpacity
-                      key={place.value}
-                      style={[
-                        styles.radioButtonContainer,
-                        placement === place.value && styles.radioButtonContainerSelected,
-                      ]}
-                      onPress={() => {
-                        dispatch({ type: 'SET_PLACEMENT', payload: place.value });
-                      }}>
-                      <View style={[styles.radioButton, placement === place.value && styles.radioButtonSelected]} />
-                      <Text style={styles.radioButtonLabel}>{place.label}</Text>
-                    </TouchableOpacity>
-                  ))}
-                </View>
-              </View>
+              <Select
+                label="Plassering"
+                selectedValue={placement}
+                options={[
+                  { label: 'Bak linja', value: 'behind' },
+                  { label: 'Over linja', value: '' },
+                ]}
+                onValueChange={(value) => dispatch({ type: 'SET_PLACEMENT', payload: value })}
+              />
               <View style={{ flexDirection: 'row', justifyContent: 'space-around', marginTop: 16 }}>
                 <Input
                   containerStyle={{ flex: 1, marginRight: 8 }}
