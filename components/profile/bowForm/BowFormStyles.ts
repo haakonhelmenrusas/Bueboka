@@ -92,5 +92,11 @@ export const styles = StyleSheet.create({
     justifyContent: 'space-between',
     gap: 16,
   },
+  favorite: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+    marginVertical: 16,
+  },
 
 });

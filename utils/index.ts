@@ -7,3 +7,5 @@ export { default as useCalculateMarks } from './hooks/useCalculateMarks';
 export { handleNumberChange } from './helpers/handleNumberChange';
 export { checkDecimalCount } from './helpers/handleNumberChange';
 export { setFavoriteArrowSet } from './helpers/setFavoriteArrowSet';
+export { setFavoriteBow } from './helpers/setFavoriteBow';
+export { sortItems } from './helpers/sortItems';

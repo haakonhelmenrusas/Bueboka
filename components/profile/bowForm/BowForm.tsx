@@ -19,6 +19,8 @@ import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faXmark } from '@fortawesome/free-solid-svg-icons/faXmark';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { faTrash } from '@fortawesome/free-solid-svg-icons/faTrash';
+import { faStar } from '@fortawesome/free-solid-svg-icons';
+import { faStar as star } from '@fortawesome/free-regular-svg-icons';
 import { colors } from '@/styles/colors';
 
 interface BowFormProps {
@@ -40,10 +42,10 @@ const BowForm = ({ modalVisible, setModalVisible, bow, existingBows }: BowFormPr
       eyeToAim,
       interval_sight_real,
       intervalSightMeasure,
+      isFavorite,
     },
     dispatch,
   ] = useBowForm();
-
   const [prevBow, setPrevBow] = useState<Bow | null>(null);
 
   useEffect(() => {
@@ -62,6 +64,7 @@ const BowForm = ({ modalVisible, setModalVisible, bow, existingBows }: BowFormPr
       dispatch({ type: 'SET_EYE_TO_AIM', payload: bow.eyeToAim?.toString() ?? '' });
       dispatch({ type: 'SET_INTERVAL_SIGHT_REAL', payload: bow.interval_sight_real?.toString() ?? '' });
       dispatch({ type: 'SET_INTERVAL_SIGHT_MEASURE', payload: bow.interval_sight_measured?.toString() ?? '' });
+      dispatch({ type: 'SET_FAVORITE', payload: bow.isFavorite ?? false });
     }
 
     setPrevBow(bow);
@@ -82,6 +85,7 @@ const BowForm = ({ modalVisible, setModalVisible, bow, existingBows }: BowFormPr
       eyeToAim: eyeToAim ? parseFloat(eyeToAim) : undefined,
       interval_sight_real: interval_sight_real ? parseFloat(interval_sight_real) : undefined,
       interval_sight_measured: intervalSightMeasure ? parseFloat(intervalSightMeasure) : undefined,
+      isFavorite
     };
 
     let updatedBows: Bow[];
@@ -92,10 +96,17 @@ const BowForm = ({ modalVisible, setModalVisible, bow, existingBows }: BowFormPr
     } else {
       // Create mode: add new bow if limit not reached
       if (existingBows.length >= 5) {
-        // Optional: show an error message here
+        //TODO: Add error message to user here
         return;
       }
       updatedBows = [...existingBows, newBow];
+    }
+
+    if (newBow.isFavorite) {
+      updatedBows = updatedBows.map(b => ({
+        ...b,
+        isFavorite: b.id === newBow.id
+      }));
     }
 
     await storeLocalStorage(updatedBows, 'bows');
@@ -120,6 +131,7 @@ const BowForm = ({ modalVisible, setModalVisible, bow, existingBows }: BowFormPr
     dispatch({ type: 'SET_EYE_TO_AIM', payload: '' });
     dispatch({ type: 'SET_INTERVAL_SIGHT_REAL', payload: '' });
     dispatch({ type: 'SET_INTERVAL_SIGHT_MEASURE', payload: '' });
+    dispatch({ type: 'SET_FAVORITE', payload: false });
   }
 
   const bowTypes = [
@@ -233,6 +245,18 @@ const BowForm = ({ modalVisible, setModalVisible, bow, existingBows }: BowFormPr
                   onChangeText={(value) => handleNumberChange(value, 'SET_INTERVAL_SIGHT_REAL', dispatch)}
                 />
               </View>
+              <Pressable
+                style={styles.favorite}
+                onPress={() => dispatch({type: 'SET_FAVORITE', payload: !isFavorite})}
+              >
+                <FontAwesomeIcon
+                  icon={isFavorite ? faStar : star}
+                  size={20}
+                  color={colors.warning}
+                />
+                <Text>{bow?.isFavorite ? "Favoritt" : "Gjør til favoritt"}</Text>
+              </Pressable>
+
               <View style={{ marginTop: 'auto' }}>
                 {bow && (
                   <Button
@@ -244,7 +268,6 @@ const BowForm = ({ modalVisible, setModalVisible, bow, existingBows }: BowFormPr
                     <FontAwesomeIcon icon={faTrash} size={16} color={colors.warning} />
                   </Button>
                 )}
-
                 <Button disabled={!bowName} onPress={handleSubmit} label="Lagre" />
                 <Button
                   type="outline"

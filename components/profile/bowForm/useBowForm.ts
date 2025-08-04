@@ -9,6 +9,7 @@ interface BowTypeState {
   eyeToAim: string;
   interval_sight_real: string;
   intervalSightMeasure: string;
+  isFavorite: boolean;
 }
 
 export type Action =
@@ -19,7 +20,8 @@ export type Action =
   | { type: 'SET_EYE_TO_NOCK'; payload: string }
   | { type: 'SET_EYE_TO_AIM'; payload: string }
   | { type: 'SET_INTERVAL_SIGHT_REAL'; payload: string }
-  | { type: 'SET_INTERVAL_SIGHT_MEASURE'; payload: string };
+  | { type: 'SET_INTERVAL_SIGHT_MEASURE'; payload: string }
+  | { type: 'SET_FAVORITE'; payload: boolean };
 
 function reducer(state: BowTypeState, action: Action): BowTypeState {
   switch (action.type) {
@@ -39,6 +41,8 @@ function reducer(state: BowTypeState, action: Action): BowTypeState {
       return { ...state, interval_sight_real: action.payload };
     case 'SET_INTERVAL_SIGHT_MEASURE':
       return { ...state, intervalSightMeasure: action.payload };
+    case 'SET_FAVORITE':
+      return { ...state, isFavorite: action.payload };
     default:
       return state;
   }
@@ -54,6 +58,7 @@ export const useBowForm = () => {
     eyeToAim: '',
     interval_sight_real: '',
     intervalSightMeasure: '',
+    isFavorite: false,
   };
   return useReducer(reducer, INITIAL_STATE);
 };

@@ -1,14 +1,12 @@
 import { ScrollView, Text, View } from 'react-native';
-import { useEffect, useState } from 'react';
-import * as Sentry from '@sentry/react-native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useEffect, useMemo, useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faPlus } from '@fortawesome/free-solid-svg-icons/faPlus';
 import BowCard from '@/components/profile/bowCard/BowCard';
 import { Button, Message } from '@/components/common';
 import BowForm from '@/components/profile/bowForm/BowForm';
 import { ArrowSet, Bow } from '@/types';
-import { getLocalStorage } from '@/utils';
+import { getLocalStorage, sortItems } from '@/utils';
 import { styles } from '@/components/profile/ProfileStyles';
 import { colors } from '@/styles/colors';
 import ArrowCard from '@/components/profile/arrowCard/ArrowCard';
@@ -36,6 +34,9 @@ export default function Profile() {
     });
   }, [arrowModalVisible]);
 
+  const sortedBows = useMemo(() => sortItems(bows), [bows]);
+  const sortedArrowSets = useMemo(() => sortItems(arrowSets), [arrowSets]);
+
   const openBowFormWithData = (bow: Bow) => {
     setSelectedBow(bow);
     setBowModalVisible(true);
@@ -46,8 +47,8 @@ export default function Profile() {
       <View style={styles.bowContainer}>
         <Text style={styles.subtitle}>Bue</Text>
         <ScrollView style={styles.bowList} contentContainerStyle={{ paddingBottom: 8, paddingHorizontal: 4 }}>
-          {bows.length > 0 ? (
-            bows.map((bow) => (
+          {sortedBows.length > 0 ? (
+            sortedBows.map((bow) => (
               <BowCard
                 key={bow.id}
                 bow={bow}
@@ -62,8 +63,8 @@ export default function Profile() {
       <View>
         <Text style={styles.subtitle}>Pilsett</Text>
         <ScrollView style={styles.scrollList} contentContainerStyle={{ paddingBottom: 8, paddingHorizontal: 4 }}>
-          {Array.isArray(arrowSets) && arrowSets.length > 0 ? (
-            arrowSets.map((arrowSet, index) => (
+          {Array.isArray(sortedArrowSets) && sortedArrowSets.length > 0 ? (
+            sortedArrowSets.map((arrowSet, index) => (
               <ArrowCard
                 key={index}
                 arrowSet={arrowSet}

@@ -6,6 +6,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faCog } from '@fortawesome/free-solid-svg-icons/faCog';
 import { styles } from './BowCardStyles';
 import { colors } from '@/styles/colors';
+import { faStar } from '@fortawesome/free-solid-svg-icons';
 
 interface BowCardProps {
   bow: Bow;
@@ -13,10 +14,11 @@ interface BowCardProps {
 }
 
 const BowCard: FC<BowCardProps> = ({ bow, openFormWithData }) => {
-  const { bowName, bowType, placement, eyeToAim, eyeToNock, interval_sight_real } = bow;
+  const { bowName, bowType, placement, eyeToAim, eyeToNock, interval_sight_real, isFavorite } = bow;
   return (
     <View style={styles.container}>
       <View style={styles.header}>
+        {isFavorite && <FontAwesomeIcon testID="favorite-icon" style={{ marginRight: 4 }} icon={faStar} size={18} color={colors.warning} />}
         <Image source={require('@/assets/bow.png')} style={[styles.image, { tintColor: colors.tertiary }]} />
         <Text style={styles.title}>{bowName}</Text>
         <TouchableOpacity onPress={openFormWithData} style={styles.cogIcon}>
