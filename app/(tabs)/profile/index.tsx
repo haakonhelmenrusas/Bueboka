@@ -11,6 +11,7 @@ import { styles } from '@/components/profile/ProfileStyles';
 import { colors } from '@/styles/colors';
 import ArrowCard from '@/components/profile/arrowCard/ArrowCard';
 import ArrowForm from '@/components/profile/arrowForm/ArrowForm';
+import BowDetails from '@/components/profile/bowDetails/BowDetails';
 
 export default function Profile() {
   const [bowModalVisible, setBowModalVisible] = useState(false);
@@ -19,6 +20,7 @@ export default function Profile() {
   const [selectedBow, setSelectedBow] = useState<Bow | null>(null);
   const [arrowSets, setArrowSets] = useState<ArrowSet[]>([]);
   const [selectedArrowSet, setSelectedArrowSet] = useState<ArrowSet | null>(null);
+  const [selectedBowForDetails, setSelectedBowForDetails] = useState<Bow | null>(null);
 
   useEffect(() => {
     getLocalStorage<Bow[]>('bows').then((bows) => {
@@ -37,22 +39,17 @@ export default function Profile() {
   const sortedBows = useMemo(() => sortItems(bows), [bows]);
   const sortedArrowSets = useMemo(() => sortItems(arrowSets), [arrowSets]);
 
-  const openBowFormWithData = (bow: Bow) => {
-    setSelectedBow(bow);
-    setBowModalVisible(true);
-  };
-
   return (
     <View style={styles.container}>
       <View style={styles.bowContainer}>
         <Text style={styles.subtitle}>Bue</Text>
-        <ScrollView style={styles.bowList} contentContainerStyle={{ paddingBottom: 8, paddingHorizontal: 4 }}>
+        <ScrollView contentContainerStyle={styles.bowGrid}>
           {sortedBows.length > 0 ? (
             sortedBows.map((bow) => (
               <BowCard
                 key={bow.id}
                 bow={bow}
-                openFormWithData={() => openBowFormWithData(bow)}
+                onPress={() => setSelectedBowForDetails(bow)}
               />
             ))
       ) : (
@@ -109,6 +106,18 @@ export default function Profile() {
           label="Legg til bue"
         />
       </View>
+      {selectedBowForDetails && (
+        <BowDetails
+          bow={selectedBowForDetails}
+          visible={!!selectedBowForDetails}
+          onClose={() => setSelectedBowForDetails(null)}
+          onEdit={() => {
+            setSelectedBow(selectedBowForDetails);
+            setBowModalVisible(true);
+            setSelectedBowForDetails(null);
+          }}
+        />
+      )}
     </View>
   );
 }

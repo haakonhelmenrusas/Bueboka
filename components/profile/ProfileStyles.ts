@@ -27,10 +27,10 @@ export const styles = StyleSheet.create({
     fontWeight: 'bold',
     marginBottom: 16,
   },
-  bowList: {
-    flexGrow: 0,
-    maxHeight: 200,
-    marginBottom: 16,
+  bowGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'space-between',
+    paddingHorizontal: 8,
   },
-
 });

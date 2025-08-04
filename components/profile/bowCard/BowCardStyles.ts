@@ -1,60 +1,43 @@
+
 import { StyleSheet } from 'react-native';
 import { colors } from '@/styles/colors';
 
 export const styles = StyleSheet.create({
   container: {
-    alignContent: 'center',
-    width: '100%',
-    marginHorizontal: 'auto',
+    flex: 1,
     backgroundColor: colors.white,
-    borderRadius: 8,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 0 },
-    shadowOpacity: 0.25,
-    shadowRadius: 4,
-    elevation: 3,
-  },
-  header: {
-    display: 'flex',
-    flexDirection: 'row',
-    paddingVertical: 8,
-    paddingHorizontal: 16,
+    borderRadius: 12,
+    padding: 16,
+    margin: 8,
     alignItems: 'center',
-    borderTopEndRadius: 8,
-    borderTopStartRadius: 8,
-    backgroundColor: colors.primary,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.1,
+    shadowRadius: 3.84,
+    elevation: 5,
+    position: 'relative',
   },
   image: {
-    width: 20,
-    height: 20,
-    resizeMode: 'contain',
-    marginRight: 16,
+    width: '80%',
+    height: 100,
+    marginBottom: 12,
   },
-  title: {
-    fontSize: 20,
-    color: colors.tertiary,
-    fontWeight: 'medium',
-  },
-  cogIcon: {
-    marginLeft: 'auto',
-    padding: 4,
-  },
-  body: {
-    display: 'flex',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    padding: 16,
-  },
-  column: {
-    flex: 1,
-  },
-  head: {
+  name: {
     fontSize: 16,
     fontWeight: '600',
     marginBottom: 4,
   },
-  text: {
+  type: {
     fontSize: 14,
-    marginBottom: 16,
+    color: colors.inactive,
+  },
+  starContainer: {
+    position: 'absolute',
+    top: 8,
+    right: 8,
+    zIndex: 1,
   },
 });
