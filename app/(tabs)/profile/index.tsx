@@ -5,8 +5,8 @@ import { faPlus } from '@fortawesome/free-solid-svg-icons/faPlus';
 import BowCard from '@/components/profile/bowCard/BowCard';
 import { Button, Message } from '@/components/common';
 import BowForm from '@/components/profile/bowForm/BowForm';
-import { ArrowSet, Bow } from '@/types';
-import { getLocalStorage, sortItems } from '@/utils';
+import { ArrowSet, Bow, User } from '@/types';
+import { getLocalStorage, sortItems, storeLocalStorage } from '@/utils';
 import { styles } from '@/components/profile/ProfileStyles';
 import { colors } from '@/styles/colors';
 import ArrowCard from '@/components/profile/arrowCard/ArrowCard';
@@ -14,6 +14,7 @@ import ArrowForm from '@/components/profile/arrowForm/ArrowForm';
 import BowDetails from '@/components/profile/bowDetails/BowDetails';
 import ArrowSetDetails from '@/components/profile/arrowSetDetails/ArrowSetDetails';
 import ProfileBox from '@/components/profile/profile/ProfileBox';
+import ProfileForm from '@/components/profile/profileForm/ProfileForm';
 
 export default function Profile() {
   const [bowModalVisible, setBowModalVisible] = useState(false);
@@ -25,6 +26,7 @@ export default function Profile() {
   const [selectedBowForDetails, setSelectedBowForDetails] = useState<Bow | null>(null);
   const [selectedArrowSetForDetails, setSelectedArrowSetForDetails] = useState<ArrowSet | null>(null);
   const [isProfileModalVisible, setIsProfileModalVisible] = useState(false);
+  const [user, setUser] = useState<User>({ name: 'John Doe', club: 'Archery Club' });
 
   useEffect(() => {
     getLocalStorage<Bow[]>('bows').then((bows) => {
@@ -40,6 +42,21 @@ export default function Profile() {
     });
   }, [arrowModalVisible]);
 
+  useEffect(() => {
+      getLocalStorage<User>('user').then((userData) => {
+        if (userData) setUser(userData);
+      });
+  }, []);
+
+  const handleProfileUpdate = async (updatedUser: User) => {
+    setUser(updatedUser);
+    try {
+      await storeLocalStorage(JSON.stringify(updatedUser), 'user');
+    } catch (error) {
+      console.error('Error saving user data:', error);
+    }
+  };
+
   const sortedBows = useMemo(() => sortItems(bows), [bows]);
   const sortedArrowSets = useMemo(() => sortItems(arrowSets), [arrowSets]);
 
@@ -47,9 +64,14 @@ export default function Profile() {
     <View style={styles.container}>
       <ScrollView showsVerticalScrollIndicator={false}>
         <ProfileBox
-          name="John Doe" // Replace with actual user data
-          club="Archery Club" // Replace with actual user data
+          user={user}
           onEdit={() => setIsProfileModalVisible(true)}
+        />
+        <ProfileForm
+          modalVisible={isProfileModalVisible}
+          setModalVisible={setIsProfileModalVisible}
+          user={user}
+          onSave={handleProfileUpdate}
         />
         <View style={styles.actionButtons}>
           <Button

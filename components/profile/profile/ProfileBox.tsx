@@ -3,15 +3,15 @@ import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faPencil } from '@fortawesome/free-solid-svg-icons';
 import { styles } from './ProfileBoxStyles';
 import { Button } from '@/components/common';
+import { User } from '@/types';
 
 interface Props {
-  name: string;
-  club: string;
+  user: User;
   avatarUrl?: string;
   onEdit: () => void;
 }
 
-export default function ProfileBox({ name, club, avatarUrl, onEdit }: Props) {
+export default function ProfileBox({ user, avatarUrl, onEdit }: Props) {
   return (
     <View style={styles.container}>
       <View style={styles.content}>
@@ -23,13 +23,13 @@ export default function ProfileBox({ name, club, avatarUrl, onEdit }: Props) {
             />
           ) : (
             <Text style={styles.avatarInitial}>
-              {name.charAt(0).toUpperCase()}
+              {user.name.charAt(0).toUpperCase()}
             </Text>
           )}
         </View>
         <View style={styles.info}>
-          <Text style={styles.name}>{name}</Text>
-          <Text style={styles.club}>{club}</Text>
+          <Text style={styles.name}>{user.name}</Text>
+          {user.club && <Text style={styles.club}>{user.club}</Text>}
         </View>
       </View>
       <Button

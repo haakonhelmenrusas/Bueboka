@@ -8,3 +8,4 @@ export type { Bow } from './Bow';
 export { Status } from './Status';
 export type { ArrowSet } from './ArrowSet';
 export { Material } from './ArrowSet';
+export type { User } from './User';
