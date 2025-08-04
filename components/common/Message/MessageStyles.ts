@@ -5,15 +5,18 @@ export const styles = StyleSheet.create({
   messageContainer: {
     backgroundColor: colors.tertiary,
     borderRadius: 12,
+    borderWidth: 1,
+    borderColor: colors.secondary,
     padding: 16,
     alignItems: 'center',
     justifyContent: 'center',
     height: 'auto',
+    width: '100%',
   },
   messageTitle: {
     color: colors.primary,
-    fontSize: 20,
-    fontWeight: '500',
+    fontSize: 18,
+    fontWeight: 500,
     marginBottom: 16,
   },
   icon: {
@@ -22,6 +25,7 @@ export const styles = StyleSheet.create({
   messageText: {
     color: colors.primary,
     fontSize: 16,
-    marginBottom: 16,
+    marginBottom: 8,
+    textAlign: 'center',
   },
 });
