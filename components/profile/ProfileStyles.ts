@@ -10,10 +10,6 @@ export const styles = StyleSheet.create({
   bowContainer: {
     marginBottom: 16,
   },
-  scrollList: {
-    flexGrow: 0,
-    maxHeight: 200,
-  },
   buttons: {
     marginTop: 'auto',
     display: 'flex',
@@ -24,13 +20,20 @@ export const styles = StyleSheet.create({
   },
   subtitle: {
     fontSize: 20,
-    fontWeight: 'bold',
-    marginBottom: 16,
+    fontWeight: 500,
+    marginBottom: 8,
   },
   bowGrid: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    justifyContent: 'space-between',
-    paddingHorizontal: 8,
+    gap: 8,
+    padding: 8,
   },
+  arrowGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 8,
+    padding: 8,
+  },
+
 });

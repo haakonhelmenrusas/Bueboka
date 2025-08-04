@@ -1,27 +1,28 @@
-
-import { StyleSheet } from 'react-native';
+import { Dimensions, StyleSheet } from 'react-native';
 import { colors } from '@/styles/colors';
+
+const windowWidth = Dimensions.get('window').width;
+const cardWidth = (windowWidth - 48) / 2;
 
 export const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    width: cardWidth,
     backgroundColor: colors.white,
     borderRadius: 12,
     padding: 16,
-    margin: 8,
     alignItems: 'center',
-    shadowColor: '#000',
+    shadowColor: colors.dark_primary,
     shadowOffset: {
       width: 0,
       height: 2,
     },
-    shadowOpacity: 0.1,
-    shadowRadius: 3.84,
-    elevation: 5,
+    shadowOpacity: 0.2,
+    shadowRadius: 3,
+    elevation: 3,
     position: 'relative',
   },
   image: {
-    width: '80%',
+    width: '50%',
     height: 100,
     marginBottom: 12,
   },

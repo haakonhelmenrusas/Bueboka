@@ -1,51 +1,44 @@
-import { StyleSheet } from 'react-native';
+import { Dimensions, StyleSheet } from 'react-native';
 import { colors } from '@/styles/colors';
+
+const windowWidth = Dimensions.get('window').width;
+const cardWidth = (windowWidth - 48) / 2; // 48 = padding (16) * 2 + gap between cards (16)
 
 export const styles = StyleSheet.create({
     container: {
-        alignContent: 'center',
-        width: '100%',
-        marginBottom: 8,
+        width: cardWidth,
         backgroundColor: colors.white,
-        borderRadius: 8,
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: 0 },
-        shadowOpacity: 0.25,
-        shadowRadius: 4,
-        elevation: 3,
-    },
-    header: {
-        display: 'flex',
-        flexDirection: 'row',
-        paddingVertical: 8,
-        paddingHorizontal: 16,
-        alignItems: 'center',
-        borderTopEndRadius: 8,
-        borderTopStartRadius: 8,
-        backgroundColor: colors.secondary,
-    },
-    title: {
-        fontSize: 20,
-        color: colors.tertiary,
-        fontWeight: 'medium',
-    },
-    cogIcon: {
-        marginLeft: 'auto',
-        padding: 4,
-    },
-    body: {
-        display: 'flex',
-        flexDirection: 'row',
-        justifyContent: 'space-between',
+        borderRadius: 12,
         padding: 16,
+        alignItems: 'center',
+        shadowColor: colors.dark_primary,
+        shadowOffset: {
+            width: 0,
+            height: 2,
+        },
+        shadowOpacity: 0.2,
+        shadowRadius: 3,
+        elevation: 3,
+        position: 'relative',
     },
-    head: {
+    image: {
+        width: '50%',
+        height: 100,
+        marginBottom: 12,
+    },
+    name: {
         fontSize: 16,
         fontWeight: '600',
         marginBottom: 4,
     },
-    text: {
-        fontSize: 16,
-        marginBottom: 16,
+    type: {
+        fontSize: 14,
+        color: colors.secondary,
+    },
+    starContainer: {
+        position: 'absolute',
+        top: 8,
+        right: 8,
+        zIndex: 1,
     },
 });

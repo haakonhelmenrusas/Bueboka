@@ -12,6 +12,7 @@ import { colors } from '@/styles/colors';
 import ArrowCard from '@/components/profile/arrowCard/ArrowCard';
 import ArrowForm from '@/components/profile/arrowForm/ArrowForm';
 import BowDetails from '@/components/profile/bowDetails/BowDetails';
+import ArrowSetDetails from '@/components/profile/arrowSetDetails/ArrowSetDetails';
 
 export default function Profile() {
   const [bowModalVisible, setBowModalVisible] = useState(false);
@@ -21,6 +22,7 @@ export default function Profile() {
   const [arrowSets, setArrowSets] = useState<ArrowSet[]>([]);
   const [selectedArrowSet, setSelectedArrowSet] = useState<ArrowSet | null>(null);
   const [selectedBowForDetails, setSelectedBowForDetails] = useState<Bow | null>(null);
+  const [selectedArrowSetForDetails, setSelectedArrowSetForDetails] = useState<ArrowSet | null>(null);
 
   useEffect(() => {
     getLocalStorage<Bow[]>('bows').then((bows) => {
@@ -59,16 +61,13 @@ export default function Profile() {
       </View>
       <View>
         <Text style={styles.subtitle}>Pilsett</Text>
-        <ScrollView style={styles.scrollList} contentContainerStyle={{ paddingBottom: 8, paddingHorizontal: 4 }}>
+        <ScrollView contentContainerStyle={styles.arrowGrid}>
           {Array.isArray(sortedArrowSets) && sortedArrowSets.length > 0 ? (
             sortedArrowSets.map((arrowSet, index) => (
               <ArrowCard
                 key={index}
                 arrowSet={arrowSet}
-                onEdit={() => {
-                  setSelectedArrowSet(arrowSet);
-                  setArrowModalVisible(true);
-                }}
+                onPress={() => setSelectedArrowSetForDetails(arrowSet)}
               />
             ))
           ) : (
@@ -115,6 +114,18 @@ export default function Profile() {
             setSelectedBow(selectedBowForDetails);
             setBowModalVisible(true);
             setSelectedBowForDetails(null);
+          }}
+        />
+      )}
+      {selectedArrowSetForDetails && (
+        <ArrowSetDetails
+          arrowSet={selectedArrowSetForDetails}
+          visible={!!selectedArrowSetForDetails}
+          onClose={() => setSelectedArrowSetForDetails(null)}
+          onEdit={() => {
+            setSelectedArrowSet(selectedArrowSetForDetails);
+            setArrowModalVisible(true);
+            setSelectedArrowSetForDetails(null);
           }}
         />
       )}
