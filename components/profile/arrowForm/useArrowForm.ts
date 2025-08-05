@@ -20,7 +20,7 @@ export type Action =
   | { type: 'SET_DIAMETER'; payload: string }
   | { type: 'SET_NUMBER_OF_ARROWS'; payload: string }
   | { type: 'SET_SPINE'; payload: string }
-| { type: 'SET_FAVORITE'; payload: boolean };
+  | { type: 'SET_FAVORITE'; payload: boolean };
 
 export function reducer(state: ArrowSetState, action: Action): ArrowSetState {
   switch (action.type) {
@@ -37,7 +37,7 @@ export function reducer(state: ArrowSetState, action: Action): ArrowSetState {
     case 'SET_SPINE':
       return { ...state, spine: action.payload };
     case 'SET_NUMBER_OF_ARROWS':
-      return { ...state, numberOfArrows: action.payload }
+      return { ...state, numberOfArrows: action.payload };
     case 'SET_FAVORITE':
       return { ...state, isFavorite: action.payload };
     default:

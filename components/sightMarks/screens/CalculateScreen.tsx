@@ -33,10 +33,7 @@ export default function CalculateScreen() {
   async function sendMarks(newMark: MarkValue) {
     const bow = await getLocalStorage<Bow>('bow');
     const arrowSets = await getLocalStorage<ArrowSet[]>('arrowSets');
-    const arrowSet = Array.isArray(arrowSets)
-      ? arrowSets.find((set) => set.isFavorite)
-      : null;
-
+    const arrowSet = Array.isArray(arrowSets) ? arrowSets.find((set) => set.isFavorite) : null;
 
     const body: AimDistanceMark = {
       ...Ballistics,
@@ -88,10 +85,12 @@ export default function CalculateScreen() {
   return (
     <GestureHandlerRootView style={styles.page}>
       <View style={{ flex: 1, marginHorizontal: 8 }}>
-        <Pressable style={{ flex: 1 }} onPress={() => {
-          Keyboard.dismiss();
-          setIsFormVisible(false);
-        }}>
+        <Pressable
+          style={{ flex: 1 }}
+          onPress={() => {
+            Keyboard.dismiss();
+            setIsFormVisible(false);
+          }}>
           {error && <View style={{ marginBottom: 8, padding: 8 }}>Oisann, noe gikk galt. Prøv igjen!</View>}
           <MarksTable ballistics={ballistics} removeMark={handleRemoveMark} />
           {ballistics && ballistics.given_marks.length > 0 && !isFormVisible && (
@@ -115,12 +114,7 @@ export default function CalculateScreen() {
             buttonStyle={{ marginHorizontal: 16, marginBottom: 16 }}
           />
         ) : (
-          <MarksForm
-            sendMarks={sendMarks}
-            status={status}
-            setIsFormVisible={setIsFormVisible}
-            translateY={translateY}
-          />
+          <MarksForm sendMarks={sendMarks} status={status} setIsFormVisible={setIsFormVisible} translateY={translateY} />
         )}
       </View>
       <ConfirmRemoveMarks

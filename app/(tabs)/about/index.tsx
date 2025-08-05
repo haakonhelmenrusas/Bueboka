@@ -38,24 +38,22 @@ export default function About() {
           <FontAwesomeIcon style={styles.feather} icon={faCrosshairs} />
         </View>
       </View>
-        <View style={styles.links}>
-          <Text>Se prosjekt og koden bak på </Text>
-          <TouchableOpacity
-            style={styles.link}
-            onPress={() => Linking.openURL('https://github.com/haakonhelmenrusas/Bueboka/discussions')}>
-            <Text style={{ color: colors.secondary }}>GitHub</Text>
-            <FontAwesomeIcon size={14} style={{ color: colors.secondary }} icon={faExternalLink} />
-          </TouchableOpacity>
-        </View>
-        <Text style={styles.sponsor}>Sponset av</Text>
-        <Image
-          style={styles.sponsorLogo}
-          contentFit="contain"
-          source={sponsor}
-          transition={200}
-          placeholder={blurhash}
-          accessibilityLabel="Arctic Buesport AS Logo"
-        />
+      <View style={styles.links}>
+        <Text>Se prosjekt og koden bak på </Text>
+        <TouchableOpacity style={styles.link} onPress={() => Linking.openURL('https://github.com/haakonhelmenrusas/Bueboka/discussions')}>
+          <Text style={{ color: colors.secondary }}>GitHub</Text>
+          <FontAwesomeIcon size={14} style={{ color: colors.secondary }} icon={faExternalLink} />
+        </TouchableOpacity>
+      </View>
+      <Text style={styles.sponsor}>Sponset av</Text>
+      <Image
+        style={styles.sponsorLogo}
+        contentFit="contain"
+        source={sponsor}
+        transition={200}
+        placeholder={blurhash}
+        accessibilityLabel="Arctic Buesport AS Logo"
+      />
     </View>
   );
 }

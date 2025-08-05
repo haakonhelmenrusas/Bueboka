@@ -21,7 +21,7 @@ export const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     paddingVertical: 16,
-    marginBottom: 'auto'
+    marginBottom: 'auto',
   },
   confirmOverlay: {
     flex: 1,

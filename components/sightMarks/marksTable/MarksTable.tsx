@@ -28,11 +28,9 @@ export default function MarksTable({ ballistics, removeMark }: CalculationTableP
             <Text style={styles.theadBlack}>Beregnet</Text>
             <Text style={styles.trData}>{ballistics.calculated_marks[index].toFixed(2)}</Text>
           </View>
-          <Pressable
-            style={styles.deleteButton}
-            aria-label="Fjern siktemerke"
-            onPress={() => removeMark(index)}
-          ><FontAwesomeIcon icon={faTrash} color={colors.secondary} /></Pressable>
+          <Pressable style={styles.deleteButton} aria-label="Fjern siktemerke" onPress={() => removeMark(index)}>
+            <FontAwesomeIcon icon={faTrash} color={colors.secondary} />
+          </Pressable>
         </View>
       ));
     } else {

@@ -21,7 +21,7 @@ interface Props {
   existingArrowSets: ArrowSet[];
 }
 
-export default function ArrowForm ({ modalVisible, setArrowModalVisible, arrowSet, existingArrowSets }: Props) {
+export default function ArrowForm({ modalVisible, setArrowModalVisible, arrowSet, existingArrowSets }: Props) {
   const [confirmVisible, setConfirmVisible] = useState(false);
   const [{ name, material, weight, spine, length, diameter, numberOfArrows, isFavorite }, dispatch] = useArrowForm();
   const [prevArrowSet, setPrevArrowSet] = useState<ArrowSet | null>(null);
@@ -38,18 +38,17 @@ export default function ArrowForm ({ modalVisible, setArrowModalVisible, arrowSe
       dispatch({ type: 'SET_ARROW_WEIGHT', payload: arrowSet.weight ? arrowSet.weight.toString() : '' });
       dispatch({ type: 'SET_ARROW_LENGTH', payload: arrowSet.length ? arrowSet.length.toString() : '' });
       dispatch({ type: 'SET_DIAMETER', payload: arrowSet.diameter ? arrowSet.diameter.toString() : '' });
-      dispatch({ type: 'SET_SPINE', payload: arrowSet.spine ? arrowSet.spine.toString() : "" });
+      dispatch({ type: 'SET_SPINE', payload: arrowSet.spine ? arrowSet.spine.toString() : '' });
       dispatch({ type: 'SET_MATERIAL', payload: arrowSet.material });
       dispatch({ type: 'SET_NUMBER_OF_ARROWS', payload: arrowSet.numberOfArrows ? arrowSet.numberOfArrows.toString() : '' });
-      dispatch({ type: 'SET_FAVORITE', payload: arrowSet.isFavorite ?? false })
+      dispatch({ type: 'SET_FAVORITE', payload: arrowSet.isFavorite ?? false });
     }
 
     setPrevArrowSet(arrowSet);
-
   }, [modalVisible, arrowSet]);
 
   const handleDeleteArrowSet = async (target: ArrowSet) => {
-    const updatedList = existingArrowSets.filter(set => set.name !== target.name);
+    const updatedList = existingArrowSets.filter((set) => set.name !== target.name);
     await AsyncStorage.setItem('arrowSets', JSON.stringify(updatedList));
     clearForm();
     setArrowModalVisible(false);
@@ -71,24 +70,22 @@ export default function ArrowForm ({ modalVisible, setArrowModalVisible, arrowSe
 
     if (arrowSet) {
       // Edit mode: replace the existing one by name
-      updatedList = existingArrowSets.map(set =>
-        set.name === arrowSet.name ? newArrowSet : set
-      );
+      updatedList = existingArrowSets.map((set) => (set.name === arrowSet.name ? newArrowSet : set));
     } else {
       // Create mode: add new set, prevent duplicate names
-      const isDuplicate = existingArrowSets.some(set => set.name === newArrowSet.name);
+      const isDuplicate = existingArrowSets.some((set) => set.name === newArrowSet.name);
 
       updatedList = isDuplicate ? existingArrowSets : [...existingArrowSets, newArrowSet];
     }
 
     if (newArrowSet.isFavorite) {
-      updatedList = updatedList.map(set => ({
+      updatedList = updatedList.map((set) => ({
         ...set,
-        isFavorite: set.name === newArrowSet.name
+        isFavorite: set.name === newArrowSet.name,
       }));
     }
 
-    await storeLocalStorage(updatedList,'arrowSets');
+    await storeLocalStorage(updatedList, 'arrowSets');
 
     clearForm();
     setArrowModalVisible(false);
@@ -102,7 +99,7 @@ export default function ArrowForm ({ modalVisible, setArrowModalVisible, arrowSe
     dispatch({ type: 'SET_SPINE', payload: '' });
     dispatch({ type: 'SET_DIAMETER', payload: '' });
     dispatch({ type: 'SET_NUMBER_OF_ARROWS', payload: '' });
-    dispatch({ type: 'SET_FAVORITE', payload: false })
+    dispatch({ type: 'SET_FAVORITE', payload: false });
   }
 
   return (
@@ -113,10 +110,10 @@ export default function ArrowForm ({ modalVisible, setArrowModalVisible, arrowSe
         clearForm();
         setArrowModalVisible(false);
       }}>
-      <SafeAreaView style={{ flex: 1}}>
-      <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={styles.modal}>
-        <ScrollView keyboardShouldPersistTaps="handled" contentContainerStyle={{ flexGrow: 1 }}>
-          <Pressable style={{ flex: 1 }} onPress={() => Keyboard.dismiss()}>
+      <SafeAreaView style={{ flex: 1 }}>
+        <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={styles.modal}>
+          <ScrollView keyboardShouldPersistTaps="handled" contentContainerStyle={{ flexGrow: 1 }}>
+            <Pressable style={{ flex: 1 }} onPress={() => Keyboard.dismiss()}>
               <View style={styles.titleContainer}>
                 <Text style={styles.title}>Nytt pilsett</Text>
                 <Pressable
@@ -139,19 +136,19 @@ export default function ArrowForm ({ modalVisible, setArrowModalVisible, arrowSe
                   label="Materiale"
                   selectedValue={material}
                   options={[
-                    { label: "Treverk", value: "Treverk" },
-                    { label: "Karbon", value: "Karbon" },
-                    { label: "Aluminium", value: "Aluminium" },
+                    { label: 'Treverk', value: 'Treverk' },
+                    { label: 'Karbon', value: 'Karbon' },
+                    { label: 'Aluminium', value: 'Aluminium' },
                   ]}
                   onValueChange={(value) => dispatch({ type: 'SET_MATERIAL', payload: value })}
                 />
                 <Input
-                  containerStyle={{ flex: 1}}
+                  containerStyle={{ flex: 1 }}
                   label="Lengde (cm)"
                   keyboardType="numeric"
                   placeholderText="F.eks. 90"
                   value={length}
-                  onChangeText={(value) => dispatch({type: 'SET_ARROW_LENGTH',payload: value})}
+                  onChangeText={(value) => dispatch({ type: 'SET_ARROW_LENGTH', payload: value })}
                 />
               </View>
               <View style={{ flexDirection: 'row', justifyContent: 'space-around', marginTop: 24 }}>
@@ -164,7 +161,7 @@ export default function ArrowForm ({ modalVisible, setArrowModalVisible, arrowSe
                   onChangeText={(value) => handleNumberChange(value, 'SET_ARROW_WEIGHT', dispatch)}
                 />
                 <Input
-                  containerStyle={{ flex: 1}}
+                  containerStyle={{ flex: 1 }}
                   label="Spine"
                   keyboardType="numeric"
                   placeholderText="F.eks. 250"
@@ -181,7 +178,7 @@ export default function ArrowForm ({ modalVisible, setArrowModalVisible, arrowSe
                   value={diameter}
                   onChangeText={(value) => handleNumberChange(value, 'SET_DIAMETER', dispatch)}
                 />
-              <Input
+                <Input
                   containerStyle={{ flex: 1 }}
                   label="Antall piler"
                   keyboardType="numeric"
@@ -190,12 +187,12 @@ export default function ArrowForm ({ modalVisible, setArrowModalVisible, arrowSe
                   onChangeText={(value) => handleNumberChange(value, 'SET_NUMBER_OF_ARROWS', dispatch)}
                 />
               </View>
-              <Pressable style={styles.favorite} onPress={() => dispatch({type: 'SET_FAVORITE',payload: !isFavorite})}>
+              <Pressable style={styles.favorite} onPress={() => dispatch({ type: 'SET_FAVORITE', payload: !isFavorite })}>
                 <FontAwesomeIcon icon={isFavorite ? faStar : star} size={20} color={colors.warning} />
-                <Text>{arrowSet?.isFavorite ? "Favoritt" : "Gjør til favoritt"}</Text>
+                <Text>{arrowSet?.isFavorite ? 'Favoritt' : 'Gjør til favoritt'}</Text>
               </Pressable>
               {arrowSet && (
-                <Button variant='warning' label="Slett" onPress={() => setConfirmVisible(true)} type="outline">
+                <Button variant="warning" label="Slett" onPress={() => setConfirmVisible(true)} type="outline">
                   <FontAwesomeIcon icon={faTrash} size={16} color={colors.warning} />
                 </Button>
               )}
@@ -210,27 +207,27 @@ export default function ArrowForm ({ modalVisible, setArrowModalVisible, arrowSe
                   label="Avbryt"
                 />
               </View>
-          </Pressable>
-        </ScrollView>
-      </KeyboardAvoidingView>
-      <Modal visible={confirmVisible} transparent animationType="fade">
-        <View style={styles.confirmOverlay}>
-          <View style={styles.confirmBox}>
-            <Text style={styles.confirmText}>Vil du slette dette pilsettet?</Text>
-            <View style={styles.confirmActions}>
-              <Button label="Avbryt" type="outline" onPress={() => setConfirmVisible(false)} />
-              <Button
-                label="Slett"
-                onPress={() => {
-                  handleDeleteArrowSet(arrowSet!);
-                  setConfirmVisible(false);
-                }}
-              />
+            </Pressable>
+          </ScrollView>
+        </KeyboardAvoidingView>
+        <Modal visible={confirmVisible} transparent animationType="fade">
+          <View style={styles.confirmOverlay}>
+            <View style={styles.confirmBox}>
+              <Text style={styles.confirmText}>Vil du slette dette pilsettet?</Text>
+              <View style={styles.confirmActions}>
+                <Button label="Avbryt" type="outline" onPress={() => setConfirmVisible(false)} />
+                <Button
+                  label="Slett"
+                  onPress={() => {
+                    handleDeleteArrowSet(arrowSet!);
+                    setConfirmVisible(false);
+                  }}
+                />
+              </View>
             </View>
           </View>
-        </View>
-      </Modal>
+        </Modal>
       </SafeAreaView>
     </Modal>
   );
-};
+}

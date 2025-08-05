@@ -9,7 +9,7 @@ export default function Layout() {
       <Slot />
     </SafeAreaView>
   );
-};
+}
 
 const styles = StyleSheet.create({
   safeArea: {

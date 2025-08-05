@@ -61,5 +61,4 @@ describe('arrowForm reducer', () => {
     const state = reducer(INITIAL_STATE, action);
     expect(state.isFavorite).toBe(true);
   });
-
 });

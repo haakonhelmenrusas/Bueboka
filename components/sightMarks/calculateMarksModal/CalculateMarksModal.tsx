@@ -20,16 +20,9 @@ interface CalculateMarksModalProps {
   setCalculatedMarks: (calculatedMarks: MarksResult) => void;
 }
 
-export const CalculateMarksModal = ({
-  modalVisible,
-  closeModal,
-  ballistics,
-  setCalculatedMarks,
-}: CalculateMarksModalProps) => {
-  const [
-    { distanceFrom, distanceFromError, distanceTo, distanceToError, interval, intervalError, anglesVisible, angles },
-    dispatch,
-  ] = useCalcMarksForm();
+export const CalculateMarksModal = ({ modalVisible, closeModal, ballistics, setCalculatedMarks }: CalculateMarksModalProps) => {
+  const [{ distanceFrom, distanceFromError, distanceTo, distanceToError, interval, intervalError, anglesVisible, angles }, dispatch] =
+    useCalcMarksForm();
   const { calculateMarks, status } = useCalculateMarks();
 
   function handleAngleChange(value: string, index: number) {
@@ -83,7 +76,7 @@ export const CalculateMarksModal = ({
   };
 
   return (
-    <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === 'ios' ? 'padding': 'height'}>
+    <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
       <Modal onRequestClose={closeModal} visible={modalVisible} animationType="slide">
         <View style={styles.modal}>
           <View style={styles.header}>
@@ -141,9 +134,7 @@ export const CalculateMarksModal = ({
               icon={<FontAwesomeIcon icon={faCrosshairs} color={colors.secondary} />}
             />
           </View>
-          <TouchableOpacity
-            style={styles.checkBox}
-            onPress={() => dispatch({ type: 'SET_ANGLES_VISIBLE', payload: !anglesVisible })}>
+          <TouchableOpacity style={styles.checkBox} onPress={() => dispatch({ type: 'SET_ANGLES_VISIBLE', payload: !anglesVisible })}>
             <FontAwesomeIcon icon={anglesVisible ? faChevronUp : faChevronDown} color={colors.secondary} />
             <Text> Flere vinkler</Text>
           </TouchableOpacity>
@@ -194,7 +185,7 @@ export const CalculateMarksModal = ({
             />
           </View>
         </View>
-     </Modal>
+      </Modal>
     </KeyboardAvoidingView>
   );
 };

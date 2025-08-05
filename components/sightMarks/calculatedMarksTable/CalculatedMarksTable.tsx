@@ -22,9 +22,7 @@ export default function CalculatedMarksTable({ marksData, showSpeed }: Readonly<
                   <Text style={[styles.trData, { fontWeight: '600', fontSize: 16 }]}>
                     {marksData.sight_marks_by_hill_angle[angle][index].toFixed(2)}
                   </Text>
-                  {showSpeed && (
-                    <Text style={styles.trData}>{marksData.arrow_speed_by_angle[speed][index].toFixed(1)} m/s</Text>
-                  )}
+                  {showSpeed && <Text style={styles.trData}>{marksData.arrow_speed_by_angle[speed][index].toFixed(1)} m/s</Text>}
                 </View>
               );
             })}

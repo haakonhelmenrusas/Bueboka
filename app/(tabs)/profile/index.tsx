@@ -89,10 +89,7 @@ export default function Profile() {
   return (
     <View style={styles.container}>
       <ScrollView showsVerticalScrollIndicator={false}>
-        <ProfileBox
-          user={user}
-          onEdit={() => setIsProfileModalVisible(true)}
-        />
+        <ProfileBox user={user} onEdit={() => setIsProfileModalVisible(true)} />
         <ProfileForm
           modalVisible={isProfileModalVisible}
           setModalVisible={setIsProfileModalVisible}
@@ -117,45 +114,30 @@ export default function Profile() {
             label="Legg til pilsett"
           />
         </View>
-      <View style={styles.bowContainer}>
-        <Text style={styles.subtitle}>Bue</Text>
-        <View style={styles.bowGrid}>
-          {sortedBows.length > 0 ? (
-            sortedBows.map((bow) => (
-              <BowCard
-                key={bow.id}
-                bow={bow}
-                onPress={() => setSelectedBowForDetails(bow)}
-              />
-            ))
-      ) : (
-        <Message title="Ingen bue" description="Du har ikke lagt til noen bue enda." />
-      )}
+        <View style={styles.bowContainer}>
+          <Text style={styles.subtitle}>Bue</Text>
+          <View style={styles.bowGrid}>
+            {sortedBows.length > 0 ? (
+              sortedBows.map((bow) => <BowCard key={bow.id} bow={bow} onPress={() => setSelectedBowForDetails(bow)} />)
+            ) : (
+              <Message title="Ingen bue" description="Du har ikke lagt til noen bue enda." />
+            )}
+          </View>
         </View>
-      </View>
-      <View style={styles.arrowContainer}>
-        <Text style={styles.subtitle}>Pilsett</Text>
-        <View style={styles.arrowGrid}>
-          {Array.isArray(sortedArrowSets) && sortedArrowSets.length > 0 ? (
-            sortedArrowSets.map((arrowSet, index) => (
-              <ArrowCard
-                key={index}
-                arrowSet={arrowSet}
-                onPress={() => setSelectedArrowSetForDetails(arrowSet)}
-              />
-            ))
-          ) : (
-            <Message title="Ingen piler" description="Du har ikke lagt til noen piler enda." />
-          )}
+        <View style={styles.arrowContainer}>
+          <Text style={styles.subtitle}>Pilsett</Text>
+          <View style={styles.arrowGrid}>
+            {Array.isArray(sortedArrowSets) && sortedArrowSets.length > 0 ? (
+              sortedArrowSets.map((arrowSet, index) => (
+                <ArrowCard key={index} arrowSet={arrowSet} onPress={() => setSelectedArrowSetForDetails(arrowSet)} />
+              ))
+            ) : (
+              <Message title="Ingen piler" description="Du har ikke lagt til noen piler enda." />
+            )}
+          </View>
         </View>
-      </View>
       </ScrollView>
-      <BowForm
-        modalVisible={bowModalVisible}
-         setModalVisible={setBowModalVisible}
-         bow={selectedBow}
-         existingBows={bows}
-      />
+      <BowForm modalVisible={bowModalVisible} setModalVisible={setBowModalVisible} bow={selectedBow} existingBows={bows} />
       <ArrowForm
         modalVisible={arrowModalVisible}
         setArrowModalVisible={setArrowModalVisible}

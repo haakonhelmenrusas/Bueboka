@@ -5,7 +5,7 @@ export async function setFavoriteArrowSet(targetName: string) {
   const stored = await AsyncStorage.getItem('arrowSets');
   const parsed: ArrowSet[] = stored ? JSON.parse(stored) : [];
 
-  const updated = parsed.map(set => ({
+  const updated = parsed.map((set) => ({
     ...set,
     isFavorite: set.name === targetName,
   }));

@@ -1,4 +1,3 @@
-
 import { Modal, Pressable, Text, View } from 'react-native';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faXmark, faCog } from '@fortawesome/free-solid-svg-icons';
@@ -16,12 +15,7 @@ interface Props {
 
 export default function ArrowSetDetails({ arrowSet, visible, onClose, onEdit }: Props) {
   return (
-    <Modal
-      animationType="slide"
-      transparent={true}
-      visible={visible}
-      onRequestClose={onClose}
-    >
+    <Modal animationType="slide" transparent={true} visible={visible} onRequestClose={onClose}>
       <View style={styles.centeredView}>
         <View style={styles.modalView}>
           <View style={styles.header}>

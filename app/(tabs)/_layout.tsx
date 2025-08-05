@@ -19,9 +19,7 @@ export default function AppLayout() {
       <Tabs.Screen
         name="sightMarks"
         options={{
-          tabBarIcon: ({ focused }) => (
-            <FontAwesomeIcon icon={faBullseye} color={focused ? colors.primary : colors.inactive} />
-          ),
+          tabBarIcon: ({ focused }) => <FontAwesomeIcon icon={faBullseye} color={focused ? colors.primary : colors.inactive} />,
           headerShadowVisible: false,
           headerShown: false,
           tabBarLabel: 'Siktemerker',
@@ -31,9 +29,7 @@ export default function AppLayout() {
       <Tabs.Screen
         name="profile"
         options={{
-          tabBarIcon: ({ focused }) => (
-            <FontAwesomeIcon icon={faUser} color={focused ? colors.primary : colors.inactive} />
-          ),
+          tabBarIcon: ({ focused }) => <FontAwesomeIcon icon={faUser} color={focused ? colors.primary : colors.inactive} />,
           headerShadowVisible: false,
           headerShown: false,
           tabBarLabel: 'Profil',
@@ -43,9 +39,7 @@ export default function AppLayout() {
       <Tabs.Screen
         name="about"
         options={{
-          tabBarIcon: ({ focused }) => (
-            <FontAwesomeIcon icon={faCircleQuestion} color={focused ? colors.primary : colors.inactive} />
-          ),
+          tabBarIcon: ({ focused }) => <FontAwesomeIcon icon={faCircleQuestion} color={focused ? colors.primary : colors.inactive} />,
           headerShadowVisible: false,
           headerShown: false,
           tabBarLabel: 'Om oss',

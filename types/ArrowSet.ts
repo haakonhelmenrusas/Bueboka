@@ -1,4 +1,3 @@
-
 export enum Material {
   Karbon = 'Karbon',
   Aluminum = 'Aluminum',

@@ -12,7 +12,7 @@ export async function setFavoriteBow(targetId: string): Promise<Bow[]> {
   const stored = await AsyncStorage.getItem('bows');
   const parsed: Bow[] = stored ? JSON.parse(stored) : [];
 
-  const updated = parsed.map(bow => ({
+  const updated = parsed.map((bow) => ({
     ...bow,
     isFavorite: bow.id === targetId,
   }));

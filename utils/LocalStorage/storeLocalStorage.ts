@@ -8,10 +8,7 @@ import * as Sentry from '@sentry/react-native';
  * @param value - Data to store
  * @param key - Storage key
  */
-export const storeLocalStorage = async (
-  value: any,
-  key: string,
-) => {
+export const storeLocalStorage = async (value: any, key: string) => {
   try {
     if (value === undefined) return;
 

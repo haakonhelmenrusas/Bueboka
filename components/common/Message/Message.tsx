@@ -34,4 +34,4 @@ export default function Message({ title, description, onPress, buttonLabel }: Me
       {onPress && buttonLabel && <Button width={300} onPress={onPress} label={buttonLabel} />}
     </View>
   );
-};
+}

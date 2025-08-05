@@ -19,11 +19,7 @@ export default function BowCard({ bow, onPress }: Props) {
           <FontAwesomeIcon icon={faStar} size={16} color={colors.warning} />
         </View>
       )}
-      <Image
-        source={require('@/assets/bow.png')}
-        style={styles.image}
-        resizeMode="contain"
-      />
+      <Image source={require('@/assets/bow.png')} style={styles.image} resizeMode="contain" />
       <Text style={styles.name}>{bow.bowName}</Text>
       <Text style={styles.type}>{capitalizeFirstLetter(bow.bowType)}</Text>
     </TouchableOpacity>
