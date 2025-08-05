@@ -1,6 +1,6 @@
 import { Modal, Text, View } from 'react-native';
 import { useState } from 'react';
-import { Button, Input } from '@/components/common';
+import { Button, Input, ModalWrapper } from '@/components/common';
 import { styles } from './ProfileFormStyles';
 import { User } from '@/types';
 
@@ -40,21 +40,18 @@ export default function ProfileForm({ modalVisible, setModalVisible, user, onSav
   };
 
   return (
-    <Modal animationType="slide" transparent={true} visible={modalVisible} onRequestClose={() => setModalVisible(false)}>
-      <View style={styles.centeredView}>
-        <View style={styles.modalView}>
-          <Text style={styles.title}>Rediger profil</Text>
-
-          <View style={styles.form}>
-            <Input label="Navn" value={name} onChangeText={setName} errorMessage={errors.name} autoCapitalize="words" />
-            <Input label="Klubb (valgfritt)" value={club} onChangeText={setClub} autoCapitalize="words" />
-          </View>
-          <View style={styles.buttons}>
-            <Button label="Avbryt" onPress={() => setModalVisible(false)} type="outline" />
-            <Button label="Lagre" onPress={handleSave} />
-          </View>
+    <ModalWrapper visible={modalVisible} onClose={() => setModalVisible(false)}>
+      <View style={styles.modalView}>
+        <Text style={styles.title}>Rediger profil</Text>
+        <View style={styles.form}>
+          <Input label="Navn" value={name} onChangeText={setName} error={!!errors} errorMessage={errors.name} autoCapitalize="words" />
+          <Input label="Klubb" value={club} onChangeText={setClub} autoCapitalize="words" />
+        </View>
+        <View style={styles.buttons}>
+          <Button label="Avbryt" onPress={() => setModalVisible(false)} type="outline" />
+          <Button label="Lagre" onPress={handleSave} />
         </View>
       </View>
-    </Modal>
+    </ModalWrapper>
   );
 }
