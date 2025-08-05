@@ -5,7 +5,9 @@ export const styles = StyleSheet.create({
   container: {
     backgroundColor: colors.primary,
     borderRadius: 8,
-    padding: 24,
+    paddingHorizontal: 24,
+    paddingBottom: 16,
+    paddingTop: 24,
     margin: 16,
     shadowColor: colors.dark_primary,
     shadowOffset: {
@@ -19,7 +21,7 @@ export const styles = StyleSheet.create({
   content: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 8,
+    marginBottom: 16,
   },
   avatar: {
     width: 72,

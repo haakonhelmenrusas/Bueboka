@@ -18,14 +18,9 @@ export default function ProfileBox({ user, avatarUrl, onEdit }: Props) {
       <View style={styles.content}>
         <View style={styles.avatar}>
           {avatarUrl ? (
-            <Image
-              source={{ uri: avatarUrl }}
-              style={styles.avatarImage}
-            />
+            <Image source={{ uri: avatarUrl }} style={styles.avatarImage} />
           ) : (
-            <Text style={styles.avatarInitial}>
-              {user.name.charAt(0).toUpperCase()}
-            </Text>
+            <Text style={styles.avatarInitial}>{user.name.charAt(0).toUpperCase()}</Text>
           )}
         </View>
         <View style={styles.info}>
@@ -34,12 +29,12 @@ export default function ProfileBox({ user, avatarUrl, onEdit }: Props) {
         </View>
       </View>
       <Button
-        size='small'
-        buttonStyle={{ backgroundColor: colors.background}}
-        iconPosition='left'
-        type='outline'
+        size="small"
+        buttonStyle={{ backgroundColor: colors.background, width: '50%', marginLeft: 'auto' }}
+        iconPosition="left"
+        type="outline"
         icon={<FontAwesomeIcon icon={faPencil} size={16} />}
-        label='Rediger profil'
+        label="Rediger profil"
         onPress={onEdit}
       />
     </View>
