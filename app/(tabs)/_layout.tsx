@@ -1,6 +1,8 @@
 import { faBullseye } from '@fortawesome/free-solid-svg-icons/faBullseye';
-import { faUser } from '@fortawesome/free-solid-svg-icons/faUser';
-import { faCircleQuestion } from '@fortawesome/free-solid-svg-icons/faCircleQuestion';
+import { faUser as userSolid } from '@fortawesome/free-solid-svg-icons/faUser';
+import { faUser } from '@fortawesome/free-regular-svg-icons/faUser';
+import { faCircleQuestion as questionSolid } from '@fortawesome/free-solid-svg-icons/faCircleQuestion';
+import { faCircleQuestion } from '@fortawesome/free-regular-svg-icons/faCircleQuestion';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { Tabs } from 'expo-router';
 import { colors } from '@/styles/colors';
@@ -29,7 +31,9 @@ export default function AppLayout() {
       <Tabs.Screen
         name="profile"
         options={{
-          tabBarIcon: ({ focused }) => <FontAwesomeIcon icon={faUser} color={focused ? colors.primary : colors.inactive} />,
+          tabBarIcon: ({ focused }) => (
+            <FontAwesomeIcon icon={focused ? userSolid : faUser} color={focused ? colors.primary : colors.inactive} />
+          ),
           headerShadowVisible: false,
           headerShown: false,
           tabBarLabel: 'Profil',
@@ -39,7 +43,9 @@ export default function AppLayout() {
       <Tabs.Screen
         name="about"
         options={{
-          tabBarIcon: ({ focused }) => <FontAwesomeIcon icon={faCircleQuestion} color={focused ? colors.primary : colors.inactive} />,
+          tabBarIcon: ({ focused }) => (
+            <FontAwesomeIcon icon={focused ? questionSolid : faCircleQuestion} color={focused ? colors.primary : colors.inactive} />
+          ),
           headerShadowVisible: false,
           headerShown: false,
           tabBarLabel: 'Om oss',
