@@ -6,7 +6,7 @@ describe('storeLocalStorage', () => {
     await AsyncStorage.clear();
   });
 
-  it('stores a single value when no options are provided', async () => {
+  it('stores a single value', async () => {
     const key = 'singleKey';
     const value = { name: 'SingleItem' };
     await storeLocalStorage(value, key);
@@ -22,37 +22,35 @@ describe('storeLocalStorage', () => {
     expect(result).toBeNull();
   });
 
-  it('appends value to array if mergeIntoArray is true and existing is an array', async () => {
-    const key = 'appendKey';
+  it('overwrites existing value with new value', async () => {
+    const key = 'overwriteKey';
     const value1 = { name: 'Item1' };
     const value2 = { name: 'Item2' };
 
-    await storeLocalStorage(value1, key, { mergeIntoArray: true });
-    await storeLocalStorage(value2, key, { mergeIntoArray: true });
+    await storeLocalStorage(value1, key);
+    await storeLocalStorage(value2, key);
 
     const result = await AsyncStorage.getItem(key);
-    expect(JSON.parse(result!)).toEqual([value1, value2]);
+    expect(JSON.parse(result!)).toEqual(value2);
   });
 
-  it('initializes array if key does not exist and mergeIntoArray is true', async () => {
-    const key = 'newArrayKey';
-    const newValue = { label: 'InitItem' };
+  it('can store arrays as values', async () => {
+    const key = 'arrayKey';
+    const value = [{ name: 'Item1' }, { name: 'Item2' }];
 
-    await storeLocalStorage(newValue, key, { mergeIntoArray: true });
+    await storeLocalStorage(value, key);
 
     const result = await AsyncStorage.getItem(key);
-    expect(JSON.parse(result!)).toEqual([newValue]);
+    expect(JSON.parse(result!)).toEqual(value);
   });
 
-  it('treats existing non-array value as invalid and creates new array with new value', async () => {
-    const key = 'nonArrayKey';
-    const existingValue = { error: 'NotAnArray' };
-    const newValue = { label: 'FreshItem' };
+  it('can store primitive values', async () => {
+    const key = 'primitiveKey';
+    const value = 'simple string';
 
-    await AsyncStorage.setItem(key, JSON.stringify(existingValue));
-    await storeLocalStorage(newValue, key, { mergeIntoArray: true });
+    await storeLocalStorage(value, key);
 
     const result = await AsyncStorage.getItem(key);
-    expect(JSON.parse(result!)).toEqual([newValue]);
+    expect(JSON.parse(result!)).toEqual(value);
   });
 });
