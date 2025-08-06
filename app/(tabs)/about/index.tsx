@@ -1,7 +1,7 @@
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faFeather } from '@fortawesome/free-solid-svg-icons/faFeather';
 import { Image } from 'expo-image';
-import { Linking, Text, TouchableOpacity, View } from 'react-native';
+import { Linking, ScrollView, Text, TouchableOpacity, View } from 'react-native';
 import { styles } from '@/components/about/AboutStyles';
 import { faCrosshairs } from '@fortawesome/free-solid-svg-icons/faCrosshairs';
 import { faExternalLink } from '@fortawesome/free-solid-svg-icons/faExternalLink';
@@ -15,7 +15,7 @@ export default function About() {
     '|rF?hV%2WCj[ayj[a|j[az_NaeWBj@ayfRayfQfQM{M|azj[azf6fQfQfQIpWXofj[ayj[j[fQayWCoeoeaya}j[ayfQa{oLj?j[WVj[ayayj[fQoff7azayj[ayj[j[ayofayayayj[fQj[ayayj[ayfjj[j[ayjuayj[';
 
   return (
-    <View style={styles.container}>
+    <ScrollView style={styles.container}>
       <View style={styles.header}>
         <Image
           style={styles.logo}
@@ -39,9 +39,9 @@ export default function About() {
         </View>
       </View>
       <View style={styles.links}>
-        <Text>Se prosjekt og koden bak på </Text>
-        <TouchableOpacity style={styles.link} onPress={() => Linking.openURL('https://github.com/haakonhelmenrusas/Bueboka/discussions')}>
-          <Text style={{ color: colors.secondary }}>GitHub</Text>
+        <Text>Besøk nettsiden</Text>
+        <TouchableOpacity style={styles.link} onPress={() => Linking.openURL('https://bueboka.no')}>
+          <Text style={{ color: colors.secondary }}>Bueboka.no</Text>
           <FontAwesomeIcon size={14} style={{ color: colors.secondary }} icon={faExternalLink} />
         </TouchableOpacity>
       </View>
@@ -54,6 +54,6 @@ export default function About() {
         placeholder={blurhash}
         accessibilityLabel="Arctic Buesport AS Logo"
       />
-    </View>
+    </ScrollView>
   );
 }

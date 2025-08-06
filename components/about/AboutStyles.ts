@@ -7,6 +7,7 @@ export const styles = StyleSheet.create({
   },
   header: {
     flex: 1,
+    marginTop: 32,
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -32,7 +33,6 @@ export const styles = StyleSheet.create({
     borderRadius: 10,
     marginHorizontal: 24,
     padding: 24,
-    marginTop: -32,
     textAlign: 'center',
   },
   feather: {
