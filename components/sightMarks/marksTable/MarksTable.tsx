@@ -34,7 +34,7 @@ export default function MarksTable({ ballistics, removeMark }: CalculationTableP
         </View>
       ));
     } else {
-      return <Message title="Ingen siktemerker" description="Legg til siktemerker å send til beregning" />;
+      return <Message title="Ingen siktemerker" description="Legg til siktemerker for å send til beregning" />;
     }
   };
 
