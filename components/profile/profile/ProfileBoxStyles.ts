@@ -8,7 +8,7 @@ export const styles = StyleSheet.create({
     paddingHorizontal: 24,
     paddingBottom: 16,
     paddingTop: 24,
-    margin: 16,
+    marginBottom: 16,
     shadowColor: colors.dark_primary,
     shadowOffset: {
       width: 2,

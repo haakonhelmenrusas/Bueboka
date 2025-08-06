@@ -98,20 +98,22 @@ export default function Profile() {
         />
         <View style={styles.actionButtons}>
           <Button
+            buttonStyle={{ minWidth: '45%' }}
             onPress={() => {
               setSelectedBow(null);
               setBowModalVisible(true);
             }}
             icon={<FontAwesomeIcon icon={faPlus} size={16} color={colors.white} />}
-            label="Legg til bue"
+            label="Ny bue"
           />
           <Button
+            buttonStyle={{ minWidth: '45%' }}
             onPress={() => {
               setSelectedArrowSet(null);
               setArrowModalVisible(true);
             }}
             icon={<FontAwesomeIcon icon={faPlus} size={16} color={colors.white} />}
-            label="Legg til pilsett"
+            label="Nytt pilsett"
           />
         </View>
         <View style={styles.bowContainer}>
