@@ -14,10 +14,16 @@ export const styles = StyleSheet.create({
     width: '100%',
   },
   messageTitle: {
-    color: colors.primary,
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 16,
+  },
+  title: {
+    marginLeft: 4,
     fontSize: 18,
     fontWeight: 500,
-    marginBottom: 16,
+    color: colors.primary,
   },
   icon: {
     color: colors.primary,

@@ -27,9 +27,10 @@ interface MessageProps {
 export default function Message({ title, description, onPress, buttonLabel }: MessageProps): JSX.Element {
   return (
     <View style={styles.messageContainer}>
-      <Text style={styles.messageTitle}>
-        <FontAwesomeIcon style={styles.icon} icon={faInfoCircle} /> {title}
-      </Text>
+      <View style={styles.messageTitle}>
+        <FontAwesomeIcon style={styles.icon} icon={faInfoCircle} />
+        <Text style={styles.title}>{title}</Text>
+      </View>
       <Text style={styles.messageText}>{description}</Text>
       {onPress && buttonLabel && <Button width={300} onPress={onPress} label={buttonLabel} />}
     </View>
