@@ -1,4 +1,4 @@
-import { Keyboard, KeyboardAvoidingView, Modal, Platform, Pressable, ScrollView, Text, View } from 'react-native';
+import { Keyboard, KeyboardAvoidingView, Platform, Pressable, ScrollView, Text, View } from 'react-native';
 import { useEffect, useState } from 'react';
 import { Button, Input, ModalWrapper, Select, Toggle } from '@/components/common';
 import { handleNumberChange, storeLocalStorage } from '@/utils';
@@ -7,12 +7,10 @@ import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faXmark } from '@fortawesome/free-solid-svg-icons/faXmark';
 import { useArrowForm } from '@/components/profile/arrowForm/useArrowForm';
 import { styles } from './ArrowFormStyles';
-import { faStar } from '@fortawesome/free-solid-svg-icons';
-import { faStar as star } from '@fortawesome/free-regular-svg-icons';
 import { colors } from '@/styles/colors';
 import { faTrash } from '@fortawesome/free-solid-svg-icons/faTrash';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import DeleteArrowSetModal from '@/components/profile/DeleteArrowSetModal/DeleteArrowSetModal';
 
 interface Props {
   modalVisible: boolean;
@@ -186,7 +184,7 @@ export default function ArrowForm({ modalVisible, setArrowModalVisible, arrowSet
               />
             </View>
             <Toggle value={isFavorite} label="Favoritt" onToggle={() => dispatch({ type: 'SET_FAVORITE', payload: !isFavorite })} />
-            <View style={{ marginTop: 'auto' }}>
+            <View style={{ marginTop: 16 }}>
               {arrowSet && (
                 <Button variant="warning" label="Slett" onPress={() => setConfirmVisible(true)} type="outline">
                   <FontAwesomeIcon icon={faTrash} size={16} color={colors.warning} />
@@ -205,23 +203,16 @@ export default function ArrowForm({ modalVisible, setArrowModalVisible, arrowSet
           </Pressable>
         </ScrollView>
       </KeyboardAvoidingView>
-      <Modal visible={confirmVisible} transparent animationType="fade">
-        <View style={styles.confirmOverlay}>
-          <View style={styles.confirmBox}>
-            <Text style={styles.confirmText}>Vil du slette dette pilsettet?</Text>
-            <View style={styles.confirmActions}>
-              <Button label="Avbryt" type="outline" onPress={() => setConfirmVisible(false)} />
-              <Button
-                label="Slett"
-                onPress={() => {
-                  handleDeleteArrowSet(arrowSet!);
-                  setConfirmVisible(false);
-                }}
-              />
-            </View>
-          </View>
-        </View>
-      </Modal>
+      <DeleteArrowSetModal
+        visible={confirmVisible}
+        onCancel={() => setConfirmVisible(false)}
+        onConfirm={() => {
+          if (arrowSet) {
+            handleDeleteArrowSet(arrowSet);
+          }
+          setConfirmVisible(false);
+        }}
+      />
     </ModalWrapper>
   );
 }
