@@ -1,17 +1,15 @@
-import { Keyboard, KeyboardAvoidingView, Modal, Platform, Pressable, ScrollView, Text, TouchableOpacity, View } from 'react-native';
+import { Keyboard, KeyboardAvoidingView, Platform, Pressable, ScrollView, Text, View } from 'react-native';
 import { useEffect, useState } from 'react';
-import { Button, Input, Select } from '@/components/common';
+import { Button, Input, ModalWrapper, Select, Toggle } from '@/components/common';
 import { useBowForm } from './useBowForm';
 import { handleNumberChange, storeLocalStorage } from '@/utils';
 import { Bow } from '@/types';
 import { styles } from './BowFormStyles';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faXmark } from '@fortawesome/free-solid-svg-icons/faXmark';
-import { SafeAreaView } from 'react-native-safe-area-context';
 import { faTrash } from '@fortawesome/free-solid-svg-icons/faTrash';
-import { faStar } from '@fortawesome/free-solid-svg-icons';
-import { faStar as star } from '@fortawesome/free-regular-svg-icons';
 import { colors } from '@/styles/colors';
+import ConfirmModal from '@/components/profile/DeleteArrowSetModal/ConfirmModal';
 
 interface BowFormProps {
   modalVisible: boolean;
@@ -114,133 +112,120 @@ const BowForm = ({ modalVisible, setModalVisible, bow, existingBows }: BowFormPr
   }
 
   return (
-    <Modal
-      animationType="slide"
+    <ModalWrapper
       visible={modalVisible}
-      onRequestClose={() => {
+      onClose={() => {
         clearForm();
         setModalVisible(false);
       }}>
-      <SafeAreaView style={{ flex: 1 }}>
-        <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={{ flex: 1 }}>
-          <ScrollView keyboardShouldPersistTaps="handled" contentContainerStyle={{ flexGrow: 1 }}>
-            <Pressable style={{ flex: 1 }} onPress={() => Keyboard.dismiss()}>
-              <View style={styles.modal}>
-                <View style={styles.titleContainer}>
-                  <Text style={styles.title}>Din bue</Text>
-                  <Pressable
-                    onPress={() => {
-                      clearForm();
-                      setModalVisible(false);
-                    }}>
-                    <FontAwesomeIcon size={20} icon={faXmark} />
-                  </Pressable>
-                </View>
-                <Input
-                  value={bowName}
-                  onChangeText={(value) => dispatch({ type: 'SET_BOW_NAME', payload: value })}
-                  placeholderText="F.eks. Hoyt"
-                  label="Navn på bue (obligatorisk)"
-                  error={bowNameError}
-                  errorMessage="Du må fylle inn navn på bue"
-                />
-                <View style={{ zIndex: 2000, marginTop: 16 }}>
-                  <Select
-                    label="Buetype"
-                    selectedValue={bowType}
-                    options={[
-                      { label: 'Recurve', value: 'recurve' },
-                      { label: 'Compound', value: 'compound' },
-                      { label: 'Tradisjonell', value: 'tradisjonell' },
-                      { label: 'Langbue', value: 'langbue' },
-                      { label: 'Kyudo', value: 'kyudo' },
-                      { label: 'Barebow', value: 'barebow' },
-                      { label: 'Rytterbue', value: 'rytterbue' },
-                      { label: 'Annet', value: 'annet' },
-                    ]}
-                    onValueChange={(value) => dispatch({ type: 'SET_BOW_TYPE', payload: value })}
-                  />
-                </View>
-                <Select
-                  label="Plassering"
-                  selectedValue={placement}
-                  options={[
-                    { label: 'Bak linja', value: 'behind' },
-                    { label: 'Over linja', value: '' },
-                  ]}
-                  onValueChange={(value) => dispatch({ type: 'SET_PLACEMENT', payload: value })}
-                />
-                <View style={{ flexDirection: 'row', justifyContent: 'space-around', marginTop: 16 }}>
-                  <Input
-                    containerStyle={{ flex: 1, marginRight: 8 }}
-                    label="Fra øye til nock (cm)"
-                    keyboardType="numeric"
-                    placeholderText="F.eks. 10"
-                    value={eyeToNock}
-                    onChangeText={(value) => handleNumberChange(value, 'SET_EYE_TO_NOCK', dispatch)}
-                  />
-                  <Input
-                    containerStyle={{ flex: 1 }}
-                    label="Fra øye til sikte (cm)"
-                    keyboardType="numeric"
-                    placeholderText="F.eks. 90"
-                    value={eyeToAim}
-                    onChangeText={(value) => handleNumberChange(value, 'SET_EYE_TO_AIM', dispatch)}
-                  />
-                </View>
-                <View style={{ marginTop: 24, marginBottom: 24 }}>
-                  <Input
-                    containerStyle={{ flex: 1, width: '50%' }}
-                    label={'Intervall sikte (cm)'}
-                    value={interval_sight_real}
-                    placeholderText="F.eks. 5"
-                    onChangeText={(value) => handleNumberChange(value, 'SET_INTERVAL_SIGHT_REAL', dispatch)}
-                  />
-                </View>
-                <Pressable style={styles.favorite} onPress={() => dispatch({ type: 'SET_IS_FAVORITE', payload: !isFavorite })}>
-                  <FontAwesomeIcon icon={isFavorite ? faStar : star} size={20} color={colors.warning} />
-                  <Text>{bow?.isFavorite ? 'Favoritt' : 'Gjør til favoritt'}</Text>
-                </Pressable>
-
-                <View style={{ marginTop: 'auto' }}>
-                  {bow && (
-                    <Button variant="warning" label="Slett" onPress={() => setConfirmVisible(true)} type="outline">
-                      <FontAwesomeIcon icon={faTrash} size={16} color={colors.warning} />
-                    </Button>
-                  )}
-                  <Button disabled={!bowName} onPress={handleSubmit} label="Lagre" />
-                  <Button
-                    type="outline"
-                    onPress={() => {
-                      clearForm();
-                      setModalVisible(false);
-                    }}
-                    label="Avbryt"
-                  />
-                </View>
-              </View>
-            </Pressable>
-          </ScrollView>
-        </KeyboardAvoidingView>
-      </SafeAreaView>
-      <Modal visible={confirmVisible} transparent animationType="fade">
-        <View style={styles.confirmOverlay}>
-          <View style={styles.confirmBox}>
-            <Text style={styles.confirmText}>Vil du slette denne buen?</Text>
-            <View style={styles.confirmActions}>
-              <Button label="Avbryt" type="outline" onPress={() => setConfirmVisible(false)} />
-              <Button
-                label="Slett"
+      <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={styles.modal}>
+        <ScrollView keyboardShouldPersistTaps="handled" contentContainerStyle={{ flexGrow: 1 }}>
+          <Pressable style={{ flex: 1 }} onPress={() => Keyboard.dismiss()}>
+            <View style={styles.titleContainer}>
+              <Text style={styles.title}>Din bue</Text>
+              <Pressable
                 onPress={() => {
-                  handleDelete();
-                  setConfirmVisible(false);
+                  clearForm();
+                  setModalVisible(false);
+                }}>
+                <FontAwesomeIcon size={20} icon={faXmark} />
+              </Pressable>
+            </View>
+            <View style={styles.inputs}>
+              <Input
+                value={bowName}
+                onChangeText={(value) => dispatch({ type: 'SET_BOW_NAME', payload: value })}
+                placeholderText="F.eks. Hoyt"
+                label="Navn på bue (obligatorisk)"
+                error={bowNameError}
+                errorMessage="Du må fylle inn navn på bue"
+              />
+              <Select
+                containerStyle={{ zIndex: 2000, marginBottom: 16 }}
+                label="Buetype"
+                selectedValue={bowType}
+                options={[
+                  { label: 'Recurve', value: 'recurve' },
+                  { label: 'Compound', value: 'compound' },
+                  { label: 'Tradisjonell', value: 'tradisjonell' },
+                  { label: 'Langbue', value: 'langbue' },
+                  { label: 'Kyudo', value: 'kyudo' },
+                  { label: 'Barebow', value: 'barebow' },
+                  { label: 'Rytterbue', value: 'rytterbue' },
+                  { label: 'Annet', value: 'annet' },
+                ]}
+                onValueChange={(value) => dispatch({ type: 'SET_BOW_TYPE', payload: value })}
+              />
+              <Select
+                containerStyle={{ zIndex: 2000, marginBottom: 16 }}
+                label="Plassering"
+                selectedValue={placement}
+                options={[
+                  { label: 'Bak linja', value: 'behind' },
+                  { label: 'Over linja', value: '' },
+                ]}
+                onValueChange={(value) => dispatch({ type: 'SET_PLACEMENT', payload: value })}
+              />
+              <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 16 }}>
+                <Input
+                  containerStyle={{ width: '48%' }}
+                  label="Fra øye til nock (cm)"
+                  keyboardType="numeric"
+                  placeholderText="F.eks. 10"
+                  value={eyeToNock}
+                  onChangeText={(value) => handleNumberChange(value, 'SET_EYE_TO_NOCK', dispatch)}
+                />
+                <Input
+                  containerStyle={{ width: '48%' }}
+                  label="Fra øye til sikte (cm)"
+                  keyboardType="numeric"
+                  placeholderText="F.eks. 90"
+                  value={eyeToAim}
+                  onChangeText={(value) => handleNumberChange(value, 'SET_EYE_TO_AIM', dispatch)}
+                />
+              </View>
+              <Input
+                keyboardType="numeric"
+                containerStyle={{ width: '48%', marginBottom: 16 }}
+                label={'Intervall sikte (cm)'}
+                value={interval_sight_real}
+                placeholderText="F.eks. 5"
+                onChangeText={(value) => handleNumberChange(value, 'SET_INTERVAL_SIGHT_REAL', dispatch)}
+              />
+              <Toggle value={isFavorite} label="Favoritt" onToggle={() => dispatch({ type: 'SET_IS_FAVORITE', payload: !isFavorite })} />
+            </View>
+            <View style={{ marginTop: 'auto' }}>
+              {bow && (
+                <Button variant="warning" label="Slett" onPress={() => setConfirmVisible(true)} type="outline">
+                  <FontAwesomeIcon icon={faTrash} size={16} color={colors.warning} />
+                </Button>
+              )}
+              <Button disabled={!bowName} onPress={handleSubmit} label="Lagre" />
+              <Button
+                type="outline"
+                onPress={() => {
+                  clearForm();
+                  setModalVisible(false);
                 }}
+                label="Avbryt"
               />
             </View>
-          </View>
-        </View>
-      </Modal>
-    </Modal>
+          </Pressable>
+        </ScrollView>
+      </KeyboardAvoidingView>
+      <ConfirmModal
+        visible={confirmVisible}
+        title="Slett bue"
+        message={'Vil du slette buen "' + bowName + '"?'}
+        confirmLabel="Slett"
+        cancelLabel="Avbryt"
+        onCancel={() => setConfirmVisible(false)}
+        onConfirm={() => {
+          handleDelete();
+          setConfirmVisible(false);
+        }}
+      />
+    </ModalWrapper>
   );
 };
 

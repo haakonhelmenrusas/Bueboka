@@ -10,7 +10,7 @@ import { styles } from './ArrowFormStyles';
 import { colors } from '@/styles/colors';
 import { faTrash } from '@fortawesome/free-solid-svg-icons/faTrash';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import DeleteArrowSetModal from '@/components/profile/DeleteArrowSetModal/DeleteArrowSetModal';
+import ConfirmModal from '@/components/profile/DeleteArrowSetModal/ConfirmModal';
 
 interface Props {
   modalVisible: boolean;
@@ -120,71 +120,73 @@ export default function ArrowForm({ modalVisible, setArrowModalVisible, arrowSet
                 <FontAwesomeIcon size={20} icon={faXmark} />
               </Pressable>
             </View>
-            <Input
-              value={name}
-              onChangeText={(value) => dispatch({ type: 'SET_ARROW_NAME', payload: value })}
-              placeholderText="F.eks. Hoyt"
-              label="Navn på pilsett"
-            />
-            <View style={{ flexDirection: 'row', justifyContent: 'space-around', marginTop: 24 }}>
-              <Select
-                containerStyle={{ flex: 1, marginRight: 8 }}
-                label="Materiale"
-                selectedValue={material}
-                options={[
-                  { label: 'Treverk', value: 'Treverk' },
-                  { label: 'Karbon', value: 'Karbon' },
-                  { label: 'Aluminium', value: 'Aluminium' },
-                ]}
-                onValueChange={(value) => dispatch({ type: 'SET_MATERIAL', payload: value })}
-              />
+            <View style={styles.inputs}>
               <Input
-                containerStyle={{ flex: 1 }}
-                label="Lengde (cm)"
-                keyboardType="numeric"
-                placeholderText="F.eks. 90"
-                value={length}
-                onChangeText={(value) => dispatch({ type: 'SET_ARROW_LENGTH', payload: value })}
+                value={name}
+                onChangeText={(value) => dispatch({ type: 'SET_ARROW_NAME', payload: value })}
+                placeholderText="F.eks. Hoyt"
+                label="Navn på pilsett"
               />
+              <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+                <Select
+                  containerStyle={{ width: '48%' }}
+                  label="Materiale"
+                  selectedValue={material}
+                  options={[
+                    { label: 'Treverk', value: 'Treverk' },
+                    { label: 'Karbon', value: 'Karbon' },
+                    { label: 'Aluminium', value: 'Aluminium' },
+                  ]}
+                  onValueChange={(value) => dispatch({ type: 'SET_MATERIAL', payload: value })}
+                />
+                <Input
+                  containerStyle={{ width: '48%' }}
+                  label="Lengde (cm)"
+                  keyboardType="numeric"
+                  placeholderText="F.eks. 90"
+                  value={length}
+                  onChangeText={(value) => dispatch({ type: 'SET_ARROW_LENGTH', payload: value })}
+                />
+              </View>
+              <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+                <Input
+                  containerStyle={{ width: '48%' }}
+                  label="Vekt (g)"
+                  keyboardType="numeric"
+                  placeholderText="F.eks. 20"
+                  value={weight}
+                  onChangeText={(value) => handleNumberChange(value, 'SET_ARROW_WEIGHT', dispatch)}
+                />
+                <Input
+                  containerStyle={{ width: '48%' }}
+                  label="Spine"
+                  keyboardType="numeric"
+                  placeholderText="F.eks. 250"
+                  value={spine}
+                  onChangeText={(value) => handleNumberChange(value, 'SET_SPINE', dispatch)}
+                />
+              </View>
+              <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 8 }}>
+                <Input
+                  containerStyle={{ width: '48%' }}
+                  label="Diameter (mm)"
+                  keyboardType="numeric"
+                  placeholderText="F.eks. 6"
+                  value={diameter}
+                  onChangeText={(value) => handleNumberChange(value, 'SET_DIAMETER', dispatch)}
+                />
+                <Input
+                  containerStyle={{ width: '48%' }}
+                  label="Antall piler"
+                  keyboardType="numeric"
+                  placeholderText="F.eks. 6"
+                  value={numberOfArrows}
+                  onChangeText={(value) => handleNumberChange(value, 'SET_NUMBER_OF_ARROWS', dispatch)}
+                />
+              </View>
+              <Toggle value={isFavorite} label="Favoritt" onToggle={() => dispatch({ type: 'SET_FAVORITE', payload: !isFavorite })} />
             </View>
-            <View style={{ flexDirection: 'row', justifyContent: 'space-around', marginTop: 24 }}>
-              <Input
-                containerStyle={{ flex: 1, marginRight: 8 }}
-                label="Vekt (g)"
-                keyboardType="numeric"
-                placeholderText="F.eks. 20"
-                value={weight}
-                onChangeText={(value) => handleNumberChange(value, 'SET_ARROW_WEIGHT', dispatch)}
-              />
-              <Input
-                containerStyle={{ flex: 1 }}
-                label="Spine"
-                keyboardType="numeric"
-                placeholderText="F.eks. 250"
-                value={spine}
-                onChangeText={(value) => handleNumberChange(value, 'SET_SPINE', dispatch)}
-              />
-            </View>
-            <View style={{ flex: 1, flexDirection: 'row', marginTop: 24 }}>
-              <Input
-                containerStyle={{ flex: 1, marginRight: 8 }}
-                label="Diameter (mm)"
-                keyboardType="numeric"
-                placeholderText="F.eks. 6"
-                value={diameter}
-                onChangeText={(value) => handleNumberChange(value, 'SET_DIAMETER', dispatch)}
-              />
-              <Input
-                containerStyle={{ flex: 1 }}
-                label="Antall piler"
-                keyboardType="numeric"
-                placeholderText="F.eks. 6"
-                value={numberOfArrows}
-                onChangeText={(value) => handleNumberChange(value, 'SET_NUMBER_OF_ARROWS', dispatch)}
-              />
-            </View>
-            <Toggle value={isFavorite} label="Favoritt" onToggle={() => dispatch({ type: 'SET_FAVORITE', payload: !isFavorite })} />
-            <View style={{ marginTop: 16 }}>
+            <View style={{ marginTop: 'auto' }}>
               {arrowSet && (
                 <Button variant="warning" label="Slett" onPress={() => setConfirmVisible(true)} type="outline">
                   <FontAwesomeIcon icon={faTrash} size={16} color={colors.warning} />
@@ -203,7 +205,9 @@ export default function ArrowForm({ modalVisible, setArrowModalVisible, arrowSet
           </Pressable>
         </ScrollView>
       </KeyboardAvoidingView>
-      <DeleteArrowSetModal
+      <ConfirmModal
+        title={'Slett pilsett'}
+        message={'Vil du slette pilsettet "' + arrowSet?.name + '"?'}
         visible={confirmVisible}
         onCancel={() => setConfirmVisible(false)}
         onConfirm={() => {
