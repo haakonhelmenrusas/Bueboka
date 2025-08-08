@@ -17,7 +17,7 @@ export const styles = StyleSheet.create({
     marginBottom: 24,
   },
   arrowContainer: {
-    marginBottom: 24,
+    marginBottom: 16,
   },
   subtitle: {
     fontSize: 18,

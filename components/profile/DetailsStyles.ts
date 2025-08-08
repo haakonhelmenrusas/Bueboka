@@ -2,19 +2,12 @@ import { StyleSheet } from 'react-native';
 import { colors } from '@/styles/colors';
 
 export const styles = StyleSheet.create({
-  centeredView: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-  },
   modalView: {
-    backgroundColor: 'white',
-    borderRadius: 20,
+    backgroundColor: colors.white,
+    borderRadius: 12,
     padding: 24,
-    width: '90%',
-    maxWidth: 400,
-    shadowColor: '#000',
+    width: 320,
+    shadowColor: colors.dark_primary,
     shadowOffset: {
       width: 0,
       height: 2,
@@ -53,7 +46,7 @@ export const styles = StyleSheet.create({
   },
   label: {
     fontSize: 16,
-    color: colors.inactive,
+    color: colors.secondary,
   },
   value: {
     fontSize: 16,

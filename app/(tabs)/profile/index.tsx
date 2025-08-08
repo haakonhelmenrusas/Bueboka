@@ -77,7 +77,6 @@ export default function Profile() {
   const sortedBows = useMemo(() => sortItems(bows), [bows]);
   const sortedArrowSets = useMemo(() => sortItems(arrowSets), [arrowSets]);
 
-  // Don't render the main content until we have user data
   if (isLoading || !user) {
     return (
       <View style={styles.container}>
