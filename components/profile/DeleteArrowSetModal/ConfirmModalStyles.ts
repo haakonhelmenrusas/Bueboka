@@ -14,6 +14,12 @@ export const styles = StyleSheet.create({
     borderRadius: 10,
     width: '90%',
   },
+  title: {
+    fontSize: 18,
+    fontWeight: '600',
+    textAlign: 'center',
+    marginBottom: 8,
+  },
   text: {
     fontSize: 16,
     textAlign: 'center',
