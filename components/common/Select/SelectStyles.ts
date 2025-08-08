@@ -5,9 +5,9 @@ const { height: WINDOW_HEIGHT } = Dimensions.get('window');
 
 const styles = StyleSheet.create({
   wrapper: {
+    height: 40,
     position: 'relative',
     width: '100%',
-    marginBottom: 16,
     zIndex: 1,
   },
   label: {

@@ -57,7 +57,7 @@ export const Select: React.FC<Props> = ({ label, options, selectedValue, onValue
       <TouchableOpacity style={styles.selectBox} onPress={toggleDropdown} activeOpacity={0.7}>
         <Text style={styles.selectText}>{selectedLabel}</Text>
         <Animated.View style={{ transform: [{ rotate }] }}>
-          <FontAwesomeIcon icon={faChevronDown} size={20} color={colors.primary} />
+          <FontAwesomeIcon icon={faChevronDown} size={16} color={colors.primary} />
         </Animated.View>
       </TouchableOpacity>
       {open && (
