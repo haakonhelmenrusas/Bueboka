@@ -1,4 +1,3 @@
-// components/common/ModalWrapper.tsx
 import React from 'react';
 import { Modal, Pressable, StyleSheet } from 'react-native';
 
@@ -12,7 +11,9 @@ export default function ModalWrapper({ visible, onClose, children }: ModalWrappe
   return (
     <Modal animationType="fade" transparent={true} visible={visible} onRequestClose={onClose}>
       <Pressable style={styles.overlay} onPress={onClose}>
-        <Pressable onPress={(e) => e.stopPropagation()}>{children}</Pressable>
+        <Pressable style={styles.content} onPress={(e) => e.stopPropagation()}>
+          {children}
+        </Pressable>
       </Pressable>
     </Modal>
   );
@@ -24,5 +25,11 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(0, 0, 0, 0.3)',
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  content: {
+    flex: 1,
+    width: '90%',
+    maxWidth: 500,
+    maxHeight: '90%',
   },
 });
