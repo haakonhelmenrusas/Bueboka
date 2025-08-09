@@ -100,8 +100,8 @@ const MarksForm: FC<MarksFormProps> = ({ sendMarks, status, setIsFormVisible, tr
     <KeyboardAvoidingView
       enabled={Platform.OS === 'ios'}
       style={styles.container}
-      keyboardVerticalOffset={500}
-      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
+      keyboardVerticalOffset={380}
+      behavior={Platform.OS === 'ios' ? 'position' : 'height'}>
       <GestureDetector gesture={gesture}>
         <Animated.View style={[styles.form, animatedStyle]}>
           <Notch />
