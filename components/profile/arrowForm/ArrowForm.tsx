@@ -108,7 +108,7 @@ export default function ArrowForm({ modalVisible, setArrowModalVisible, arrowSet
         setArrowModalVisible(false);
       }}>
       <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={styles.modal}>
-        <ScrollView keyboardShouldPersistTaps="handled" contentContainerStyle={{ flex: 1, flexGrow: 1 }}>
+        <ScrollView keyboardShouldPersistTaps="handled" contentContainerStyle={{ flexGrow: 1 }}>
           <Pressable style={{ flex: 1 }} onPress={() => Keyboard.dismiss()}>
             <View style={styles.titleContainer}>
               <Text style={styles.title}>Nytt pilsett</Text>

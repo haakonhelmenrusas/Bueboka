@@ -3,9 +3,8 @@ import { colors } from '@/styles/colors';
 
 export const styles = StyleSheet.create({
   modal: {
-    flex: 1,
     padding: 16,
-    minHeight: '50%',
+    height: '100%',
     backgroundColor: colors.white,
     borderRadius: 12,
   },

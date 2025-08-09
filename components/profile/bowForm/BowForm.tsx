@@ -157,7 +157,7 @@ const BowForm = ({ modalVisible, setModalVisible, bow, existingBows }: BowFormPr
                 onValueChange={(value) => dispatch({ type: 'SET_BOW_TYPE', payload: value })}
               />
               <Select
-                containerStyle={{ zIndex: 2000, marginBottom: 16 }}
+                containerStyle={{ zIndex: 1000, marginBottom: 24 }}
                 label="Plassering"
                 selectedValue={placement}
                 options={[
@@ -166,10 +166,10 @@ const BowForm = ({ modalVisible, setModalVisible, bow, existingBows }: BowFormPr
                 ]}
                 onValueChange={(value) => dispatch({ type: 'SET_PLACEMENT', payload: value })}
               />
-              <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 16 }}>
+              <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 8 }}>
                 <Input
                   containerStyle={{ width: '48%' }}
-                  label="Fra øye til nock (cm)"
+                  label="Øye til nock (cm)"
                   keyboardType="numeric"
                   placeholderText="F.eks. 10"
                   value={eyeToNock}
@@ -177,7 +177,7 @@ const BowForm = ({ modalVisible, setModalVisible, bow, existingBows }: BowFormPr
                 />
                 <Input
                   containerStyle={{ width: '48%' }}
-                  label="Fra øye til sikte (cm)"
+                  label="Øye til sikte (cm)"
                   keyboardType="numeric"
                   placeholderText="F.eks. 90"
                   value={eyeToAim}

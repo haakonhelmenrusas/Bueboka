@@ -9,7 +9,7 @@ interface ModalWrapperProps {
 
 export default function ModalWrapper({ visible, onClose, children }: ModalWrapperProps) {
   return (
-    <Modal animationType="fade" transparent={true} visible={visible} onRequestClose={onClose}>
+    <Modal presentationStyle="overFullScreen" animationType="fade" transparent={true} visible={visible} onRequestClose={onClose}>
       <Pressable style={styles.overlay} onPress={onClose}>
         <Pressable style={styles.content} onPress={() => {}}>
           {children}
@@ -30,5 +30,6 @@ const styles = StyleSheet.create({
     width: '90%',
     maxWidth: 500,
     maxHeight: '90%',
+    alignSelf: 'center',
   },
 });
