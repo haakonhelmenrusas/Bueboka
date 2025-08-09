@@ -11,7 +11,7 @@ export default function ModalWrapper({ visible, onClose, children }: ModalWrappe
   return (
     <Modal animationType="fade" transparent={true} visible={visible} onRequestClose={onClose}>
       <Pressable style={styles.overlay} onPress={onClose}>
-        <Pressable style={styles.content} onPress={(e) => e.stopPropagation()}>
+        <Pressable style={styles.content} onPress={() => {}}>
           {children}
         </Pressable>
       </Pressable>
@@ -27,7 +27,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   content: {
-    flex: 1,
     width: '90%',
     maxWidth: 500,
     maxHeight: '90%',
