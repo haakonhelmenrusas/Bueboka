@@ -4,8 +4,7 @@ import { faXmark, faCog } from '@fortawesome/free-solid-svg-icons';
 import { ArrowSet } from '@/types';
 import { styles } from '../DetailsStyles';
 import { colors } from '@/styles/colors';
-import { capitalizeFirstLetter } from '@/utils';
-import { ModalWrapper } from '@/components/common';
+import { ModalWrapper, DataValue } from '@/components/common';
 
 interface Props {
   arrowSet: ArrowSet;
@@ -32,28 +31,33 @@ export default function ArrowSetDetails({ arrowSet, visible, onClose, onEdit }: 
 
         <View style={styles.content}>
           <View style={styles.row}>
-            <Text style={styles.label}>Spine:</Text>
-            <Text style={styles.value}>{arrowSet.spine}</Text>
+            <Text style={styles.label}>Spine</Text>
+            <DataValue value={arrowSet.spine} textStyle={styles.value} />
           </View>
+
           <View style={styles.row}>
-            <Text style={styles.label}>Vekt:</Text>
-            <Text style={styles.value}>{arrowSet.weight} gram</Text>
+            <Text style={styles.label}>Vekt</Text>
+            <DataValue value={arrowSet.weight} suffix=" gram" textStyle={styles.value} />
           </View>
+
           <View style={styles.row}>
-            <Text style={styles.label}>Lengde:</Text>
-            <Text style={styles.value}>{arrowSet.length} cm</Text>
+            <Text style={styles.label}>Lengde</Text>
+            <DataValue value={arrowSet.length} suffix=" cm" textStyle={styles.value} />
           </View>
+
           <View style={styles.row}>
-            <Text style={styles.label}>Material:</Text>
-            <Text style={styles.value}>{capitalizeFirstLetter(arrowSet.material)}</Text>
+            <Text style={styles.label}>Material</Text>
+            <DataValue value={arrowSet.material} capitalize textStyle={styles.value} />
           </View>
+
           <View style={styles.row}>
-            <Text style={styles.label}>Diameter:</Text>
-            <Text style={styles.value}>{arrowSet.diameter} mm</Text>
+            <Text style={styles.label}>Diameter</Text>
+            <DataValue value={arrowSet.diameter} suffix=" mm" textStyle={styles.value} />
           </View>
+
           <View style={styles.row}>
-            <Text style={styles.label}>Antall piler:</Text>
-            <Text style={styles.value}>{arrowSet.numberOfArrows}</Text>
+            <Text style={styles.label}>Antall piler</Text>
+            <DataValue value={arrowSet.numberOfArrows} textStyle={styles.value} />
           </View>
         </View>
       </View>

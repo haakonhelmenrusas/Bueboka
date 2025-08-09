@@ -5,7 +5,7 @@ import { Bow } from '@/types';
 import { styles } from '../DetailsStyles';
 import { colors } from '@/styles/colors';
 import { capitalizeFirstLetter } from '@/utils';
-import { ModalWrapper } from '@/components/common';
+import { ModalWrapper, DataValue } from '@/components/common';
 
 interface Props {
   bow: Bow;
@@ -32,31 +32,25 @@ export default function BowDetails({ bow, visible, onClose, onEdit }: Props) {
 
         <View style={styles.content}>
           <View style={styles.row}>
-            <Text style={styles.label}>Type:</Text>
+            <Text style={styles.label}>Type</Text>
             <Text style={styles.value}>{capitalizeFirstLetter(bow.bowType)}</Text>
           </View>
           <View style={styles.row}>
-            <Text style={styles.label}>Plassering:</Text>
-            <Text style={styles.value}>{bow.placement === 'behind' ? 'Bak linja' : 'Over linja'}</Text>
+            <Text style={styles.label}>Plassering</Text>
+            <DataValue textStyle={styles.value} value={bow.placement === 'behind' ? 'Bak linja' : 'Over linja'} />
           </View>
-          {bow.eyeToNock && (
-            <View style={styles.row}>
-              <Text style={styles.label}>Fra øye til nock:</Text>
-              <Text style={styles.value}>{bow.eyeToNock} cm</Text>
-            </View>
-          )}
-          {bow.eyeToAim && (
-            <View style={styles.row}>
-              <Text style={styles.label}>Fra øye til sikte:</Text>
-              <Text style={styles.value}>{bow.eyeToAim} cm</Text>
-            </View>
-          )}
-          {bow.interval_sight_real && (
-            <View style={styles.row}>
-              <Text style={styles.label}>Intervall sikte:</Text>
-              <Text style={styles.value}>{bow.interval_sight_real} cm</Text>
-            </View>
-          )}
+          <View style={styles.row}>
+            <Text style={styles.label}>Fra øye til nock</Text>
+            <DataValue textStyle={styles.value} value={bow.eyeToNock} suffix=" cm" />
+          </View>
+          <View style={styles.row}>
+            <Text style={styles.label}>Fra øye til sikte</Text>
+            <DataValue textStyle={styles.value} value={bow.eyeToAim} suffix=" cm" />
+          </View>
+          <View style={styles.row}>
+            <Text style={styles.label}>Intervall sikte</Text>
+            <DataValue textStyle={styles.value} value={bow.interval_sight_real} suffix=" cm" />
+          </View>
         </View>
       </View>
     </ModalWrapper>
