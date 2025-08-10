@@ -6,8 +6,12 @@ import { faCircleQuestion } from '@fortawesome/free-regular-svg-icons/faCircleQu
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { Tabs } from 'expo-router';
 import { colors } from '@/styles/colors';
+import { Platform } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 export default function AppLayout() {
+  const insets = useSafeAreaInsets();
+
   return (
     <Tabs
       screenOptions={{
@@ -15,7 +19,8 @@ export default function AppLayout() {
         tabBarInactiveTintColor: colors.inactive,
         tabBarHideOnKeyboard: true,
         tabBarStyle: {
-          height: 64,
+          height: 56 + (Platform.OS === 'android' ? insets.bottom : 8),
+          paddingBottom: Math.max(insets.bottom, 8),
         },
       }}>
       <Tabs.Screen
