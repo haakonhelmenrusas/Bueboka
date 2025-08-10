@@ -1,17 +1,21 @@
 import { StyleSheet } from 'react-native';
+import { colors } from '@/styles/colors';
 
 export const styles = StyleSheet.create({
   modal: {
-    display: 'flex',
-    flex: 1,
-    alignItems: 'center',
     padding: 24,
-    marginTop: 32,
+    height: '100%',
+    backgroundColor: colors.white,
+    borderRadius: 12,
   },
   header: {
     width: '100%',
     flexDirection: 'row',
     justifyContent: 'space-between',
+  },
+  title: {
+    fontSize: 20,
+    fontWeight: '600',
   },
   inputs: {
     width: '100%',
@@ -36,6 +40,6 @@ export const styles = StyleSheet.create({
     width: '100%',
     flexDirection: 'column',
     marginTop: 'auto',
-    gap: 16,
+    gap: 8,
   },
 });

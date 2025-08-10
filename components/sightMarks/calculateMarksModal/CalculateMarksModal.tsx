@@ -1,13 +1,9 @@
-import { faMultiply } from '@fortawesome/free-solid-svg-icons/faMultiply';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
-import { Keyboard, KeyboardAvoidingView, Modal, Platform, Text, TouchableOpacity, View } from 'react-native';
-import { Button, Input } from '@/components/common';
+import { Keyboard, KeyboardAvoidingView, Platform, Text, TouchableOpacity, View } from 'react-native';
+import { Button, Input, ModalHeader, ModalWrapper } from '@/components/common';
 import { CalculatedMarks, MarksResult } from '@/types';
 import { getLocalStorage, handleNumberChange, storeLocalStorage, useCalculateMarks } from '@/utils';
 import { useCalcMarksForm } from '@/components/sightMarks/hooks/useCalcMarksForm';
-import { faRulerHorizontal } from '@fortawesome/free-solid-svg-icons/faRulerHorizontal';
-import { faRuler } from '@fortawesome/free-solid-svg-icons/faRuler';
-import { faCrosshairs } from '@fortawesome/free-solid-svg-icons/faCrosshairs';
 import { faChevronDown } from '@fortawesome/free-solid-svg-icons/faChevronDown';
 import { faChevronUp } from '@fortawesome/free-solid-svg-icons/faChevronUp';
 import { colors } from '@/styles/colors';
@@ -36,6 +32,9 @@ export const CalculateMarksModal = ({ modalVisible, closeModal, ballistics, setC
     dispatch({ type: 'SET_DISTANCE_TO', payload: '' });
     dispatch({ type: 'SET_INTERVAL', payload: '' });
     dispatch({ type: 'SET_ANGLES', payload: [] });
+    dispatch({ type: 'SET_DISTANCE_FROM_ERROR', payload: false });
+    dispatch({ type: 'SET_DISTANCE_TO_ERROR', payload: false });
+    dispatch({ type: 'SET_INTERVAL_ERROR', payload: false });
   }
 
   async function calculateMarksFunc(distanceFrom: number, distanceTo: number, interval: number) {
@@ -75,117 +74,103 @@ export const CalculateMarksModal = ({ modalVisible, closeModal, ballistics, setC
     }
   };
 
+  function handleCloseModal() {
+    Keyboard.dismiss();
+    clearForm();
+    closeModal();
+  }
+
   return (
-    <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
-      <Modal onRequestClose={closeModal} visible={modalVisible} animationType="slide">
-        <View style={styles.modal}>
-          <View style={styles.header}>
-            <Text style={{ fontSize: 20, fontWeight: '500' }}>Beregn siktemerker</Text>
-            <TouchableOpacity
-              style={{ padding: 16, margin: -8 }}
-              onPress={() => {
-                Keyboard.dismiss();
-                clearForm();
-                closeModal();
-              }}>
-              <Text>
-                <FontAwesomeIcon icon={faMultiply} size={20} />
-              </Text>
-            </TouchableOpacity>
-          </View>
-          <View style={styles.inputs}>
-            <Input
-              inputStyle={{ width: 100 }}
-              labelStyle={{ textAlign: 'center' }}
-              label="Fra avstand"
-              placeholder="F.eks. 10"
-              onBlur={() => dispatch({ type: 'SET_DISTANCE_FROM_ERROR', payload: false })}
-              keyboardType="numeric"
-              value={distanceFrom}
-              error={distanceFromError}
-              errorMessage="Verdi mangler"
-              onChangeText={(value) => handleNumberChange(value, 'SET_DISTANCE_FROM', dispatch)}
-              icon={<FontAwesomeIcon icon={faRulerHorizontal} color={colors.secondary} />}
-            />
-            <Input
-              inputStyle={{ width: 100 }}
-              labelStyle={{ textAlign: 'center' }}
-              onBlur={() => dispatch({ type: 'SET_DISTANCE_TO_ERROR', payload: false })}
-              label="Til avstand"
-              placeholder="F.eks. 90"
-              keyboardType="numeric"
-              value={distanceTo}
-              error={distanceToError}
-              onChangeText={(value) => handleNumberChange(value, 'SET_DISTANCE_TO', dispatch)}
-              errorMessage="Verdi mangler"
-              icon={<FontAwesomeIcon icon={faRulerHorizontal} color={colors.secondary} />}
-            />
-            <Input
-              inputStyle={{ width: 100 }}
-              labelStyle={{ textAlign: 'center' }}
-              label="Intevall"
-              placeholder="F.eks. 10"
-              onBlur={() => dispatch({ type: 'SET_INTERVAL_ERROR', payload: false })}
-              keyboardType="numeric"
-              value={interval}
-              error={intervalError}
-              onChangeText={(value) => handleNumberChange(value, 'SET_INTERVAL', dispatch)}
-              errorMessage="Verdi mangler"
-              icon={<FontAwesomeIcon icon={faCrosshairs} color={colors.secondary} />}
-            />
-          </View>
-          <TouchableOpacity style={styles.checkBox} onPress={() => dispatch({ type: 'SET_ANGLES_VISIBLE', payload: !anglesVisible })}>
-            <FontAwesomeIcon icon={anglesVisible ? faChevronUp : faChevronDown} color={colors.secondary} />
-            <Text> Flere vinkler</Text>
-          </TouchableOpacity>
-          {anglesVisible && (
-            <View style={styles.angles}>
-              <Input
-                textAlign="center"
-                inputStyle={{ width: 100 }}
-                icon={<FontAwesomeIcon icon={faRuler} color={colors.secondary} />}
-                labelStyle={{ textAlign: 'center', color: colors.primary }}
-                label="Vinkel"
-                placeholder="F.eks. -30"
-                keyboardType="numbers-and-punctuation"
-                onChange={(event) => handleAngleChange(event.nativeEvent.text, 0)}
-              />
-              <Input
-                textAlign="center"
-                inputStyle={{ width: 100 }}
-                icon={<FontAwesomeIcon icon={faRuler} color={colors.secondary} />}
-                labelStyle={{ textAlign: 'center', color: colors.primary }}
-                label="Vinkel"
-                placeholder="F.eks. 0"
-                keyboardType="numbers-and-punctuation"
-                onChange={(event) => handleAngleChange(event.nativeEvent.text, 1)}
-              />
-              <Input
-                textAlign="center"
-                inputStyle={{ width: 100 }}
-                icon={<FontAwesomeIcon icon={faRuler} color={colors.secondary} />}
-                labelStyle={{ textAlign: 'center', color: colors.primary }}
-                label="Vinkel"
-                placeholder="F.eks. 30"
-                keyboardType="numbers-and-punctuation"
-                onChange={(event) => handleAngleChange(event.nativeEvent.text, 2)}
-              />
-            </View>
-          )}
-          <View style={styles.buttons}>
-            <Button loading={status === 'pending'} width="auto" label="Beregn" onPress={handleSave} />
-            <Button
-              type="outline"
-              width="auto"
-              label="Lukk"
-              onPress={() => {
-                clearForm();
-                closeModal();
-              }}
-            />
-          </View>
+    <ModalWrapper
+      onClose={() => {
+        clearForm();
+        closeModal();
+      }}
+      visible={modalVisible}>
+      <KeyboardAvoidingView
+        keyboardVerticalOffset={Platform.OS === 'ios' ? 100 : undefined}
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        style={styles.modal}>
+        <ModalHeader onPress={handleCloseModal} title="Beregn siktemerker" />
+        <View style={styles.inputs}>
+          <Input
+            inputStyle={{ width: 90 }}
+            label="Fra avstand"
+            placeholder="F.eks. 10"
+            onBlur={() => dispatch({ type: 'SET_DISTANCE_FROM_ERROR', payload: false })}
+            keyboardType="numeric"
+            value={distanceFrom}
+            error={distanceFromError}
+            errorMessage="Verdi mangler"
+            onChangeText={(value) => handleNumberChange(value, 'SET_DISTANCE_FROM', dispatch)}
+          />
+          <Input
+            inputStyle={{ width: 90 }}
+            onBlur={() => dispatch({ type: 'SET_DISTANCE_TO_ERROR', payload: false })}
+            label="Til avstand"
+            placeholder="F.eks. 90"
+            keyboardType="numeric"
+            value={distanceTo}
+            error={distanceToError}
+            onChangeText={(value) => handleNumberChange(value, 'SET_DISTANCE_TO', dispatch)}
+            errorMessage="Verdi mangler"
+          />
+          <Input
+            inputStyle={{ width: 90 }}
+            label="Intevall"
+            placeholder="F.eks. 10"
+            onBlur={() => dispatch({ type: 'SET_INTERVAL_ERROR', payload: false })}
+            keyboardType="numeric"
+            value={interval}
+            error={intervalError}
+            onChangeText={(value) => handleNumberChange(value, 'SET_INTERVAL', dispatch)}
+            errorMessage="Verdi mangler"
+          />
         </View>
-      </Modal>
-    </KeyboardAvoidingView>
+        <TouchableOpacity style={styles.checkBox} onPress={() => dispatch({ type: 'SET_ANGLES_VISIBLE', payload: !anglesVisible })}>
+          <FontAwesomeIcon icon={anglesVisible ? faChevronUp : faChevronDown} color={colors.secondary} />
+          <Text> Flere vinkler</Text>
+        </TouchableOpacity>
+        {anglesVisible && (
+          <View style={styles.angles}>
+            <Input
+              textAlign="center"
+              inputStyle={{ width: 90 }}
+              label="Vinkel"
+              placeholder="F.eks. -30"
+              keyboardType="numbers-and-punctuation"
+              onChange={(event) => handleAngleChange(event.nativeEvent.text, 0)}
+            />
+            <Input
+              textAlign="center"
+              inputStyle={{ width: 90 }}
+              label="Vinkel"
+              placeholder="F.eks. 0"
+              keyboardType="numbers-and-punctuation"
+              onChange={(event) => handleAngleChange(event.nativeEvent.text, 1)}
+            />
+            <Input
+              textAlign="center"
+              inputStyle={{ width: 90 }}
+              label="Vinkel"
+              placeholder="F.eks. 30"
+              keyboardType="numbers-and-punctuation"
+              onChange={(event) => handleAngleChange(event.nativeEvent.text, 2)}
+            />
+          </View>
+        )}
+        <View style={styles.buttons}>
+          <Button loading={status === 'pending'} width="auto" label="Beregn" onPress={handleSave} />
+          <Button
+            type="outline"
+            label="Lukk"
+            onPress={() => {
+              clearForm();
+              closeModal();
+            }}
+          />
+        </View>
+      </KeyboardAvoidingView>
+    </ModalWrapper>
   );
 };
