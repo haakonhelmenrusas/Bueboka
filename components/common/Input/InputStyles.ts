@@ -6,10 +6,10 @@ export const defaultStyles = StyleSheet.create({
   labelContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 8,
+    marginBottom: 4,
     justifyContent: 'flex-start',
   },
-  label: { color: colors.primary, fontWeight: '500', fontSize: 14 },
+  label: { color: colors.primary, fontWeight: '500', fontSize: 16 },
   input: {
     backgroundColor: colors.white,
     paddingHorizontal: 12,

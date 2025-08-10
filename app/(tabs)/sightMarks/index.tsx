@@ -12,17 +12,13 @@ export default function SightMarks() {
       <Text style={styles.title}>Beregn siktemerker</Text>
       <View style={styles.header}>
         <View style={styles.headerItem}>
-          <Text
-            style={[styles.headerText, screen === 'calculate' ? styles.activeText : null]}
-            onPress={() => setScreen('calculate')}>
+          <Text style={[styles.headerText, screen === 'calculate' ? styles.activeText : null]} onPress={() => setScreen('calculate')}>
             Innskyting
           </Text>
           {screen === 'calculate' && <View style={styles.activeLine} />}
         </View>
         <View style={styles.headerItem}>
-          <Text
-            style={[styles.headerText, screen === 'marks' ? styles.activeText : null]}
-            onPress={() => setScreen('marks')}>
+          <Text style={[styles.headerText, screen === 'marks' ? styles.activeText : null]} onPress={() => setScreen('marks')}>
             Siktemerker
           </Text>
           {screen === 'marks' && <View style={styles.activeLine} />}

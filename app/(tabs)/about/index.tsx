@@ -15,7 +15,7 @@ export default function About() {
     '|rF?hV%2WCj[ayj[a|j[az_NaeWBj@ayfRayfQfQM{M|azj[azf6fQfQfQIpWXofj[ayj[j[fQayWCoeoeaya}j[ayfQa{oLj?j[WVj[ayayj[fQoff7azayj[ayj[j[ayofayayayj[fQj[ayayj[ayfjj[j[ayjuayj[';
 
   return (
-    <View style={styles.container}>
+    <ScrollView style={styles.container}>
       <View style={styles.header}>
         <Image
           style={styles.logo}
@@ -30,7 +30,7 @@ export default function About() {
       </View>
       <View style={styles.box}>
         <View>
-          <Text style={styles.text}>Lagre din bue</Text>
+          <Text style={styles.text}>Lagre din bue og pilsett</Text>
           <FontAwesomeIcon style={styles.feather} icon={faFeather} />
         </View>
         <View>
@@ -38,26 +38,22 @@ export default function About() {
           <FontAwesomeIcon style={styles.feather} icon={faCrosshairs} />
         </View>
       </View>
-      <ScrollView>
-        <View style={styles.links}>
-          <Text>Se prosjekt og koden bak på </Text>
-          <TouchableOpacity
-            style={styles.link}
-            onPress={() => Linking.openURL('https://github.com/haakonhelmenrusas/Bueboka/discussions')}>
-            <Text style={{ color: colors.secondary }}>GitHub</Text>
-            <FontAwesomeIcon size={14} style={{ color: colors.secondary }} icon={faExternalLink} />
-          </TouchableOpacity>
-        </View>
-        <Text style={styles.sponsor}>Sponset av</Text>
-        <Image
-          style={styles.sponsorLogo}
-          contentFit="contain"
-          source={sponsor}
-          transition={200}
-          placeholder={blurhash}
-          accessibilityLabel="Arctic Buesport AS Logo"
-        />
-      </ScrollView>
-    </View>
+      <View style={styles.links}>
+        <Text>Besøk nettsiden</Text>
+        <TouchableOpacity style={styles.link} onPress={() => Linking.openURL('https://bueboka.no')}>
+          <Text style={{ color: colors.secondary }}>Bueboka.no</Text>
+          <FontAwesomeIcon size={14} style={{ color: colors.secondary }} icon={faExternalLink} />
+        </TouchableOpacity>
+      </View>
+      <Text style={styles.sponsor}>Sponset av</Text>
+      <Image
+        style={styles.sponsorLogo}
+        contentFit="contain"
+        source={sponsor}
+        transition={200}
+        placeholder={blurhash}
+        accessibilityLabel="Arctic Buesport AS Logo"
+      />
+    </ScrollView>
   );
 }

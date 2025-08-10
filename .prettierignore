@@ -1,0 +1,7 @@
+node_modules/
+build/
+dist/
+coverage/
+android/
+ios/
+*.min.js

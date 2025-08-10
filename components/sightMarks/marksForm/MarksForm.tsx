@@ -1,5 +1,5 @@
-import React, { FC, useState } from 'react';
-import { Keyboard, KeyboardAvoidingView, Platform, View } from 'react-native';
+import React, { useRef, useEffect, FC, useState } from 'react';
+import { Keyboard, KeyboardAvoidingView, Platform, TextInput, View } from 'react-native';
 import { Button, Input, Notch } from '@/components/common';
 import { MarkValue } from '@/types';
 import { faRulerHorizontal } from '@fortawesome/free-solid-svg-icons/faRulerHorizontal';
@@ -21,6 +21,7 @@ interface MarksFormProps {
 const MarksForm: FC<MarksFormProps> = ({ sendMarks, status, setIsFormVisible, translateY }) => {
   const [aimValue, setAimValue] = useState('');
   const [distanceValue, setDistance] = useState('');
+  const distanceInputRef = useRef<TextInput>(null);
 
   const animatedStyle = useAnimatedStyle(() => ({
     transform: [{ translateY: translateY.value }],
@@ -85,11 +86,22 @@ const MarksForm: FC<MarksFormProps> = ({ sendMarks, status, setIsFormVisible, tr
     }
   }
 
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      if (distanceInputRef.current) {
+        distanceInputRef.current?.focus();
+      }
+    }, 280);
+
+    return () => clearTimeout(timeout);
+  }, []);
+
   return (
     <KeyboardAvoidingView
       enabled={Platform.OS === 'ios'}
       style={styles.container}
-      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
+      keyboardVerticalOffset={380}
+      behavior={Platform.OS === 'ios' ? 'position' : 'height'}>
       <GestureDetector gesture={gesture}>
         <Animated.View style={[styles.form, animatedStyle]}>
           <Notch />
@@ -104,6 +116,7 @@ const MarksForm: FC<MarksFormProps> = ({ sendMarks, status, setIsFormVisible, tr
               onChangeText={(value) => handleDistanceChange(value)}
               icon={<FontAwesomeIcon icon={faRulerHorizontal} color={colors.secondary} />}
               inputStyle={{ width: 160 }}
+              ref={distanceInputRef}
             />
             <Input
               textAlign="center"

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Keyboard, Pressable, View } from 'react-native';
-import { AimDistanceMark, Bow, CalculatedMarks, MarkValue } from '@/types';
+import { AimDistanceMark, ArrowSet, Bow, CalculatedMarks, MarkValue } from '@/types';
 import { useSharedValue, withTiming } from 'react-native-reanimated';
 import { Ballistics, getLocalStorage, storeLocalStorage, useBallisticsParams } from '@/utils';
 import { faTrash } from '@fortawesome/free-solid-svg-icons/faTrash';
@@ -13,6 +13,7 @@ import MarksForm from '@/components/sightMarks/marksForm/MarksForm';
 import ConfirmRemoveMarks from '@/components/sightMarks/confirmRemoveMarks/ConfirmRemoveMarks';
 import { Button } from '@/components/common';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import { faPlus } from '@fortawesome/free-solid-svg-icons/faPlus';
 
 export default function CalculateScreen() {
   const [conformationModalVisible, setConformationModalVisible] = useState(false);
@@ -31,6 +32,8 @@ export default function CalculateScreen() {
 
   async function sendMarks(newMark: MarkValue) {
     const bow = await getLocalStorage<Bow>('bow');
+    const arrowSets = await getLocalStorage<ArrowSet[]>('arrowSets');
+    const arrowSet = Array.isArray(arrowSets) ? arrowSets.find((set) => set.isFavorite) : null;
 
     const body: AimDistanceMark = {
       ...Ballistics,
@@ -42,8 +45,8 @@ export default function CalculateScreen() {
       body.bow_category = bow.bowType;
       body.interval_sight_real = bow.interval_sight_real ?? 5;
       body.interval_sight_measured = bow.interval_sight_measured ?? 5;
-      body.arrow_diameter_mm = bow.arrowDiameter ?? 0;
-      body.arrow_mass_gram = bow.arrowWeight ?? 0;
+      body.arrow_diameter_mm = arrowSet?.diameter ?? 0;
+      body.arrow_mass_gram = arrowSet?.weight ?? 0;
       body.feet_behind_or_center = bow.placement;
       body.length_eye_sight_cm = bow.eyeToAim ?? 0;
       body.length_nock_eye_cm = bow.eyeToNock ?? 0;
@@ -81,12 +84,18 @@ export default function CalculateScreen() {
 
   return (
     <GestureHandlerRootView style={styles.page}>
-      <View style={{ flex: 1 }}>
-        <Pressable style={{ flex: 1 }} onPress={() => Keyboard.dismiss()}>
+      <View style={{ flex: 1, marginHorizontal: 8 }}>
+        <Pressable
+          style={{ flex: 1 }}
+          onPress={() => {
+            Keyboard.dismiss();
+            setIsFormVisible(false);
+          }}>
           {error && <View style={{ marginBottom: 8, padding: 8 }}>Oisann, noe gikk galt. Prøv igjen!</View>}
           <MarksTable ballistics={ballistics} removeMark={handleRemoveMark} />
           {ballistics && ballistics.given_marks.length > 0 && !isFormVisible && (
             <Button
+              buttonStyle={{ marginTop: 8 }}
               label="Tøm liste"
               type="outline"
               icon={<FontAwesomeIcon icon={faTrash} color={colors.secondary} />}
@@ -98,17 +107,14 @@ export default function CalculateScreen() {
       <View style={{ flex: 1, justifyContent: 'flex-end' }}>
         {!isFormVisible ? (
           <Button
-            label="Åpne skjema"
+            icon={<FontAwesomeIcon icon={faPlus} color={colors.tertiary} />}
+            iconPosition={'left'}
+            label="Nytt siktemerke"
             onPress={handleOpenForm}
             buttonStyle={{ marginHorizontal: 16, marginBottom: 16 }}
           />
         ) : (
-          <MarksForm
-            sendMarks={sendMarks}
-            status={status}
-            setIsFormVisible={setIsFormVisible}
-            translateY={translateY}
-          />
+          <MarksForm sendMarks={sendMarks} status={status} setIsFormVisible={setIsFormVisible} translateY={translateY} />
         )}
       </View>
       <ConfirmRemoveMarks

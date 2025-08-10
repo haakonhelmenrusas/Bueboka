@@ -3,8 +3,6 @@ import { Platform, StyleProp, Text, TextInput, TextInputProps, TextStyle, View, 
 import { defaultStyles } from './InputStyles';
 import { colors } from '@/styles/colors';
 
-const isAndroid = Platform.OS === 'android';
-
 interface InputProps extends TextInputProps {
   label: string;
   error?: boolean;
@@ -31,39 +29,30 @@ interface InputProps extends TextInputProps {
  * @param props - other TextInput props
  * @returns Input component
  */
-const Input = ({
-  label,
-  error,
-  errorMessage,
-  placeholderText,
-  containerStyle,
-  labelStyle,
-  inputStyle,
-  icon,
-  ...props
-}: InputProps) => {
+const Input = React.forwardRef<TextInput, InputProps>((props, ref: React.Ref<TextInput>) => {
   const [isFocused, setIsFocused] = useState(false);
 
   return (
     <View
-      style={[defaultStyles.container, containerStyle]}
-      accessibilityLabel={isAndroid ? label : `${label}${': Disabled!'}`}>
-      <View style={[defaultStyles.labelContainer, labelStyle]}>
-        {icon && <View style={defaultStyles.icon}>{icon}</View>}
-        <Text style={defaultStyles.label}>{label}</Text>
+      style={[defaultStyles.container, props.containerStyle]}
+      accessibilityLabel={Platform.OS === 'android' ? props.label : `${props.label}${': Disabled!'}`}>
+      <View style={[defaultStyles.labelContainer, props.labelStyle]}>
+        {props.icon && <View style={defaultStyles.icon}>{props.icon}</View>}
+        <Text style={defaultStyles.label}>{props.label}</Text>
       </View>
       <TextInput
+        ref={ref}
         testID="input"
-        style={[defaultStyles.input, inputStyle]}
-        placeholder={isFocused ? '' : placeholderText}
+        style={[defaultStyles.input, props.inputStyle]}
+        placeholder={isFocused ? '' : props.placeholderText}
         placeholderTextColor={colors.secondary}
         onFocus={() => setIsFocused(true)}
         onBlur={() => setIsFocused(false)}
         {...props}
       />
-      {error && <Text style={{ color: colors.error, fontSize: 12 }}>{errorMessage}</Text>}
+      {props.error && <Text style={{ color: colors.error, fontSize: 12 }}>{props.errorMessage}</Text>}
     </View>
   );
-};
+});
 
 export default Input;
