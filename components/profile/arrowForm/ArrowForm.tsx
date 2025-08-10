@@ -1,6 +1,6 @@
-import { Keyboard, KeyboardAvoidingView, Platform, Pressable, ScrollView, Text, View } from 'react-native';
+import { Keyboard, KeyboardAvoidingView, Platform, Pressable, ScrollView, View } from 'react-native';
 import { useEffect, useState } from 'react';
-import { Button, Input, ModalWrapper, Select, Toggle } from '@/components/common';
+import { Button, Input, ModalHeader, ModalWrapper, Select, Toggle } from '@/components/common';
 import { handleNumberChange, storeLocalStorage } from '@/utils';
 import { ArrowSet, Material } from '@/types';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
@@ -45,12 +45,17 @@ export default function ArrowForm({ modalVisible, setArrowModalVisible, arrowSet
     setPrevArrowSet(arrowSet);
   }, [modalVisible, arrowSet]);
 
-  const handleDeleteArrowSet = async (target: ArrowSet) => {
+  async function handleDeleteArrowSet(target: ArrowSet) {
     const updatedList = existingArrowSets.filter((set) => set.name !== target.name);
     await AsyncStorage.setItem('arrowSets', JSON.stringify(updatedList));
     clearForm();
     setArrowModalVisible(false);
-  };
+  }
+
+  function handleCloseModal() {
+    clearForm();
+    setArrowModalVisible(false);
+  }
 
   async function handleSubmit() {
     const newArrowSet: ArrowSet = {
@@ -110,16 +115,7 @@ export default function ArrowForm({ modalVisible, setArrowModalVisible, arrowSet
       <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={styles.modal}>
         <ScrollView keyboardShouldPersistTaps="handled" contentContainerStyle={{ flexGrow: 1 }}>
           <Pressable style={{ flex: 1 }} onPress={() => Keyboard.dismiss()}>
-            <View style={styles.titleContainer}>
-              <Text style={styles.title}>Nytt pilsett</Text>
-              <Pressable
-                onPress={() => {
-                  clearForm();
-                  setArrowModalVisible(false);
-                }}>
-                <FontAwesomeIcon size={20} icon={faXmark} />
-              </Pressable>
-            </View>
+            <ModalHeader onPress={handleCloseModal} title={arrowSet ? 'Rediger pilsett' : 'Nytt pilsett'} />
             <View style={styles.inputs}>
               <Input
                 value={name}

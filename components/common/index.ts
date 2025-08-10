@@ -6,5 +6,6 @@ import { Select } from './Select/Select';
 import ModalWrapper from './ModalWrapper/ModalWrapper';
 import Toggle from './Toggle/Toggle';
 import DataValue from './DataValue/DataValue';
+import ModalHeader from './ModalHeader/ModalHeader';
 
-export { Button, Input, Message, Notch, Select, ModalWrapper, Toggle, DataValue };
+export { Button, Input, Message, Notch, Select, ModalWrapper, Toggle, DataValue, ModalHeader };

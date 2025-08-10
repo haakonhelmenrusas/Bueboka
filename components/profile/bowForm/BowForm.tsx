@@ -1,12 +1,11 @@
-import { Keyboard, KeyboardAvoidingView, Platform, Pressable, ScrollView, Text, View } from 'react-native';
+import { Keyboard, KeyboardAvoidingView, Platform, Pressable, ScrollView, View } from 'react-native';
 import { useEffect, useState } from 'react';
-import { Button, Input, ModalWrapper, Select, Toggle } from '@/components/common';
+import { Button, Input, ModalHeader, ModalWrapper, Select, Toggle } from '@/components/common';
 import { useBowForm } from './useBowForm';
 import { handleNumberChange, storeLocalStorage } from '@/utils';
 import { Bow } from '@/types';
 import { styles } from './BowFormStyles';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
-import { faXmark } from '@fortawesome/free-solid-svg-icons/faXmark';
 import { faTrash } from '@fortawesome/free-solid-svg-icons/faTrash';
 import { colors } from '@/styles/colors';
 import ConfirmModal from '@/components/profile/DeleteArrowSetModal/ConfirmModal';
@@ -91,13 +90,18 @@ const BowForm = ({ modalVisible, setModalVisible, bow, existingBows }: BowFormPr
     setModalVisible(false);
   }
 
-  const handleDelete = async () => {
+  async function handleDelete() {
     if (!bow) return;
     const updatedBows = existingBows.filter((b) => b.id !== bow.id);
     await storeLocalStorage(updatedBows, 'bows');
     clearForm();
     setModalVisible(false);
-  };
+  }
+
+  function handleCloseModal() {
+    clearForm();
+    setModalVisible(false);
+  }
 
   function clearForm() {
     dispatch({ type: 'SET_BOW_NAME', payload: '' });
@@ -121,16 +125,7 @@ const BowForm = ({ modalVisible, setModalVisible, bow, existingBows }: BowFormPr
       <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={styles.modal}>
         <ScrollView keyboardShouldPersistTaps="handled" contentContainerStyle={{ flexGrow: 1 }}>
           <Pressable style={{ flex: 1 }} onPress={() => Keyboard.dismiss()}>
-            <View style={styles.titleContainer}>
-              <Text style={styles.title}>Din bue</Text>
-              <Pressable
-                onPress={() => {
-                  clearForm();
-                  setModalVisible(false);
-                }}>
-                <FontAwesomeIcon size={20} icon={faXmark} />
-              </Pressable>
-            </View>
+            <ModalHeader onPress={handleCloseModal} title={bow ? 'Rediger bue' : 'Ny bue'} />
             <View style={styles.inputs}>
               <Input
                 value={bowName}
