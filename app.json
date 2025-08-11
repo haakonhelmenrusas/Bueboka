@@ -8,7 +8,7 @@
     },
     "name": "Bueboka",
     "slug": "bueboka",
-    "version": "1.5.0",
+    "version": "1.5.1",
     "icon": "./assets/images/icon.png",
     "splash": {
       "image": "./assets/images/splash.png",
