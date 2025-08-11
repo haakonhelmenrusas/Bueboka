@@ -68,7 +68,7 @@ export default function Profile() {
   const handleProfileUpdate = async (updatedUser: User) => {
     setUser(updatedUser);
     try {
-      await storeLocalStorage(JSON.stringify(updatedUser), 'user');
+      await storeLocalStorage(updatedUser, 'user');
     } catch (error) {
       console.error('Error saving user data:', error);
     }
