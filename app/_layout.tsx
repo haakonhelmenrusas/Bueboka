@@ -1,6 +1,7 @@
 import { StatusBar } from 'react-native';
 import { Stack, useNavigationContainerRef } from 'expo-router';
 import * as Sentry from '@sentry/react-native';
+import * as Clarity from '@microsoft/react-native-clarity';
 import { isRunningInExpoGo } from 'expo';
 import React, { useEffect } from 'react';
 
@@ -11,10 +12,14 @@ const navigationIntegration = Sentry.reactNavigationIntegration({
 if (process.env.NODE_ENV !== 'development') {
   Sentry.init({
     dsn: 'https://310ad5a856229859c003cf549b110334@o4505578901929984.ingest.us.sentry.io/4508262003048448',
-    debug: true,
     tracesSampler: () => 1.0,
     integrations: [navigationIntegration],
     enableNativeFramesTracking: !isRunningInExpoGo(),
+  });
+
+  // Initialize Clarity
+  Clarity.initialize(process.env.EXPO_PUBLIC_CLARITY_KEY as string, {
+    logLevel: Clarity.LogLevel.Info,
   });
 }
 
