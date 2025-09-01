@@ -92,7 +92,7 @@ export default function CalculateScreen() {
             setIsFormVisible(false);
           }}>
           {error && <View style={{ marginBottom: 8, padding: 8 }}>Oisann, noe gikk galt. Prøv igjen!</View>}
-          <MarksTable ballistics={ballistics} removeMark={handleRemoveMark} />
+          <MarksTable ballistics={ballistics} removeMark={handleRemoveMark} status={status} />
           {ballistics && ballistics.given_marks.length > 0 && !isFormVisible && (
             <Button
               buttonStyle={{ marginTop: 8 }}
