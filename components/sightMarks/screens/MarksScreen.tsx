@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { ScrollView, View } from 'react-native';
 import * as Sentry from '@sentry/react-native';
@@ -14,39 +14,107 @@ import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import ChartScreen from './ChartScreen';
 import { styles } from './MarksScreenStyles';
 import { colors } from '@/styles/colors';
+import { useFocusEffect } from 'expo-router';
 
 interface MarksScreenProps {
   setScreen: (screen: string) => void;
 }
 
+interface LoadedData {
+  ballistics: CalculatedMarks | null;
+  calculatedMarks: MarksResult | null;
+  isLoading: boolean;
+}
+
 export default function MarksScreen({ setScreen }: MarksScreenProps) {
   const [showSpeed, setShowSpeed] = useState(false);
   const [showGraph, setShowGraph] = useState(false);
-  const [ballistics, setBallistics] = useState<CalculatedMarks | null>(null);
-  const [calculatedMarks, setCalculatedMarks] = useState<MarksResult | null>(null);
   const [modalVisible, setModalVisible] = useState(false);
+  const [data, setData] = useState<LoadedData>({
+    ballistics: null,
+    calculatedMarks: null,
+    isLoading: true,
+  });
+  const modalCheckTimeoutRef = useRef<number | null>(null);
 
-  useEffect(() => {
-    getLocalStorage<CalculatedMarks>('ballistics').then((data) => {
-      if (data) {
-        setBallistics(data);
-      }
-    });
+  const loadData = useCallback(async () => {
+    setData((prev) => ({ ...prev, isLoading: true }));
+
+    try {
+      const [ballisticsData, calculatedMarksData] = await Promise.all([
+        getLocalStorage<CalculatedMarks>('ballistics'),
+        getLocalStorage<MarksResult>('calculatedMarks'),
+      ]);
+
+      setData({
+        ballistics: ballisticsData,
+        calculatedMarks: calculatedMarksData,
+        isLoading: false,
+      });
+    } catch (error) {
+      console.error('Error loading data:', error);
+      setData((prev) => ({ ...prev, isLoading: false }));
+    }
   }, []);
 
+  const checkModalCondition = useCallback(() => {
+    // Clear any existing timeout
+    if (modalCheckTimeoutRef.current) {
+      clearTimeout(modalCheckTimeoutRef.current);
+    }
+
+    // Use setTimeout to ensure this runs after all React state updates are complete
+    modalCheckTimeoutRef.current = setTimeout(() => {
+      setData((currentData) => {
+        // Check conditions inside the state updater to get the most current data
+        if (
+          !currentData.isLoading &&
+          currentData.ballistics &&
+          currentData.ballistics.given_distances.length > 1 &&
+          !currentData.calculatedMarks &&
+          !modalVisible
+        ) {
+          setModalVisible(true);
+        }
+        return currentData;
+      });
+    }, 100); // Small delay to ensure all state updates are processed
+  }, [modalVisible]);
+
   useEffect(() => {
-    getLocalStorage<MarksResult>('calculatedMarks').then((data) => {
-      if (data) {
-        setCalculatedMarks(data);
+    loadData();
+
+    return () => {
+      if (modalCheckTimeoutRef.current) {
+        clearTimeout(modalCheckTimeoutRef.current);
       }
-    });
-  }, []);
+    };
+  }, [loadData]);
+
+  // Refresh data when screen comes into focus
+  useFocusEffect(
+    useCallback(() => {
+      loadData();
+    }, [loadData]),
+  );
+
+  // Check modal condition whenever data changes
+  useEffect(() => {
+    if (!data.isLoading) {
+      checkModalCondition();
+    }
+  }, [data, checkModalCondition]);
 
   function renderContent() {
-    if (calculatedMarks) {
-      return <CalculatedMarksTable marksData={calculatedMarks} showSpeed={showSpeed} />;
-    } else if (ballistics) {
-      if (ballistics.given_distances.length > 1) {
+    // Show nothing while loading to prevent flash
+    if (data.isLoading) {
+      return null;
+    }
+
+    if (data.calculatedMarks) {
+      return <CalculatedMarksTable marksData={data.calculatedMarks} showSpeed={showSpeed} />;
+    } else if (data.ballistics) {
+      if (data.ballistics.given_distances.length > 1) {
         return (
           <View style={{ marginTop: 'auto', padding: 16 }}>
             <Message
@@ -86,7 +154,7 @@ export default function MarksScreen({ setScreen }: MarksScreenProps) {
   async function handleRemoveMarks() {
     try {
       await AsyncStorage.removeItem('calculatedMarks');
-      setCalculatedMarks(null);
+      setData((prev) => ({ ...prev, calculatedMarks: null }));
     } catch (error) {
       Sentry.captureException('Error removing data', error);
     }
@@ -95,11 +163,11 @@ export default function MarksScreen({ setScreen }: MarksScreenProps) {
   return (
     <View style={styles.page}>
       {showGraph ? (
-        <ChartScreen calculatedMarks={calculatedMarks} marks={ballistics} setModalVisible={setModalVisible} />
+        <ChartScreen calculatedMarks={data.calculatedMarks} marks={data.ballistics} setModalVisible={setModalVisible} />
       ) : (
         <ScrollView style={styles.scrollView}>{renderContent()}</ScrollView>
       )}
-      {calculatedMarks && (
+      {data.calculatedMarks && (
         <View style={{ flex: 1 }}>
           <View style={{ marginTop: 'auto' }}>
             {!showGraph && (
@@ -149,8 +217,8 @@ export default function MarksScreen({ setScreen }: MarksScreenProps) {
       <CalculateMarksModal
         modalVisible={modalVisible}
         closeModal={() => setModalVisible(false)}
-        ballistics={ballistics}
-        setCalculatedMarks={setCalculatedMarks}
+        ballistics={data.ballistics}
+        setCalculatedMarks={(calculatedMarks) => setData((prev) => ({ ...prev, calculatedMarks }))}
       />
     </View>
   );
