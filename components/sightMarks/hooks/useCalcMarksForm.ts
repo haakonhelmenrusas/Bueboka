@@ -7,7 +7,6 @@ interface CalcMarksFormProps {
   distanceToError: boolean;
   interval: string;
   intervalError: boolean;
-  anglesVisible: boolean;
   angles: number[];
 }
 
@@ -18,8 +17,8 @@ export type Action =
   | { type: 'SET_DISTANCE_TO_ERROR'; payload: boolean }
   | { type: 'SET_INTERVAL'; payload: string }
   | { type: 'SET_INTERVAL_ERROR'; payload: boolean }
-  | { type: 'SET_ANGLES_VISIBLE'; payload: boolean }
-  | { type: 'SET_ANGLES'; payload: number[] };
+  | { type: 'SET_ANGLES'; payload: number[] }
+  | { type: 'LOAD_FORM_DATA'; payload: CalcMarksFormProps };
 
 function reducer(state: CalcMarksFormProps, action: Action): CalcMarksFormProps {
   switch (action.type) {
@@ -35,10 +34,10 @@ function reducer(state: CalcMarksFormProps, action: Action): CalcMarksFormProps 
       return { ...state, interval: action.payload };
     case 'SET_INTERVAL_ERROR':
       return { ...state, intervalError: action.payload };
-    case 'SET_ANGLES_VISIBLE':
-      return { ...state, anglesVisible: action.payload };
     case 'SET_ANGLES':
       return { ...state, angles: action.payload };
+    case 'LOAD_FORM_DATA':
+      return { ...state, ...action.payload };
     default:
       return state;
   }
@@ -46,14 +45,13 @@ function reducer(state: CalcMarksFormProps, action: Action): CalcMarksFormProps 
 
 export const useCalcMarksForm = () => {
   const INITIAL_STATE: CalcMarksFormProps = {
-    distanceFrom: '',
+    distanceFrom: '10',
     distanceFromError: false,
-    distanceTo: '',
+    distanceTo: '90',
     distanceToError: false,
-    interval: '',
+    interval: '10',
     intervalError: false,
-    anglesVisible: false,
-    angles: [],
+    angles: [-30, 0, 30],
   };
   return useReducer(reducer, INITIAL_STATE);
 };
