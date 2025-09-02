@@ -18,7 +18,7 @@ export const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: 'bold',
     textAlign: 'center',
-    marginBottom: 8,
+    marginBottom: 16,
     color: colors.white,
   },
   subtitle: {
@@ -29,14 +29,13 @@ export const styles = StyleSheet.create({
     marginLeft: 8,
   },
   arrowCount: {
-    fontSize: 16,
+    fontSize: 20,
     color: colors.white,
     marginBottom: 4,
-    fontWeight: 'bold',
+    fontWeight: 500,
   },
   textLine: {
     flexDirection: 'row',
     justifyContent: 'space-between',
   },
-
 });
