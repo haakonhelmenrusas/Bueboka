@@ -8,6 +8,7 @@ import { Tabs } from 'expo-router';
 import { colors } from '@/styles/colors';
 import { Platform } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { faChartLine } from '@fortawesome/free-solid-svg-icons/faChartLine';
 
 export default function AppLayout() {
   const insets = useSafeAreaInsets();
@@ -26,9 +27,7 @@ export default function AppLayout() {
       <Tabs.Screen
         name="training"
         options={{
-          tabBarIcon: ({ focused }) => (
-            <FontAwesomeIcon icon={faBullseye} color={focused ? colors.primary : colors.inactive} />
-          ),
+          tabBarIcon: ({ focused }) => <FontAwesomeIcon icon={faBullseye} color={focused ? colors.primary : colors.inactive} />,
           headerShadowVisible: false,
           headerShown: false,
           tabBarLabel: 'Trening',
@@ -38,7 +37,7 @@ export default function AppLayout() {
       <Tabs.Screen
         name="sightMarks"
         options={{
-          tabBarIcon: ({ focused }) => <FontAwesomeIcon icon={faBullseye} color={focused ? colors.primary : colors.inactive} />,
+          tabBarIcon: ({ focused }) => <FontAwesomeIcon icon={faChartLine} color={focused ? colors.primary : colors.inactive} />,
           headerShadowVisible: false,
           headerShown: false,
           tabBarLabel: 'Siktemerker',
