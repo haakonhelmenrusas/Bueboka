@@ -5,6 +5,13 @@ export const styles = StyleSheet.create({
     flex: 1,
     paddingHorizontal: 16,
   },
+  title: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    textAlign: 'center',
+    marginBottom: 8,
+    marginTop: 16,
+  },
   actionButtons: {
     flexDirection: 'row',
     justifyContent: 'space-between',
