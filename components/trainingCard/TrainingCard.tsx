@@ -14,7 +14,7 @@ export default function TrainingCard({ training }: TrainingCardProps) {
         <Text style={styles.date}>
           {training.date.toLocaleDateString('nb-NO', {
             year: 'numeric',
-            month: 'long',
+            month: 'short',
             day: 'numeric',
           })}
         </Text>

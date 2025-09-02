@@ -4,7 +4,7 @@ import { colors } from '@/styles/colors';
 export const styles = StyleSheet.create({
   date: {
     fontSize: 12,
-    fontWeight: 'bold',
+    fontWeight: 500,
     textAlign: 'left',
     marginBottom: 0,
   },
@@ -27,7 +27,7 @@ export const styles = StyleSheet.create({
     borderRadius: 8,
     shadowColor: colors.dark_primary,
     shadowOffset: { width: 0, height: 0 },
-    shadowOpacity: 0.1,
+    shadowOpacity: 0.3,
     shadowRadius: 4,
     elevation: 2,
     display: 'flex',

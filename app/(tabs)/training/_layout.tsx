@@ -6,7 +6,7 @@ import { colors } from '@/styles/colors';
 const Layout = () => {
   const insets = useSafeAreaInsets();
 
-  const topPadding = Platform.OS === 'ios' ? Math.min(insets.top, 20) : Math.max(insets.top, 24);
+  const topPadding = Platform.OS === 'ios' ? Math.min(insets.top, 4) : Math.max(insets.top, 24);
 
   return (
     <View style={[styles.container, { paddingTop: topPadding }]}>
