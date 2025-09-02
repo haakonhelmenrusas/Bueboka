@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { Keyboard, Pressable, View } from 'react-native';
 import { AimDistanceMark, ArrowSet, Bow, CalculatedMarks, MarkValue } from '@/types';
 import { useSharedValue, withTiming } from 'react-native-reanimated';
@@ -21,14 +21,25 @@ export default function CalculateScreen() {
   const translateY = useSharedValue(300);
   const [ballistics, setBallistics] = useState<CalculatedMarks | null>(null);
   const [isFormVisible, setIsFormVisible] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
-  useEffect(() => {
-    getLocalStorage<CalculatedMarks>('ballistics').then((data) => {
+  const loadData = useCallback(async () => {
+    setIsLoading(true);
+    try {
+      const data = await getLocalStorage<CalculatedMarks>('ballistics');
       if (data) {
         setBallistics(data);
       }
-    });
+    } catch (error) {
+      console.error('Error loading ballistics data:', error);
+    } finally {
+      setIsLoading(false);
+    }
   }, []);
+
+  useEffect(() => {
+    loadData();
+  }, [loadData]);
 
   async function sendMarks(newMark: MarkValue) {
     const bow = await getLocalStorage<Bow>('bow');
@@ -82,6 +93,29 @@ export default function CalculateScreen() {
     }
   }
 
+  function renderContent() {
+    // Show nothing while loading to prevent content flash
+    if (isLoading) {
+      return null;
+    }
+
+    return (
+      <>
+        {error && <View style={{ marginBottom: 8, padding: 8 }}>Oisann, noe gikk galt. Prøv igjen!</View>}
+        <MarksTable ballistics={ballistics} removeMark={handleRemoveMark} status={status} />
+        {ballistics && ballistics.given_marks.length > 0 && !isFormVisible && (
+          <Button
+            buttonStyle={{ marginTop: 8 }}
+            label="Tøm liste"
+            type="outline"
+            icon={<FontAwesomeIcon icon={faTrash} color={colors.secondary} />}
+            onPress={() => setConformationModalVisible(true)}
+          />
+        )}
+      </>
+    );
+  }
+
   return (
     <GestureHandlerRootView style={styles.page}>
       <View style={{ flex: 1, marginHorizontal: 8 }}>
@@ -91,17 +125,7 @@ export default function CalculateScreen() {
             Keyboard.dismiss();
             setIsFormVisible(false);
           }}>
-          {error && <View style={{ marginBottom: 8, padding: 8 }}>Oisann, noe gikk galt. Prøv igjen!</View>}
-          <MarksTable ballistics={ballistics} removeMark={handleRemoveMark} status={status} />
-          {ballistics && ballistics.given_marks.length > 0 && !isFormVisible && (
-            <Button
-              buttonStyle={{ marginTop: 8 }}
-              label="Tøm liste"
-              type="outline"
-              icon={<FontAwesomeIcon icon={faTrash} color={colors.secondary} />}
-              onPress={() => setConformationModalVisible(true)}
-            />
-          )}
+          {renderContent()}
         </Pressable>
       </View>
       <View style={{ flex: 1, justifyContent: 'flex-end' }}>
