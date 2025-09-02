@@ -2,6 +2,14 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import getLocalStorage from '@/utils/LocalStorage/getLocalStorage';
 
 describe('getLocalStorage', () => {
+  beforeEach(async () => {
+    await AsyncStorage.clear();
+  });
+
+  afterEach(async () => {
+    await AsyncStorage.clear();
+  });
+
   it('retrieves data from local storage successfully', async () => {
     const key = 'testKey';
     const value = { data: 'testData' };
