@@ -1,12 +1,8 @@
-import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
-import { Keyboard, KeyboardAvoidingView, Platform, Text, TouchableOpacity, View } from 'react-native';
+import { Keyboard, KeyboardAvoidingView, Platform, View } from 'react-native';
 import { Button, Input, ModalHeader, ModalWrapper } from '@/components/common';
 import { CalculatedMarks, MarksResult } from '@/types';
 import { getLocalStorage, handleNumberChange, storeLocalStorage, useCalculateMarks } from '@/utils';
 import { useCalcMarksForm } from '@/components/sightMarks/hooks/useCalcMarksForm';
-import { faChevronDown } from '@fortawesome/free-solid-svg-icons/faChevronDown';
-import { faChevronUp } from '@fortawesome/free-solid-svg-icons/faChevronUp';
-import { colors } from '@/styles/colors';
 import { styles } from './CalculateMarksModalStyles';
 
 interface CalculateMarksModalProps {
@@ -17,24 +13,13 @@ interface CalculateMarksModalProps {
 }
 
 export const CalculateMarksModal = ({ modalVisible, closeModal, ballistics, setCalculatedMarks }: CalculateMarksModalProps) => {
-  const [{ distanceFrom, distanceFromError, distanceTo, distanceToError, interval, intervalError, anglesVisible, angles }, dispatch] =
-    useCalcMarksForm();
+  const [{ distanceFrom, distanceFromError, distanceTo, distanceToError, interval, intervalError, angles }, dispatch] = useCalcMarksForm();
   const { calculateMarks, status } = useCalculateMarks();
 
   function handleAngleChange(value: string, index: number) {
     const newAngles = [...angles];
     newAngles[index] = parseFloat(value);
     dispatch({ type: 'SET_ANGLES', payload: newAngles });
-  }
-
-  function clearForm() {
-    dispatch({ type: 'SET_DISTANCE_FROM', payload: '' });
-    dispatch({ type: 'SET_DISTANCE_TO', payload: '' });
-    dispatch({ type: 'SET_INTERVAL', payload: '' });
-    dispatch({ type: 'SET_ANGLES', payload: [] });
-    dispatch({ type: 'SET_DISTANCE_FROM_ERROR', payload: false });
-    dispatch({ type: 'SET_DISTANCE_TO_ERROR', payload: false });
-    dispatch({ type: 'SET_INTERVAL_ERROR', payload: false });
   }
 
   async function calculateMarksFunc(distanceFrom: number, distanceTo: number, interval: number) {
@@ -53,7 +38,6 @@ export const CalculateMarksModal = ({ modalVisible, closeModal, ballistics, setC
           setCalculatedMarks(marks);
         }
       });
-      clearForm();
       Keyboard.dismiss();
       closeModal();
     }
@@ -76,14 +60,12 @@ export const CalculateMarksModal = ({ modalVisible, closeModal, ballistics, setC
 
   function handleCloseModal() {
     Keyboard.dismiss();
-    clearForm();
     closeModal();
   }
 
   return (
     <ModalWrapper
       onClose={() => {
-        clearForm();
         closeModal();
       }}
       visible={modalVisible}>
@@ -96,7 +78,6 @@ export const CalculateMarksModal = ({ modalVisible, closeModal, ballistics, setC
           <Input
             inputStyle={{ width: 90 }}
             label="Fra avstand"
-            placeholder="F.eks. 10"
             onBlur={() => dispatch({ type: 'SET_DISTANCE_FROM_ERROR', payload: false })}
             keyboardType="numeric"
             value={distanceFrom}
@@ -108,7 +89,6 @@ export const CalculateMarksModal = ({ modalVisible, closeModal, ballistics, setC
             inputStyle={{ width: 90 }}
             onBlur={() => dispatch({ type: 'SET_DISTANCE_TO_ERROR', payload: false })}
             label="Til avstand"
-            placeholder="F.eks. 90"
             keyboardType="numeric"
             value={distanceTo}
             error={distanceToError}
@@ -118,7 +98,6 @@ export const CalculateMarksModal = ({ modalVisible, closeModal, ballistics, setC
           <Input
             inputStyle={{ width: 90 }}
             label="Intevall"
-            placeholder="F.eks. 10"
             onBlur={() => dispatch({ type: 'SET_INTERVAL_ERROR', payload: false })}
             keyboardType="numeric"
             value={interval}
@@ -127,45 +106,38 @@ export const CalculateMarksModal = ({ modalVisible, closeModal, ballistics, setC
             errorMessage="Verdi mangler"
           />
         </View>
-        <TouchableOpacity style={styles.checkBox} onPress={() => dispatch({ type: 'SET_ANGLES_VISIBLE', payload: !anglesVisible })}>
-          <FontAwesomeIcon icon={anglesVisible ? faChevronUp : faChevronDown} color={colors.secondary} />
-          <Text> Flere vinkler</Text>
-        </TouchableOpacity>
-        {anglesVisible && (
-          <View style={styles.angles}>
-            <Input
-              textAlign="center"
-              inputStyle={{ width: 90 }}
-              label="Vinkel"
-              placeholder="F.eks. -30"
-              keyboardType="numbers-and-punctuation"
-              onChange={(event) => handleAngleChange(event.nativeEvent.text, 0)}
-            />
-            <Input
-              textAlign="center"
-              inputStyle={{ width: 90 }}
-              label="Vinkel"
-              placeholder="F.eks. 0"
-              keyboardType="numbers-and-punctuation"
-              onChange={(event) => handleAngleChange(event.nativeEvent.text, 1)}
-            />
-            <Input
-              textAlign="center"
-              inputStyle={{ width: 90 }}
-              label="Vinkel"
-              placeholder="F.eks. 30"
-              keyboardType="numbers-and-punctuation"
-              onChange={(event) => handleAngleChange(event.nativeEvent.text, 2)}
-            />
-          </View>
-        )}
+        <View style={styles.angles}>
+          <Input
+            textAlign="center"
+            inputStyle={{ width: 90 }}
+            label="Vinkel"
+            keyboardType="numbers-and-punctuation"
+            value={angles[0]?.toString() || ''}
+            onChange={(event) => handleAngleChange(event.nativeEvent.text, 0)}
+          />
+          <Input
+            textAlign="center"
+            inputStyle={{ width: 90 }}
+            label="Vinkel"
+            keyboardType="numbers-and-punctuation"
+            value={angles[1]?.toString() || ''}
+            onChange={(event) => handleAngleChange(event.nativeEvent.text, 1)}
+          />
+          <Input
+            textAlign="center"
+            inputStyle={{ width: 90 }}
+            label="Vinkel"
+            keyboardType="numbers-and-punctuation"
+            value={angles[2]?.toString() || ''}
+            onChange={(event) => handleAngleChange(event.nativeEvent.text, 2)}
+          />
+        </View>
         <View style={styles.buttons}>
           <Button loading={status === 'pending'} width="auto" label="Beregn" onPress={handleSave} />
           <Button
             type="outline"
             label="Lukk"
             onPress={() => {
-              clearForm();
               closeModal();
             }}
           />

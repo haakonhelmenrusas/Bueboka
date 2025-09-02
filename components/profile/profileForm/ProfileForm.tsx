@@ -1,4 +1,4 @@
-import { Modal, Text, View } from 'react-native';
+import { Text, View } from 'react-native';
 import { useState } from 'react';
 import { Button, Input, ModalWrapper } from '@/components/common';
 import { styles } from './ProfileFormStyles';

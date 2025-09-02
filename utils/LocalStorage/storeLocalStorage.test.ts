@@ -6,6 +6,10 @@ describe('storeLocalStorage', () => {
     await AsyncStorage.clear();
   });
 
+  afterEach(async () => {
+    await AsyncStorage.clear();
+  });
+
   it('stores a single value', async () => {
     const key = 'singleKey';
     const value = { name: 'SingleItem' };

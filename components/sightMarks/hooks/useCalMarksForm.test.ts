@@ -1,18 +1,17 @@
 import { useCalcMarksForm } from './useCalcMarksForm';
-import { renderHook, act } from '@testing-library/react-native';
+import { act, renderHook } from '@testing-library/react-native';
 
 describe('useCalcMarksForm', () => {
   it('initializes with default state', () => {
     const { result } = renderHook(() => useCalcMarksForm());
     expect(result.current[0]).toEqual({
-      distanceFrom: '',
+      distanceFrom: '10',
       distanceFromError: false,
-      distanceTo: '',
+      distanceTo: '90',
       distanceToError: false,
-      interval: '',
+      interval: '10',
       intervalError: false,
-      anglesVisible: false,
-      angles: [],
+      angles: [-30, 0, 30],
     });
   });
 
@@ -64,14 +63,6 @@ describe('useCalcMarksForm', () => {
     expect(result.current[0].intervalError).toBe(true);
   });
 
-  it('sets angles visible correctly', () => {
-    const { result } = renderHook(() => useCalcMarksForm());
-    act(() => {
-      result.current[1]({ type: 'SET_ANGLES_VISIBLE', payload: true });
-    });
-    expect(result.current[0].anglesVisible).toBe(true);
-  });
-
   it('sets angles correctly', () => {
     const { result } = renderHook(() => useCalcMarksForm());
     act(() => {
@@ -80,20 +71,33 @@ describe('useCalcMarksForm', () => {
     expect(result.current[0].angles).toEqual([10, 20, 30]);
   });
 
+  it('loads form data correctly', () => {
+    const { result } = renderHook(() => useCalcMarksForm());
+    const mockData = {
+      distanceFrom: '15',
+      distanceFromError: false,
+      distanceTo: '100',
+      distanceToError: false,
+      interval: '5',
+      intervalError: false,
+      angles: [45, 0, -45],
+    };
+
+    act(() => {
+      result.current[1]({ type: 'LOAD_FORM_DATA', payload: mockData });
+    });
+
+    expect(result.current[0]).toEqual(mockData);
+  });
+
   it('handles unknown action type gracefully', () => {
     const { result } = renderHook(() => useCalcMarksForm());
+    const initialState = result.current[0];
+
     act(() => {
       result.current[1]({ type: 'UNKNOWN_ACTION' as any, payload: true });
     });
-    expect(result.current[0]).toEqual({
-      distanceFrom: '',
-      distanceFromError: false,
-      distanceTo: '',
-      distanceToError: false,
-      interval: '',
-      intervalError: false,
-      anglesVisible: false,
-      angles: [],
-    });
+
+    expect(result.current[0]).toEqual(initialState);
   });
 });

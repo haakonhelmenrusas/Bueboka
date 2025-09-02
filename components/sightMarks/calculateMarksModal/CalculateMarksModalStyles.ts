@@ -34,7 +34,7 @@ export const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     marginBottom: 24,
-    marginTop: 16,
+    marginTop: 24,
   },
   buttons: {
     width: '100%',

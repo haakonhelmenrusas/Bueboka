@@ -22,9 +22,8 @@ export const styles = StyleSheet.create({
     position: 'relative',
   },
   image: {
-    width: '80%',
     height: 80,
-    marginBottom: 12,
+    marginBottom: 4,
   },
   name: {
     fontSize: 16,

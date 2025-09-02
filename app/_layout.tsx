@@ -5,29 +5,34 @@ import * as Clarity from '@microsoft/react-native-clarity';
 import { isRunningInExpoGo } from 'expo';
 import React, { useEffect } from 'react';
 
-const navigationIntegration = Sentry.reactNavigationIntegration({
-  enableTimeToInitialDisplay: !isRunningInExpoGo(),
-});
+let navigationIntegration: any = null;
 
-if (process.env.NODE_ENV !== 'development') {
+// Only initialize Sentry in production and not in Expo Go
+if (process.env.NODE_ENV !== 'development' && !isRunningInExpoGo()) {
+  navigationIntegration = Sentry.reactNavigationIntegration({
+    enableTimeToInitialDisplay: true,
+  });
+
   Sentry.init({
     dsn: 'https://310ad5a856229859c003cf549b110334@o4505578901929984.ingest.us.sentry.io/4508262003048448',
     tracesSampler: () => 1.0,
     integrations: [navigationIntegration],
-    enableNativeFramesTracking: !isRunningInExpoGo(),
+    enableNativeFramesTracking: true,
   });
 
   // Initialize Clarity
-  Clarity.initialize(process.env.EXPO_PUBLIC_CLARITY_KEY as string, {
-    logLevel: Clarity.LogLevel.Info,
-  });
+  if (process.env.EXPO_PUBLIC_CLARITY_KEY) {
+    Clarity.initialize(process.env.EXPO_PUBLIC_CLARITY_KEY, {
+      logLevel: Clarity.LogLevel.Info,
+    });
+  }
 }
 
 function RootLayout() {
   const ref = useNavigationContainerRef();
 
   useEffect(() => {
-    if (ref?.current) {
+    if (ref?.current && navigationIntegration) {
       navigationIntegration.registerNavigationContainer(ref);
     }
   }, [ref]);
@@ -42,4 +47,5 @@ function RootLayout() {
   );
 }
 
-export default Sentry.wrap(RootLayout);
+// Only wrap with Sentry if it's initialized
+export default process.env.NODE_ENV !== 'development' && !isRunningInExpoGo() ? Sentry.wrap(RootLayout) : RootLayout;

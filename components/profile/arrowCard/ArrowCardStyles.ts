@@ -24,9 +24,12 @@ export const styles = StyleSheet.create({
     position: 'relative',
   },
   image: {
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
     width: '50%',
     height: 64,
-    marginBottom: 12,
+    marginBottom: 4,
   },
   name: {
     fontSize: 14,
