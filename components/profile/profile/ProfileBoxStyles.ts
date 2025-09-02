@@ -3,20 +3,12 @@ import { colors } from '@/styles/colors';
 
 export const styles = StyleSheet.create({
   container: {
-    backgroundColor: colors.primary,
+    backgroundColor: colors.tertiary,
     borderRadius: 8,
     paddingHorizontal: 24,
     paddingBottom: 16,
     paddingTop: 24,
-    marginBottom: 16,
-    shadowColor: colors.dark_primary,
-    shadowOffset: {
-      width: 2,
-      height: 2,
-    },
-    shadowOpacity: 0.15,
-    shadowRadius: 3,
-    elevation: 4,
+    marginVertical: 16,
   },
   content: {
     flexDirection: 'row',
@@ -49,10 +41,10 @@ export const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: 'bold',
     marginBottom: 4,
-    color: colors.white,
+    color: colors.primary,
   },
   club: {
     fontSize: 16,
-    color: colors.tertiary,
+    color: colors.primary,
   },
 });
