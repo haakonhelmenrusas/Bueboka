@@ -1,13 +1,14 @@
 import { Slot } from 'expo-router';
-import { StyleSheet, View } from 'react-native';
+import { Platform, StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { colors } from '@/styles/colors';
 
 const Layout = () => {
   const insets = useSafeAreaInsets();
 
+  const topPadding = Platform.OS === 'ios' ? Math.min(insets.top, 4) : Math.max(insets.top, 32);
   return (
-    <View style={[styles.container, { paddingTop: Math.min(insets.top, 4) }]}>
+    <View style={[styles.container, { paddingTop: topPadding }]}>
       <Slot />
     </View>
   );
