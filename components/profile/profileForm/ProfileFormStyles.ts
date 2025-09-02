@@ -6,7 +6,7 @@ export const styles = StyleSheet.create({
     backgroundColor: colors.white,
     borderRadius: 12,
     padding: 24,
-    width: 320,
+    width: '100%',
     shadowColor: colors.dark_primary,
     shadowOffset: {
       width: 0,
