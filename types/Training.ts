@@ -1,11 +1,12 @@
-import { Bow } from "./Bow";
-/** 
+import { Bow } from './Bow';
+import { ArrowSet } from '@/types/ArrowSet';
+
+/**
     Interface representing a Training 
 */
 export interface Training {
-    date: Date;
-    arrows: number;
-    bow?: Bow
-    arrowSet?: string; //TODO: add ArrowSet when possible
-
+  date: Date;
+  arrows: number;
+  bow?: Bow;
+  arrowSet?: ArrowSet;
 }
