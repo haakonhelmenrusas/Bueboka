@@ -1,5 +1,7 @@
 import { useState } from 'react';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { AimDistanceMark, CalculatedMarks, Status } from '@/types';
+import * as Sentry from '@sentry/react-native';
 
 const calcBallisticsParams = (body: AimDistanceMark) => {
   return fetch('https://calculate-aim.azurewebsites.net/api/archerAim?task=CalcBallisticsPars', {
@@ -29,6 +31,14 @@ const useBallisticsParams = (): Ballistic => {
     try {
       setStatus(Status.Pending);
       setError(null);
+
+      // Clear calculated marks since ballistics parameters are changing
+      try {
+        await AsyncStorage.removeItem('calculatedMarks');
+      } catch (removeError) {
+        Sentry.captureException('Error removing calculated marks', removeError);
+      }
+
       const result = await calcBallisticsParams(body);
       if (result.ok) {
         return result.json();

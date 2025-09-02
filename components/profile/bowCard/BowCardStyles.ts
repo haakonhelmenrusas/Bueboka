@@ -1,57 +1,43 @@
-import { StyleSheet } from 'react-native';
+import { Dimensions, StyleSheet } from 'react-native';
 import { colors } from '@/styles/colors';
+
+const windowWidth = Dimensions.get('window').width;
+const cardWidth = (windowWidth - 48) / 2;
 
 export const styles = StyleSheet.create({
   container: {
-    alignContent: 'center',
-    width: '100%',
-    marginHorizontal: 'auto',
+    width: cardWidth,
     backgroundColor: colors.white,
     borderRadius: 12,
-    borderWidth: 1,
-    borderColor: colors.primary,
-  },
-  header: {
-    display: 'flex',
-    flexDirection: 'row',
-    paddingVertical: 8,
-    paddingHorizontal: 16,
+    padding: 16,
     alignItems: 'center',
-    borderTopEndRadius: 10,
-    borderTopStartRadius: 10,
-    backgroundColor: colors.primary,
+    shadowColor: colors.dark_primary,
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.2,
+    shadowRadius: 3,
+    elevation: 3,
+    position: 'relative',
   },
   image: {
-    width: 28,
-    height: 28,
-    resizeMode: 'contain',
-    marginRight: 16,
+    height: 80,
+    marginBottom: 4,
   },
-  title: {
-    fontSize: 24,
-    color: colors.tertiary,
-    fontWeight: 'medium',
-  },
-  cogIcon: {
-    marginLeft: 'auto',
-    padding: 8,
-  },
-  body: {
-    display: 'flex',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    padding: 16,
-  },
-  column: {
-    flex: 1,
-  },
-  head: {
+  name: {
     fontSize: 16,
     fontWeight: '600',
     marginBottom: 4,
   },
-  text: {
+  type: {
     fontSize: 14,
-    marginBottom: 16,
+    color: colors.secondary,
+  },
+  starContainer: {
+    position: 'absolute',
+    top: 8,
+    right: 8,
+    zIndex: 1,
   },
 });

@@ -2,6 +2,7 @@
  * Interface representing a Bow.
  */
 export interface Bow {
+  id: string;
   /**
    * The name of the bow.
    */
@@ -28,16 +29,6 @@ export interface Bow {
   eyeToAim?: number;
 
   /**
-   * The weight of the arrow (optional).
-   */
-  arrowWeight?: number;
-
-  /**
-   * The diameter of the arrow in mm (optional).
-   */
-  arrowDiameter?: number;
-
-  /**
    * The real interval sight measurement (optional).
    */
   interval_sight_real?: number;
@@ -46,4 +37,10 @@ export interface Bow {
    * The measured interval sight measurement (optional).
    */
   interval_sight_measured?: number;
+  /**
+   * A boolean flag indicating whether the item is marked as a favorite.
+   * It is an optional property that, if set to true, represents that the item is a favorite.
+   * If undefined or false, the item is not considered a favorite.
+   */
+  isFavorite?: boolean;
 }

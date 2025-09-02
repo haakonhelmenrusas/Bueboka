@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { ScrollView, View } from 'react-native';
 import * as Sentry from '@sentry/react-native';
@@ -7,13 +7,14 @@ import { CalculatedMarks, MarksResult } from '@/types';
 import { getLocalStorage } from '@/utils';
 import { CalculateMarksModal } from '@/components/sightMarks/calculateMarksModal/CalculateMarksModal';
 import CalculatedMarksTable from '@/components/sightMarks/calculatedMarksTable/CalculatedMarksTable';
-import { faTrash } from '@fortawesome/free-solid-svg-icons/faTrash';
 import { faChartLine } from '@fortawesome/free-solid-svg-icons/faChartLine';
 import { faWind } from '@fortawesome/free-solid-svg-icons/faWind';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import ChartScreen from './ChartScreen';
 import { styles } from './MarksScreenStyles';
 import { colors } from '@/styles/colors';
+import { useFocusEffect } from 'expo-router';
+import { faRefresh } from '@fortawesome/free-solid-svg-icons';
 
 interface MarksScreenProps {
   setScreen: (screen: string) => void;
@@ -25,24 +26,40 @@ export default function MarksScreen({ setScreen }: MarksScreenProps) {
   const [ballistics, setBallistics] = useState<CalculatedMarks | null>(null);
   const [calculatedMarks, setCalculatedMarks] = useState<MarksResult | null>(null);
   const [modalVisible, setModalVisible] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
-  useEffect(() => {
-    getLocalStorage<CalculatedMarks>('ballistics').then((data) => {
-      if (data) {
-        setBallistics(data);
-      }
-    });
+  const loadData = useCallback(async () => {
+    setIsLoading(true);
+    try {
+      const [ballisticsData, calculatedMarksData] = await Promise.all([
+        getLocalStorage<CalculatedMarks>('ballistics'),
+        getLocalStorage<MarksResult>('calculatedMarks'),
+      ]);
+
+      setBallistics(ballisticsData);
+      setCalculatedMarks(calculatedMarksData);
+    } catch (error) {
+      console.error('Error loading data:', error);
+    } finally {
+      setIsLoading(false);
+    }
   }, []);
 
   useEffect(() => {
-    getLocalStorage<MarksResult>('calculatedMarks').then((data) => {
-      if (data) {
-        setCalculatedMarks(data);
-      }
-    });
-  }, []);
+    loadData();
+  }, [loadData]);
+
+  useFocusEffect(
+    useCallback(() => {
+      loadData();
+    }, [loadData]),
+  );
 
   function renderContent() {
+    if (isLoading) {
+      return null;
+    }
+
     if (calculatedMarks) {
       return <CalculatedMarksTable marksData={calculatedMarks} showSpeed={showSpeed} />;
     } else if (ballistics) {
@@ -87,6 +104,7 @@ export default function MarksScreen({ setScreen }: MarksScreenProps) {
     try {
       await AsyncStorage.removeItem('calculatedMarks');
       setCalculatedMarks(null);
+      setModalVisible(true);
     } catch (error) {
       Sentry.captureException('Error removing data', error);
     }
@@ -115,9 +133,9 @@ export default function MarksScreen({ setScreen }: MarksScreenProps) {
               <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                 <Button
                   iconPosition="left"
-                  icon={<FontAwesomeIcon icon={faTrash} color={colors.secondary} />}
+                  icon={<FontAwesomeIcon icon={faRefresh} color={colors.secondary} />}
                   type="outline"
-                  label="Tøm liste"
+                  label="Beregn på nytt"
                   onPress={handleRemoveMarks}
                 />
               </View>

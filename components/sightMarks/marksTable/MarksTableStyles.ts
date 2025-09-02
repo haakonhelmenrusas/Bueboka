@@ -3,7 +3,7 @@ import { colors } from '@/styles/colors';
 
 export const styles = StyleSheet.create({
   container: {
-    margin: 16,
+    marginTop: 8,
     backgroundColor: colors.background,
   },
   tr: {
@@ -15,11 +15,12 @@ export const styles = StyleSheet.create({
     backgroundColor: colors.white,
     borderRadius: 12,
     marginBottom: 8,
+    paddingRight: 8,
     shadowColor: colors.inactive,
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 4,
-    elevation: 5,
+    elevation: 3,
   },
   section: {
     flex: 1,
@@ -39,6 +40,13 @@ export const styles = StyleSheet.create({
     backgroundColor: colors.tertiary,
     borderRadius: 12,
     margin: 8,
+  },
+  deleteButton: {
+    width: 40,
+    height: '100%',
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   trData: {
     fontSize: 18,

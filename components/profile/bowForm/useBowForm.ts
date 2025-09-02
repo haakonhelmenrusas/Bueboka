@@ -7,10 +7,9 @@ interface BowTypeState {
   placement: string;
   eyeToNock: string;
   eyeToAim: string;
-  arrowWeight: string;
-  arrowDiameter: string;
   interval_sight_real: string;
   intervalSightMeasure: string;
+  isFavorite: boolean;
 }
 
 export type Action =
@@ -20,10 +19,9 @@ export type Action =
   | { type: 'SET_PLACEMENT'; payload: string }
   | { type: 'SET_EYE_TO_NOCK'; payload: string }
   | { type: 'SET_EYE_TO_AIM'; payload: string }
-  | { type: 'SET_ARROW_WEIGHT'; payload: string }
-  | { type: 'SET_ARROW_DIAMETER'; payload: string }
   | { type: 'SET_INTERVAL_SIGHT_REAL'; payload: string }
-  | { type: 'SET_INTERVAL_SIGHT_MEASURE'; payload: string };
+  | { type: 'SET_INTERVAL_SIGHT_MEASURE'; payload: string }
+  | { type: 'SET_IS_FAVORITE'; payload: boolean };
 
 function reducer(state: BowTypeState, action: Action): BowTypeState {
   switch (action.type) {
@@ -39,14 +37,12 @@ function reducer(state: BowTypeState, action: Action): BowTypeState {
       return { ...state, eyeToNock: action.payload };
     case 'SET_EYE_TO_AIM':
       return { ...state, eyeToAim: action.payload };
-    case 'SET_ARROW_WEIGHT':
-      return { ...state, arrowWeight: action.payload };
-    case 'SET_ARROW_DIAMETER':
-      return { ...state, arrowDiameter: action.payload };
     case 'SET_INTERVAL_SIGHT_REAL':
       return { ...state, interval_sight_real: action.payload };
     case 'SET_INTERVAL_SIGHT_MEASURE':
       return { ...state, intervalSightMeasure: action.payload };
+    case 'SET_IS_FAVORITE':
+      return { ...state, isFavorite: action.payload };
     default:
       return state;
   }
@@ -60,10 +56,9 @@ export const useBowForm = () => {
     placement: 'behind',
     eyeToNock: '',
     eyeToAim: '',
-    arrowWeight: '',
-    arrowDiameter: '',
     interval_sight_real: '',
     intervalSightMeasure: '',
+    isFavorite: false,
   };
   return useReducer(reducer, INITIAL_STATE);
 };

@@ -8,13 +8,8 @@
     },
     "name": "Bueboka",
     "slug": "bueboka",
-    "version": "1.4.1",
+    "version": "1.5.4",
     "icon": "./assets/images/icon.png",
-    "splash": {
-      "image": "./assets/images/splash.png",
-      "resizeMode": "contain",
-      "backgroundColor": "#FFFFFF"
-    },
     "extra": {
       "eas": {
         "projectId": "a740b024-fdf9-420d-9998-a6ae076ebc43"
@@ -22,16 +17,12 @@
     },
     "android": {
       "edgeToEdgeEnabled": true,
-      "adaptiveIcon": {
-        "foregroundImage": "./assets/images/icon.png",
-        "backgroundColor": "#FFFFFF"
-      },
       "package": "com.aaronshade.bueboka"
     },
     "ios": {
       "bundleIdentifier": "com.aaronshade.bueboka",
       "infoPlist": {
-        "CFBundleShortVersionString": "1.4.1",
+        "CFBundleShortVersionString": "1.5.4",
         "CFBundleIconName": "./assets/images/ipad.png",
         "ITSAppUsesNonExemptEncryption": false
       }
@@ -54,6 +45,14 @@
           "ios": {
             "deploymentTarget": "15.1"
           }
+        }
+      ],
+      [
+        "expo-splash-screen",
+        {
+          "image": "./assets/images/splash.png",
+          "backgroundColor": "#d8f5ff",
+          "imageWidth": 1024
         }
       ],
       [
