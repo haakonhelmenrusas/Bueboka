@@ -1,20 +1,23 @@
 import { Slot } from 'expo-router';
-import { StyleSheet } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { StyleSheet, View } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { colors } from '@/styles/colors';
 
 const Layout = () => {
+  const insets = useSafeAreaInsets();
+
   return (
-    <SafeAreaView edges={['top']} style={styles.safeArea}>
+    <View style={[styles.container, { paddingTop: Math.min(insets.top, 4) }]}>
       <Slot />
-    </SafeAreaView>
+    </View>
   );
 };
+
 export default Layout;
 
 const styles = StyleSheet.create({
-  safeArea: {
-    backgroundColor: colors.white,
+  container: {
+    backgroundColor: colors.background,
     flex: 1,
   },
 });
