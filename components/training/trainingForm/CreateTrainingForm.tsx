@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { ScrollView, View } from 'react-native';
 import { Button, Input, ModalHeader, ModalWrapper, Select } from '@/components/common';
 import { styles } from './CreateTrainingFormStyles';
@@ -13,16 +13,35 @@ interface CreateTrainingFormProps {
   bows?: Bow[];
   arrowSets?: ArrowSet[];
   onTrainingSaved?: () => void;
+  editingTraining?: Training | null;
 }
 
-export default function CreateTrainingForm({ visible, onClose, bows = [], arrowSets = [], onTrainingSaved }: CreateTrainingFormProps) {
+export default function CreateTrainingForm({
+  visible,
+  onClose,
+  bows = [],
+  arrowSets = [],
+  onTrainingSaved,
+  editingTraining = null,
+}: CreateTrainingFormProps) {
   const [date, setDate] = useState(new Date().toISOString().split('T')[0]); // Today's date in YYYY-MM-DD format
   const [selectedBow, setSelectedBow] = useState('');
   const [selectedArrowSet, setSelectedArrowSet] = useState('');
-  const [arrows, setArrows] = useState('');
+  const [arrows, setArrows] = useState('0');
 
   const bowOptions = bows.map((bow) => ({ label: bow.bowName, value: bow.id }));
   const arrowSetOptions = arrowSets.map((arrowSet) => ({ label: arrowSet.name, value: arrowSet.name }));
+
+  useEffect(() => {
+    if (editingTraining) {
+      setDate(editingTraining.date.toISOString().split('T')[0]);
+      setSelectedBow(editingTraining.bow?.id || '');
+      setSelectedArrowSet(editingTraining.arrowSet?.name || '');
+      setArrows(editingTraining.arrows.toString());
+    } else {
+      resetForm();
+    }
+  }, [editingTraining, visible]);
 
   const createTrainingObject = (): Training => {
     const selectedBowObject = bows.find((bow) => bow.id === selectedBow);
@@ -39,8 +58,26 @@ export default function CreateTrainingForm({ visible, onClose, bows = [], arrowS
   const saveTrainingToStorage = async (training: Training) => {
     try {
       const existingTrainings = (await getLocalStorage<Training[]>('trainings')) || [];
-      const updatedTrainings = [...existingTrainings, training];
-      await storeLocalStorage(updatedTrainings, 'trainings');
+
+      if (editingTraining) {
+        // Update existing training
+        const updatedTrainings = existingTrainings.map((t) => {
+          if (
+            t.date.toDateString() === editingTraining.date.toDateString() &&
+            t.arrows === editingTraining.arrows &&
+            t.bow?.id === editingTraining.bow?.id &&
+            t.arrowSet?.name === editingTraining.arrowSet?.name
+          ) {
+            return training;
+          }
+          return t;
+        });
+        await storeLocalStorage(updatedTrainings, 'trainings');
+      } else {
+        // Add new training
+        const updatedTrainings = [...existingTrainings, training];
+        await storeLocalStorage(updatedTrainings, 'trainings');
+      }
 
       if (onTrainingSaved) {
         onTrainingSaved();
@@ -89,10 +126,12 @@ export default function CreateTrainingForm({ visible, onClose, bows = [], arrowS
     arrows: trainingData.arrows.toString(),
   };
 
+  const isEditing = !!editingTraining;
+
   return (
     <ModalWrapper visible={visible} onClose={handleClose}>
       <View style={styles.container}>
-        <ModalHeader title="Ny trening" onPress={handleClose} />
+        <ModalHeader title={isEditing ? 'Rediger trening' : 'Ny trening'} onPress={handleClose} />
         <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
           <Input
             label="Dato"
@@ -121,26 +160,31 @@ export default function CreateTrainingForm({ visible, onClose, bows = [], arrowS
             />
           )}
           <Input
-            label="Antall piler skutt"
+            label="Antall piler skutt allerede"
             value={arrows}
             onChangeText={setArrows}
-            placeholderText="0"
             keyboardType="numeric"
             containerStyle={styles.inputContainer}
           />
-          <Link
-            href={{
-              pathname: '/training/shooting',
-              params: shootingParams,
-            }}
-            onPress={handleStartShooting}
-            asChild
-            style={styles.startButton}>
-            <Button label="Start skyting" />
-          </Link>
+          {!isEditing && (
+            <Link
+              href={{
+                pathname: '/training/shooting',
+                params: shootingParams,
+              }}
+              onPress={handleStartShooting}
+              asChild
+              style={styles.startButton}>
+              <Button label="Start skyting" />
+            </Link>
+          )}
         </ScrollView>
         <View style={styles.footer}>
-          <Button label="Lagre og avslutt" onPress={handleSaveAndFinish} buttonStyle={styles.saveButton} />
+          <Button
+            label={isEditing ? 'Oppdater trening' : 'Lagre og avslutt'}
+            onPress={handleSaveAndFinish}
+            buttonStyle={styles.saveButton}
+          />
         </View>
       </View>
     </ModalWrapper>

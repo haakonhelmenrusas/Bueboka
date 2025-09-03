@@ -8,9 +8,10 @@ import { ScrollView } from 'react-native-gesture-handler';
 
 interface TrainingListProps {
   trainings: Training[];
+  onEditTraining?: (training: Training) => void;
 }
 
-export default function TrainingList({ trainings }: TrainingListProps) {
+export default function TrainingList({ trainings, onEditTraining }: TrainingListProps) {
   const sortedTrainings = [...trainings].sort((a, b) => b.date.getTime() - a.date.getTime());
 
   const renderTrainingList = () => {
@@ -29,7 +30,7 @@ export default function TrainingList({ trainings }: TrainingListProps) {
           <>
             <Text style={styles.subtitleToday}>I dag</Text>
             {todayTrainings.map((training, index) => (
-              <TrainingCard key={`today-${index}`} training={training} />
+              <TrainingCard key={`today-${index}`} training={training} onEdit={onEditTraining} />
             ))}
           </>
         )}
@@ -37,7 +38,7 @@ export default function TrainingList({ trainings }: TrainingListProps) {
           <>
             <Text style={styles.subtitlePast}>Eldre treninger</Text>
             {olderTrainings.map((training, index) => (
-              <TrainingCard key={`older-${index}`} training={training} />
+              <TrainingCard key={`older-${index}`} training={training} onEdit={onEditTraining} />
             ))}
           </>
         )}

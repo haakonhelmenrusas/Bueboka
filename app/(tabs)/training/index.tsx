@@ -20,6 +20,7 @@ export default function TrainingScreen() {
   const [bows, setBows] = useState<Bow[]>([]);
   const [arrowSets, setArrowSets] = useState<ArrowSet[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [editingTraining, setEditingTraining] = useState<Training | null>(null);
 
   const loadData = useCallback(async () => {
     setIsLoading(true);
@@ -69,11 +70,21 @@ export default function TrainingScreen() {
     loadData();
   };
 
+  const handleEditTraining = (training: Training) => {
+    setEditingTraining(training);
+    setModalVisible(true);
+  };
+
+  const handleCloseModal = () => {
+    setModalVisible(false);
+    setEditingTraining(null);
+  };
+
   const renderTrainingContent = () => {
     if (isLoading) {
       return <SkeletonTrainingList />;
     }
-    return <TrainingList trainings={trainings} />;
+    return <TrainingList trainings={trainings} onEditTraining={handleEditTraining} />;
   };
 
   return (
@@ -90,10 +101,11 @@ export default function TrainingScreen() {
       />
       <CreateTrainingForm
         visible={modalVisible}
-        onClose={() => setModalVisible(false)}
+        onClose={handleCloseModal}
         bows={bows}
         arrowSets={arrowSets}
         onTrainingSaved={handleTrainingSaved}
+        editingTraining={editingTraining}
       />
     </GestureHandlerRootView>
   );

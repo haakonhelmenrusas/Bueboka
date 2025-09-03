@@ -14,7 +14,7 @@ export const styles = StyleSheet.create({
     paddingTop: 10,
   },
   inputContainer: {
-    marginBottom: 16,
+    marginVertical: 16,
   },
   startButton: {
     backgroundColor: colors.primary,
