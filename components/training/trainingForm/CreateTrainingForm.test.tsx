@@ -374,8 +374,8 @@ describe('CreateTrainingForm', () => {
       expect(defaultProps.onClose).toHaveBeenCalled();
     });
 
-    it('should reset form when closed', () => {
-      const { getByTestId, rerender } = render(<CreateTrainingForm {...defaultProps} />);
+    it('should reset form when close button is clicked', () => {
+      const { getByTestId } = render(<CreateTrainingForm {...defaultProps} />);
 
       // Change form values
       const dateInput = getByTestId('input-Dato');
@@ -384,22 +384,23 @@ describe('CreateTrainingForm', () => {
       fireEvent.changeText(dateInput, '2025-12-25');
       fireEvent.changeText(arrowsInput, '36');
 
-      // Close and reopen modal to test reset
-      rerender(<CreateTrainingForm {...defaultProps} visible={false} />);
-      rerender(<CreateTrainingForm {...defaultProps} visible={true} />);
+      // Verify values are changed
+      expect(dateInput.props.value).toBe('2025-12-25');
+      expect(arrowsInput.props.value).toBe('36');
 
-      // Form should be reset to initial values
-      const newDateInput = getByTestId('input-Dato');
-      const newArrowsInput = getByTestId('input-Antall piler skutt');
+      // Click close button (which calls handleClose -> resetForm)
+      const closeButton = getByTestId('modal-close');
+      fireEvent.press(closeButton);
 
+      // Form should be reset to initial values after close
       const today = new Date().toISOString().split('T')[0];
-      expect(newDateInput.props.value).toBe(today);
-      expect(newArrowsInput.props.value).toBe('');
+      expect(dateInput.props.value).toBe(today);
+      expect(arrowsInput.props.value).toBe('');
     });
   });
 
   describe('Error Handling', () => {
-    it('should handle localStorage errors gracefully', async () => {
+    it('should handle localStorage get errors and still save with empty array', async () => {
       (getLocalStorage as jest.Mock).mockRejectedValue(new Error('Storage error'));
 
       const { getByTestId } = render(<CreateTrainingForm {...defaultProps} />);
@@ -407,8 +408,9 @@ describe('CreateTrainingForm', () => {
       const saveButton = getByTestId('button-Lagre og avslutt');
       fireEvent.press(saveButton);
 
-      // Should still attempt to save with empty array (|| [] fallback in component)
+      // Should still attempt to save with empty array due to || [] fallback
       await waitFor(() => {
+        expect(getLocalStorage).toHaveBeenCalledWith('trainings');
         expect(storeLocalStorage).toHaveBeenCalledWith(expect.arrayContaining([expect.any(Object)]), 'trainings');
       });
     });
