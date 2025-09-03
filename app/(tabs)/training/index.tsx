@@ -30,7 +30,6 @@ export default function TrainingScreen() {
         getLocalStorage<ArrowSet[]>('arrowSets'),
       ]);
 
-      // Load trainings
       if (storedTrainings && Array.isArray(storedTrainings)) {
         const trainingsWithDates = storedTrainings.map((training) => ({
           ...training,
@@ -41,14 +40,12 @@ export default function TrainingScreen() {
         setTrainings([]);
       }
 
-      // Load bows
       if (storedBows && Array.isArray(storedBows)) {
         setBows(storedBows);
       } else {
         setBows([]);
       }
 
-      // Load arrow sets
       if (storedArrowSets && Array.isArray(storedArrowSets)) {
         setArrowSets(storedArrowSets);
       } else {

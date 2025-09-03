@@ -3,7 +3,7 @@ import { ScrollView, View } from 'react-native';
 import { Button, Input, ModalHeader, ModalWrapper, Select } from '@/components/common';
 import { styles } from './CreateTrainingFormStyles';
 import { ArrowSet, Bow, Training } from '@/types';
-import { useRouter } from 'expo-router';
+import { Link } from 'expo-router';
 import { getLocalStorage, storeLocalStorage } from '@/utils';
 import * as Sentry from '@sentry/react-native';
 
@@ -16,7 +16,6 @@ interface CreateTrainingFormProps {
 }
 
 export default function CreateTrainingForm({ visible, onClose, bows = [], arrowSets = [], onTrainingSaved }: CreateTrainingFormProps) {
-  const router = useRouter();
   const [date, setDate] = useState(new Date().toISOString().split('T')[0]); // Today's date in YYYY-MM-DD format
   const [selectedBow, setSelectedBow] = useState('');
   const [selectedArrowSet, setSelectedArrowSet] = useState('');
@@ -55,15 +54,6 @@ export default function CreateTrainingForm({ visible, onClose, bows = [], arrowS
     try {
       const trainingData = createTrainingObject();
       saveTrainingToStorage(trainingData);
-      router.push({
-        pathname: '/training/shooting',
-        params: {
-          date: trainingData.date.toISOString().split('T')[0],
-          bowId: selectedBow,
-          arrowSet: selectedArrowSet,
-          arrows: trainingData.arrows.toString(),
-        },
-      });
       onClose();
     } catch (error) {
       Sentry.captureException('Error starting shooting session', error);
@@ -90,6 +80,14 @@ export default function CreateTrainingForm({ visible, onClose, bows = [], arrowS
   const handleClose = () => {
     resetForm();
     onClose();
+  };
+
+  const trainingData = createTrainingObject();
+  const shootingParams = {
+    date: trainingData.date.toISOString().split('T')[0],
+    bowId: selectedBow,
+    arrowSet: selectedArrowSet,
+    arrows: trainingData.arrows.toString(),
   };
 
   return (
@@ -131,7 +129,16 @@ export default function CreateTrainingForm({ visible, onClose, bows = [], arrowS
             keyboardType="numeric"
             containerStyle={styles.inputContainer}
           />
-          <Button label="Start skyting" onPress={handleStartShooting} buttonStyle={styles.startButton} />
+          <Link
+            href={{
+              pathname: '/training/shooting',
+              params: shootingParams,
+            }}
+            onPress={handleStartShooting}
+            asChild
+            style={styles.startButton}>
+            <Button label="Start skyting" />
+          </Link>
         </ScrollView>
         <View style={styles.footer}>
           <Button label="Lagre og avslutt" onPress={handleSaveAndFinish} buttonStyle={styles.saveButton} />

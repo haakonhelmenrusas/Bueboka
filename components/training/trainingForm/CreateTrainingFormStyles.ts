@@ -17,7 +17,14 @@ export const styles = StyleSheet.create({
     marginBottom: 16,
   },
   startButton: {
-    marginTop: 16,
+    backgroundColor: colors.primary,
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingVertical: 12,
+    paddingHorizontal: 24,
+    borderRadius: 8,
+    height: 48,
+    marginTop: 24,
   },
   footer: {
     paddingHorizontal: 16,
