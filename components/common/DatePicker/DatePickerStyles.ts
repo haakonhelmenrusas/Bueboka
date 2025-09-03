@@ -1,11 +1,9 @@
-import { Dimensions, Platform, StyleSheet } from 'react-native';
+import { Platform, StyleSheet } from 'react-native';
 import { colors } from '@/styles/colors';
-
-const { height: screenHeight } = Dimensions.get('window');
 
 export const defaultStyles = StyleSheet.create({
   container: {
-    marginBottom: 16,
+    marginBottom: 0,
     zIndex: 1,
   },
   labelContainer: {
@@ -29,13 +27,12 @@ export const defaultStyles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    height: Platform.OS === 'ios' ? 44 : 40, // iOS needs minimum 44pt touch target
+    height: 44,
     width: '100%',
     borderColor: colors.secondary,
     borderWidth: 1,
     borderRadius: 4,
-    // Ensure proper touch target on iOS
-    minHeight: Platform.OS === 'ios' ? 44 : 40,
+    minHeight: Platform.OS === 'ios' ? 44 : 44,
   },
   dateInput: {
     fontSize: 14,

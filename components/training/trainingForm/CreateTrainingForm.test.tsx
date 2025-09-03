@@ -167,25 +167,25 @@ describe('CreateTrainingForm', () => {
     it('should render bow selector when bows are provided', () => {
       const { getByText } = render(<CreateTrainingForm {...defaultProps} />);
 
-      expect(getByText('Bue (valgfritt)')).toBeTruthy();
+      expect(getByText('🏹 Bue (valgfritt)')).toBeTruthy();
     });
 
     it('should not render bow selector when no bows provided', () => {
       const { queryByText } = render(<CreateTrainingForm {...defaultProps} bows={[]} />);
 
-      expect(queryByText('Bue (valgfritt)')).toBeNull();
+      expect(queryByText('🏹 Bue (valgfritt)')).toBeNull();
     });
 
     it('should render arrow set selector when arrow sets are provided', () => {
       const { getByText } = render(<CreateTrainingForm {...defaultProps} />);
 
-      expect(getByText('Pilsett (valgfritt)')).toBeTruthy();
+      expect(getByText('🎯 Pilsett (valgfritt)')).toBeTruthy();
     });
 
     it('should not render arrow set selector when no arrow sets provided', () => {
       const { queryByText } = render(<CreateTrainingForm {...defaultProps} arrowSets={[]} />);
 
-      expect(queryByText('Pilsett (valgfritt)')).toBeNull();
+      expect(queryByText('🎯 Pilsett (valgfritt)')).toBeNull();
     });
 
     it('should render edit title when editing training', () => {
@@ -233,7 +233,6 @@ describe('CreateTrainingForm', () => {
       const datePickerTrigger = getByTestId('date-picker-trigger');
 
       // Check that the date picker shows today's date
-      const today = new Date().toLocaleDateString('nb-NO');
       expect(datePickerTrigger).toBeTruthy();
     });
 
@@ -262,7 +261,7 @@ describe('CreateTrainingForm', () => {
 
     it('should select bow when select changes', () => {
       const { getByTestId } = render(<CreateTrainingForm {...defaultProps} />);
-      const bowSelect = getByTestId('select-trigger-Bue (valgfritt)');
+      const bowSelect = getByTestId('select-trigger-🏹 Bue (valgfritt)');
 
       fireEvent.press(bowSelect);
 
@@ -314,8 +313,8 @@ describe('CreateTrainingForm', () => {
       const { getByTestId } = render(<CreateTrainingForm {...defaultProps} />);
 
       // Select bow and arrow set
-      const bowSelect = getByTestId('select-trigger-Bue (valgfritt)');
-      const arrowSetSelect = getByTestId('select-trigger-Pilsett (valgfritt)');
+      const bowSelect = getByTestId('select-trigger-🏹 Bue (valgfritt)');
+      const arrowSetSelect = getByTestId('select-trigger-🎯 Pilsett (valgfritt)');
 
       fireEvent.press(bowSelect);
       fireEvent.press(arrowSetSelect);

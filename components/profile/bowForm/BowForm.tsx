@@ -136,7 +136,7 @@ const BowForm = ({ modalVisible, setModalVisible, bow, existingBows }: BowFormPr
                 errorMessage="Du må fylle inn navn på bue"
               />
               <Select
-                containerStyle={{ zIndex: 2000, marginBottom: 16 }}
+                containerStyle={{ zIndex: 2000 }}
                 label="Buetype"
                 selectedValue={bowType}
                 options={[
@@ -152,7 +152,7 @@ const BowForm = ({ modalVisible, setModalVisible, bow, existingBows }: BowFormPr
                 onValueChange={(value) => dispatch({ type: 'SET_BOW_TYPE', payload: value })}
               />
               <Select
-                containerStyle={{ zIndex: 1000, marginBottom: 24 }}
+                containerStyle={{ zIndex: 1000 }}
                 label="Plassering"
                 selectedValue={placement}
                 options={[
@@ -181,7 +181,7 @@ const BowForm = ({ modalVisible, setModalVisible, bow, existingBows }: BowFormPr
               </View>
               <Input
                 keyboardType="numeric"
-                containerStyle={{ width: '48%', marginBottom: 16 }}
+                containerStyle={{ width: '48%', marginBottom: 24 }}
                 label={'Intervall sikte (cm)'}
                 value={interval_sight_real}
                 placeholderText="F.eks. 5"

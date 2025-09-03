@@ -49,7 +49,7 @@ export default function TrainingCard({ training, onEdit }: TrainingCardProps) {
                 style={styles.equipmentGradient}
               />
               {training.bow && <Text style={styles.equipmentText}>🏹 {training.bow.bowName}</Text>}
-              {training.arrowSet && <Text style={styles.equipmentText}>📍 {training.arrowSet.name}</Text>}
+              {training.arrowSet && <Text style={styles.equipmentText}>🎯 {training.arrowSet.name}</Text>}
             </View>
           )}
         </View>

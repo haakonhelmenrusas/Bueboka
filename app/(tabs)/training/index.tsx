@@ -6,13 +6,14 @@ import TrainingList from '@/components/training/trainingList/TrainingList';
 import { Button } from '@/components/common';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faPlus } from '@fortawesome/free-solid-svg-icons/faPlus';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useState } from 'react';
 import { ArrowSet, Bow, Training } from '@/types';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import CreateTrainingForm from '@/components/training/trainingForm/CreateTrainingForm';
 import { getLocalStorage } from '@/utils';
 import SkeletonTrainingList from '@/components/training/trainingCard/SkeletonTrainingList';
 import * as Sentry from '@sentry/react-native';
+import { useFocusEffect } from '@react-navigation/native';
 
 export default function TrainingScreen() {
   const [modalVisible, setModalVisible] = useState(false);
@@ -62,9 +63,16 @@ export default function TrainingScreen() {
     }
   }, []);
 
-  useEffect(() => {
-    loadData();
-  }, [loadData]);
+  useFocusEffect(
+    useCallback(() => {
+      loadData();
+    }, [loadData]),
+  );
+
+  const handleOpenModal = () => {
+    loadData(); // Refresh data when opening modal
+    setModalVisible(true);
+  };
 
   const handleTrainingSaved = () => {
     loadData();
@@ -92,13 +100,7 @@ export default function TrainingScreen() {
       <Text style={styles.title}>Treninger</Text>
       <Summary trainings={trainings} />
       {renderTrainingContent()}
-      <Button
-        onPress={() => {
-          setModalVisible(true);
-        }}
-        icon={<FontAwesomeIcon icon={faPlus} size={20} color={colors.white} />}
-        label={'Ny trening'}
-      />
+      <Button onPress={handleOpenModal} icon={<FontAwesomeIcon icon={faPlus} size={20} color={colors.white} />} label={'Ny trening'} />
       <CreateTrainingForm
         visible={modalVisible}
         onClose={handleCloseModal}
