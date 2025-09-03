@@ -1,7 +1,7 @@
 import { Training } from '@/types';
 import { Text, View } from 'react-native';
 import { styles } from './TrainingListStyles';
-import TrainingCard from '@/components/trainingCard/TrainingCard';
+import TrainingCard from '@/components/training/trainingCard/TrainingCard';
 import { Message } from '@/components/common';
 import { isSameDay } from 'date-fns';
 import { ScrollView } from 'react-native-gesture-handler';

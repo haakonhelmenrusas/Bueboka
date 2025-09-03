@@ -4,7 +4,6 @@ import { Button, Input, ModalHeader, ModalWrapper, Select, Toggle } from '@/comp
 import { handleNumberChange, storeLocalStorage } from '@/utils';
 import { ArrowSet, Material } from '@/types';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
-import { faXmark } from '@fortawesome/free-solid-svg-icons/faXmark';
 import { useArrowForm } from '@/components/profile/arrowForm/useArrowForm';
 import { styles } from './ArrowFormStyles';
 import { colors } from '@/styles/colors';

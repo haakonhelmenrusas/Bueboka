@@ -1,0 +1,146 @@
+import React, { useState } from 'react';
+import { ScrollView, View } from 'react-native';
+import { Button, Input, ModalHeader, ModalWrapper, Select } from '@/components/common';
+import { styles } from './CreateTrainingFormStyles';
+import { ArrowSet, Bow, Training } from '@/types';
+import { useRouter } from 'expo-router';
+import { getLocalStorage, storeLocalStorage } from '@/utils';
+
+interface CreateTrainingFormProps {
+  visible: boolean;
+  onClose: () => void;
+  bows?: Bow[];
+  arrowSets?: ArrowSet[];
+  onTrainingSaved?: () => void;
+}
+
+export default function CreateTrainingForm({ visible, onClose, bows = [], arrowSets = [], onTrainingSaved }: CreateTrainingFormProps) {
+  const router = useRouter();
+  const [date, setDate] = useState(new Date().toISOString().split('T')[0]); // Today's date in YYYY-MM-DD format
+  const [selectedBow, setSelectedBow] = useState('');
+  const [selectedArrowSet, setSelectedArrowSet] = useState('');
+  const [arrows, setArrows] = useState('');
+
+  const bowOptions = bows.map((bow) => ({ label: bow.bowName, value: bow.id }));
+  const arrowSetOptions = arrowSets.map((arrowSet) => ({ label: arrowSet.name, value: arrowSet.name }));
+
+  const createTrainingObject = (): Training => {
+    const selectedBowObject = bows.find((bow) => bow.id === selectedBow);
+    const selectedArrowSetObject = arrowSets.find((arrowSet) => arrowSet.name === selectedArrowSet);
+
+    return {
+      date: new Date(date),
+      arrows: arrows ? parseInt(arrows) : 0,
+      bow: selectedBowObject,
+      arrowSet: selectedArrowSetObject,
+    };
+  };
+
+  const saveTrainingToStorage = async (training: Training) => {
+    try {
+      // Get existing trainings from storage
+      const existingTrainings = (await getLocalStorage<Training[]>('trainings')) || [];
+
+      // Add new training to the list
+      const updatedTrainings = [...existingTrainings, training];
+
+      // Save updated list to storage
+      await storeLocalStorage(updatedTrainings, 'trainings');
+
+      // Call callback to refresh training list if provided
+      if (onTrainingSaved) {
+        onTrainingSaved();
+      }
+    } catch (error) {
+      console.error('Error saving training:', error);
+    }
+  };
+
+  const handleStartShooting = () => {
+    const trainingData = createTrainingObject();
+
+    // Save training before navigating
+    saveTrainingToStorage(trainingData);
+
+    // Navigate to shooting screen with the form data
+    router.push({
+      pathname: '/training/shooting',
+      params: {
+        date: trainingData.date.toISOString().split('T')[0],
+        bowId: selectedBow,
+        arrowSet: selectedArrowSet,
+        arrows: trainingData.arrows.toString(),
+      },
+    });
+    onClose();
+  };
+
+  const handleSaveAndFinish = async () => {
+    const trainingData = createTrainingObject();
+
+    // Save training data to local storage
+    await saveTrainingToStorage(trainingData);
+
+    onClose();
+  };
+
+  const resetForm = () => {
+    setDate(new Date().toISOString().split('T')[0]);
+    setSelectedBow('');
+    setSelectedArrowSet('');
+    setArrows('');
+  };
+
+  const handleClose = () => {
+    resetForm();
+    onClose();
+  };
+
+  return (
+    <ModalWrapper visible={visible} onClose={handleClose}>
+      <View style={styles.container}>
+        <ModalHeader title="Ny trening" onPress={handleClose} />
+        <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
+          <Input
+            label="Dato"
+            value={date}
+            onChangeText={setDate}
+            placeholderText="YYYY-MM-DD"
+            keyboardType="default"
+            containerStyle={styles.inputContainer}
+          />
+          {bowOptions.length > 0 && (
+            <Select
+              label="Bue (valgfritt)"
+              options={bowOptions}
+              selectedValue={selectedBow}
+              onValueChange={setSelectedBow}
+              containerStyle={styles.inputContainer}
+            />
+          )}
+          {arrowSetOptions.length > 0 && (
+            <Select
+              label="Pilsett (valgfritt)"
+              options={arrowSetOptions}
+              selectedValue={selectedArrowSet}
+              onValueChange={setSelectedArrowSet}
+              containerStyle={styles.inputContainer}
+            />
+          )}
+          <Input
+            label="Antall piler skutt"
+            value={arrows}
+            onChangeText={setArrows}
+            placeholderText="0"
+            keyboardType="numeric"
+            containerStyle={styles.inputContainer}
+          />
+          <Button label="Start skyting" onPress={handleStartShooting} buttonStyle={styles.startButton} />
+        </ScrollView>
+        <View style={styles.footer}>
+          <Button label="Lagre og avslutt" onPress={handleSaveAndFinish} buttonStyle={styles.saveButton} />
+        </View>
+      </View>
+    </ModalWrapper>
+  );
+}
