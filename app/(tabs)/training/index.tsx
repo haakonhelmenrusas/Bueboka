@@ -7,23 +7,31 @@ import { Button } from '@/components/common';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faPlus } from '@fortawesome/free-solid-svg-icons/faPlus';
 import { useCallback, useEffect, useState } from 'react';
-import { Training } from '@/types';
+import { ArrowSet, Bow, Training } from '@/types';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import CreateTrainingForm from '@/components/training/trainingForm/CreateTrainingForm';
 import { getLocalStorage } from '@/utils';
 import SkeletonTrainingList from '@/components/training/trainingCard/SkeletonTrainingList';
+import * as Sentry from '@sentry/react-native';
 
 export default function TrainingScreen() {
   const [modalVisible, setModalVisible] = useState(false);
   const [trainings, setTrainings] = useState<Training[]>([]);
+  const [bows, setBows] = useState<Bow[]>([]);
+  const [arrowSets, setArrowSets] = useState<ArrowSet[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
-  const loadTrainings = useCallback(async () => {
+  const loadData = useCallback(async () => {
     setIsLoading(true);
     try {
-      const storedTrainings = await getLocalStorage<Training[]>('trainings');
+      const [storedTrainings, storedBows, storedArrowSets] = await Promise.all([
+        getLocalStorage<Training[]>('trainings'),
+        getLocalStorage<Bow[]>('bows'),
+        getLocalStorage<ArrowSet[]>('arrowSets'),
+      ]);
+
+      // Load trainings
       if (storedTrainings && Array.isArray(storedTrainings)) {
-        // Convert date strings back to Date objects if needed
         const trainingsWithDates = storedTrainings.map((training) => ({
           ...training,
           date: new Date(training.date),
@@ -32,21 +40,36 @@ export default function TrainingScreen() {
       } else {
         setTrainings([]);
       }
+
+      // Load bows
+      if (storedBows && Array.isArray(storedBows)) {
+        setBows(storedBows);
+      } else {
+        setBows([]);
+      }
+
+      // Load arrow sets
+      if (storedArrowSets && Array.isArray(storedArrowSets)) {
+        setArrowSets(storedArrowSets);
+      } else {
+        setArrowSets([]);
+      }
     } catch (error) {
-      console.error('Error loading trainings:', error);
+      Sentry.captureException('Error loading training data', error);
       setTrainings([]);
+      setBows([]);
+      setArrowSets([]);
     } finally {
       setIsLoading(false);
     }
   }, []);
 
   useEffect(() => {
-    loadTrainings();
-  }, [loadTrainings]);
+    loadData();
+  }, [loadData]);
 
   const handleTrainingSaved = () => {
-    // Reload trainings when a new one is saved
-    loadTrainings();
+    loadData();
   };
 
   const renderTrainingContent = () => {
@@ -71,8 +94,8 @@ export default function TrainingScreen() {
       <CreateTrainingForm
         visible={modalVisible}
         onClose={() => setModalVisible(false)}
-        bows={[]}
-        arrowSets={[]}
+        bows={bows}
+        arrowSets={arrowSets}
         onTrainingSaved={handleTrainingSaved}
       />
     </GestureHandlerRootView>

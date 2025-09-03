@@ -5,6 +5,7 @@ import { styles } from './CreateTrainingFormStyles';
 import { ArrowSet, Bow, Training } from '@/types';
 import { useRouter } from 'expo-router';
 import { getLocalStorage, storeLocalStorage } from '@/utils';
+import * as Sentry from '@sentry/react-native';
 
 interface CreateTrainingFormProps {
   visible: boolean;
@@ -38,50 +39,45 @@ export default function CreateTrainingForm({ visible, onClose, bows = [], arrowS
 
   const saveTrainingToStorage = async (training: Training) => {
     try {
-      // Get existing trainings from storage
       const existingTrainings = (await getLocalStorage<Training[]>('trainings')) || [];
-
-      // Add new training to the list
       const updatedTrainings = [...existingTrainings, training];
-
-      // Save updated list to storage
       await storeLocalStorage(updatedTrainings, 'trainings');
 
-      // Call callback to refresh training list if provided
       if (onTrainingSaved) {
         onTrainingSaved();
       }
     } catch (error) {
-      console.error('Error saving training:', error);
+      Sentry.captureException('Error saving training to storage', error);
     }
   };
 
   const handleStartShooting = () => {
-    const trainingData = createTrainingObject();
-
-    // Save training before navigating
-    saveTrainingToStorage(trainingData);
-
-    // Navigate to shooting screen with the form data
-    router.push({
-      pathname: '/training/shooting',
-      params: {
-        date: trainingData.date.toISOString().split('T')[0],
-        bowId: selectedBow,
-        arrowSet: selectedArrowSet,
-        arrows: trainingData.arrows.toString(),
-      },
-    });
-    onClose();
+    try {
+      const trainingData = createTrainingObject();
+      saveTrainingToStorage(trainingData);
+      router.push({
+        pathname: '/training/shooting',
+        params: {
+          date: trainingData.date.toISOString().split('T')[0],
+          bowId: selectedBow,
+          arrowSet: selectedArrowSet,
+          arrows: trainingData.arrows.toString(),
+        },
+      });
+      onClose();
+    } catch (error) {
+      Sentry.captureException('Error starting shooting session', error);
+    }
   };
 
   const handleSaveAndFinish = async () => {
-    const trainingData = createTrainingObject();
-
-    // Save training data to local storage
-    await saveTrainingToStorage(trainingData);
-
-    onClose();
+    try {
+      const trainingData = createTrainingObject();
+      await saveTrainingToStorage(trainingData);
+      onClose();
+    } catch (error) {
+      Sentry.captureException('Error saving and finishing training', error);
+    }
   };
 
   const resetForm = () => {
