@@ -139,7 +139,7 @@ describe('CreateTrainingForm', () => {
       expect(getByTestId('modal-wrapper')).toBeTruthy();
       expect(getByText('Ny trening')).toBeTruthy();
       expect(getByText('Dato')).toBeTruthy();
-      expect(getByText('Antall piler skutt')).toBeTruthy();
+      expect(getByText('Antall piler skutt allerede')).toBeTruthy();
     });
 
     it('should not render when visible is false', () => {
@@ -171,6 +171,44 @@ describe('CreateTrainingForm', () => {
 
       expect(queryByText('Pilsett (valgfritt)')).toBeNull();
     });
+
+    it('should render edit title when editing training', () => {
+      const editingTraining = {
+        id: 'test-id',
+        date: new Date('2025-01-15'),
+        arrows: 24,
+        bow: mockBows[0],
+        arrowSet: mockArrowSets[0],
+      };
+
+      const { getByText } = render(<CreateTrainingForm {...defaultProps} editingTraining={editingTraining} />);
+
+      expect(getByText('Rediger trening')).toBeTruthy();
+    });
+
+    it('should not render Start skyting button when editing', () => {
+      const editingTraining = {
+        id: 'test-id',
+        date: new Date('2025-01-15'),
+        arrows: 24,
+      };
+
+      const { queryByTestId } = render(<CreateTrainingForm {...defaultProps} editingTraining={editingTraining} />);
+
+      expect(queryByTestId('button-Start skyting')).toBeNull();
+    });
+
+    it('should render Oppdater trening button when editing', () => {
+      const editingTraining = {
+        id: 'test-id',
+        date: new Date('2025-01-15'),
+        arrows: 24,
+      };
+
+      const { getByTestId } = render(<CreateTrainingForm {...defaultProps} editingTraining={editingTraining} />);
+
+      expect(getByTestId('button-Oppdater trening')).toBeTruthy();
+    });
   });
 
   describe('Form Input', () => {
@@ -180,6 +218,24 @@ describe('CreateTrainingForm', () => {
 
       const today = new Date().toISOString().split('T')[0];
       expect(dateInput.props.value).toBe(today);
+    });
+
+    it('should populate form with editing training data', () => {
+      const editingTraining = {
+        id: 'test-id',
+        date: new Date('2025-01-15'),
+        arrows: 24,
+        bow: mockBows[0],
+        arrowSet: mockArrowSets[0],
+      };
+
+      const { getByTestId } = render(<CreateTrainingForm {...defaultProps} editingTraining={editingTraining} />);
+
+      const dateInput = getByTestId('input-Dato');
+      const arrowsInput = getByTestId('input-Antall piler skutt allerede');
+
+      expect(dateInput.props.value).toBe('2025-01-15');
+      expect(arrowsInput.props.value).toBe('24');
     });
 
     it('should update date when input changes', () => {
@@ -192,7 +248,7 @@ describe('CreateTrainingForm', () => {
 
     it('should update arrows when input changes', () => {
       const { getByTestId } = render(<CreateTrainingForm {...defaultProps} />);
-      const arrowsInput = getByTestId('input-Antall piler skutt');
+      const arrowsInput = getByTestId('input-Antall piler skutt allerede');
 
       fireEvent.changeText(arrowsInput, '24');
       expect(arrowsInput.props.value).toBe('24');
@@ -227,7 +283,7 @@ describe('CreateTrainingForm', () => {
 
       // Set form values
       const dateInput = getByTestId('input-Dato');
-      const arrowsInput = getByTestId('input-Antall piler skutt');
+      const arrowsInput = getByTestId('input-Antall piler skutt allerede');
 
       fireEvent.changeText(dateInput, '2025-12-25');
       fireEvent.changeText(arrowsInput, '36');
@@ -244,6 +300,7 @@ describe('CreateTrainingForm', () => {
               arrows: 36,
               bow: undefined,
               arrowSet: undefined,
+              id: expect.any(String), // New trainings should have an ID
             }),
           ]),
           'trainings',
@@ -262,7 +319,7 @@ describe('CreateTrainingForm', () => {
       fireEvent.press(arrowSetSelect);
 
       // Set arrows
-      const arrowsInput = getByTestId('input-Antall piler skutt');
+      const arrowsInput = getByTestId('input-Antall piler skutt allerede');
       fireEvent.changeText(arrowsInput, '24');
 
       // Trigger save
@@ -276,6 +333,7 @@ describe('CreateTrainingForm', () => {
               arrows: 24,
               bow: mockBows[0],
               arrowSet: mockArrowSets[0],
+              id: expect.any(String),
             }),
           ]),
           'trainings',
@@ -335,6 +393,7 @@ describe('CreateTrainingForm', () => {
     it('should append to existing trainings', async () => {
       const existingTrainings = [
         {
+          id: 'existing-1',
           date: new Date('2025-01-01'),
           arrows: 12,
         },
@@ -344,7 +403,7 @@ describe('CreateTrainingForm', () => {
 
       const { getByTestId } = render(<CreateTrainingForm {...defaultProps} />);
 
-      const arrowsInput = getByTestId('input-Antall piler skutt');
+      const arrowsInput = getByTestId('input-Antall piler skutt allerede');
       fireEvent.changeText(arrowsInput, '18');
 
       const saveButton = getByTestId('button-Lagre og avslutt');
@@ -356,10 +415,285 @@ describe('CreateTrainingForm', () => {
             existingTrainings[0],
             expect.objectContaining({
               arrows: 18,
+              id: expect.any(String),
             }),
           ]),
           'trainings',
         );
+      });
+    });
+  });
+
+  describe('Edit Operations', () => {
+    it('should update existing training by ID', async () => {
+      const existingTrainings = [
+        {
+          id: 'training-1',
+          date: new Date('2025-01-01'),
+          arrows: 12,
+          bow: mockBows[0],
+        },
+        {
+          id: 'training-2',
+          date: new Date('2025-01-02'),
+          arrows: 18,
+        },
+      ];
+
+      const editingTraining = {
+        id: 'training-1',
+        date: new Date('2025-01-01'),
+        arrows: 12,
+        bow: mockBows[0],
+      };
+
+      (getLocalStorage as jest.Mock).mockResolvedValue(existingTrainings);
+
+      const { getByTestId } = render(<CreateTrainingForm {...defaultProps} editingTraining={editingTraining} />);
+
+      // Change arrow count
+      const arrowsInput = getByTestId('input-Antall piler skutt allerede');
+      fireEvent.changeText(arrowsInput, '24');
+
+      const updateButton = getByTestId('button-Oppdater trening');
+      fireEvent.press(updateButton);
+
+      await waitFor(() => {
+        expect(storeLocalStorage).toHaveBeenCalledWith(
+          expect.arrayContaining([
+            expect.objectContaining({
+              id: 'training-1',
+              arrows: 24,
+              bow: mockBows[0],
+            }),
+            existingTrainings[1], // Second training should remain unchanged
+          ]),
+          'trainings',
+        );
+      });
+    });
+
+    it('should update existing training without ID by field matching', async () => {
+      const existingTrainings = [
+        {
+          date: new Date('2025-01-01'),
+          arrows: 12,
+          bow: mockBows[0],
+        },
+        {
+          date: new Date('2025-01-02'),
+          arrows: 18,
+        },
+      ];
+
+      const editingTraining = {
+        date: new Date('2025-01-01'),
+        arrows: 12,
+        bow: mockBows[0],
+      };
+
+      (getLocalStorage as jest.Mock).mockResolvedValue(existingTrainings);
+
+      const { getByTestId } = render(<CreateTrainingForm {...defaultProps} editingTraining={editingTraining} />);
+
+      // Change arrow count
+      const arrowsInput = getByTestId('input-Antall piler skutt allerede');
+      fireEvent.changeText(arrowsInput, '30');
+
+      const updateButton = getByTestId('button-Oppdater trening');
+      fireEvent.press(updateButton);
+
+      await waitFor(() => {
+        expect(storeLocalStorage).toHaveBeenCalledWith(
+          expect.arrayContaining([
+            expect.objectContaining({
+              arrows: 30,
+              bow: mockBows[0],
+            }),
+            existingTrainings[1], // Second training should remain unchanged
+          ]),
+          'trainings',
+        );
+      });
+    });
+
+    it('should add as new training if existing training not found', async () => {
+      const existingTrainings = [
+        {
+          id: 'different-id',
+          date: new Date('2025-01-01'),
+          arrows: 12,
+        },
+      ];
+
+      const editingTraining = {
+        id: 'training-1',
+        date: new Date('2025-01-15'),
+        arrows: 24,
+      };
+
+      (getLocalStorage as jest.Mock).mockResolvedValue(existingTrainings);
+
+      const { getByTestId } = render(<CreateTrainingForm {...defaultProps} editingTraining={editingTraining} />);
+
+      const updateButton = getByTestId('button-Oppdater trening');
+      fireEvent.press(updateButton);
+
+      await waitFor(() => {
+        expect(storeLocalStorage).toHaveBeenCalledWith(
+          expect.arrayContaining([
+            existingTrainings[0], // Original training
+            expect.objectContaining({
+              arrows: 24,
+            }),
+          ]),
+          'trainings',
+        );
+      });
+    });
+  });
+
+  describe('Delete Operations', () => {
+    it('should render delete button when editing', () => {
+      const editingTraining = {
+        id: 'test-id',
+        date: new Date('2025-01-15'),
+        arrows: 24,
+      };
+
+      const { getByTestId } = render(<CreateTrainingForm {...defaultProps} editingTraining={editingTraining} />);
+
+      expect(getByTestId('button-Slett trening')).toBeTruthy();
+    });
+
+    it('should not render delete button when creating new training', () => {
+      const { queryByTestId } = render(<CreateTrainingForm {...defaultProps} />);
+
+      expect(queryByTestId('button-Slett trening')).toBeNull();
+    });
+
+    it('should delete existing training by ID', async () => {
+      const existingTrainings = [
+        {
+          id: 'training-1',
+          date: new Date('2025-01-01'),
+          arrows: 12,
+          bow: mockBows[0],
+        },
+        {
+          id: 'training-2',
+          date: new Date('2025-01-02'),
+          arrows: 18,
+        },
+      ];
+
+      const editingTraining = {
+        id: 'training-1',
+        date: new Date('2025-01-01'),
+        arrows: 12,
+        bow: mockBows[0],
+      };
+
+      (getLocalStorage as jest.Mock).mockResolvedValue(existingTrainings);
+
+      const { getByTestId } = render(<CreateTrainingForm {...defaultProps} editingTraining={editingTraining} />);
+
+      const deleteButton = getByTestId('button-Slett trening');
+      fireEvent.press(deleteButton);
+
+      await waitFor(() => {
+        expect(storeLocalStorage).toHaveBeenCalledWith(
+          [existingTrainings[1]], // Only second training should remain
+          'trainings',
+        );
+        expect(defaultProps.onTrainingSaved).toHaveBeenCalled();
+        expect(defaultProps.onClose).toHaveBeenCalled();
+      });
+    });
+
+    it('should delete existing training without ID by field matching', async () => {
+      const existingTrainings = [
+        {
+          date: new Date('2025-01-01'),
+          arrows: 12,
+          bow: mockBows[0],
+        },
+        {
+          date: new Date('2025-01-02'),
+          arrows: 18,
+        },
+      ];
+
+      const editingTraining = {
+        date: new Date('2025-01-01'),
+        arrows: 12,
+        bow: mockBows[0],
+      };
+
+      (getLocalStorage as jest.Mock).mockResolvedValue(existingTrainings);
+
+      const { getByTestId } = render(<CreateTrainingForm {...defaultProps} editingTraining={editingTraining} />);
+
+      const deleteButton = getByTestId('button-Slett trening');
+      fireEvent.press(deleteButton);
+
+      await waitFor(() => {
+        expect(storeLocalStorage).toHaveBeenCalledWith(
+          [existingTrainings[1]], // Only second training should remain
+          'trainings',
+        );
+        expect(defaultProps.onTrainingSaved).toHaveBeenCalled();
+        expect(defaultProps.onClose).toHaveBeenCalled();
+      });
+    });
+
+    it('should not delete if training not found', async () => {
+      const existingTrainings = [
+        {
+          id: 'different-id',
+          date: new Date('2025-01-01'),
+          arrows: 12,
+        },
+      ];
+
+      const editingTraining = {
+        id: 'training-1',
+        date: new Date('2025-01-15'),
+        arrows: 24,
+      };
+
+      (getLocalStorage as jest.Mock).mockResolvedValue(existingTrainings);
+
+      const { getByTestId } = render(<CreateTrainingForm {...defaultProps} editingTraining={editingTraining} />);
+
+      const deleteButton = getByTestId('button-Slett trening');
+      fireEvent.press(deleteButton);
+
+      await waitFor(() => {
+        expect(defaultProps.onClose).toHaveBeenCalled();
+      });
+
+      // Should not have called storeLocalStorage since training wasn't found
+      expect(storeLocalStorage).not.toHaveBeenCalled();
+    });
+
+    it('should handle delete errors gracefully', async () => {
+      const editingTraining = {
+        id: 'test-id',
+        date: new Date('2025-01-15'),
+        arrows: 24,
+      };
+
+      (getLocalStorage as jest.Mock).mockRejectedValue(new Error('Delete error'));
+
+      const { getByTestId } = render(<CreateTrainingForm {...defaultProps} editingTraining={editingTraining} />);
+
+      const deleteButton = getByTestId('button-Slett trening');
+      fireEvent.press(deleteButton);
+
+      // Should not crash and still call onClose
+      await waitFor(() => {
+        expect(defaultProps.onClose).toHaveBeenCalled();
       });
     });
   });
@@ -379,7 +713,7 @@ describe('CreateTrainingForm', () => {
 
       // Change form values
       const dateInput = getByTestId('input-Dato');
-      const arrowsInput = getByTestId('input-Antall piler skutt');
+      const arrowsInput = getByTestId('input-Antall piler skutt allerede');
 
       fireEvent.changeText(dateInput, '2025-12-25');
       fireEvent.changeText(arrowsInput, '36');

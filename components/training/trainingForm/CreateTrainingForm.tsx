@@ -60,22 +60,41 @@ export default function CreateTrainingForm({
       const existingTrainings = (await getLocalStorage<Training[]>('trainings')) || [];
 
       if (editingTraining) {
-        // Update existing training
-        const updatedTrainings = existingTrainings.map((t) => {
-          if (
-            t.date.toDateString() === editingTraining.date.toDateString() &&
-            t.arrows === editingTraining.arrows &&
-            t.bow?.id === editingTraining.bow?.id &&
-            t.arrowSet?.name === editingTraining.arrowSet?.name
-          ) {
-            return training;
+        // Update existing training - find by index instead of field matching
+        const trainingIndex = existingTrainings.findIndex((t, index) => {
+          // If training has an ID, use it for matching
+          if (editingTraining.id && t.id) {
+            return t.id === editingTraining.id;
           }
-          return t;
+          // Otherwise, try to match by multiple fields as fallback
+          const dateMatches = new Date(t.date).getTime() === editingTraining.date.getTime();
+          const arrowsMatch = t.arrows === editingTraining.arrows;
+          const bowMatches = t.bow?.id === editingTraining.bow?.id;
+          const arrowSetMatches = t.arrowSet?.name === editingTraining.arrowSet?.name;
+
+          return dateMatches && arrowsMatch && bowMatches && arrowSetMatches;
         });
-        await storeLocalStorage(updatedTrainings, 'trainings');
+
+        if (trainingIndex !== -1) {
+          // Update the existing training at the found index
+          const updatedTrainings = [...existingTrainings];
+          updatedTrainings[trainingIndex] = {
+            ...training,
+            id: editingTraining.id || training.id, // Preserve the ID if it exists
+          };
+          await storeLocalStorage(updatedTrainings, 'trainings');
+        } else {
+          // If we can't find the training to update, add it as new
+          const updatedTrainings = [...existingTrainings, training];
+          await storeLocalStorage(updatedTrainings, 'trainings');
+        }
       } else {
-        // Add new training
-        const updatedTrainings = [...existingTrainings, training];
+        // Add new training with a unique ID
+        const newTraining = {
+          ...training,
+          id: Date.now().toString() + Math.random().toString(36).substr(2, 9),
+        };
+        const updatedTrainings = [...existingTrainings, newTraining];
         await storeLocalStorage(updatedTrainings, 'trainings');
       }
 
@@ -84,6 +103,40 @@ export default function CreateTrainingForm({
       }
     } catch (error) {
       Sentry.captureException('Error saving training to storage', error);
+    }
+  };
+  const deleteTrainingFromStorage = async () => {
+    try {
+      const existingTrainings = (await getLocalStorage<Training[]>('trainings')) || [];
+
+      if (editingTraining) {
+        // Find and remove the training
+        const trainingIndex = existingTrainings.findIndex((t) => {
+          // If training has an ID, use it for matching
+          if (editingTraining.id && t.id) {
+            return t.id === editingTraining.id;
+          }
+          // Otherwise, try to match by multiple fields as fallback
+          const dateMatches = new Date(t.date).getTime() === editingTraining.date.getTime();
+          const arrowsMatch = t.arrows === editingTraining.arrows;
+          const bowMatches = t.bow?.id === editingTraining.bow?.id;
+          const arrowSetMatches = t.arrowSet?.name === editingTraining.arrowSet?.name;
+
+          return dateMatches && arrowsMatch && bowMatches && arrowSetMatches;
+        });
+
+        if (trainingIndex !== -1) {
+          // Remove the training at the found index
+          const updatedTrainings = existingTrainings.filter((_, index) => index !== trainingIndex);
+          await storeLocalStorage(updatedTrainings, 'trainings');
+
+          if (onTrainingSaved) {
+            onTrainingSaved();
+          }
+        }
+      }
+    } catch (error) {
+      Sentry.captureException('Error deleting training from storage', error);
     }
   };
 
@@ -103,6 +156,15 @@ export default function CreateTrainingForm({
       onClose();
     } catch (error) {
       Sentry.captureException('Error saving and finishing training', error);
+    }
+  };
+
+  const handleDeleteTraining = async () => {
+    try {
+      await deleteTrainingFromStorage();
+      onClose();
+    } catch (error) {
+      Sentry.captureException('Error deleting training', error);
     }
   };
 
@@ -185,6 +247,7 @@ export default function CreateTrainingForm({
             onPress={handleSaveAndFinish}
             buttonStyle={styles.saveButton}
           />
+          {isEditing && <Button variant="warning" type="outline" label="Slett trening" onPress={handleDeleteTraining} />}
         </View>
       </View>
     </ModalWrapper>
