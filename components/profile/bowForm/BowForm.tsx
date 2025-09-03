@@ -1,4 +1,4 @@
-import { Keyboard, KeyboardAvoidingView, Platform, Pressable, ScrollView, View } from 'react-native';
+import { Keyboard, KeyboardAvoidingView, Platform, Pressable, TouchableOpacity, View } from 'react-native';
 import { useEffect, useState } from 'react';
 import { Button, Input, ModalHeader, ModalWrapper, Select, Toggle } from '@/components/common';
 import { useBowForm } from './useBowForm';
@@ -6,7 +6,7 @@ import { handleNumberChange, storeLocalStorage } from '@/utils';
 import { Bow } from '@/types';
 import { styles } from './BowFormStyles';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
-import { faTrash } from '@fortawesome/free-solid-svg-icons/faTrash';
+import { faTrashCan } from '@fortawesome/free-regular-svg-icons/faTrashCan';
 import { colors } from '@/styles/colors';
 import ConfirmModal from '@/components/profile/DeleteArrowSetModal/ConfirmModal';
 
@@ -123,7 +123,7 @@ const BowForm = ({ modalVisible, setModalVisible, bow, existingBows }: BowFormPr
         setModalVisible(false);
       }}>
       <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={styles.modal}>
-        <ScrollView keyboardShouldPersistTaps="handled" contentContainerStyle={{ flexGrow: 1 }}>
+        <View style={{ flex: 1 }}>
           <Pressable style={{ flex: 1 }} onPress={() => Keyboard.dismiss()}>
             <ModalHeader onPress={handleCloseModal} title={bow ? 'Rediger bue' : 'Ny bue'} />
             <View style={styles.inputs}>
@@ -191,9 +191,9 @@ const BowForm = ({ modalVisible, setModalVisible, bow, existingBows }: BowFormPr
             </View>
             <View style={{ marginTop: 'auto' }}>
               {bow && (
-                <Button variant="warning" label="Slett" onPress={() => setConfirmVisible(true)} type="outline">
-                  <FontAwesomeIcon icon={faTrash} size={16} color={colors.warning} />
-                </Button>
+                <TouchableOpacity style={styles.trashIcon} onPress={() => setConfirmVisible(true)}>
+                  <FontAwesomeIcon icon={faTrashCan} size={16} color={colors.error} />
+                </TouchableOpacity>
               )}
               <Button disabled={!bowName} onPress={handleSubmit} label="Lagre" />
               <Button
@@ -206,7 +206,7 @@ const BowForm = ({ modalVisible, setModalVisible, bow, existingBows }: BowFormPr
               />
             </View>
           </Pressable>
-        </ScrollView>
+        </View>
       </KeyboardAvoidingView>
       <ConfirmModal
         visible={confirmVisible}

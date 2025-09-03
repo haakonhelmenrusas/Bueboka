@@ -22,4 +22,9 @@ export const styles = StyleSheet.create({
   inputs: {
     gap: 16,
   },
+  trashIcon: {
+    padding: 16,
+    alignSelf: 'flex-end',
+    marginBottom: 4,
+  },
 });
