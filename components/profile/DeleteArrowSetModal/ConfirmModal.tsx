@@ -30,7 +30,7 @@ export default function ConfirmModal({
           <Text style={styles.text}>{message}</Text>
           <View style={styles.actions}>
             <Button label={cancelLabel} type="outline" onPress={onCancel} />
-            <Button label={confirmLabel} onPress={onConfirm} />
+            <Button variant="warning" label={confirmLabel} onPress={onConfirm} />
           </View>
         </Pressable>
       </Pressable>
