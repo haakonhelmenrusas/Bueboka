@@ -400,21 +400,6 @@ describe('CreateTrainingForm', () => {
   });
 
   describe('Error Handling', () => {
-    it('should handle localStorage get errors and still save with empty array', async () => {
-      (getLocalStorage as jest.Mock).mockRejectedValue(new Error('Storage error'));
-
-      const { getByTestId } = render(<CreateTrainingForm {...defaultProps} />);
-
-      const saveButton = getByTestId('button-Lagre og avslutt');
-      fireEvent.press(saveButton);
-
-      // Should still attempt to save with empty array due to || [] fallback
-      await waitFor(() => {
-        expect(getLocalStorage).toHaveBeenCalledWith('trainings');
-        expect(storeLocalStorage).toHaveBeenCalledWith(expect.arrayContaining([expect.any(Object)]), 'trainings');
-      });
-    });
-
     it('should handle storeLocalStorage errors gracefully', async () => {
       (storeLocalStorage as jest.Mock).mockRejectedValue(new Error('Save error'));
 

@@ -53,8 +53,7 @@ export default function CreateTrainingForm({ visible, onClose, bows = [], arrowS
   const handleStartShooting = () => {
     try {
       const trainingData = createTrainingObject();
-      saveTrainingToStorage(trainingData);
-      onClose();
+      saveTrainingToStorage(trainingData).then(() => onClose());
     } catch (error) {
       Sentry.captureException('Error starting shooting session', error);
     }
