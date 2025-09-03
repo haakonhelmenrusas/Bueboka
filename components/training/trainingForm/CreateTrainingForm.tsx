@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { ScrollView, View } from 'react-native';
+import { Keyboard, Pressable, View } from 'react-native';
 import { Button, DatePicker, Input, ModalHeader, ModalWrapper, Select } from '@/components/common';
 import { styles } from './CreateTrainingFormStyles';
 import { ArrowSet, Bow, Training } from '@/types';
@@ -193,55 +193,58 @@ export default function CreateTrainingForm({
   return (
     <ModalWrapper visible={visible} onClose={handleClose}>
       <View style={styles.container}>
-        <ModalHeader title={isEditing ? 'Rediger trening' : 'Ny trening'} onPress={handleClose} />
-        <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
-          <DatePicker label="Dato" value={date} onDateChange={setDate} containerStyle={styles.inputContainer} testID="date-picker" />
-          {bowOptions.length > 0 && (
-            <Select
-              label="Bue (valgfritt)"
-              options={bowOptions}
-              selectedValue={selectedBow}
-              onValueChange={setSelectedBow}
+        <Pressable style={{ flex: 1 }} onPress={() => Keyboard.dismiss()}>
+          <ModalHeader title={isEditing ? 'Rediger trening' : 'Ny trening'} onPress={handleClose} />
+          <View style={styles.content}>
+            <DatePicker label="Dato" value={date} onDateChange={setDate} containerStyle={styles.inputContainer} testID="date-picker" />
+            {bowOptions.length > 0 && (
+              <Select
+                label="🏹 Bue (valgfritt)"
+                options={bowOptions}
+                selectedValue={selectedBow}
+                onValueChange={setSelectedBow}
+                containerStyle={styles.inputContainer}
+              />
+            )}
+            {arrowSetOptions.length > 0 && (
+              <Select
+                label="🎯 Pilsett (valgfritt)"
+                options={arrowSetOptions}
+                selectedValue={selectedArrowSet}
+                onValueChange={setSelectedArrowSet}
+                containerStyle={styles.inputContainer}
+              />
+            )}
+            <Input
+              label="Antall piler skutt allerede"
+              inputStyle={{ width: '30%' }}
+              value={arrows}
+              onChangeText={setArrows}
+              keyboardType="numeric"
               containerStyle={styles.inputContainer}
             />
-          )}
-          {arrowSetOptions.length > 0 && (
-            <Select
-              label="Pilsett (valgfritt)"
-              options={arrowSetOptions}
-              selectedValue={selectedArrowSet}
-              onValueChange={setSelectedArrowSet}
-              containerStyle={styles.inputContainer}
+            {!isEditing && (
+              <Link
+                href={{
+                  pathname: '/training/shooting',
+                  params: shootingParams,
+                }}
+                onPress={handleStartShooting}
+                asChild
+                style={styles.startButton}>
+                <Button label="Start skyting" />
+              </Link>
+            )}
+          </View>
+          <View style={styles.footer}>
+            <Button
+              label={isEditing ? 'Oppdater trening' : 'Lagre og avslutt'}
+              onPress={handleSaveAndFinish}
+              buttonStyle={styles.saveButton}
             />
-          )}
-          <Input
-            label="Antall piler skutt allerede"
-            value={arrows}
-            onChangeText={setArrows}
-            keyboardType="numeric"
-            containerStyle={styles.inputContainer}
-          />
-          {!isEditing && (
-            <Link
-              href={{
-                pathname: '/training/shooting',
-                params: shootingParams,
-              }}
-              onPress={handleStartShooting}
-              asChild
-              style={styles.startButton}>
-              <Button label="Start skyting" />
-            </Link>
-          )}
-        </ScrollView>
-        <View style={styles.footer}>
-          <Button
-            label={isEditing ? 'Oppdater trening' : 'Lagre og avslutt'}
-            onPress={handleSaveAndFinish}
-            buttonStyle={styles.saveButton}
-          />
-          {isEditing && <Button variant="warning" type="outline" label="Slett trening" onPress={handleDeleteTraining} />}
-        </View>
+            {isEditing && <Button variant="warning" type="outline" label="Slett trening" onPress={handleDeleteTraining} />}
+          </View>
+        </Pressable>
       </View>
     </ModalWrapper>
   );

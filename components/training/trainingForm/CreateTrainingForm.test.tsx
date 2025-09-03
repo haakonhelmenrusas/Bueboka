@@ -267,18 +267,18 @@ describe('CreateTrainingForm', () => {
       fireEvent.press(bowSelect);
 
       // The mock select will automatically select the first option
-      const selectElement = getByTestId('select-Bue (valgfritt)');
+      const selectElement = getByTestId('select-trigger-🏹 Bue (valgfritt)');
       expect(selectElement).toBeTruthy();
     });
 
     it('should select arrow set when select changes', () => {
       const { getByTestId } = render(<CreateTrainingForm {...defaultProps} />);
-      const arrowSetSelect = getByTestId('select-trigger-Pilsett (valgfritt)');
+      const arrowSetSelect = getByTestId('select-🎯 Pilsett (valgfritt)');
 
       fireEvent.press(arrowSetSelect);
 
       // The mock select will automatically select the first option
-      const selectElement = getByTestId('select-Pilsett (valgfritt)');
+      const selectElement = getByTestId('select-🎯 Pilsett (valgfritt)');
       expect(selectElement).toBeTruthy();
     });
   });
