@@ -76,7 +76,6 @@ export default function ShootingScreen() {
         existingTrainings.push(newTraining);
       }
 
-      // Wait for the save operation to complete
       await storeLocalStorage(existingTrainings, 'trainings');
 
       await new Promise((resolve) => setTimeout(resolve, 100));

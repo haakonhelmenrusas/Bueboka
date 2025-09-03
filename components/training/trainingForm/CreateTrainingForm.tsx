@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { ScrollView, View } from 'react-native';
-import { Button, Input, ModalHeader, ModalWrapper, Select } from '@/components/common';
+import { Button, DatePicker, Input, ModalHeader, ModalWrapper, Select } from '@/components/common';
 import { styles } from './CreateTrainingFormStyles';
 import { ArrowSet, Bow, Training } from '@/types';
 import { Link } from 'expo-router';
@@ -24,7 +24,7 @@ export default function CreateTrainingForm({
   onTrainingSaved,
   editingTraining = null,
 }: CreateTrainingFormProps) {
-  const [date, setDate] = useState(new Date().toISOString().split('T')[0]); // Today's date in YYYY-MM-DD format
+  const [date, setDate] = useState(new Date());
   const [selectedBow, setSelectedBow] = useState('');
   const [selectedArrowSet, setSelectedArrowSet] = useState('');
   const [arrows, setArrows] = useState('0');
@@ -34,7 +34,7 @@ export default function CreateTrainingForm({
 
   useEffect(() => {
     if (editingTraining) {
-      setDate(editingTraining.date.toISOString().split('T')[0]);
+      setDate(editingTraining.date);
       setSelectedBow(editingTraining.bow?.id || '');
       setSelectedArrowSet(editingTraining.arrowSet?.name || '');
       setArrows(editingTraining.arrows.toString());
@@ -169,7 +169,7 @@ export default function CreateTrainingForm({
   };
 
   const resetForm = () => {
-    setDate(new Date().toISOString().split('T')[0]);
+    setDate(new Date());
     setSelectedBow('');
     setSelectedArrowSet('');
     setArrows('');
@@ -195,14 +195,7 @@ export default function CreateTrainingForm({
       <View style={styles.container}>
         <ModalHeader title={isEditing ? 'Rediger trening' : 'Ny trening'} onPress={handleClose} />
         <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
-          <Input
-            label="Dato"
-            value={date}
-            onChangeText={setDate}
-            placeholderText="YYYY-MM-DD"
-            keyboardType="default"
-            containerStyle={styles.inputContainer}
-          />
+          <DatePicker label="Dato" value={date} onDateChange={setDate} containerStyle={styles.inputContainer} testID="date-picker" />
           {bowOptions.length > 0 && (
             <Select
               label="Bue (valgfritt)"

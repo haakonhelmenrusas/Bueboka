@@ -1,25 +1,34 @@
-import { Slot } from 'expo-router';
-import { Platform, StyleSheet, View } from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { Stack } from 'expo-router';
 import { colors } from '@/styles/colors';
 
 const Layout = () => {
-  const insets = useSafeAreaInsets();
-
-  const topPadding = Platform.OS === 'ios' ? Math.min(insets.top, 4) : Math.max(insets.top, 24);
-
   return (
-    <View style={[styles.container, { paddingTop: topPadding }]}>
-      <Slot />
-    </View>
+    <Stack
+      screenOptions={{
+        headerStyle: {
+          backgroundColor: colors.white,
+        },
+        headerTintColor: colors.primary,
+        headerTitleStyle: {
+          fontWeight: 'bold',
+        },
+      }}>
+      <Stack.Screen
+        name="index"
+        options={{
+          title: 'Treninger',
+          headerShown: false, // Hide header for main training screen since it has its own title
+        }}
+      />
+      <Stack.Screen
+        name="shooting/index"
+        options={{
+          title: 'Skyteøkt',
+          headerBackTitle: 'Tilbake',
+        }}
+      />
+    </Stack>
   );
 };
 
 export default Layout;
-
-const styles = StyleSheet.create({
-  container: {
-    backgroundColor: colors.white,
-    flex: 1,
-  },
-});

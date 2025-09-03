@@ -7,5 +7,6 @@ import ModalWrapper from './ModalWrapper/ModalWrapper';
 import Toggle from './Toggle/Toggle';
 import DataValue from './DataValue/DataValue';
 import ModalHeader from './ModalHeader/ModalHeader';
+import DatePicker from './DatePicker/DatePicker';
 
-export { Button, Input, Message, Notch, Select, ModalWrapper, Toggle, DataValue, ModalHeader };
+export { Button, Input, DatePicker, Message, Notch, Select, ModalWrapper, Toggle, DataValue, ModalHeader };
