@@ -11,29 +11,40 @@ interface TrainingListProps {
 }
 
 export default function TrainingList({ trainings }: TrainingListProps) {
-  trainings.sort((a, b) => b.date.getTime() - a.date.getTime()); // Sort trainings by date descending
+  const sortedTrainings = [...trainings].sort((a, b) => b.date.getTime() - a.date.getTime());
+
   const renderTrainingList = () => {
-    if (trainings && trainings.length > 0) {
-      let today = new Date();
-      return (
-        <>
-          {trainings.map((training, index) =>
-            isSameDay(today, training.date) ? (
-              <View key={index}>
-                <Text style={styles.subtitleToday}>I dag</Text>
-                <TrainingCard training={training} />
-                <Text style={styles.subtitlePast}>Eldre treninger</Text>
-              </View>
-            ) : (
-              <TrainingCard key={index} training={training} />
-            ),
-          )}
-        </>
-      );
-    } else {
+    if (!trainings || trainings.length === 0) {
       return <Message title="Ingen treninger" description="Legg til treninger ved å trykke på 'Ny trening'" />;
     }
+
+    const today = new Date();
+
+    const todayTrainings = sortedTrainings.filter((training) => isSameDay(today, training.date));
+    const olderTrainings = sortedTrainings.filter((training) => !isSameDay(today, training.date));
+
+    return (
+      <>
+        {todayTrainings.length > 0 && (
+          <>
+            <Text style={styles.subtitleToday}>I dag</Text>
+            {todayTrainings.map((training, index) => (
+              <TrainingCard key={`today-${index}`} training={training} />
+            ))}
+          </>
+        )}
+        {olderTrainings.length > 0 && (
+          <>
+            <Text style={styles.subtitlePast}>Eldre treninger</Text>
+            {olderTrainings.map((training, index) => (
+              <TrainingCard key={`older-${index}`} training={training} />
+            ))}
+          </>
+        )}
+      </>
+    );
   };
+
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Liste av treninger</Text>
