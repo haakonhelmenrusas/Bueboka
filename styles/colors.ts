@@ -11,7 +11,7 @@ export const colors = {
   dimmed: '#D3D4DF',
   inactive: '#9697B6',
   transparent: 'transparent',
-  error: '#FF0000',
+  error: '#DD0000',
   warning: '#FFA500',
   success: '#008000',
 };
