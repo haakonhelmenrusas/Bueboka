@@ -18,6 +18,7 @@ jest.mock('@sentry/react-native', () => ({
 // Mock expo-router
 jest.mock('expo-router', () => ({
   Link: ({ children, onPress }: any) => {
+    const React = require('react');
     return React.cloneElement(children, { onPress });
   },
 }));
