@@ -24,7 +24,7 @@ const Layout = () => {
         name="shooting/index"
         options={{
           title: 'Skyteøkt',
-          headerBackTitle: 'Tilbake',
+          headerShown: false,
         }}
       />
     </Stack>
