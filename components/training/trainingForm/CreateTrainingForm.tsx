@@ -218,17 +218,17 @@ export default function CreateTrainingForm({
               </Link>
             )}
           </View>
+          {isEditing && (
+            <TouchableOpacity testID="delete-training-button" onPress={() => setConfirmVisible(true)}>
+              <FontAwesomeIcon
+                icon={faTrashCan}
+                style={{ padding: 8, marginBottom: 12, alignSelf: 'flex-end' }}
+                color={'#FF0000'}
+                size={20}
+              />
+            </TouchableOpacity>
+          )}
           <View style={styles.footer}>
-            {isEditing && (
-              <TouchableOpacity testID="delete-training-button" onPress={() => setConfirmVisible(true)}>
-                <FontAwesomeIcon
-                  icon={faTrashCan}
-                  style={{ padding: 4, marginBottom: 12, alignSelf: 'flex-end' }}
-                  color={'#FF0000'}
-                  size={20}
-                />
-              </TouchableOpacity>
-            )}
             <Button
               label={isEditing ? 'Oppdater trening' : 'Lagre og avslutt'}
               onPress={handleSaveAndFinish}
