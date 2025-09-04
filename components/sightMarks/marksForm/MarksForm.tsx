@@ -99,7 +99,7 @@ const MarksForm: FC<MarksFormProps> = ({ sendMarks, status, setIsFormVisible, tr
   return (
     <KeyboardAvoidingView
       style={styles.container}
-      keyboardVerticalOffset={Platform.OS === 'ios' ? 320 : undefined}
+      keyboardVerticalOffset={Platform.OS === 'ios' ? 300 : undefined}
       behavior={Platform.OS === 'ios' ? 'position' : 'height'}>
       <GestureDetector gesture={gesture}>
         <Animated.View style={[styles.form, animatedStyle]}>
