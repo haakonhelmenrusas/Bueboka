@@ -66,18 +66,10 @@ export default function CreateTrainingForm({
 
       if (editingTraining) {
         // Update existing training - find by index instead of field matching
-        const trainingIndex = existingTrainings.findIndex((t, index) => {
-          // If training has an ID, use it for matching
-          if (editingTraining.id && t.id) {
-            return t.id === editingTraining.id;
+        const trainingIndex = existingTrainings.findIndex((training) => {
+          if (editingTraining.id && training.id) {
+            return training.id === editingTraining.id;
           }
-          // Otherwise, try to match by multiple fields as fallback
-          const dateMatches = new Date(t.date).getTime() === editingTraining.date.getTime();
-          const arrowsMatch = t.arrows === editingTraining.arrows;
-          const bowMatches = t.bow?.id === editingTraining.bow?.id;
-          const arrowSetMatches = t.arrowSet?.name === editingTraining.arrowSet?.name;
-
-          return dateMatches && arrowsMatch && bowMatches && arrowSetMatches;
         });
 
         if (trainingIndex !== -1) {
@@ -88,18 +80,9 @@ export default function CreateTrainingForm({
             id: editingTraining.id || training.id, // Preserve the ID if it exists
           };
           await storeLocalStorage(updatedTrainings, 'trainings');
-        } else {
-          // If we can't find the training to update, add it as new
-          const updatedTrainings = [...existingTrainings, training];
-          await storeLocalStorage(updatedTrainings, 'trainings');
         }
       } else {
-        // Add new training with a unique ID
-        const newTraining = {
-          ...training,
-          id: Date.now().toString() + Math.random().toString(36).substring(2, 9),
-        };
-        const updatedTrainings = [...existingTrainings, newTraining];
+        const updatedTrainings = [...existingTrainings, training];
         await storeLocalStorage(updatedTrainings, 'trainings');
       }
 
@@ -118,17 +101,9 @@ export default function CreateTrainingForm({
       if (editingTraining) {
         // Find and remove the training
         const trainingIndex = existingTrainings.findIndex((t) => {
-          // If training has an ID, use it for matching
           if (editingTraining.id && t.id) {
             return t.id === editingTraining.id;
           }
-          // Otherwise, try to match by multiple fields as fallback
-          const dateMatches = new Date(t.date).getTime() === editingTraining.date.getTime();
-          const arrowsMatch = t.arrows === editingTraining.arrows;
-          const bowMatches = t.bow?.id === editingTraining.bow?.id;
-          const arrowSetMatches = t.arrowSet?.name === editingTraining.arrowSet?.name;
-
-          return dateMatches && arrowsMatch && bowMatches && arrowSetMatches;
         });
 
         if (trainingIndex !== -1) {
@@ -146,10 +121,10 @@ export default function CreateTrainingForm({
     }
   };
 
-  const handleStartShooting = () => {
+  const handleStartShooting = async () => {
     try {
-      const trainingData = createTrainingObject();
-      saveTrainingToStorage(trainingData).then(() => onClose());
+      await saveTrainingToStorage(trainingData);
+      onClose();
     } catch (error) {
       Sentry.captureException('Error starting shooting session', error);
     }

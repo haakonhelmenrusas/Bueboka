@@ -14,6 +14,7 @@ import { getLocalStorage } from '@/utils';
 import SkeletonTrainingList from '@/components/training/trainingCard/SkeletonTrainingList';
 import * as Sentry from '@sentry/react-native';
 import { useFocusEffect } from '@react-navigation/native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function TrainingScreen() {
   const [modalVisible, setModalVisible] = useState(false);
@@ -96,19 +97,21 @@ export default function TrainingScreen() {
   };
 
   return (
-    <GestureHandlerRootView style={styles.container}>
-      <Text style={styles.title}>Treninger</Text>
-      <Summary trainings={trainings} />
-      {renderTrainingContent()}
-      <Button onPress={handleOpenModal} icon={<FontAwesomeIcon icon={faPlus} size={20} color={colors.white} />} label={'Ny trening'} />
-      <CreateTrainingForm
-        visible={modalVisible}
-        onClose={handleCloseModal}
-        bows={bows}
-        arrowSets={arrowSets}
-        onTrainingSaved={handleTrainingSaved}
-        editingTraining={editingTraining}
-      />
-    </GestureHandlerRootView>
+    <SafeAreaView style={{ flex: 1 }}>
+      <GestureHandlerRootView style={styles.container}>
+        <Text style={styles.title}>Treninger</Text>
+        <Summary trainings={trainings} />
+        {renderTrainingContent()}
+        <Button onPress={handleOpenModal} icon={<FontAwesomeIcon icon={faPlus} size={20} color={colors.white} />} label={'Ny trening'} />
+        <CreateTrainingForm
+          visible={modalVisible}
+          onClose={handleCloseModal}
+          bows={bows}
+          arrowSets={arrowSets}
+          onTrainingSaved={handleTrainingSaved}
+          editingTraining={editingTraining}
+        />
+      </GestureHandlerRootView>
+    </SafeAreaView>
   );
 }
