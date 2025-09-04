@@ -90,7 +90,6 @@ export const Select: React.FC<Props> = ({ label, options, selectedValue, onValue
     />
   );
 
-  // Dynamic styles with proper z-index
   const wrapperStyle = [styles.wrapper, containerStyle, { zIndex: open ? zIndex + 1000 : zIndex }];
 
   return (
@@ -104,8 +103,6 @@ export const Select: React.FC<Props> = ({ label, options, selectedValue, onValue
           <FontAwesomeIcon icon={faChevronDown} size={16} color={colors.primary} />
         </Animated.View>
       </TouchableOpacity>
-
-      {/* Android Modal Dropdown */}
       {Platform.OS === 'android' && (
         <Modal visible={open} transparent={true} animationType="fade" onRequestClose={() => setOpen(false)}>
           <Pressable style={styles.modalBackdrop} onPress={() => setOpen(false)}>
@@ -123,8 +120,6 @@ export const Select: React.FC<Props> = ({ label, options, selectedValue, onValue
           </Pressable>
         </Modal>
       )}
-
-      {/* iOS/Web Absolute Positioned Dropdown */}
       {Platform.OS !== 'android' && open && (
         <>
           <Pressable style={[styles.overlay, { zIndex: zIndex + 1500 }]} onPress={toggleDropdown} />

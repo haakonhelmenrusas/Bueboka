@@ -110,6 +110,7 @@ export default function CreateTrainingForm({
       Sentry.captureException('Error saving training to storage', error);
     }
   };
+
   const deleteTrainingFromStorage = async () => {
     try {
       const existingTrainings = (await getLocalStorage<Training[]>('trainings')) || [];
@@ -187,6 +188,7 @@ export default function CreateTrainingForm({
 
   const trainingData = createTrainingObject();
   const shootingParams = {
+    id: trainingData.id,
     date: trainingData.date.toISOString().split('T')[0],
     bowId: selectedBow,
     arrowSet: selectedArrowSet,
@@ -243,13 +245,12 @@ export default function CreateTrainingForm({
           </View>
           <View style={styles.footer}>
             {isEditing && (
-              <TouchableOpacity onPress={() => setConfirmVisible(true)}>
+              <TouchableOpacity testID="delete-training-button" onPress={() => setConfirmVisible(true)}>
                 <FontAwesomeIcon
                   icon={faTrashCan}
                   style={{ padding: 4, marginBottom: 12, alignSelf: 'flex-end' }}
                   color={'#FF0000'}
                   size={20}
-                  testID="delete-training-button"
                 />
               </TouchableOpacity>
             )}

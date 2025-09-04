@@ -5,7 +5,7 @@ import { ArrowSet } from '@/types/ArrowSet';
     Interface representing a Training 
 */
 export interface Training {
-  id?: string;
+  id: string;
   date: Date;
   arrows: number;
   bow?: Bow;
