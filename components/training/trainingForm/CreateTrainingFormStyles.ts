@@ -28,7 +28,7 @@ export const styles = StyleSheet.create({
   },
   footer: {
     paddingHorizontal: 16,
-    paddingVertical: 16,
+    paddingVertical: 8,
     borderTopWidth: 1,
     borderTopColor: colors.tertiary,
   },

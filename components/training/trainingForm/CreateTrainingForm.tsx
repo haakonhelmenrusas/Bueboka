@@ -1,11 +1,14 @@
 import React, { useEffect, useState } from 'react';
-import { Keyboard, Pressable, View } from 'react-native';
+import { Keyboard, Pressable, TouchableOpacity, View } from 'react-native';
 import { Button, DatePicker, Input, ModalHeader, ModalWrapper, Select } from '@/components/common';
 import { styles } from './CreateTrainingFormStyles';
 import { ArrowSet, Bow, Training } from '@/types';
 import { Link } from 'expo-router';
 import { getLocalStorage, storeLocalStorage } from '@/utils';
 import * as Sentry from '@sentry/react-native';
+import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
+import { faTrashCan } from '@fortawesome/free-regular-svg-icons/faTrashCan';
+import ConfirmModal from '@/components/profile/DeleteArrowSetModal/ConfirmModal';
 
 interface CreateTrainingFormProps {
   visible: boolean;
@@ -28,6 +31,7 @@ export default function CreateTrainingForm({
   const [selectedBow, setSelectedBow] = useState('');
   const [selectedArrowSet, setSelectedArrowSet] = useState('');
   const [arrows, setArrows] = useState('0');
+  const [confirmVisible, setConfirmVisible] = useState(false);
 
   const bowOptions = bows.map((bow) => ({ label: bow.bowName, value: bow.id }));
   const arrowSetOptions = arrowSets.map((arrowSet) => ({ label: arrowSet.name, value: arrowSet.name }));
@@ -48,6 +52,7 @@ export default function CreateTrainingForm({
     const selectedArrowSetObject = arrowSets.find((arrowSet) => arrowSet.name === selectedArrowSet);
 
     return {
+      id: editingTraining?.id || new Date().getTime().toString() + Math.random().toString(36).substring(2, 9),
       date: new Date(date),
       arrows: arrows ? parseInt(arrows) : 0,
       bow: selectedBowObject,
@@ -92,7 +97,7 @@ export default function CreateTrainingForm({
         // Add new training with a unique ID
         const newTraining = {
           ...training,
-          id: Date.now().toString() + Math.random().toString(36).substr(2, 9),
+          id: Date.now().toString() + Math.random().toString(36).substring(2, 9),
         };
         const updatedTrainings = [...existingTrainings, newTraining];
         await storeLocalStorage(updatedTrainings, 'trainings');
@@ -237,15 +242,37 @@ export default function CreateTrainingForm({
             )}
           </View>
           <View style={styles.footer}>
+            {isEditing && (
+              <TouchableOpacity onPress={() => setConfirmVisible(true)}>
+                <FontAwesomeIcon
+                  icon={faTrashCan}
+                  style={{ padding: 4, marginBottom: 12, alignSelf: 'flex-end' }}
+                  color={'#FF0000'}
+                  size={20}
+                  testID="delete-training-button"
+                />
+              </TouchableOpacity>
+            )}
             <Button
               label={isEditing ? 'Oppdater trening' : 'Lagre og avslutt'}
               onPress={handleSaveAndFinish}
               buttonStyle={styles.saveButton}
             />
-            {isEditing && <Button variant="warning" type="outline" label="Slett trening" onPress={handleDeleteTraining} />}
           </View>
         </Pressable>
       </View>
+      <ConfirmModal
+        visible={confirmVisible}
+        title="Slett bue"
+        message={'Vil du slette treningen?'}
+        confirmLabel="Slett"
+        cancelLabel="Avbryt"
+        onCancel={() => setConfirmVisible(false)}
+        onConfirm={() => {
+          handleDeleteTraining();
+          setConfirmVisible(false);
+        }}
+      />
     </ModalWrapper>
   );
 }
