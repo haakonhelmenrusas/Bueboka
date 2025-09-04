@@ -88,6 +88,7 @@ export default function Profile() {
   return (
     <View style={styles.container}>
       <ScrollView showsVerticalScrollIndicator={false}>
+        <Text style={styles.title}>Profil</Text>
         <ProfileBox user={user} onEdit={() => setIsProfileModalVisible(true)} />
         <ProfileForm
           modalVisible={isProfileModalVisible}

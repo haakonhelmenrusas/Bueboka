@@ -6,11 +6,11 @@ export const styles = StyleSheet.create({
     flex: 1,
   },
   title: {
-    fontSize: 18,
-    fontWeight: '600',
+    fontSize: 24,
+    fontWeight: 'bold',
+    textAlign: 'center',
     marginBottom: 24,
     marginTop: 24,
-    textAlign: 'center',
   },
   header: {
     flexDirection: 'row',

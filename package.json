@@ -18,10 +18,12 @@
     "@fortawesome/react-native-fontawesome": "^0.3.2",
     "@microsoft/react-native-clarity": "^4.3.2",
     "@react-native-async-storage/async-storage": "2.1.2",
+    "@react-native-community/datetimepicker": "8.4.1",
     "@react-native-picker/picker": "2.11.1",
     "@sentry/react-native": "~6.14.0",
     "@testing-library/react-native": "^12.9.0",
     "axios": "1.8.2",
+    "date-fns": "^4.1.0",
     "eslint-config-expo": "~9.2.0",
     "expo": "53.0.20",
     "expo-application": "~6.1.5",
@@ -66,18 +68,6 @@
     "husky": "^9.1.7",
     "prettier": "^3.4.2",
     "typescript": "~5.8.3"
-  },
-  "jest": {
-    "preset": "jest-expo",
-    "setupFiles": [
-      "./jestSetup.ts"
-    ],
-    "setupFilesAfterEnv": [
-      "./jestSetup.ts"
-    ],
-    "testEnvironment": "jsdom",
-    "clearMocks": true,
-    "restoreMocks": true
   },
   "name": "bueboka",
   "version": "1.0.0",

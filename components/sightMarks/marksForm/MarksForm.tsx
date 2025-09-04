@@ -10,7 +10,6 @@ import Animated, { runOnJS, SharedValue, useAnimatedStyle, withSpring, withTimin
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 import { colors } from '@/styles/colors';
 import { checkDecimalCount } from '@/utils';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 interface MarksFormProps {
   status: string;
@@ -23,7 +22,6 @@ const MarksForm: FC<MarksFormProps> = ({ sendMarks, status, setIsFormVisible, tr
   const [aimValue, setAimValue] = useState('');
   const [distanceValue, setDistance] = useState('');
   const distanceInputRef = useRef<TextInput>(null);
-  const insets = useSafeAreaInsets();
 
   const animatedStyle = useAnimatedStyle(() => ({
     transform: [{ translateY: translateY.value }],
@@ -101,7 +99,7 @@ const MarksForm: FC<MarksFormProps> = ({ sendMarks, status, setIsFormVisible, tr
   return (
     <KeyboardAvoidingView
       style={styles.container}
-      keyboardVerticalOffset={Platform.OS === 'ios' ? 320 : undefined}
+      keyboardVerticalOffset={Platform.OS === 'ios' ? 300 : undefined}
       behavior={Platform.OS === 'ios' ? 'position' : 'height'}>
       <GestureDetector gesture={gesture}>
         <Animated.View style={[styles.form, animatedStyle]}>

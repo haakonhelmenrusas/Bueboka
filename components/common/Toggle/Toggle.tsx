@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from 'react';
-import { Animated, TouchableWithoutFeedback, View, Text, AccessibilityState, AccessibilityRole } from 'react-native';
+import { AccessibilityRole, AccessibilityState, Animated, Text, TouchableWithoutFeedback, View } from 'react-native';
 import { styles } from './ToggleStyles';
 import { colors } from '@/styles/colors';
 
@@ -19,7 +19,7 @@ export default function Toggle({ value, onToggle, label }: ToggleProps) {
       tension: 120,
       useNativeDriver: false,
     }).start();
-  }, [value]);
+  }, [animation, value]);
 
   const translateX = animation.interpolate({
     inputRange: [0, 1],
