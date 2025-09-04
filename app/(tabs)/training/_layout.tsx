@@ -17,7 +17,7 @@ const Layout = () => {
         name="index"
         options={{
           title: 'Treninger',
-          headerShown: false, // Hide header for main training screen since it has its own title
+          headerShown: false,
         }}
       />
       <Stack.Screen
