@@ -164,7 +164,7 @@ describe('CreateTrainingForm', () => {
       expect(getByTestId('modal-wrapper')).toBeTruthy();
       expect(getByText('Ny trening')).toBeTruthy();
       expect(getByText('Dato')).toBeTruthy();
-      expect(getByText('Antall piler skutt allerede')).toBeTruthy();
+      expect(getByText('Antall piler skutt allerede (valgfritt)')).toBeTruthy();
       expect(getByText('Notater (valgfritt)')).toBeTruthy();
     });
 
@@ -265,7 +265,7 @@ describe('CreateTrainingForm', () => {
 
       const { getByTestId } = render(<CreateTrainingForm {...defaultProps} editingTraining={editingTraining} />);
 
-      const arrowsInput = getByTestId('input-Antall piler skutt allerede');
+      const arrowsInput = getByTestId('input-Antall piler skutt allerede (valgfritt)');
       const notesTextarea = getByTestId('textarea-Notater (valgfritt)');
 
       expect(arrowsInput.props.value).toBe('24');
@@ -274,7 +274,7 @@ describe('CreateTrainingForm', () => {
 
     it('should update arrows when input changes', () => {
       const { getByTestId } = render(<CreateTrainingForm {...defaultProps} />);
-      const arrowsInput = getByTestId('input-Antall piler skutt allerede');
+      const arrowsInput = getByTestId('input-Antall piler skutt allerede (valgfritt)');
 
       fireEvent.changeText(arrowsInput, '24');
       expect(arrowsInput.props.value).toBe('24');
@@ -316,7 +316,7 @@ describe('CreateTrainingForm', () => {
       const { getByTestId } = render(<CreateTrainingForm {...defaultProps} />);
 
       // Set form values
-      const arrowsInput = getByTestId('input-Antall piler skutt allerede');
+      const arrowsInput = getByTestId('input-Antall piler skutt allerede (valgfritt)');
       const notesTextarea = getByTestId('textarea-Notater (valgfritt)');
 
       fireEvent.changeText(arrowsInput, '36');
@@ -353,7 +353,7 @@ describe('CreateTrainingForm', () => {
       fireEvent.press(arrowSetSelect);
 
       // Set arrows and notes
-      const arrowsInput = getByTestId('input-Antall piler skutt allerede');
+      const arrowsInput = getByTestId('input-Antall piler skutt allerede (valgfritt)');
       const notesTextarea = getByTestId('textarea-Notater (valgfritt)');
 
       fireEvent.changeText(arrowsInput, '24');
@@ -460,7 +460,7 @@ describe('CreateTrainingForm', () => {
 
       const { getByTestId } = render(<CreateTrainingForm {...defaultProps} />);
 
-      const arrowsInput = getByTestId('input-Antall piler skutt allerede');
+      const arrowsInput = getByTestId('input-Antall piler skutt allerede (valgfritt)');
       fireEvent.changeText(arrowsInput, '18');
 
       const saveButton = getByTestId('button-Lagre og avslutt');
@@ -511,7 +511,7 @@ describe('CreateTrainingForm', () => {
       const { getByTestId } = render(<CreateTrainingForm {...defaultProps} editingTraining={editingTraining} />);
 
       // Change arrow count and notes
-      const arrowsInput = getByTestId('input-Antall piler skutt allerede');
+      const arrowsInput = getByTestId('input-Antall piler skutt allerede (valgfritt)');
       const notesTextarea = getByTestId('textarea-Notater (valgfritt)');
 
       fireEvent.changeText(arrowsInput, '24');
@@ -571,7 +571,7 @@ describe('CreateTrainingForm', () => {
       const { getByTestId } = render(<CreateTrainingForm {...defaultProps} />);
 
       // Change form values
-      const arrowsInput = getByTestId('input-Antall piler skutt allerede');
+      const arrowsInput = getByTestId('input-Antall piler skutt allerede (valgfritt)');
       const notesTextarea = getByTestId('textarea-Notater (valgfritt)');
 
       fireEvent.changeText(arrowsInput, '36');
