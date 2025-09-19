@@ -42,6 +42,15 @@ jest.mock('@/components/common', () => ({
       </View>
     );
   },
+  Textarea: ({ label, value, onChangeText, testID, ...props }: any) => {
+    const { TextInput, Text, View } = require('react-native');
+    return (
+      <View>
+        <Text>{label}</Text>
+        <TextInput testID={testID || `textarea-${label}`} value={value} onChangeText={onChangeText} multiline={true} {...props} />
+      </View>
+    );
+  },
   DatePicker: ({ label, value, onDateChange, testID, ...props }: any) => {
     const { TouchableOpacity, Text, View } = require('react-native');
     return (
@@ -156,6 +165,7 @@ describe('CreateTrainingForm', () => {
       expect(getByText('Ny trening')).toBeTruthy();
       expect(getByText('Dato')).toBeTruthy();
       expect(getByText('Antall piler skutt allerede')).toBeTruthy();
+      expect(getByText('Notater (valgfritt)')).toBeTruthy();
     });
 
     it('should not render when visible is false', () => {
@@ -188,6 +198,12 @@ describe('CreateTrainingForm', () => {
       expect(queryByText('🎯 Pilsett (valgfritt)')).toBeNull();
     });
 
+    it('should render textarea for notes', () => {
+      const { getByTestId } = render(<CreateTrainingForm {...defaultProps} />);
+
+      expect(getByTestId('textarea-Notater (valgfritt)')).toBeTruthy();
+    });
+
     it('should render edit title when editing training', () => {
       const editingTraining = {
         id: 'test-id',
@@ -195,6 +211,7 @@ describe('CreateTrainingForm', () => {
         arrows: 24,
         bow: mockBows[0],
         arrowSet: mockArrowSets[0],
+        notes: 'Test notes',
       };
 
       const { getByText } = render(<CreateTrainingForm {...defaultProps} editingTraining={editingTraining} />);
@@ -243,12 +260,16 @@ describe('CreateTrainingForm', () => {
         arrows: 24,
         bow: mockBows[0],
         arrowSet: mockArrowSets[0],
+        notes: 'Test training notes',
       };
 
       const { getByTestId } = render(<CreateTrainingForm {...defaultProps} editingTraining={editingTraining} />);
 
       const arrowsInput = getByTestId('input-Antall piler skutt allerede');
+      const notesTextarea = getByTestId('textarea-Notater (valgfritt)');
+
       expect(arrowsInput.props.value).toBe('24');
+      expect(notesTextarea.props.value).toBe('Test training notes');
     });
 
     it('should update arrows when input changes', () => {
@@ -257,6 +278,14 @@ describe('CreateTrainingForm', () => {
 
       fireEvent.changeText(arrowsInput, '24');
       expect(arrowsInput.props.value).toBe('24');
+    });
+
+    it('should update notes when textarea changes', () => {
+      const { getByTestId } = render(<CreateTrainingForm {...defaultProps} />);
+      const notesTextarea = getByTestId('textarea-Notater (valgfritt)');
+
+      fireEvent.changeText(notesTextarea, 'Great training session!');
+      expect(notesTextarea.props.value).toBe('Great training session!');
     });
 
     it('should select bow when select changes', () => {
@@ -288,7 +317,10 @@ describe('CreateTrainingForm', () => {
 
       // Set form values
       const arrowsInput = getByTestId('input-Antall piler skutt allerede');
+      const notesTextarea = getByTestId('textarea-Notater (valgfritt)');
+
       fireEvent.changeText(arrowsInput, '36');
+      fireEvent.changeText(notesTextarea, 'Excellent session');
 
       // Trigger save to test training object creation
       const saveButton = getByTestId('button-Lagre og avslutt');
@@ -301,6 +333,7 @@ describe('CreateTrainingForm', () => {
               arrows: 36,
               bow: undefined,
               arrowSet: undefined,
+              notes: 'Excellent session',
               id: expect.any(String), // New trainings should have an ID
             }),
           ]),
@@ -319,9 +352,12 @@ describe('CreateTrainingForm', () => {
       fireEvent.press(bowSelect);
       fireEvent.press(arrowSetSelect);
 
-      // Set arrows
+      // Set arrows and notes
       const arrowsInput = getByTestId('input-Antall piler skutt allerede');
+      const notesTextarea = getByTestId('textarea-Notater (valgfritt)');
+
       fireEvent.changeText(arrowsInput, '24');
+      fireEvent.changeText(notesTextarea, 'Good practice');
 
       // Trigger save
       const saveButton = getByTestId('button-Lagre og avslutt');
@@ -334,6 +370,7 @@ describe('CreateTrainingForm', () => {
               arrows: 24,
               bow: mockBows[0],
               arrowSet: mockArrowSets[0],
+              notes: 'Good practice',
               id: expect.any(String),
             }),
           ]),
@@ -354,6 +391,25 @@ describe('CreateTrainingForm', () => {
           expect.arrayContaining([
             expect.objectContaining({
               arrows: 0,
+            }),
+          ]),
+          'trainings',
+        );
+      });
+    });
+
+    it('should handle empty notes as undefined', async () => {
+      const { getByTestId } = render(<CreateTrainingForm {...defaultProps} />);
+
+      // Leave notes empty
+      const saveButton = getByTestId('button-Lagre og avslutt');
+      fireEvent.press(saveButton);
+
+      await waitFor(() => {
+        expect(storeLocalStorage).toHaveBeenCalledWith(
+          expect.arrayContaining([
+            expect.objectContaining({
+              notes: undefined,
             }),
           ]),
           'trainings',
@@ -433,6 +489,7 @@ describe('CreateTrainingForm', () => {
           date: new Date('2025-01-01'),
           arrows: 12,
           bow: mockBows[0],
+          notes: 'Original notes',
         },
         {
           id: 'training-2',
@@ -446,15 +503,19 @@ describe('CreateTrainingForm', () => {
         date: new Date('2025-01-01'),
         arrows: 12,
         bow: mockBows[0],
+        notes: 'Original notes',
       };
 
       (getLocalStorage as jest.Mock).mockResolvedValue(existingTrainings);
 
       const { getByTestId } = render(<CreateTrainingForm {...defaultProps} editingTraining={editingTraining} />);
 
-      // Change arrow count
+      // Change arrow count and notes
       const arrowsInput = getByTestId('input-Antall piler skutt allerede');
+      const notesTextarea = getByTestId('textarea-Notater (valgfritt)');
+
       fireEvent.changeText(arrowsInput, '24');
+      fireEvent.changeText(notesTextarea, 'Updated notes');
 
       const updateButton = getByTestId('button-Oppdater trening');
       fireEvent.press(updateButton);
@@ -466,6 +527,7 @@ describe('CreateTrainingForm', () => {
               id: 'training-1',
               arrows: 24,
               bow: mockBows[0],
+              notes: 'Updated notes',
             }),
             existingTrainings[1], // Second training should remain unchanged
           ]),
@@ -510,10 +572,14 @@ describe('CreateTrainingForm', () => {
 
       // Change form values
       const arrowsInput = getByTestId('input-Antall piler skutt allerede');
+      const notesTextarea = getByTestId('textarea-Notater (valgfritt)');
+
       fireEvent.changeText(arrowsInput, '36');
+      fireEvent.changeText(notesTextarea, 'Test notes');
 
       // Verify values are changed
       expect(arrowsInput.props.value).toBe('36');
+      expect(notesTextarea.props.value).toBe('Test notes');
 
       // Click close button (which calls handleClose -> resetForm)
       const closeButton = getByTestId('modal-close');
@@ -521,6 +587,7 @@ describe('CreateTrainingForm', () => {
 
       // Form should be reset to initial values after close
       expect(arrowsInput.props.value).toBe('');
+      expect(notesTextarea.props.value).toBe('');
     });
   });
 

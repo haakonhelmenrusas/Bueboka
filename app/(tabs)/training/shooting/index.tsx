@@ -58,6 +58,7 @@ export default function ShootingScreen() {
         arrows: arrowCount,
         bow: selectedBow,
         arrowSet: selectedArrowSet,
+        notes: params.notes as string,
       };
 
       // Find existing training that matches this session

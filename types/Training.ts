@@ -10,4 +10,5 @@ export interface Training {
   arrows: number;
   bow?: Bow;
   arrowSet?: ArrowSet;
+  notes?: string;
 }
