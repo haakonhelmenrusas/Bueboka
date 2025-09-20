@@ -1,15 +1,25 @@
-import { StyleSheet } from 'react-native';
+import { Platform, StyleSheet } from 'react-native';
 import { colors } from '@/styles/colors';
 
 export const styles = StyleSheet.create({
   container: {
     padding: 16,
     height: '100%',
+    ...Platform.select({
+      android: {
+        minHeight: '80%',
+      },
+    }),
     backgroundColor: colors.white,
     borderRadius: 12,
   },
   scrollContainer: {
     flexGrow: 1,
+    ...Platform.select({
+      android: {
+        minHeight: '100%',
+      },
+    }),
   },
   content: {
     flex: 1,
