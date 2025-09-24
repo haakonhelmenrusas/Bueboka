@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { Keyboard, Pressable, TouchableOpacity, View } from 'react-native';
-import { Button, DatePicker, Input, ModalHeader, ModalWrapper, Select } from '@/components/common';
+import { Keyboard, KeyboardAvoidingView, Platform, Pressable, ScrollView, TouchableOpacity, View } from 'react-native';
+import { Button, DatePicker, Input, ModalHeader, ModalWrapper, Select, Textarea } from '@/components/common';
 import { styles } from './CreateTrainingFormStyles';
 import { ArrowSet, Bow, Training } from '@/types';
 import { Link } from 'expo-router';
@@ -31,6 +31,7 @@ export default function CreateTrainingForm({
   const [selectedBow, setSelectedBow] = useState('');
   const [selectedArrowSet, setSelectedArrowSet] = useState('');
   const [arrows, setArrows] = useState('0');
+  const [notes, setNotes] = useState('');
   const [confirmVisible, setConfirmVisible] = useState(false);
 
   const bowOptions = bows.map((bow) => ({ label: bow.bowName, value: bow.id }));
@@ -42,6 +43,7 @@ export default function CreateTrainingForm({
       setSelectedBow(editingTraining.bow?.id || '');
       setSelectedArrowSet(editingTraining.arrowSet?.name || '');
       setArrows(editingTraining.arrows.toString());
+      setNotes(editingTraining.notes || '');
     } else {
       resetForm();
     }
@@ -57,6 +59,7 @@ export default function CreateTrainingForm({
       arrows: arrows ? parseInt(arrows) : 0,
       bow: selectedBowObject,
       arrowSet: selectedArrowSetObject,
+      notes: notes || undefined,
     };
   };
 
@@ -154,6 +157,7 @@ export default function CreateTrainingForm({
     setSelectedBow('');
     setSelectedArrowSet('');
     setArrows('');
+    setNotes('');
   };
 
   const handleClose = () => {
@@ -168,75 +172,88 @@ export default function CreateTrainingForm({
     bowId: selectedBow,
     arrowSet: selectedArrowSet,
     arrows: trainingData.arrows.toString(),
+    notes: trainingData.notes,
   };
 
   const isEditing = !!editingTraining;
 
   return (
     <ModalWrapper visible={visible} onClose={handleClose}>
-      <View style={styles.container}>
-        <Pressable style={{ flex: 1 }} onPress={() => Keyboard.dismiss()}>
-          <ModalHeader title={isEditing ? 'Rediger trening' : 'Ny trening'} onPress={handleClose} />
-          <View style={styles.content}>
-            <DatePicker label="Dato" value={date} onDateChange={setDate} containerStyle={styles.inputContainer} testID="date-picker" />
-            {bowOptions.length > 0 && (
-              <Select
-                label="🏹 Bue (valgfritt)"
-                options={bowOptions}
-                selectedValue={selectedBow}
-                onValueChange={setSelectedBow}
+      <KeyboardAvoidingView
+        style={styles.container}
+        behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+        keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 0}>
+        <ScrollView contentContainerStyle={styles.scrollContainer} keyboardShouldPersistTaps="handled" showsVerticalScrollIndicator={false}>
+          <Pressable style={{ flex: 1 }} onPress={() => Keyboard.dismiss()}>
+            <ModalHeader title={isEditing ? 'Rediger trening' : 'Ny trening'} onPress={handleClose} />
+            <View style={styles.content}>
+              <DatePicker label="Dato" value={date} onDateChange={setDate} containerStyle={styles.inputContainer} testID="date-picker" />
+              {bowOptions.length > 0 && (
+                <Select
+                  label="🏹 Bue (valgfritt)"
+                  options={bowOptions}
+                  selectedValue={selectedBow}
+                  onValueChange={setSelectedBow}
+                  containerStyle={styles.inputContainer}
+                />
+              )}
+              {arrowSetOptions.length > 0 && (
+                <Select
+                  label="🎯 Pilsett (valgfritt)"
+                  options={arrowSetOptions}
+                  selectedValue={selectedArrowSet}
+                  onValueChange={setSelectedArrowSet}
+                  containerStyle={styles.inputContainer}
+                />
+              )}
+              <Input
+                label="Antall piler skutt allerede (valgfritt)"
+                inputStyle={{ width: '30%' }}
+                value={arrows}
+                onChangeText={setArrows}
+                keyboardType="numeric"
                 containerStyle={styles.inputContainer}
               />
-            )}
-            {arrowSetOptions.length > 0 && (
-              <Select
-                label="🎯 Pilsett (valgfritt)"
-                options={arrowSetOptions}
-                selectedValue={selectedArrowSet}
-                onValueChange={setSelectedArrowSet}
+              <Textarea
+                label="Notater (valgfritt)"
+                value={notes}
+                onChangeText={setNotes}
+                placeholderText="Legg til notater om treningsøkten..."
                 containerStyle={styles.inputContainer}
               />
+              {!isEditing && (
+                <Link
+                  href={{
+                    pathname: '/training/shooting',
+                    params: shootingParams,
+                  }}
+                  onPress={handleStartShooting}
+                  asChild
+                  style={styles.startButton}>
+                  <Button label="Start skyting" />
+                </Link>
+              )}
+            </View>
+            {isEditing && (
+              <TouchableOpacity testID="delete-training-button" onPress={() => setConfirmVisible(true)}>
+                <FontAwesomeIcon
+                  icon={faTrashCan}
+                  style={{ padding: 8, marginBottom: 12, alignSelf: 'flex-end' }}
+                  color={'#FF0000'}
+                  size={20}
+                />
+              </TouchableOpacity>
             )}
-            <Input
-              label="Antall piler skutt allerede"
-              inputStyle={{ width: '30%' }}
-              value={arrows}
-              onChangeText={setArrows}
-              keyboardType="numeric"
-              containerStyle={styles.inputContainer}
-            />
-            {!isEditing && (
-              <Link
-                href={{
-                  pathname: '/training/shooting',
-                  params: shootingParams,
-                }}
-                onPress={handleStartShooting}
-                asChild
-                style={styles.startButton}>
-                <Button label="Start skyting" />
-              </Link>
-            )}
-          </View>
-          {isEditing && (
-            <TouchableOpacity testID="delete-training-button" onPress={() => setConfirmVisible(true)}>
-              <FontAwesomeIcon
-                icon={faTrashCan}
-                style={{ padding: 8, marginBottom: 12, alignSelf: 'flex-end' }}
-                color={'#FF0000'}
-                size={20}
+            <View style={styles.footer}>
+              <Button
+                label={isEditing ? 'Oppdater trening' : 'Lagre og avslutt'}
+                onPress={handleSaveAndFinish}
+                buttonStyle={styles.saveButton}
               />
-            </TouchableOpacity>
-          )}
-          <View style={styles.footer}>
-            <Button
-              label={isEditing ? 'Oppdater trening' : 'Lagre og avslutt'}
-              onPress={handleSaveAndFinish}
-              buttonStyle={styles.saveButton}
-            />
-          </View>
-        </Pressable>
-      </View>
+            </View>
+          </Pressable>
+        </ScrollView>
+      </KeyboardAvoidingView>
       <ConfirmModal
         visible={confirmVisible}
         title="Slett bue"
