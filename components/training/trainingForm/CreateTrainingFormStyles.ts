@@ -4,7 +4,7 @@ import { colors } from '@/styles/colors';
 export const styles = StyleSheet.create({
   container: {
     padding: 16,
-    height: '100%',
+    height: '95%',
     ...Platform.select({
       android: {
         minHeight: '80%',
@@ -17,7 +17,7 @@ export const styles = StyleSheet.create({
     flexGrow: 1,
     ...Platform.select({
       android: {
-        minHeight: '100%',
+        minHeight: '90%',
       },
     }),
   },
@@ -37,7 +37,6 @@ export const styles = StyleSheet.create({
     paddingHorizontal: 24,
     borderRadius: 8,
     height: 48,
-    marginTop: 24,
   },
   footer: {
     paddingHorizontal: 16,
