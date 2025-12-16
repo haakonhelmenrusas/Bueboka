@@ -8,7 +8,7 @@
     },
     "name": "Bueboka",
     "slug": "bueboka",
-    "version": "1.6.2",
+    "version": "1.6.3",
     "icon": "./assets/images/icon.png",
     "extra": {
       "eas": {
@@ -22,7 +22,7 @@
     "ios": {
       "bundleIdentifier": "com.aaronshade.bueboka",
       "infoPlist": {
-        "CFBundleShortVersionString": "1.6.2",
+        "CFBundleShortVersionString": "1.6.3",
         "CFBundleIconName": "./assets/images/ipad.png",
         "ITSAppUsesNonExemptEncryption": false
       }
