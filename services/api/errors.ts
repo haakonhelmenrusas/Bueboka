@@ -36,6 +36,10 @@ export function handleApiError(error: unknown): AppError {
       return new AppError('NOT_FOUND', 'Resource not found', error);
     }
 
+    if (error.response?.status === 409) {
+      return new AppError('CONFLICT', apiError?.message || 'Resource already exists', error);
+    }
+
     if (error.response?.status === 429) {
       return new AppError('RATE_LIMITED', 'Too many requests. Please try again later.', error);
     }

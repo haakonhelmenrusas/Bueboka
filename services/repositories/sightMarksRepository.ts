@@ -33,8 +33,19 @@ export const sightMarksRepository = {
     }
   },
   async createSpecification(data: Partial<BowSpecification>): Promise<BowSpecification> {
-    const response = await client.post<BowSpecification>('/bow-specifications', data);
-    return response.data;
+    try {
+      const response = await client.post<BowSpecification>('/bow-specifications', data);
+      return response.data;
+    } catch (error: any) {
+      // If specification already exists (409 Conflict), fetch and return it
+      if (error.response?.status === 409 && data.bowId) {
+        const existing = await this.getSpecification(data.bowId);
+        if (existing) {
+          return existing;
+        }
+      }
+      throw error;
+    }
   },
 
   // Ballistics calculations

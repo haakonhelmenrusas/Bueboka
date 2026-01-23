@@ -17,6 +17,7 @@ import { faPlus } from '@fortawesome/free-solid-svg-icons/faPlus';
 import { arrowsRepository, bowRepository, sightMarksRepository } from '@/services/repositories';
 import { offlineMutation } from '@/services/offline/mutationHelper';
 import { useAuth } from '@/contexts/AuthContext';
+import { AppError } from '@/services';
 
 export default function CalculateScreen() {
   const { user } = useAuth();
@@ -69,7 +70,22 @@ export default function CalculateScreen() {
       }
     } catch (err) {
       console.error('Error loading ballistics data:', err);
-      setError('Kunne ikke laste siktemerker');
+      // More specific error message based on error type
+      if (err instanceof AppError) {
+        if (err.code === 'CONFLICT') {
+          // Conflict is now handled automatically in repository, but log for debugging
+          console.warn('Bow specification conflict resolved');
+          setError(null);
+        } else if (err.code === 'NETWORK_ERROR') {
+          setError('Nettverksfeil - sjekk internettforbindelsen');
+        } else {
+          setError(err.message || 'Kunne ikke laste siktemerker');
+        }
+      } else if (err instanceof Error) {
+        setError('Kunne ikke laste siktemerker');
+      } else {
+        setError('Kunne ikke laste siktemerker');
+      }
     } finally {
       setIsLoading(false);
     }
