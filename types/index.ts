@@ -1,12 +1,18 @@
-export type { AimDistanceMark } from './AimDistanceMark';
-export type { CalculatedMarks } from './CalculatedMarks';
 export type { MarkSet } from './MarkSet';
 export type { MarkValue } from './MarkValue';
-export type { MarksResult } from './MarksResult';
-export type { SightMarkCalc } from './SightMarkCalc';
 export type { Bow } from './Bow';
-export type { Training } from './Training';
-export { Status } from './Status';
-export type { ArrowSet } from './ArrowSet';
+export { BowType } from './Bow';
+export type { Arrows } from './ArrowSet';
 export { Material } from './ArrowSet';
 export type { User } from './User';
+export type { Practice, End, RoundType } from './Practice';
+export { Environment, WeatherCondition } from './Practice';
+export type {
+  BowSpecification,
+  SightMark,
+  SightMarkResult,
+  AimDistanceMark,
+  CalculatedMarks,
+  SightMarkCalc,
+  MarksResult,
+} from './SightMarks';

@@ -9,5 +9,6 @@ import Toggle from './Toggle/Toggle';
 import DataValue from './DataValue/DataValue';
 import ModalHeader from './ModalHeader/ModalHeader';
 import DatePicker from './DatePicker/DatePicker';
+import { OfflineBanner } from './OfflineBanner/OfflineBanner';
 
-export { Button, Input, Textarea, DatePicker, Message, Notch, Select, ModalWrapper, Toggle, DataValue, ModalHeader };
+export { Button, Input, Textarea, DatePicker, Message, Notch, Select, ModalWrapper, Toggle, DataValue, ModalHeader, OfflineBanner };

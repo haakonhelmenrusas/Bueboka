@@ -1,21 +1,17 @@
 import { Modal, Text, View } from 'react-native';
 import { Button } from '@/components/common';
-import { CalculatedMarks } from '@/types';
-import { storeLocalStorage } from '@/utils';
 import { styles } from './ConfirmRemoveMarksStyles';
 
 interface Props {
   modalVisible: boolean;
-  setBallistics: (ballistics: CalculatedMarks | null) => void;
+  onConfirm: () => Promise<void> | void;
   closeModal: () => void;
 }
 
-const ConfirmRemoveMarks = ({ modalVisible, setBallistics, closeModal }: Props) => {
-  function handleRemoveMarks() {
-    storeLocalStorage(null, 'ballistics').then(() => {
-      setBallistics(null);
-      closeModal();
-    });
+const ConfirmRemoveMarks = ({ modalVisible, onConfirm, closeModal }: Props) => {
+  async function handleRemoveMarks() {
+    await onConfirm();
+    closeModal();
   }
 
   return (

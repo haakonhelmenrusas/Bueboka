@@ -54,8 +54,8 @@ export default function BowCard({ bow, onPress }: Props) {
       <View style={styles.image}>
         <BowIcon />
       </View>
-      <Text style={styles.name}>{bow.bowName}</Text>
-      <Text style={styles.type}>{capitalizeFirstLetter(bow.bowType)}</Text>
+      <Text style={styles.name}>{bow.name}</Text>
+      <Text style={styles.type}>{capitalizeFirstLetter(bow.type)}</Text>
     </TouchableOpacity>
   );
 }

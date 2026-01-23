@@ -5,8 +5,8 @@ import { faPlus } from '@fortawesome/free-solid-svg-icons/faPlus';
 import BowCard from '@/components/profile/bowCard/BowCard';
 import { Button, Message } from '@/components/common';
 import BowForm from '@/components/profile/bowForm/BowForm';
-import { ArrowSet, Bow, User } from '@/types';
-import { getLocalStorage, sortItems, storeLocalStorage } from '@/utils';
+import { Arrows, Bow } from '@/types';
+import { sortItems } from '@/utils';
 import { styles } from '@/components/profile/ProfileStyles';
 import { colors } from '@/styles/colors';
 import ArrowCard from '@/components/profile/arrowCard/ArrowCard';
@@ -15,72 +15,87 @@ import BowDetails from '@/components/profile/bowDetails/BowDetails';
 import ArrowSetDetails from '@/components/profile/arrowSetDetails/ArrowSetDetails';
 import ProfileBox from '@/components/profile/profile/ProfileBox';
 import ProfileForm from '@/components/profile/profileForm/ProfileForm';
+import { useAuth } from '@/hooks';
+import { arrowsRepository, bowRepository, userRepository } from '@/services/repositories';
+import { AppError } from '@/services';
 
 export default function Profile() {
+  const { user, isLoading: authLoading } = useAuth();
   const [bowModalVisible, setBowModalVisible] = useState(false);
   const [arrowModalVisible, setArrowModalVisible] = useState(false);
   const [bows, setBows] = useState<Bow[]>([]);
   const [selectedBow, setSelectedBow] = useState<Bow | null>(null);
-  const [arrowSets, setArrowSets] = useState<ArrowSet[]>([]);
-  const [selectedArrowSet, setSelectedArrowSet] = useState<ArrowSet | null>(null);
+  const [arrowSets, setArrowSets] = useState<Arrows[]>([]);
+  const [selectedArrowSet, setSelectedArrowSet] = useState<Arrows | null>(null);
   const [selectedBowForDetails, setSelectedBowForDetails] = useState<Bow | null>(null);
-  const [selectedArrowSetForDetails, setSelectedArrowSetForDetails] = useState<ArrowSet | null>(null);
+  const [selectedArrowSetForDetails, setSelectedArrowSetForDetails] = useState<Arrows | null>(null);
   const [isProfileModalVisible, setIsProfileModalVisible] = useState(false);
-  const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    getLocalStorage<Bow[]>('bows').then((bows) => {
-      if (bows) {
-        setBows(bows);
-      }
-    });
-  }, [bowModalVisible]);
+    if (!user) return;
+    loadBows();
+  }, [user, bowModalVisible]);
 
   useEffect(() => {
-    getLocalStorage<ArrowSet[]>('arrowSets').then((data) => {
-      if (data) setArrowSets(data);
-    });
-  }, [arrowModalVisible]);
+    if (!user) return;
+    loadArrows();
+  }, [user, arrowModalVisible]);
 
-  useEffect(() => {
-    const loadUser = async () => {
-      try {
-        const userData = await getLocalStorage<User>('user');
-        if (userData) {
-          setUser(userData);
-        } else {
-          // Set default user if no stored data
-          setUser({ name: 'Artemis Archer', club: 'Bueklubben' });
-        }
-      } catch (error) {
-        console.error('Error loading user data:', error);
-        // Set default user on error
-        setUser({ name: 'Artemis Archer', club: 'Bueklubben' });
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    loadUser();
-  }, []);
-
-  const handleProfileUpdate = async (updatedUser: User) => {
-    setUser(updatedUser);
+  async function loadBows() {
     try {
-      await storeLocalStorage(updatedUser, 'user');
-    } catch (error) {
-      console.error('Error saving user data:', error);
+      setError(null);
+      const data = await bowRepository.getAll();
+      setBows(data || []);
+    } catch (err) {
+      if (err instanceof AppError) {
+        setError(err.message);
+      }
+      setBows([]);
+    } finally {
+      setIsLoading(false);
     }
-  };
+  }
+
+  async function loadArrows() {
+    try {
+      setError(null);
+      const data = await arrowsRepository.getAll();
+      setArrowSets(data || []);
+    } catch (err) {
+      if (err instanceof AppError) {
+        setError(err.message);
+      }
+      setArrowSets([]);
+    }
+  }
+
+  async function handleProfileUpdate(data: { name: string; club?: string }) {
+    try {
+      await userRepository.updateProfile(data);
+    } catch (err) {
+      if (err instanceof AppError) {
+        alert(err.message);
+      }
+    }
+  }
 
   const sortedBows = useMemo(() => sortItems(bows), [bows]);
   const sortedArrowSets = useMemo(() => sortItems(arrowSets), [arrowSets]);
 
-  if (isLoading || !user) {
+  if (authLoading || isLoading) {
     return (
       <View style={styles.container}>
         <Text>Laster...</Text>
+      </View>
+    );
+  }
+
+  if (!user) {
+    return (
+      <View style={styles.container}>
+        <Message title="Ikke innlogget" description="Vennligst logg inn for å se profilen din." />
       </View>
     );
   }
@@ -96,6 +111,7 @@ export default function Profile() {
           user={user}
           onSave={handleProfileUpdate}
         />
+        {error && <Message title="Feil" description={error} />}
         <View style={styles.actionButtons}>
           <Button
             buttonStyle={{ minWidth: '45%' }}

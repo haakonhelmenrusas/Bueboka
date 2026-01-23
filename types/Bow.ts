@@ -1,22 +1,31 @@
 /**
- * Interface representing a Bow.
+ * Bow type enum matching backend Prisma schema
+ */
+export enum BowType {
+  RECURVE = 'RECURVE',
+  COMPOUND = 'COMPOUND',
+  LONGBOW = 'LONGBOW',
+  BAREBOW = 'BAREBOW',
+  HORSEBOW = 'HORSEBOW',
+  TRADITIONAL = 'TRADITIONAL',
+  OTHER = 'OTHER',
+}
+
+/**
+ * Interface representing a Bow - matches backend Prisma schema
  */
 export interface Bow {
   id: string;
+  userId?: string;
   /**
    * The name of the bow.
    */
-  bowName: string;
+  name: string;
 
   /**
    * The type of the bow.
    */
-  bowType: string;
-
-  /**
-   * The placement of the bow.
-   */
-  placement: string;
+  type: BowType;
 
   /**
    * The distance from the eye to the nock point in cm (optional).
@@ -24,23 +33,32 @@ export interface Bow {
   eyeToNock?: number;
 
   /**
-   * The distance from the eye to the aim point in cm (optional).
+   * The aim measure distance in cm (optional).
    */
-  eyeToAim?: number;
+  aimMeasure?: number;
 
   /**
-   * The real interval sight measurement (optional).
+   * The distance from the eye to the sight in cm (optional).
    */
-  interval_sight_real?: number;
+  eyeToSight?: number;
 
   /**
-   * The measured interval sight measurement (optional).
+   * Additional notes about the bow.
    */
-  interval_sight_measured?: number;
+  notes?: string;
+
   /**
    * A boolean flag indicating whether the item is marked as a favorite.
-   * It is an optional property that, if set to true, represents that the item is a favorite.
-   * If undefined or false, the item is not considered a favorite.
    */
   isFavorite?: boolean;
+
+  /**
+   * Creation timestamp
+   */
+  createdAt?: Date;
+
+  /**
+   * Last update timestamp
+   */
+  updatedAt?: Date;
 }

@@ -4,6 +4,8 @@ import * as Sentry from '@sentry/react-native';
 import * as Clarity from '@microsoft/react-native-clarity';
 import { isRunningInExpoGo } from 'expo';
 import React, { useEffect } from 'react';
+import { AuthProvider } from '@/contexts';
+import { useAuth } from '@/hooks';
 
 let navigationIntegration: any = null;
 
@@ -28,8 +30,9 @@ if (process.env.NODE_ENV !== 'development' && !isRunningInExpoGo()) {
   }
 }
 
-function RootLayout() {
+function RootLayoutContent() {
   const ref = useNavigationContainerRef();
+  const { isAuthenticated, isLoading } = useAuth();
 
   useEffect(() => {
     if (ref?.current && navigationIntegration) {
@@ -37,15 +40,27 @@ function RootLayout() {
     }
   }, [ref]);
 
+  // Show nothing while loading auth state
+  if (isLoading) {
+    return null;
+  }
+
   return (
     <>
       <StatusBar barStyle="dark-content" />
-      <Stack>
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+      <Stack screenOptions={{ headerShown: false }}>
+        {isAuthenticated ? <Stack.Screen name="(tabs)" /> : <Stack.Screen name="auth" />}
       </Stack>
     </>
   );
 }
 
-// Only wrap with Sentry if it's initialized
+function RootLayout() {
+  return (
+    <AuthProvider>
+      <RootLayoutContent />
+    </AuthProvider>
+  );
+}
+
 export default process.env.NODE_ENV !== 'development' && !isRunningInExpoGo() ? Sentry.wrap(RootLayout) : RootLayout;
