@@ -44,10 +44,10 @@ export default function Settings() {
     return (
       <SafeAreaView style={{ flex: 1 }}>
         <ScrollView style={styles.container}>
-          <AboutContent />
           <View style={styles.section}>
             <Button type="outline" label="Tilbake til innstillinger" onPress={() => setShowAbout(false)} />
           </View>
+          <AboutContent />
         </ScrollView>
       </SafeAreaView>
     );
@@ -57,7 +57,6 @@ export default function Settings() {
     <SafeAreaView style={{ flex: 1 }}>
       <ScrollView style={styles.container}>
         <Text style={styles.title}>Innstillinger</Text>
-
         {user && (
           <View style={styles.section}>
             <Text style={styles.sectionTitle}>Konto</Text>
@@ -69,15 +68,8 @@ export default function Settings() {
               <Text style={styles.label}>E-post</Text>
               <Text style={styles.value}>{user.email || 'Ikke angitt'}</Text>
             </View>
-            {user.club && (
-              <View style={styles.infoCard}>
-                <Text style={styles.label}>Klubb</Text>
-                <Text style={styles.value}>{user.club}</Text>
-              </View>
-            )}
           </View>
         )}
-
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Om</Text>
           <Button
@@ -87,7 +79,6 @@ export default function Settings() {
             onPress={() => setShowAbout(true)}
           />
         </View>
-
         {user && (
           <View style={styles.section}>
             <Button

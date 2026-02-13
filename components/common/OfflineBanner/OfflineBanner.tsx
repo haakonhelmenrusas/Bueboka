@@ -15,7 +15,7 @@ export function OfflineBanner() {
   if (!isConnected) {
     return (
       <View style={styles.banner}>
-        <Text style={styles.text}>📴 Offline - changes will sync when connected</Text>
+        <Text style={styles.text}>📴 Frakoblet — endringer synkroniseres når du er tilkoblet</Text>
       </View>
     );
   }
@@ -23,7 +23,7 @@ export function OfflineBanner() {
   if (queueLength > 0) {
     return (
       <Pressable style={styles.banner} onPress={syncNow} disabled={isSyncing}>
-        <Text style={styles.text}>{isSyncing ? '🔄 Syncing...' : `⏳ ${queueLength} pending - tap to sync`}</Text>
+        <Text style={styles.text}>{isSyncing ? '🔄 Jobber...' : `⏳ ${queueLength} i kø - klikk for å synkronisere`}</Text>
       </Pressable>
     );
   }

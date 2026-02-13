@@ -4,6 +4,7 @@ import { authService } from '@/services/auth/authService';
 import { clearTokens, getAccessToken } from '@/services/auth/tokenStorage';
 import { registerOfflineHandlers } from '@/services/offline/handlers';
 import * as Sentry from '@sentry/react-native';
+import { authClient } from '@/services/auth/authClient';
 
 /**
  * Authentication state interface
@@ -24,6 +25,8 @@ export interface AuthContextValue extends AuthState {
   logout: () => Promise<void>;
   refreshUser: () => Promise<void>;
   clearError: () => void;
+  loginWithGoogle: () => Promise<void>;
+  loginWithApple: () => Promise<void>;
 }
 
 /**
@@ -233,6 +236,151 @@ export function AuthProvider({ children }: AuthProviderProps) {
     setState((prev) => ({ ...prev, error: null }));
   }
 
+  /**
+   * Login with Google OAuth
+   */
+  async function loginWithGoogle(): Promise<void> {
+    try {
+      setState((prev) => ({ ...prev, isLoading: true, error: null }));
+
+      // Use Better Auth client's built-in social sign-in
+      // The expoClient plugin handles the OAuth redirect automatically
+      const result = await authClient.signIn.social({
+        provider: 'google',
+        callbackURL: '/',
+      });
+
+      // Handle error response
+      if (result.error) {
+        console.log('Google login error:', result);
+        const errorMsg =
+          typeof result.error === 'object' && 'message' in result.error
+            ? result.error.message || 'Google login failed'
+            : 'Google login failed';
+        setState((prev) => ({
+          ...prev,
+          isLoading: false,
+          error: errorMsg,
+        }));
+        return;
+      }
+
+      // Check if we have data
+      if (!result.data) {
+        setState((prev) => ({
+          ...prev,
+          isLoading: false,
+          error: 'No response from authentication',
+        }));
+        return;
+      }
+
+      // Check if this is a redirect response (OAuth flow initiated)
+      if ('redirect' in result.data && result.data.redirect) {
+        // expoClient handles the redirect automatically
+        // After OAuth flow completes, the user will be authenticated
+        // The callback will trigger a session update
+        return;
+      }
+
+      // Check if we got a successful response with user data
+      if ('user' in result.data && result.data.user) {
+        const user = result.data.user as User;
+
+        setState({
+          user,
+          isAuthenticated: true,
+          isLoading: false,
+          error: null,
+        });
+
+        Sentry.setUser({
+          id: user.id,
+          email: user.email,
+          username: user.name,
+        });
+      }
+    } catch (error: any) {
+      setState((prev) => ({
+        ...prev,
+        isLoading: false,
+        error: error?.message || 'Google login failed',
+      }));
+    }
+  }
+
+  /**
+   * Login with Apple OAuth
+   */
+  async function loginWithApple(): Promise<void> {
+    try {
+      setState((prev) => ({ ...prev, isLoading: true, error: null }));
+
+      // Use Better Auth client's built-in social sign-in
+      // The expoClient plugin handles the OAuth redirect automatically
+      const result = await authClient.signIn.social({
+        provider: 'apple',
+        callbackURL: '/',
+      });
+
+      // Handle error response
+      if (result.error) {
+        const errorMsg =
+          typeof result.error === 'object' && 'message' in result.error
+            ? result.error.message || 'Apple login failed'
+            : 'Apple login failed';
+        setState((prev) => ({
+          ...prev,
+          isLoading: false,
+          error: errorMsg,
+        }));
+        return;
+      }
+
+      // Check if we have data
+      if (!result.data) {
+        setState((prev) => ({
+          ...prev,
+          isLoading: false,
+          error: 'No response from authentication',
+        }));
+        return;
+      }
+
+      // Check if this is a redirect response (OAuth flow initiated)
+      if ('redirect' in result.data && result.data.redirect) {
+        // expoClient handles the redirect automatically
+        // After OAuth flow completes, the user will be authenticated
+        // The callback will trigger a session update
+        return;
+      }
+
+      // Check if we got a successful response with user data
+      if ('user' in result.data && result.data.user) {
+        const user = result.data.user as User;
+
+        setState({
+          user,
+          isAuthenticated: true,
+          isLoading: false,
+          error: null,
+        });
+
+        Sentry.setUser({
+          id: user.id,
+          email: user.email,
+          username: user.name,
+        });
+      }
+    } catch (error: any) {
+      setState((prev) => ({
+        ...prev,
+        isLoading: false,
+        error: error?.message || 'Apple login failed',
+      }));
+    }
+  }
+
   const value: AuthContextValue = {
     ...state,
     login,
@@ -240,6 +388,8 @@ export function AuthProvider({ children }: AuthProviderProps) {
     logout,
     refreshUser,
     clearError,
+    loginWithGoogle,
+    loginWithApple,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

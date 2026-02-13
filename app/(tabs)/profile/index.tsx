@@ -1,5 +1,5 @@
 import { ScrollView, Text, View } from 'react-native';
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faPlus } from '@fortawesome/free-solid-svg-icons/faPlus';
 import BowCard from '@/components/profile/bowCard/BowCard';
@@ -18,6 +18,7 @@ import ProfileForm from '@/components/profile/profileForm/ProfileForm';
 import { useAuth } from '@/hooks';
 import { arrowsRepository, bowRepository, userRepository } from '@/services/repositories';
 import { AppError } from '@/services';
+import { useFocusEffect } from 'expo-router';
 
 export default function Profile() {
   const { user, isLoading: authLoading } = useAuth();
@@ -33,17 +34,8 @@ export default function Profile() {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
+  const loadBows = useCallback(async () => {
     if (!user) return;
-    loadBows();
-  }, [user, bowModalVisible]);
-
-  useEffect(() => {
-    if (!user) return;
-    loadArrows();
-  }, [user, arrowModalVisible]);
-
-  async function loadBows() {
     try {
       setError(null);
       const data = await bowRepository.getAll();
@@ -56,9 +48,10 @@ export default function Profile() {
     } finally {
       setIsLoading(false);
     }
-  }
+  }, [user]);
 
-  async function loadArrows() {
+  const loadArrows = useCallback(async () => {
+    if (!user) return;
     try {
       setError(null);
       const data = await arrowsRepository.getAll();
@@ -69,7 +62,26 @@ export default function Profile() {
       }
       setArrowSets([]);
     }
-  }
+  }, [user]);
+
+  // Load data when screen gains focus
+  useFocusEffect(
+    useCallback(() => {
+      loadBows();
+      loadArrows();
+    }, [loadBows, loadArrows]),
+  );
+
+  // Also reload when modals close
+  useEffect(() => {
+    if (!user) return;
+    loadBows();
+  }, [bowModalVisible, loadBows, user]);
+
+  useEffect(() => {
+    if (!user) return;
+    loadArrows();
+  }, [arrowModalVisible, loadArrows, user]);
 
   async function handleProfileUpdate(data: { name: string; club?: string }) {
     try {

@@ -6,6 +6,7 @@ export * from './api/errors';
 // Auth exports
 export * from './auth/authService';
 export * from './auth/tokenStorage';
+export { authClient } from './auth/authClient';
 
 // Repository exports
 export * from './repositories';

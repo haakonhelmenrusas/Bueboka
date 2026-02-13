@@ -10,7 +10,7 @@ interface AuthScreenProps {
 }
 
 function AuthScreen({ onAuthSuccess }: AuthScreenProps) {
-  const { login, register, isLoading, error, clearError } = useAuth();
+  const { login, register, loginWithGoogle, loginWithApple, isLoading, error, clearError } = useAuth();
   const [isLogin, setIsLogin] = useState(true);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -86,16 +86,35 @@ function AuthScreen({ onAuthSuccess }: AuthScreenProps) {
     }
   };
 
+  const handleGoogleLogin = async () => {
+    setLocalError(null);
+    clearError();
+    try {
+      await loginWithGoogle();
+      onAuthSuccess?.();
+    } catch (error) {
+      handleAuthError(error);
+    }
+  };
+
+  const handleAppleLogin = async () => {
+    setLocalError(null);
+    clearError();
+    try {
+      await loginWithApple();
+      onAuthSuccess?.();
+    } catch (error) {
+      handleAuthError(error);
+    }
+  };
+
   return (
     <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={styles.container}>
       <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
-        {/* Header */}
         <View style={styles.header}>
-          <Text style={styles.title}>{isLogin ? 'Logg Inn' : 'Opprett Konto'}</Text>
+          <Text style={styles.title}>{isLogin ? 'Logg Inn' : 'Opprett konto'}</Text>
           <Text style={styles.subtitle}>{isLogin ? 'Velkommen tilbake til Bueboka' : 'Bli med i Bueboka-samfunnet'}</Text>
         </View>
-
-        {/* Error Message */}
         {(localError || error) && (
           <Message
             title="Feil"
@@ -106,64 +125,45 @@ function AuthScreen({ onAuthSuccess }: AuthScreenProps) {
             }}
           />
         )}
-
-        {/* Form */}
         <View style={styles.form}>
-          {!isLogin && (
-            <Input
-              label="Navn (obligatorisk)"
-              placeholderText="F.eks. Artemis Archer"
-              value={name}
-              onChangeText={setName}
-              editable={!isLoading}
-            />
-          )}
-
+          {!isLogin && <Input label="Navn" value={name} onChangeText={setName} editable={!isLoading} />}
           <Input
-            label="E-post (obligatorisk)"
-            placeholderText="din@epost.com"
+            label="E-post"
             value={email}
             onChangeText={setEmail}
             keyboardType="email-address"
             autoCapitalize="none"
             editable={!isLoading}
           />
-
-          <Input
-            label="Passord (obligatorisk)"
-            placeholderText="••••••••"
-            value={password}
-            onChangeText={setPassword}
-            secureTextEntry
-            editable={!isLoading}
-          />
-
+          <Input label="Passord" value={password} onChangeText={setPassword} secureTextEntry editable={!isLoading} />
           {!isLogin && (
             <>
               <Input
-                label="Bekreft passord (obligatorisk)"
-                placeholderText="••••••••"
+                label="Bekreft passord"
                 value={confirmPassword}
                 onChangeText={setConfirmPassword}
                 secureTextEntry
                 editable={!isLoading}
               />
-
-              <Input
-                label="Klubb (valgfritt)"
-                placeholderText="F.eks. Oslo Archery Club"
-                value={club}
-                onChangeText={setClub}
-                editable={!isLoading}
-              />
+              <Input label="Klubb (valgfritt)" value={club} onChangeText={setClub} editable={!isLoading} />
             </>
           )}
         </View>
-
-        {/* Submit Button */}
         <Button label={isLoading ? 'Venter...' : isLogin ? 'Logg Inn' : 'Opprett Konto'} onPress={handleSubmit} disabled={isLoading} />
 
-        {/* Toggle Login/Register */}
+        <View style={styles.dividerContainer}>
+          <View style={styles.divider} />
+          <Text style={styles.dividerText}>eller</Text>
+          <View style={styles.divider} />
+        </View>
+
+        <View style={styles.socialButtonsContainer}>
+          <Button label="Fortsett med Google" onPress={handleGoogleLogin} disabled={isLoading} variant="standard" />
+          {Platform.OS === 'ios' && (
+            <Button label="Fortsett med Apple" onPress={handleAppleLogin} disabled={isLoading} variant="standard" />
+          )}
+        </View>
+
         <View style={styles.toggleContainer}>
           <Text style={styles.toggleText}>{isLogin ? 'Har ikke konto? ' : 'Har du allerede konto? '}</Text>
           <TouchableOpacity
@@ -176,8 +176,6 @@ function AuthScreen({ onAuthSuccess }: AuthScreenProps) {
             <Text style={styles.toggleLink}>{isLogin ? 'Opprett konto' : 'Logg inn'}</Text>
           </TouchableOpacity>
         </View>
-
-        {/* Loading Indicator */}
         {isLoading && (
           <View style={styles.loadingOverlay}>
             <ActivityIndicator size="large" color={colors.primary} />
@@ -231,6 +229,25 @@ const styles = StyleSheet.create({
     color: colors.primary,
     fontSize: 14,
     fontWeight: '600',
+  },
+  dividerContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginVertical: 20,
+  },
+  divider: {
+    flex: 1,
+    height: 1,
+    backgroundColor: colors.inactive || '#ccc',
+  },
+  dividerText: {
+    marginHorizontal: 12,
+    color: colors.inactive || '#999',
+    fontSize: 14,
+  },
+  socialButtonsContainer: {
+    gap: 12,
+    marginBottom: 12,
   },
   loadingOverlay: {
     position: 'absolute',
