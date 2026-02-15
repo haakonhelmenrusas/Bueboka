@@ -20,6 +20,7 @@ export default function PracticeCard({ practice, onEdit }: PracticeCardProps) {
 
   const totalArrows = practice.ends?.reduce((sum, end) => sum + end.arrows, 0) || 0;
   const practiceDate = practice.date instanceof Date ? practice.date : new Date(practice.date);
+  const environmentLabel = practice.environment === 'INDOOR' ? '🏠 Innendørs' : '🌲 Utendørs';
 
   return (
     <View style={styles.trainingCard}>
@@ -39,6 +40,9 @@ export default function PracticeCard({ practice, onEdit }: PracticeCardProps) {
             })}
           </Text>
           <Text style={styles.arrowCount}>{totalArrows} piler</Text>
+          {practice.totalScore > 0 && <Text style={styles.score}>Poeng: {practice.totalScore}</Text>}
+          <Text style={styles.environment}>{environmentLabel}</Text>
+          {practice.location && <Text style={styles.location}>📍 {practice.location}</Text>}
         </View>
         <TouchableOpacity onPress={handleEdit} style={styles.editButton}>
           <LinearGradient

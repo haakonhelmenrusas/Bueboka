@@ -50,12 +50,23 @@ export default function CalculateScreen() {
       // Ensure bow specification exists
       let spec = await sightMarksRepository.getSpecification(favBow.id);
       if (!spec) {
-        spec = await sightMarksRepository.createSpecification({
-          bowId: favBow.id,
-          intervalSightReal: favBow.aimMeasure ?? 5,
-          intervalSightMeasured: favBow.aimMeasure ?? 5,
-          placement: undefined,
-        });
+        try {
+          spec = await sightMarksRepository.createSpecification({
+            bowId: favBow.id,
+            intervalSightReal: favBow.aimMeasure ?? 5,
+            intervalSightMeasured: favBow.aimMeasure ?? 5,
+            placement: undefined,
+          });
+        } catch (createErr) {
+          // If creation failed due to conflict, try fetching again
+          if (createErr instanceof AppError && createErr.code === 'CONFLICT') {
+            console.log('Specification creation conflict in loadData, retrying fetch...');
+            spec = await sightMarksRepository.getSpecification(favBow.id);
+          }
+          if (!spec) {
+            throw createErr;
+          }
+        }
       }
 
       // Load existing sight mark for this spec
@@ -73,11 +84,14 @@ export default function CalculateScreen() {
       // More specific error message based on error type
       if (err instanceof AppError) {
         if (err.code === 'CONFLICT') {
-          // Conflict is now handled automatically in repository, but log for debugging
-          console.warn('Bow specification conflict resolved');
+          // Conflict should have been handled in repository, but if it reaches here,
+          // it means the conflict couldn't be resolved. Don't show error to user.
+          console.warn('Bow specification conflict - this may resolve on retry');
           setError(null);
         } else if (err.code === 'NETWORK_ERROR') {
           setError('Nettverksfeil - sjekk internettforbindelsen');
+        } else if (err.code === 'UNAUTHORIZED') {
+          setError('Vennligst logg inn på nytt');
         } else {
           setError(err.message || 'Kunne ikke laste siktemerker');
         }
@@ -110,12 +124,23 @@ export default function CalculateScreen() {
 
     let spec = await sightMarksRepository.getSpecification(bow.id);
     if (!spec) {
-      spec = await sightMarksRepository.createSpecification({
-        bowId: bow.id,
-        intervalSightReal: bow.aimMeasure ?? 5,
-        intervalSightMeasured: bow.aimMeasure ?? 5,
-        placement: undefined,
-      });
+      try {
+        spec = await sightMarksRepository.createSpecification({
+          bowId: bow.id,
+          intervalSightReal: bow.aimMeasure ?? 5,
+          intervalSightMeasured: bow.aimMeasure ?? 5,
+          placement: undefined,
+        });
+      } catch (err) {
+        // If creation failed due to conflict, try fetching again
+        if (err instanceof AppError && err.code === 'CONFLICT') {
+          console.log('Specification creation conflict, retrying fetch...');
+          spec = await sightMarksRepository.getSpecification(bow.id);
+        }
+        if (!spec) {
+          throw err;
+        }
+      }
     }
 
     return { bow, arrows: arrowSet, spec };

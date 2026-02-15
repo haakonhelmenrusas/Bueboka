@@ -39,11 +39,24 @@ export const sightMarksRepository = {
     } catch (error: any) {
       // If specification already exists (409 Conflict), fetch and return it
       if (error.response?.status === 409 && data.bowId) {
-        const existing = await this.getSpecification(data.bowId);
-        if (existing) {
-          return existing;
+        console.log('Bow specification already exists, fetching existing one for bowId:', data.bowId);
+        try {
+          const existing = await this.getSpecification(data.bowId);
+          if (existing) {
+            console.log('Successfully retrieved existing bow specification:', existing.id);
+            return existing;
+          }
+          console.error('Bow specification exists but could not be fetched');
+        } catch (fetchError) {
+          console.error('Error fetching existing bow specification:', fetchError);
         }
       }
+      // Log the error details before re-throwing
+      console.error('Error creating bow specification:', {
+        status: error.response?.status,
+        message: error.response?.data?.message || error.message,
+        bowId: data.bowId,
+      });
       throw error;
     }
   },

@@ -4,13 +4,14 @@ import { colors } from '@/styles/colors';
 import { Button, Input, Message } from '@/components/common';
 import { useAuth } from '@/hooks';
 import { AppError } from '@/services';
+import EmailVerification from '@/components/auth/EmailVerification';
 
 interface AuthScreenProps {
   onAuthSuccess?: () => void;
 }
 
 function AuthScreen({ onAuthSuccess }: AuthScreenProps) {
-  const { login, register, loginWithGoogle, loginWithApple, isLoading, error, clearError } = useAuth();
+  const { login, register, loginWithGoogle, loginWithApple, isLoading, error, clearError, user } = useAuth();
   const [isLogin, setIsLogin] = useState(true);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -18,6 +19,8 @@ function AuthScreen({ onAuthSuccess }: AuthScreenProps) {
   const [name, setName] = useState('');
   const [club, setClub] = useState('');
   const [localError, setLocalError] = useState<string | null>(null);
+  const [showVerification, setShowVerification] = useState(false);
+  const [registeredEmail, setRegisteredEmail] = useState<string>('');
 
   const handleAuthError = (error: any) => {
     if (error instanceof AppError) {
@@ -67,12 +70,14 @@ function AuthScreen({ onAuthSuccess }: AuthScreenProps) {
 
     try {
       await register(email, password, name, club || undefined);
-      setEmail('');
+      // After successful registration, show email verification screen
+      setRegisteredEmail(email);
+      setShowVerification(true);
+      // Clear form fields
       setPassword('');
       setConfirmPassword('');
       setName('');
       setClub('');
-      onAuthSuccess?.();
     } catch (error) {
       handleAuthError(error);
     }
@@ -107,6 +112,18 @@ function AuthScreen({ onAuthSuccess }: AuthScreenProps) {
       handleAuthError(error);
     }
   };
+
+  const handleVerificationComplete = () => {
+    setShowVerification(false);
+    setEmail('');
+    setRegisteredEmail('');
+    onAuthSuccess?.();
+  };
+
+  // If showing verification screen, render it instead
+  if (showVerification) {
+    return <EmailVerification email={registeredEmail} onVerified={handleVerificationComplete} />;
+  }
 
   return (
     <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={styles.container}>

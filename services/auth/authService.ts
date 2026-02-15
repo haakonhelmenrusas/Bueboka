@@ -149,6 +149,40 @@ export const authService = {
   },
 
   /**
+   * Send verification email to user
+   */
+  async sendVerificationEmail(email: string): Promise<void> {
+    try {
+      await client.post('/auth/send-verification-email', { email });
+    } catch (error) {
+      throw handleApiError(error);
+    }
+  },
+
+  /**
+   * Verify email with token
+   */
+  async verifyEmail(token: string): Promise<{ user: User }> {
+    try {
+      const response = await client.post<{ user: User }>('/auth/verify-email', { token });
+      return response.data;
+    } catch (error) {
+      throw handleApiError(error);
+    }
+  },
+
+  /**
+   * Resend verification email for current user
+   */
+  async resendVerificationEmail(): Promise<void> {
+    try {
+      await client.post('/auth/resend-verification');
+    } catch (error) {
+      throw handleApiError(error);
+    }
+  },
+
+  /**
    * Validate the current session
    */
   async validateSession(): Promise<{ user: User } | null> {
@@ -182,17 +216,6 @@ export const authService = {
         token,
         password: newPassword,
       });
-    } catch (error) {
-      throw handleApiError(error);
-    }
-  },
-
-  /**
-   * Verify email with verification token
-   */
-  async verifyEmail(token: string): Promise<void> {
-    try {
-      await client.post('/auth/verify-email', { token });
     } catch (error) {
       throw handleApiError(error);
     }

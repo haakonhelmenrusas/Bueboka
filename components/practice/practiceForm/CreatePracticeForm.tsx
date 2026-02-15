@@ -32,6 +32,8 @@ export default function CreatePracticeForm({
   const [selectedArrowSet, setSelectedArrowSet] = useState('');
   const [totalScore, setTotalScore] = useState('0');
   const [notes, setNotes] = useState('');
+  const [location, setLocation] = useState('');
+  const [environment, setEnvironment] = useState<Environment>(Environment.INDOOR);
   const [confirmVisible, setConfirmVisible] = useState(false);
 
   // Safely handle undefined or null props - ensure always arrays
@@ -47,6 +49,8 @@ export default function CreatePracticeForm({
       setSelectedArrowSet(editingPractice.arrowsId || '');
       setTotalScore(editingPractice.totalScore?.toString() || '0');
       setNotes(editingPractice.notes || '');
+      setLocation(editingPractice.location || '');
+      setEnvironment(editingPractice.environment || Environment.INDOOR);
     } else {
       resetForm();
     }
@@ -60,7 +64,8 @@ export default function CreatePracticeForm({
       id: editingPractice?.id || new Date().getTime().toString() + Math.random().toString(36).substring(2, 9),
       date: new Date(date),
       totalScore: totalScore ? parseInt(totalScore) : 0,
-      environment: Environment.INDOOR, // Default environment
+      environment: environment,
+      location: location || undefined,
       bowId: selectedBowObject?.id,
       arrowsId: selectedArrowSetObject?.id,
       notes: notes || undefined,
@@ -70,13 +75,39 @@ export default function CreatePracticeForm({
   const savePracticeToApi = async (practice: Practice) => {
     try {
       if (editingPractice) {
-        await practiceRepository.update(editingPractice.id, practice);
+        // For updates, send only the fields that can be updated
+        const updateData = {
+          date: practice.date,
+          environment: practice.environment,
+          totalScore: practice.totalScore,
+          location: practice.location,
+          weather: practice.weather,
+          bowId: practice.bowId,
+          arrowsId: practice.arrowsId,
+          notes: practice.notes,
+        };
+        await practiceRepository.update(editingPractice.id, updateData);
       } else {
-        await practiceRepository.create(practice);
+        // For creates, don't send the client-generated ID
+        const createData = {
+          date: practice.date,
+          environment: practice.environment,
+          totalScore: practice.totalScore,
+          location: practice.location,
+          weather: practice.weather,
+          bowId: practice.bowId,
+          arrowsId: practice.arrowsId,
+          notes: practice.notes,
+          ends: practice.ends,
+        };
+        await practiceRepository.create(createData);
       }
       if (onPracticeSaved) onPracticeSaved();
     } catch (error) {
+      console.error('Error saving practice:', error);
       Sentry.captureException('Error saving practice to API', error);
+      // Re-throw to show user feedback
+      throw error;
     }
   };
 
@@ -96,7 +127,9 @@ export default function CreatePracticeForm({
       await savePracticeToApi(practiceData);
       onClose();
     } catch (error) {
+      console.error('Error starting shooting session:', error);
       Sentry.captureException('Error starting shooting session', error);
+      alert('Kunne ikke starte skyteøkten. Vennligst prøv igjen.');
     }
   };
 
@@ -106,7 +139,9 @@ export default function CreatePracticeForm({
       await savePracticeToApi(practiceData);
       onClose();
     } catch (error) {
+      console.error('Error saving practice:', error);
       Sentry.captureException('Error saving and finishing practice', error);
+      alert('Kunne ikke lagre treningen. Vennligst prøv igjen.');
     }
   };
 
@@ -125,6 +160,8 @@ export default function CreatePracticeForm({
     setSelectedArrowSet('');
     setTotalScore('0');
     setNotes('');
+    setLocation('');
+    setEnvironment(Environment.INDOOR);
   };
 
   const handleClose = () => {
@@ -140,6 +177,8 @@ export default function CreatePracticeForm({
     arrowSet: selectedArrowSet,
     totalScore: totalScore,
     notes: practiceData.notes,
+    environment: environment,
+    location: location || undefined,
   };
 
   const isEditing = !!editingPractice;
@@ -155,6 +194,23 @@ export default function CreatePracticeForm({
             <ModalHeader title={isEditing ? 'Rediger trening' : 'Ny trening'} onPress={handleClose} />
             <View style={styles.content}>
               <DatePicker label="Dato" value={date} onDateChange={setDate} containerStyle={styles.inputContainer} testID="date-picker" />
+              <Select
+                label="🌍 Miljø"
+                options={[
+                  { label: 'Innendørs', value: Environment.INDOOR },
+                  { label: 'Utendørs', value: Environment.OUTDOOR },
+                ]}
+                selectedValue={environment}
+                onValueChange={(value) => setEnvironment(value as Environment)}
+                containerStyle={styles.inputContainer}
+              />
+              <Input
+                label="📍 Sted (valgfritt)"
+                value={location}
+                onChangeText={setLocation}
+                placeholderText="F.eks. Oslo Bueskytterhall"
+                containerStyle={styles.inputContainer}
+              />
               {bowOptions.length > 0 && (
                 <Select
                   label="🏹 Bue (valgfritt)"

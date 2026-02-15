@@ -27,6 +27,9 @@ export interface AuthContextValue extends AuthState {
   clearError: () => void;
   loginWithGoogle: () => Promise<void>;
   loginWithApple: () => Promise<void>;
+  sendVerificationEmail: (email: string) => Promise<void>;
+  resendVerificationEmail: () => Promise<void>;
+  verifyEmail: (token: string) => Promise<void>;
 }
 
 /**
@@ -154,19 +157,30 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
       const result = await authService.register({ email, password, name, club });
 
-      setState({
-        user: result.user,
-        isAuthenticated: true,
-        isLoading: false,
-        error: null,
-      });
+      // If email is not verified, keep user in non-authenticated state
+      if (!result.user.emailVerified) {
+        setState({
+          user: result.user,
+          isAuthenticated: false, // Not authenticated until email is verified
+          isLoading: false,
+          error: null,
+        });
+      } else {
+        // Email already verified (shouldn't happen in normal flow, but handle it)
+        setState({
+          user: result.user,
+          isAuthenticated: true,
+          isLoading: false,
+          error: null,
+        });
 
-      // Set user context for Sentry
-      Sentry.setUser({
-        id: result.user.id,
-        email: result.user.email,
-        username: result.user.name,
-      });
+        // Set user context for Sentry
+        Sentry.setUser({
+          id: result.user.id,
+          email: result.user.email,
+          username: result.user.name,
+        });
+      }
     } catch (error: any) {
       setState((prev) => ({
         ...prev,
@@ -381,6 +395,72 @@ export function AuthProvider({ children }: AuthProviderProps) {
     }
   }
 
+  /**
+   * Send verification email to a specific email address
+   */
+  async function sendVerificationEmail(email: string): Promise<void> {
+    try {
+      setState((prev) => ({ ...prev, isLoading: true, error: null }));
+      await authService.sendVerificationEmail(email);
+      setState((prev) => ({ ...prev, isLoading: false }));
+    } catch (error: any) {
+      setState((prev) => ({
+        ...prev,
+        isLoading: false,
+        error: error.message || 'Failed to send verification email',
+      }));
+      throw error;
+    }
+  }
+
+  /**
+   * Resend verification email for current user
+   */
+  async function resendVerificationEmail(): Promise<void> {
+    try {
+      setState((prev) => ({ ...prev, isLoading: true, error: null }));
+      await authService.resendVerificationEmail();
+      setState((prev) => ({ ...prev, isLoading: false }));
+    } catch (error: any) {
+      setState((prev) => ({
+        ...prev,
+        isLoading: false,
+        error: error.message || 'Failed to resend verification email',
+      }));
+      throw error;
+    }
+  }
+
+  /**
+   * Verify email with token
+   */
+  async function verifyEmail(token: string): Promise<void> {
+    try {
+      setState((prev) => ({ ...prev, isLoading: true, error: null }));
+      const result = await authService.verifyEmail(token);
+
+      setState({
+        user: result.user,
+        isAuthenticated: true,
+        isLoading: false,
+        error: null,
+      });
+
+      Sentry.setUser({
+        id: result.user.id,
+        email: result.user.email,
+        username: result.user.name,
+      });
+    } catch (error: any) {
+      setState((prev) => ({
+        ...prev,
+        isLoading: false,
+        error: error.message || 'Email verification failed',
+      }));
+      throw error;
+    }
+  }
+
   const value: AuthContextValue = {
     ...state,
     login,
@@ -390,6 +470,9 @@ export function AuthProvider({ children }: AuthProviderProps) {
     clearError,
     loginWithGoogle,
     loginWithApple,
+    sendVerificationEmail,
+    resendVerificationEmail,
+    verifyEmail,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

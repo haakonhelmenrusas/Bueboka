@@ -20,6 +20,7 @@ export interface CreateEndData {
 export interface CreatePracticeData {
   date: Date;
   environment: Environment;
+  totalScore?: number;
   location?: string;
   weather?: WeatherCondition[];
   bowId?: string;
@@ -35,6 +36,7 @@ export interface CreatePracticeData {
 export interface UpdatePracticeData {
   date?: Date;
   environment?: Environment;
+  totalScore?: number;
   location?: string;
   weather?: WeatherCondition[];
   bowId?: string;

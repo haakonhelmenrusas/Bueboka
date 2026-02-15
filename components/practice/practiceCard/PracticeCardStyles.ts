@@ -41,6 +41,27 @@ export const styles = StyleSheet.create({
     textAlign: 'left',
     marginBottom: 8,
   },
+  score: {
+    fontSize: 14,
+    color: colors.primary,
+    fontWeight: '500',
+    textAlign: 'left',
+    marginBottom: 4,
+  },
+  environment: {
+    fontSize: 12,
+    color: colors.dark_primary,
+    fontWeight: '400',
+    textAlign: 'left',
+    marginBottom: 2,
+  },
+  location: {
+    fontSize: 12,
+    color: colors.dimmed,
+    fontWeight: '400',
+    textAlign: 'left',
+    marginTop: 2,
+  },
   equipmentContainer: {
     position: 'relative',
     borderRadius: 8,
