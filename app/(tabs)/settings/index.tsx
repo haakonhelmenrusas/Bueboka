@@ -9,6 +9,7 @@ import { colors } from '@/styles/colors';
 import { useAuth } from '@/hooks';
 import { useState } from 'react';
 import AboutContent from '@/components/about/AboutContent';
+import EmailVerificationBanner from '@/components/auth/EmailVerificationBanner';
 
 export default function Settings() {
   const { logout, user } = useAuth();
@@ -55,6 +56,7 @@ export default function Settings() {
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
+      <EmailVerificationBanner />
       <ScrollView style={styles.container}>
         <Text style={styles.title}>Innstillinger</Text>
         {user && (

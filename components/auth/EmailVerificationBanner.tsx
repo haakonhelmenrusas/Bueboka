@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
 import { colors } from '@/styles/colors';
 import { useAuth } from '@/hooks';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
@@ -31,36 +30,31 @@ export default function EmailVerificationBanner() {
   };
 
   return (
-    <SafeAreaView edges={['top']} style={styles.safeArea}>
-      <View style={styles.banner}>
-        <View style={styles.content}>
-          <FontAwesomeIcon icon={faExclamationCircle} size={20} color={colors.white} style={styles.icon} />
-          <View style={styles.textContainer}>
-            <Text style={styles.text}>E-posten din er ikke bekreftet.</Text>
-            <TouchableOpacity onPress={handleResend} disabled={sending}>
-              <Text style={styles.link}>{sending ? 'Sender...' : 'Send bekreftelse på nytt'}</Text>
-            </TouchableOpacity>
-          </View>
+    <View style={styles.banner}>
+      <View style={styles.content}>
+        <FontAwesomeIcon icon={faExclamationCircle} size={18} color={colors.white} style={styles.icon} />
+        <View style={styles.textContainer}>
+          <Text style={styles.text}>E-posten din er ikke bekreftet.</Text>
+          <TouchableOpacity onPress={handleResend} disabled={sending}>
+            <Text style={styles.link}>{sending ? 'Sender...' : 'Send bekreftelse på nytt'}</Text>
+          </TouchableOpacity>
         </View>
-        <TouchableOpacity onPress={() => setDismissed(true)} style={styles.closeButton}>
-          <FontAwesomeIcon icon={faTimes} size={16} color={colors.white} />
-        </TouchableOpacity>
       </View>
-    </SafeAreaView>
+      <TouchableOpacity onPress={() => setDismissed(true)} style={styles.closeButton}>
+        <FontAwesomeIcon icon={faTimes} size={14} color={colors.white} />
+      </TouchableOpacity>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
-  safeArea: {
-    backgroundColor: '#f59e0b',
-  },
   banner: {
     backgroundColor: '#f59e0b',
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    paddingHorizontal: 16,
-    paddingVertical: 12,
+    paddingHorizontal: 12,
+    paddingVertical: 8,
   },
   content: {
     flexDirection: 'row',
@@ -68,20 +62,20 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   icon: {
-    marginRight: 12,
+    marginRight: 10,
   },
   textContainer: {
     flex: 1,
   },
   text: {
     color: colors.white,
-    fontSize: 14,
+    fontSize: 13,
     fontWeight: '500',
     marginBottom: 2,
   },
   link: {
     color: colors.white,
-    fontSize: 13,
+    fontSize: 12,
     textDecorationLine: 'underline',
     fontWeight: '600',
   },

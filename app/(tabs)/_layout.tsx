@@ -9,7 +9,6 @@ import { Platform, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { faChartLine } from '@fortawesome/free-solid-svg-icons/faChartLine';
 import { OfflineBanner } from '@/components/common';
-import EmailVerificationBanner from '@/components/auth/EmailVerificationBanner';
 
 export default function AppLayout() {
   const insets = useSafeAreaInsets();
@@ -17,7 +16,6 @@ export default function AppLayout() {
   return (
     <View style={{ flex: 1 }}>
       <OfflineBanner />
-      <EmailVerificationBanner />
       <Tabs
         screenOptions={{
           tabBarActiveTintColor: colors.primary,
