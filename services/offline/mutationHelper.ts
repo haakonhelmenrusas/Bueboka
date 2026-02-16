@@ -1,4 +1,5 @@
-import { AppError, syncManager } from '@/services';
+import { AppError } from '@/services/api/errors';
+import { syncManager } from '@/services';
 
 /**
  * Mutation helper that enqueues operations when offline or on network failure

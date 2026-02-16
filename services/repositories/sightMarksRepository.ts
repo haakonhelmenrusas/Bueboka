@@ -1,5 +1,5 @@
 import client from '@/services/api/client';
-import { AimDistanceMark, BowSpecification, CalculatedMarks, MarksResult, SightMark, SightMarkCalc } from '@/types';
+import { AimDistanceMark, BowSpecification, CalculatedMarks, MarksResult, SightMark, SightMarkCalc, SightMarkResult } from '@/types';
 
 export const sightMarksRepository = {
   // SightMarks CRUD
@@ -59,6 +59,23 @@ export const sightMarksRepository = {
       });
       throw error;
     }
+  },
+
+  // SightMarkResult CRUD
+  async getResults(sightMarkId?: string): Promise<SightMarkResult[]> {
+    const url = sightMarkId ? `/sight-mark-results?sightMarkId=${sightMarkId}` : '/sight-mark-results';
+    const response = await client.get<SightMarkResult[]>(url);
+    return response.data;
+  },
+  async createResult(sightMarkId: string, data: Partial<SightMarkResult>): Promise<SightMarkResult> {
+    const response = await client.post<SightMarkResult>('/sight-mark-results', {
+      ...data,
+      sightMarkId,
+    });
+    return response.data;
+  },
+  async deleteResult(id: string): Promise<void> {
+    await client.delete(`/sight-mark-results/${id}`);
   },
 
   // Ballistics calculations

@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { colors } from '@/styles/colors';
 import { useAuth } from '@/hooks';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
@@ -20,32 +21,39 @@ export default function EmailVerificationBanner() {
       setSending(true);
       await resendVerificationEmail();
       alert('Verification email sent! Check your inbox.');
-    } catch (error) {
-      alert('Failed to send verification email. Please try again.');
+    } catch (error: any) {
+      console.error('Resend verification email error:', error);
+      const errorMessage = error?.message || error?.response?.data?.message || 'Failed to send verification email. Please try again.';
+      alert(errorMessage);
     } finally {
       setSending(false);
     }
   };
 
   return (
-    <View style={styles.banner}>
-      <View style={styles.content}>
-        <FontAwesomeIcon icon={faExclamationCircle} size={20} color={colors.white} style={styles.icon} />
-        <View style={styles.textContainer}>
-          <Text style={styles.text}>E-posten din er ikke bekreftet.</Text>
-          <TouchableOpacity onPress={handleResend} disabled={sending}>
-            <Text style={styles.link}>{sending ? 'Sender...' : 'Send bekreftelse på nytt'}</Text>
-          </TouchableOpacity>
+    <SafeAreaView edges={['top']} style={styles.safeArea}>
+      <View style={styles.banner}>
+        <View style={styles.content}>
+          <FontAwesomeIcon icon={faExclamationCircle} size={20} color={colors.white} style={styles.icon} />
+          <View style={styles.textContainer}>
+            <Text style={styles.text}>E-posten din er ikke bekreftet.</Text>
+            <TouchableOpacity onPress={handleResend} disabled={sending}>
+              <Text style={styles.link}>{sending ? 'Sender...' : 'Send bekreftelse på nytt'}</Text>
+            </TouchableOpacity>
+          </View>
         </View>
+        <TouchableOpacity onPress={() => setDismissed(true)} style={styles.closeButton}>
+          <FontAwesomeIcon icon={faTimes} size={16} color={colors.white} />
+        </TouchableOpacity>
       </View>
-      <TouchableOpacity onPress={() => setDismissed(true)} style={styles.closeButton}>
-        <FontAwesomeIcon icon={faTimes} size={16} color={colors.white} />
-      </TouchableOpacity>
-    </View>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
+  safeArea: {
+    backgroundColor: '#f59e0b',
+  },
   banner: {
     backgroundColor: '#f59e0b',
     flexDirection: 'row',

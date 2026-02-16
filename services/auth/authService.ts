@@ -176,7 +176,7 @@ export const authService = {
    */
   async resendVerificationEmail(): Promise<void> {
     try {
-      await client.post('/auth/resend-verification');
+      await client.post('/auth/send-verification-email');
     } catch (error) {
       throw handleApiError(error);
     }

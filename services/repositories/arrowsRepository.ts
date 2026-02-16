@@ -103,4 +103,16 @@ export const arrowsRepository = {
       throw handleApiError(error);
     }
   },
+
+  /**
+   * Toggle favorite status of an arrow set
+   */
+  async toggleFavorite(id: string, isFavorite: boolean): Promise<Arrows> {
+    try {
+      const response = await client.patch<Arrows>(`/arrows/${id}`, { isFavorite });
+      return response.data;
+    } catch (error) {
+      throw handleApiError(error);
+    }
+  },
 };

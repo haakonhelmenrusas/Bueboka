@@ -91,4 +91,16 @@ export const bowRepository = {
       throw handleApiError(error);
     }
   },
+
+  /**
+   * Toggle favorite status of a bow
+   */
+  async toggleFavorite(id: string, isFavorite: boolean): Promise<Bow> {
+    try {
+      const response = await client.patch<Bow>(`/bows/${id}`, { isFavorite });
+      return response.data;
+    } catch (error) {
+      throw handleApiError(error);
+    }
+  },
 };

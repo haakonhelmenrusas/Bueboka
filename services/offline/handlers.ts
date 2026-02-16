@@ -1,5 +1,9 @@
 import { OperationHandler, syncManager } from './syncManager';
-import { arrowsRepository, bowRepository, practiceRepository, sightMarksRepository, userRepository } from '@/services';
+import { arrowsRepository } from '@/services/repositories/arrowsRepository';
+import { bowRepository } from '@/services/repositories/bowRepository';
+import { practiceRepository } from '@/services/repositories/practiceRepository';
+import { sightMarksRepository } from '@/services/repositories/sightMarksRepository';
+import { userRepository } from '@/services/repositories/userRepository';
 
 /**
  * Register all offline operation handlers

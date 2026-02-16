@@ -419,9 +419,18 @@ export function AuthProvider({ children }: AuthProviderProps) {
   async function resendVerificationEmail(): Promise<void> {
     try {
       setState((prev) => ({ ...prev, isLoading: true, error: null }));
-      await authService.resendVerificationEmail();
+
+      // If we have a user, pass their email to ensure it works
+      if (state.user?.email) {
+        await authService.sendVerificationEmail(state.user.email);
+      } else {
+        // Fallback to the resend endpoint (for when user is not fully loaded)
+        await authService.resendVerificationEmail();
+      }
+
       setState((prev) => ({ ...prev, isLoading: false }));
     } catch (error: any) {
+      console.error('Resend verification email failed:', error);
       setState((prev) => ({
         ...prev,
         isLoading: false,
