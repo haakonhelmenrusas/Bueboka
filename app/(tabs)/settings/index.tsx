@@ -12,9 +12,10 @@ import AboutContent from '@/components/about/AboutContent';
 import EmailVerificationBanner from '@/components/auth/EmailVerificationBanner';
 
 export default function Settings() {
-  const { logout, user } = useAuth();
+  const { logout, deleteAccount, user } = useAuth();
   const [isLoggingOut, setIsLoggingOut] = useState(false);
   const [showAbout, setShowAbout] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   const handleLogout = () => {
     Alert.alert('Logg ut', 'Er du sikker på at du vil logge ut?', [
@@ -39,6 +40,35 @@ export default function Settings() {
         },
       },
     ]);
+  };
+
+  const handleDeleteAccount = () => {
+    Alert.alert(
+      'Slett konto',
+      'Er du sikker på at du vil slette kontoen din? Dette kan ikke angres og alle dine data vil bli permanent slettet.',
+      [
+        {
+          text: 'Avbryt',
+          style: 'cancel',
+        },
+        {
+          text: 'Slett konto',
+          style: 'destructive',
+          onPress: async () => {
+            setIsDeleting(true);
+            try {
+              await deleteAccount();
+              // Navigation will be handled by auth state change
+            } catch (error: any) {
+              console.error('Error deleting account:', error);
+              Alert.alert('Feil', error?.message || 'Kunne ikke slette konto. Prøv igjen.');
+            } finally {
+              setIsDeleting(false);
+            }
+          },
+        },
+      ],
+    );
   };
 
   if (showAbout) {
@@ -84,6 +114,7 @@ export default function Settings() {
         {user && (
           <View style={styles.section}>
             <Button
+              type="outline"
               variant="warning"
               label={isLoggingOut ? 'Logger ut...' : 'Logg ut'}
               disabled={isLoggingOut}
@@ -91,6 +122,19 @@ export default function Settings() {
               icon={<FontAwesomeIcon icon={faRightFromBracket} size={16} color={colors.white} />}
               onPress={handleLogout}
             />
+          </View>
+        )}
+        {user && (
+          <View style={styles.section}>
+            <Text style={styles.sectionTitle}>Farlig sone</Text>
+            <Button
+              variant="warning"
+              label={isDeleting ? 'Sletter konto...' : 'Slett konto'}
+              disabled={isDeleting || isLoggingOut}
+              loading={isDeleting}
+              onPress={handleDeleteAccount}
+            />
+            <Text style={styles.dangerText}>Dette vil permanent slette kontoen din og alle tilknyttede data. Dette kan ikke angres.</Text>
           </View>
         )}
       </ScrollView>

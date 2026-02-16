@@ -30,6 +30,7 @@ export interface AuthContextValue extends AuthState {
   sendVerificationEmail: (email: string) => Promise<void>;
   resendVerificationEmail: () => Promise<void>;
   verifyEmail: (token: string) => Promise<void>;
+  deleteAccount: () => Promise<void>;
 }
 
 /**
@@ -218,6 +219,41 @@ export function AuthProvider({ children }: AuthProviderProps) {
         isLoading: false,
         error: null,
       });
+    }
+  }
+
+  /**
+   * Delete user account
+   */
+  async function deleteAccount(): Promise<void> {
+    try {
+      setState((prev) => ({ ...prev, isLoading: true, error: null }));
+
+      // Import userRepository dynamically to avoid circular dependency
+      const { userRepository } = await import('@/services/repositories/userRepository');
+
+      // Delete the account
+      await userRepository.deleteAccount();
+
+      // Logout to clear session
+      await authService.logout();
+
+      // Clear Sentry user context
+      Sentry.setUser(null);
+
+      setState({
+        user: null,
+        isAuthenticated: false,
+        isLoading: false,
+        error: null,
+      });
+    } catch (error: any) {
+      setState((prev) => ({
+        ...prev,
+        isLoading: false,
+        error: error.message || 'Kunne ikke slette konto',
+      }));
+      throw error;
     }
   }
 
@@ -475,6 +511,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
     login,
     register,
     logout,
+    deleteAccount,
     refreshUser,
     clearError,
     loginWithGoogle,

@@ -49,4 +49,11 @@ export const styles = StyleSheet.create({
     fontWeight: '600',
     color: colors.dark_primary,
   },
+  dangerText: {
+    fontSize: 13,
+    color: colors.error,
+    marginTop: 8,
+    textAlign: 'center',
+    fontStyle: 'italic',
+  },
 });
