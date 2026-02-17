@@ -116,7 +116,7 @@ export default function Profile() {
     <View style={styles.container}>
       <ScrollView showsVerticalScrollIndicator={false}>
         <Text style={styles.title}>Profil</Text>
-        <ProfileBox user={user} onEdit={() => setIsProfileModalVisible(true)} />
+        <ProfileBox user={user} avatarUrl={user.image || undefined} onEdit={() => setIsProfileModalVisible(true)} />
         <ProfileForm
           modalVisible={isProfileModalVisible}
           setModalVisible={setIsProfileModalVisible}
