@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { Keyboard, Pressable, Text, View } from 'react-native';
+import { Keyboard, Pressable, View } from 'react-native';
 import { AimDistanceMark, Arrows, Bow, BowSpecification, CalculatedMarks, MarkValue, SightMark } from '@/types';
 import { useSharedValue, withTiming } from 'react-native-reanimated';
 import { Ballistics } from '@/utils';
@@ -11,7 +11,7 @@ import { colors } from '@/styles/colors';
 import MarksTable from '@/components/sightMarks/marksTable/MarksTable';
 import MarksForm from '@/components/sightMarks/marksForm/MarksForm';
 import ConfirmRemoveMarks from '@/components/sightMarks/confirmRemoveMarks/ConfirmRemoveMarks';
-import { Button } from '@/components/common';
+import { Button, Message } from '@/components/common';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { faPlus } from '@fortawesome/free-solid-svg-icons/faPlus';
 import { arrowsRepository, bowRepository, sightMarksRepository } from '@/services/repositories';
@@ -47,27 +47,8 @@ export default function CalculateScreen() {
         return;
       }
 
-      // Ensure bow specification exists
-      let spec = await sightMarksRepository.getSpecification(favBow.id);
-      if (!spec) {
-        try {
-          spec = await sightMarksRepository.createSpecification({
-            bowId: favBow.id,
-            intervalSightReal: favBow.aimMeasure ?? 5,
-            intervalSightMeasured: favBow.aimMeasure ?? 5,
-            placement: undefined,
-          });
-        } catch (createErr) {
-          // If creation failed due to conflict, try fetching again
-          if (createErr instanceof AppError && createErr.code === 'CONFLICT') {
-            console.log('Specification creation conflict in loadData, retrying fetch...');
-            spec = await sightMarksRepository.getSpecification(favBow.id);
-          }
-          if (!spec) {
-            throw createErr;
-          }
-        }
-      }
+      // Get bow specification (will be auto-created if it doesn't exist)
+      const spec = await sightMarksRepository.getBowSpecificationByBowId(favBow.id);
 
       // Load existing sight mark for this spec
       const allMarks = await sightMarksRepository.getAll();
@@ -122,26 +103,8 @@ export default function CalculateScreen() {
 
     const arrowSet = arrows.find((a) => a.isFavorite) ?? arrows[0] ?? null;
 
-    let spec = await sightMarksRepository.getSpecification(bow.id);
-    if (!spec) {
-      try {
-        spec = await sightMarksRepository.createSpecification({
-          bowId: bow.id,
-          intervalSightReal: bow.aimMeasure ?? 5,
-          intervalSightMeasured: bow.aimMeasure ?? 5,
-          placement: undefined,
-        });
-      } catch (err) {
-        // If creation failed due to conflict, try fetching again
-        if (err instanceof AppError && err.code === 'CONFLICT') {
-          console.log('Specification creation conflict, retrying fetch...');
-          spec = await sightMarksRepository.getSpecification(bow.id);
-        }
-        if (!spec) {
-          throw err;
-        }
-      }
-    }
+    // Get bow specification (will be auto-created if it doesn't exist)
+    const spec = await sightMarksRepository.getBowSpecificationByBowId(bow.id);
 
     return { bow, arrows: arrowSet, spec };
   }
@@ -286,11 +249,7 @@ export default function CalculateScreen() {
 
     return (
       <>
-        {error && (
-          <View style={{ marginBottom: 8, padding: 8 }}>
-            <Text>Oisann, noe gikk galt. Prøv igjen!</Text>
-          </View>
-        )}
+        {error && <Message title="Oisann, noe gikk galt." description="Kunne ikke hente siktemerker" />}
         <MarksTable ballistics={ballistics} removeMark={handleRemoveMark} status={status} />
         {ballistics && ballistics.given_marks.length > 0 && !isFormVisible && (
           <Button

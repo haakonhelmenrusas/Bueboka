@@ -35,7 +35,11 @@ client.interceptors.request.use(
         config.headers.Authorization = `Bearer ${token}`;
       }
     } catch (error) {
-      console.warn('Failed to get auth token:', error);
+      Sentry.addBreadcrumb({
+        category: 'auth',
+        message: 'Failed to get auth token from secure store',
+        level: 'warning',
+      });
     }
 
     // Add Origin header for better-auth CSRF protection

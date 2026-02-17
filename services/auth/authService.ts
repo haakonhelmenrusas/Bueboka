@@ -3,6 +3,7 @@ import { handleApiError } from '@/services/api/errors';
 import { AuthResponse, SessionResponse } from '@/services/api/types';
 import { clearTokens, saveTokens } from '@/services';
 import { User } from '@/types';
+import * as Sentry from '@sentry/react-native';
 
 /**
  * Registration data structure
@@ -142,7 +143,11 @@ export const authService = {
       await client.post('/auth/sign-out');
     } catch (error) {
       // Even if logout fails on server, clear local tokens
-      console.warn('Logout request failed, clearing local tokens anyway');
+      Sentry.addBreadcrumb({
+        category: 'auth',
+        message: 'Logout request failed, clearing local tokens anyway',
+        level: 'info',
+      });
     } finally {
       await clearTokens();
     }

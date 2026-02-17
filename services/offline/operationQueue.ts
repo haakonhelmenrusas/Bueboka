@@ -1,4 +1,5 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import * as Sentry from '@sentry/react-native';
 
 export type OperationType = string;
 
@@ -31,7 +32,11 @@ async function getQueue(userId?: string): Promise<QueuedOperation[]> {
     const parsed = JSON.parse(raw) as QueuedOperation[];
     return Array.isArray(parsed) ? parsed : [];
   } catch (error) {
-    console.warn('Failed to parse offline queue, clearing', error);
+    Sentry.captureException(error, {
+      tags: { type: 'offline_queue_parse_error' },
+      extra: { userId },
+      level: 'warning',
+    });
     await AsyncStorage.removeItem(storageKey(userId));
     return [];
   }

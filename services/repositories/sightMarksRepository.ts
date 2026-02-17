@@ -1,11 +1,13 @@
 import client from '@/services/api/client';
 import { AimDistanceMark, BowSpecification, CalculatedMarks, MarksResult, SightMark, SightMarkCalc, SightMarkResult } from '@/types';
+import * as Sentry from '@sentry/react-native';
 
 export const sightMarksRepository = {
   // SightMarks CRUD
   async getAll(): Promise<SightMark[]> {
-    const response = await client.get<SightMark[]>('/sight-marks');
-    return response.data;
+    const response = await client.get<SightMark[] | { sightMarks: SightMark[] }>('/sight-marks');
+    // Handle both wrapped {sightMarks: [...]} and direct array responses
+    return Array.isArray(response.data) ? response.data : (response.data as any)?.sightMarks || [];
   },
   async getById(id: string): Promise<SightMark> {
     const response = await client.get<SightMark>(`/sight-marks/${id}`);
@@ -24,39 +26,25 @@ export const sightMarksRepository = {
   },
 
   // Bow Specifications
-  async getSpecification(bowId: string): Promise<BowSpecification | null> {
-    try {
-      const response = await client.get<BowSpecification>(`/bow-specifications/${bowId}`);
-      return response.data;
-    } catch {
-      return null;
-    }
+  async getBowSpecificationByBowId(bowId: string): Promise<BowSpecification> {
+    const response = await client.get<BowSpecification>(`/bow-specifications/by-bow/${bowId}`);
+    return response.data;
   },
   async createSpecification(data: Partial<BowSpecification>): Promise<BowSpecification> {
     try {
       const response = await client.post<BowSpecification>('/bow-specifications', data);
       return response.data;
     } catch (error: any) {
-      // If specification already exists (409 Conflict), fetch and return it
-      if (error.response?.status === 409 && data.bowId) {
-        console.log('Bow specification already exists, fetching existing one for bowId:', data.bowId);
-        try {
-          const existing = await this.getSpecification(data.bowId);
-          if (existing) {
-            console.log('Successfully retrieved existing bow specification:', existing.id);
-            return existing;
-          }
-          console.error('Bow specification exists but could not be fetched');
-        } catch (fetchError) {
-          console.error('Error fetching existing bow specification:', fetchError);
-        }
-      }
-      // Log the error details before re-throwing
-      console.error('Error creating bow specification:', {
-        status: error.response?.status,
-        message: error.response?.data?.message || error.message,
-        bowId: data.bowId,
+      // Log the error to Sentry with context
+      Sentry.captureException(error, {
+        tags: { type: 'bow_specification_create_error' },
+        extra: {
+          status: error.response?.status,
+          message: error.response?.data?.message || error.message,
+          bowId: data.bowId,
+        },
       });
+
       throw error;
     }
   },

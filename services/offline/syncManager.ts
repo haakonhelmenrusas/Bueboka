@@ -1,5 +1,6 @@
 import NetInfo from '@react-native-community/netinfo';
 import { AppState, AppStateStatus } from 'react-native';
+import * as Sentry from '@sentry/react-native';
 import {
   enqueueOperation,
   getQueueLength,
@@ -9,7 +10,7 @@ import {
   QueuedOperation,
   removeOperation,
   updateOperation,
-} from './operationQueue';
+} from '@/services';
 
 export type OperationHandler = (operation: QueuedOperation) => Promise<void>;
 
@@ -105,7 +106,11 @@ class SyncManager {
         const handler = this.handlers.get(next.type);
 
         if (!handler) {
-          console.warn(`No handler registered for operation type: ${next.type}, dropping`);
+          Sentry.captureMessage(`No handler registered for operation type: ${next.type}`, {
+            level: 'warning',
+            tags: { type: 'sync_missing_handler' },
+            extra: { operationType: next.type, operationId: next.id },
+          });
           await removeOperation(next.id, userId);
           const remaining = await getQueueLength(userId);
           this.setStatus({ queueLength: remaining });
@@ -127,7 +132,16 @@ class SyncManager {
           };
 
           if (attempts >= MAX_RETRIES) {
-            console.warn('Dropping operation after max retries', next.type, errorMessage);
+            Sentry.captureMessage(`Dropping operation after max retries`, {
+              level: 'warning',
+              tags: { type: 'sync_max_retries' },
+              extra: {
+                operationType: next.type,
+                operationId: next.id,
+                attempts,
+                error: errorMessage,
+              },
+            });
             await removeOperation(next.id, userId);
           } else {
             await updateOperation(updated, userId);
