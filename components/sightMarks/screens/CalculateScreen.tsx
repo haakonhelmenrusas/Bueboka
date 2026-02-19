@@ -33,54 +33,28 @@ export default function CalculateScreen() {
   const loadData = useCallback(async () => {
     setIsLoading(true);
     try {
-      // Pick favorite bow & arrows
-      const bowsData = await bowRepository.getAll();
-      await arrowsRepository.getAll();
+      const bows = await bowRepository.getAll();
+      const favBow = bows.find((b) => b.isFavorite) ?? bows[0];
 
-      // Ensure bows are array
-      const bows = Array.isArray(bowsData) ? bowsData : [];
+      if (!favBow) return;
 
-      const favBow = bows.find((b) => b.isFavorite) ?? bows[0] ?? null;
-
-      if (!favBow) {
-        setIsLoading(false);
-        return;
-      }
-
-      // Get bow specification (will be auto-created if it doesn't exist)
       const spec = await sightMarksRepository.getBowSpecificationByBowId(favBow.id);
-
-      // Load existing sight mark for this spec
       const allMarks = await sightMarksRepository.getAll();
       const sightMark = allMarks.find((m) => m.bowSpecificationId === spec.id) ?? null;
-      setActiveSightMark(sightMark);
 
-      if (sightMark?.ballisticsParameters) {
-        setBallistics(sightMark.ballisticsParameters as CalculatedMarks);
-      } else {
-        setBallistics(null);
-      }
+      setActiveSightMark(sightMark);
+      setBallistics((sightMark?.ballisticsParameters as CalculatedMarks) || null);
     } catch (err) {
-      console.error('Error loading ballistics data:', err);
-      // More specific error message based on error type
-      if (err instanceof AppError) {
-        if (err.code === 'CONFLICT') {
-          // Conflict should have been handled in repository, but if it reaches here,
-          // it means the conflict couldn't be resolved. Don't show error to user.
-          console.warn('Bow specification conflict - this may resolve on retry');
-          setError(null);
-        } else if (err.code === 'NETWORK_ERROR') {
-          setError('Nettverksfeil - sjekk internettforbindelsen');
-        } else if (err.code === 'UNAUTHORIZED') {
-          setError('Vennligst logg inn på nytt');
-        } else {
-          setError(err.message || 'Kunne ikke laste siktemerker');
-        }
-      } else if (err instanceof Error) {
-        setError('Kunne ikke laste siktemerker');
-      } else {
-        setError('Kunne ikke laste siktemerker');
-      }
+      Sentry.captureException(err);
+
+      const errorMessage =
+        err instanceof AppError && err.code === 'NETWORK_ERROR'
+          ? 'Nettverksfeil - sjekk internettforbindelsen'
+          : err instanceof AppError && err.code === 'UNAUTHORIZED'
+            ? 'Vennligst logg inn på nytt'
+            : 'Kunne ikke laste siktemerker';
+
+      setError(errorMessage);
     } finally {
       setIsLoading(false);
     }
@@ -105,6 +79,11 @@ export default function CalculateScreen() {
 
     // Get bow specification (will be auto-created if it doesn't exist)
     const spec = await sightMarksRepository.getBowSpecificationByBowId(bow.id);
+
+    if (!spec || !spec.id) {
+      console.error('Invalid bow specification returned:', spec);
+      throw new Error('Kunne ikke hente gyldig bue-spesifikasjon');
+    }
 
     return { bow, arrows: arrowSet, spec };
   }
@@ -161,10 +140,16 @@ export default function CalculateScreen() {
           user?.id,
         );
       } else {
+        // Ensure we have a valid bow specification ID
+        if (!spec.id) {
+          throw new Error('Bow specification ID is missing');
+        }
+
         updatedSightMark = await offlineMutation(
           {
             type: 'sightMarks/createMark',
             payload: {
+              userId: user?.id,
               bowSpecificationId: spec.id,
               givenMarks,
               givenDistances,
@@ -173,6 +158,7 @@ export default function CalculateScreen() {
           },
           () =>
             sightMarksRepository.create({
+              userId: user?.id,
               bowSpecificationId: spec.id,
               givenMarks,
               givenDistances,
@@ -185,7 +171,6 @@ export default function CalculateScreen() {
       setActiveSightMark(updatedSightMark);
       setBallistics(aimMarkResponse);
     } catch (err) {
-      console.error('Error during calculation', err);
       Sentry.captureException(err);
       setError('Kunne ikke beregne siktemerker');
       setStatus('error');
@@ -249,9 +234,13 @@ export default function CalculateScreen() {
 
     return (
       <>
-        {error && <Message title="Oisann, noe gikk galt." description="Kunne ikke hente siktemerker" />}
+        {error && (
+          <View style={{ marginTop: 16 }}>
+            <Message title="Oisann, noe gikk galt." description={error} onPress={() => setError(null)} buttonLabel="Lukk" />
+          </View>
+        )}
         <MarksTable ballistics={ballistics} removeMark={handleRemoveMark} status={status} />
-        {ballistics && ballistics.given_marks.length > 0 && !isFormVisible && (
+        {ballistics && ballistics.given_marks?.length > 0 && !isFormVisible && (
           <Button
             buttonStyle={{ marginTop: 8 }}
             label="Tøm liste"

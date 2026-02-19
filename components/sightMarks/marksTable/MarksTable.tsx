@@ -14,7 +14,7 @@ interface CalculationTableProps {
 
 export default function MarksTable({ ballistics, removeMark, status }: CalculationTableProps) {
   const renderBallisticTable = () => {
-    if (ballistics) {
+    if (ballistics && ballistics.given_distances?.length > 0) {
       return ballistics.given_distances.map((distance, index) => (
         <View style={styles.tr} key={index}>
           <View style={styles.section}>
@@ -23,11 +23,11 @@ export default function MarksTable({ ballistics, removeMark, status }: Calculati
           </View>
           <View style={styles.section}>
             <Text style={styles.thead}>Merke</Text>
-            <Text style={styles.trData}>{ballistics.given_marks[index].toFixed(2)}</Text>
+            <Text style={styles.trData}>{ballistics.given_marks?.[index]?.toFixed(2) ?? '-'}</Text>
           </View>
           <View style={styles.sectionCalc}>
             <Text style={styles.theadBlack}>Beregnet</Text>
-            <Text style={styles.trData}>{ballistics.calculated_marks[index].toFixed(2)}</Text>
+            <Text style={styles.trData}>{ballistics.calculated_marks?.[index]?.toFixed(2) ?? '-'}</Text>
           </View>
           <Pressable
             style={[styles.deleteButton, { opacity: status === 'pending' ? 0.6 : 1 }]}
