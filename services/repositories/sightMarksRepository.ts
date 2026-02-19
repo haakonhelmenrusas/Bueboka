@@ -3,12 +3,11 @@ import { AimDistanceMark, BowSpecification, CalculatedMarks, MarksResult, SightM
 import * as Sentry from '@sentry/react-native';
 
 export const sightMarksRepository = {
-  // SightMarks CRUD
   async getAll(): Promise<SightMark[]> {
     const response = await client.get<SightMark[] | { sightMarks: SightMark[] }>('/sight-marks');
-    // Handle both wrapped {sightMarks: [...]} and direct array responses
-    return Array.isArray(response.data) ? response.data : (response.data as any)?.sightMarks || [];
+    return Array.isArray(response.data) ? response.data : response.data?.sightMarks || [];
   },
+
   async getById(id: string): Promise<SightMark> {
     const response = await client.get<SightMark>(`/sight-marks/${id}`);
     return response.data;
@@ -25,11 +24,23 @@ export const sightMarksRepository = {
     await client.delete(`/sight-marks/${id}`);
   },
 
-  // Bow Specifications
   async getBowSpecificationByBowId(bowId: string): Promise<BowSpecification> {
-    const response = await client.get<BowSpecification>(`/bow-specifications/by-bow/${bowId}`);
-    return response.data;
+    const response = await client.get<{ bowSpecification: BowSpecification } | BowSpecification>(`/bow-specifications/by-bow/${bowId}`);
+
+    // Handle wrapped response { bowSpecification: {...} } or direct response
+    const spec = (response.data as any)?.bowSpecification || response.data;
+
+    if (!spec?.id) {
+      Sentry.captureMessage('Bow specification missing id field', {
+        level: 'error',
+        extra: { responseData: response.data, bowId },
+      });
+      throw new Error('Bow specification response is missing id field');
+    }
+
+    return spec;
   },
+
   async createSpecification(data: Partial<BowSpecification>): Promise<BowSpecification> {
     try {
       const response = await client.post<BowSpecification>('/bow-specifications', data);
@@ -49,7 +60,6 @@ export const sightMarksRepository = {
     }
   },
 
-  // SightMarkResult CRUD
   async getResults(sightMarkId?: string): Promise<SightMarkResult[]> {
     const url = sightMarkId ? `/sight-mark-results?sightMarkId=${sightMarkId}` : '/sight-mark-results';
     const response = await client.get<SightMarkResult[]>(url);
@@ -66,7 +76,6 @@ export const sightMarksRepository = {
     await client.delete(`/sight-mark-results/${id}`);
   },
 
-  // Ballistics calculations
   async calculateBallistics(data: AimDistanceMark): Promise<CalculatedMarks> {
     const response = await client.post<CalculatedMarks>('/ballistics/calculate', data);
     return response.data;
