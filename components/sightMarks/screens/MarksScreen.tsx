@@ -48,8 +48,19 @@ export default function MarksScreen({ setScreen }: MarksScreenProps) {
       } else {
         setCalculatedMarks(null);
       }
-    } catch (error) {
-      console.error('Error loading data:', error);
+    } catch (error: any) {
+      // 404 is not an error - it just means no data exists yet
+      if (error?.response?.status === 404) {
+        setActiveSightMark(null);
+        setBallistics(null);
+        setCalculatedMarks(null);
+      } else {
+        // Log actual errors to Sentry
+        Sentry.captureException(error, {
+          tags: { type: 'sight_marks_load_error' },
+          extra: { message: error?.message, status: error?.response?.status },
+        });
+      }
     } finally {
       setIsLoading(false);
     }
@@ -103,7 +114,7 @@ export default function MarksScreen({ setScreen }: MarksScreenProps) {
     if (calculatedMarks) {
       return <CalculatedMarksTable marksData={calculatedMarks} showSpeed={showSpeed} />;
     } else if (ballistics) {
-      if (ballistics.given_distances.length > 1) {
+      if (ballistics.given_distances?.length > 1) {
         return (
           <View style={{ marginTop: 'auto', padding: 16 }}>
             <Message
