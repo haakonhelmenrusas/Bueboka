@@ -23,7 +23,7 @@
     "@react-native-picker/picker": "2.11.1",
     "@sentry/react-native": "~7.2.0",
     "@testing-library/react-native": "^12.9.0",
-    "axios": "1.12.2",
+    "axios": "1.13.5",
     "date-fns": "^4.1.0",
     "eslint-config-expo": "~10.0.0",
     "expo": "~54.0.29",
