@@ -1,6 +1,5 @@
 {
   "expo": {
-    "newArchEnabled": true,
     "scheme": "bueboka",
     "owner": "rusas_design",
     "web": {
@@ -16,7 +15,6 @@
       }
     },
     "android": {
-      "edgeToEdgeEnabled": true,
       "package": "com.aaronshade.bueboka"
     },
     "ios": {
@@ -62,7 +60,10 @@
           "project": "bueboka",
           "organization": "haakon-rusas"
         }
-      ]
+      ],
+      "@react-native-community/datetimepicker",
+      "@sentry/react-native",
+      "expo-image"
     ]
   }
 }

@@ -1,4 +1,4 @@
-import { OperationHandler, syncManager } from './syncManager';
+import { OperationHandler, syncManager } from '@/services/offline/syncManager';
 import { arrowsRepository } from '@/services/repositories/arrowsRepository';
 import { bowRepository } from '@/services/repositories/bowRepository';
 import { practiceRepository } from '@/services/repositories/practiceRepository';

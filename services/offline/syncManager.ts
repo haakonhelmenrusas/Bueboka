@@ -10,7 +10,7 @@ import {
   QueuedOperation,
   removeOperation,
   updateOperation,
-} from '@/services';
+} from '@/services/offline/operationQueue';
 
 export type OperationHandler = (operation: QueuedOperation) => Promise<void>;
 

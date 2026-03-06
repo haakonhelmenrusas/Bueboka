@@ -1,7 +1,7 @@
 import client from '@/services/api/client';
 import { handleApiError } from '@/services/api/errors';
 import { AuthResponse, SessionResponse } from '@/services/api/types';
-import { clearTokens, saveTokens } from '@/services';
+import { clearTokens, saveTokens } from '@/services/auth/tokenStorage';
 import { User } from '@/types';
 import * as Sentry from '@sentry/react-native';
 

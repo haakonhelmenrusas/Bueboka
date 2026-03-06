@@ -1,5 +1,5 @@
 import { AppError } from '@/services/api/errors';
-import { syncManager } from '@/services';
+import { syncManager } from '@/services/offline/syncManager';
 import * as Sentry from '@sentry/react-native';
 
 /**
