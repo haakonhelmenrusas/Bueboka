@@ -29,31 +29,37 @@ export default function AboutContent() {
         <Text style={styles.sub}>Bueboka er en tjeneste for alle bueskyttere i Norge.</Text>
       </View>
       <View style={styles.box}>
-        <View>
+        <View style={styles.featureItem}>
           <Text style={styles.text}>Lagre din bue og pilsett</Text>
           <FontAwesomeIcon style={styles.feather} icon={faFeather} />
         </View>
-        <View>
+        <View style={styles.featureItem}>
           <Text style={styles.text}>Beregne dine siktemerker</Text>
           <FontAwesomeIcon style={styles.feather} icon={faCrosshairs} />
         </View>
       </View>
-      <View style={styles.links}>
-        <Text>Besøk nettsiden</Text>
+      <View style={styles.linksCard}>
+        <Text style={styles.linksTitle}>Besøk nettsiden</Text>
         <TouchableOpacity style={styles.link} onPress={() => Linking.openURL('https://bueboka.no')}>
           <Text style={{ color: colors.secondary }}>Bueboka.no</Text>
           <FontAwesomeIcon size={14} style={{ color: colors.secondary }} icon={faExternalLink} />
         </TouchableOpacity>
+        <View style={styles.webInfoBox}>
+          <Text style={styles.webInfoTitle}>Også tilgjengelig på web</Text>
+          <Text style={styles.webInfoText}>Du kan bruke Bueboka i nettleseren din på samme konto: bueboka.no</Text>
+        </View>
       </View>
-      <Text style={styles.sponsor}>Sponset av</Text>
-      <Image
-        style={styles.sponsorLogo}
-        contentFit="contain"
-        source={sponsor}
-        transition={200}
-        placeholder={blurhash}
-        accessibilityLabel="Arctic Buesport AS Logo"
-      />
+      <View style={styles.sponsorCard}>
+        <Text style={styles.sponsor}>Sponset av</Text>
+        <Image
+          style={styles.sponsorLogo}
+          contentFit="contain"
+          source={sponsor}
+          transition={200}
+          placeholder={blurhash}
+          accessibilityLabel="Arctic Buesport AS Logo"
+        />
+      </View>
     </View>
   );
 }
