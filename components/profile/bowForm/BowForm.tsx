@@ -1,6 +1,6 @@
 import { Keyboard, KeyboardAvoidingView, Platform, Pressable, TouchableOpacity, View } from 'react-native';
 import { useEffect, useState } from 'react';
-import { Button, Input, ModalHeader, ModalWrapper, Select, Textarea, Toggle } from '@/components/common';
+import { Button, Checkbox, Input, ModalHeader, ModalWrapper, Select, Textarea } from '@/components/common';
 import { useBowForm } from './useBowForm';
 import { handleNumberChange } from '@/utils';
 import { Bow, BowType } from '@/types';
@@ -198,13 +198,17 @@ const BowForm = ({ modalVisible, setModalVisible, bow, existingBows = [] }: BowF
                 placeholderText="F.eks. 5"
                 onChangeText={(value) => handleNumberChange(value, 'SET_EYE_TO_SIGHT', dispatch)}
               />
+              <Checkbox
+                value={isFavorite}
+                label="Favoritt"
+                onChange={(newValue) => dispatch({ type: 'SET_IS_FAVORITE', payload: newValue })}
+              />
               <Textarea
                 label="Notater (valgfritt)"
                 value={notes}
                 onChangeText={(value) => dispatch({ type: 'SET_NOTES', payload: value })}
                 placeholderText="F.eks. Spesielle innstillinger eller justeringer"
               />
-              <Toggle value={isFavorite} label="Favoritt" onToggle={() => dispatch({ type: 'SET_IS_FAVORITE', payload: !isFavorite })} />
             </View>
             <View style={{ marginTop: 'auto' }}>
               {bow && (
