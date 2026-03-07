@@ -22,8 +22,9 @@ export default function AppLayout() {
           tabBarInactiveTintColor: colors.inactive,
           tabBarHideOnKeyboard: true,
           tabBarStyle: {
-            height: 56 + (Platform.OS === 'android' ? insets.bottom : 8),
-            paddingBottom: Math.max(insets.bottom, 8),
+            height: Platform.OS === 'ios' ? 70 + insets.bottom : 56 + insets.bottom,
+            paddingBottom: Platform.OS === 'ios' ? Math.max(insets.bottom, 12) : Math.max(insets.bottom, 8),
+            paddingTop: Platform.OS === 'ios' ? 8 : 0,
           },
         }}>
         <Tabs.Screen
