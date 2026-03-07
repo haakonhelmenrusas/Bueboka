@@ -1,5 +1,5 @@
 import React, { useRef, useState } from 'react';
-import { Animated, Easing, FlatList, Modal, Platform, Pressable, StyleProp, Text, TouchableOpacity, View, ViewStyle } from 'react-native';
+import { Animated, Easing, Modal, Platform, Pressable, ScrollView, StyleProp, Text, TouchableOpacity, View, ViewStyle } from 'react-native';
 import styles from './SelectStyles';
 import { colors } from '@/styles/colors';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
@@ -61,8 +61,9 @@ export const Select: React.FC<Props> = ({ label, options, selectedValue, onValue
 
   const selectedLabel = options.find((opt) => opt.value === selectedValue)?.label || 'Velg et alternativ';
 
-  const renderOption = ({ item }: { item: Option }) => (
+  const renderOption = (item: Option, index: number) => (
     <Pressable
+      key={`${item.value}-${index}`}
       style={[styles.option, item.value === selectedValue && styles.optionSelected]}
       onPress={() => handleSelect(item.value)}
       android_ripple={{ color: colors.tertiary }}>
@@ -74,20 +75,14 @@ export const Select: React.FC<Props> = ({ label, options, selectedValue, onValue
   );
 
   const renderDropdownContent = () => (
-    <FlatList
-      data={options}
-      renderItem={renderOption}
-      keyExtractor={(item, index) => `${item.value}-${index}`}
+    <ScrollView
       style={styles.optionsList}
       contentContainerStyle={styles.optionsContainer}
       showsVerticalScrollIndicator={true}
       keyboardShouldPersistTaps="handled"
-      bounces={Platform.OS === 'ios'}
-      scrollEventThrottle={16}
-      initialNumToRender={8}
-      maxToRenderPerBatch={10}
-      windowSize={10}
-    />
+      bounces={Platform.OS === 'ios'}>
+      {options.map(renderOption)}
+    </ScrollView>
   );
 
   const wrapperStyle = [styles.wrapper, containerStyle, { zIndex: open ? zIndex + 1000 : zIndex }];
