@@ -67,7 +67,7 @@ export const authService = {
    */
   async register(data: RegisterData): Promise<{ user: User }> {
     try {
-      const response = await client.post<AuthResponse>('/auth/signup', data);
+      const response = await client.post<AuthResponse>('/auth/sign-up/email', data);
       const { user } = response.data as any;
 
       const { token, expiresAt } = extractTokenAndExpiry(response.data);
