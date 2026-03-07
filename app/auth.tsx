@@ -74,13 +74,13 @@ function AuthScreen({ onAuthSuccess }: AuthScreenProps) {
 
     try {
       await register(email, password, name, club || undefined);
-      // After successful registration, show email verification screen
-      setRegisteredEmail(email);
-      setShowVerification(true);
-      // Clear form fields
+      // After successful registration, user will be automatically redirected to main screen
+      // by the AuthContext setting isAuthenticated: true
+      setEmail('');
       setPassword('');
       setName('');
       setClub('');
+      onAuthSuccess?.();
     } catch (error) {
       handleAuthError(error);
     }

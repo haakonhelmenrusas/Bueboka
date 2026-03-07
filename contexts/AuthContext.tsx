@@ -158,30 +158,21 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
       const result = await authService.register({ email, password, name, club });
 
-      // If email is not verified, keep user in non-authenticated state
-      if (!result.user.emailVerified) {
-        setState({
-          user: result.user,
-          isAuthenticated: false, // Not authenticated until email is verified
-          isLoading: false,
-          error: null,
-        });
-      } else {
-        // Email already verified (shouldn't happen in normal flow, but handle it)
-        setState({
-          user: result.user,
-          isAuthenticated: true,
-          isLoading: false,
-          error: null,
-        });
+      // Set user as authenticated immediately after registration
+      // This allows them to access the app while email verification is pending
+      setState({
+        user: result.user,
+        isAuthenticated: true,
+        isLoading: false,
+        error: null,
+      });
 
-        // Set user context for Sentry
-        Sentry.setUser({
-          id: result.user.id,
-          email: result.user.email,
-          username: result.user.name,
-        });
-      }
+      // Set user context for Sentry
+      Sentry.setUser({
+        id: result.user.id,
+        email: result.user.email,
+        username: result.user.name,
+      });
     } catch (error: any) {
       setState((prev) => ({
         ...prev,
