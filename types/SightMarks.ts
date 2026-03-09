@@ -46,13 +46,14 @@ export interface AimDistanceMark {
   interval_sight_measured?: number;
   arrow_diameter_mm?: number;
   arrow_mass_gram?: number;
-  feet_behind_or_center?: number;
+  feet_behind_or_center?: string;
   length_eye_sight_cm?: number;
   length_nock_eye_cm?: number;
   new_given_mark: number;
   new_given_distance: number;
   given_marks: number[];
   given_distances: number[];
+  direction_of_sight_scale?: string;
 }
 
 export interface CalculatedMarks {

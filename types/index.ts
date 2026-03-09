@@ -6,7 +6,7 @@ export type { Arrows } from './ArrowSet';
 export { Material } from './ArrowSet';
 export type { User } from './User';
 export type { Practice, End, RoundType } from './Practice';
-export { Environment, WeatherCondition } from './Practice';
+export { Environment, WeatherCondition, PracticeCategory } from './Practice';
 export type {
   BowSpecification,
   SightMark,

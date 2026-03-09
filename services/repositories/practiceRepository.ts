@@ -1,15 +1,19 @@
 import client from '@/services/api/client';
 import { handleApiError } from '@/services/api/errors';
-import { End, Environment, Practice, WeatherCondition } from '@/types';
+import { End, Environment, Practice, PracticeCategory, WeatherCondition } from '@/types';
 import { PaginatedResponse } from '@/services/api/types';
 
 /**
  * End creation data structure (for creating practice ends)
  */
 export interface CreateEndData {
-  arrows: number;
+  arrows?: number;
+  arrowsWithoutScore?: number;
   scores: number[];
+  roundScore?: number;
   distanceMeters?: number;
+  distanceFrom?: number;
+  distanceTo?: number;
   targetSizeCm?: number;
   arrowsPerEnd?: number;
 }
@@ -21,8 +25,10 @@ export interface CreatePracticeData {
   date: Date;
   environment: Environment;
   totalScore?: number;
+  rating?: number;
   location?: string;
   weather?: WeatherCondition[];
+  practiceCategory?: PracticeCategory;
   bowId?: string;
   arrowsId?: string;
   roundTypeId?: string;
@@ -37,8 +43,10 @@ export interface UpdatePracticeData {
   date?: Date;
   environment?: Environment;
   totalScore?: number;
+  rating?: number;
   location?: string;
   weather?: WeatherCondition[];
+  practiceCategory?: PracticeCategory;
   bowId?: string;
   arrowsId?: string;
   roundTypeId?: string;

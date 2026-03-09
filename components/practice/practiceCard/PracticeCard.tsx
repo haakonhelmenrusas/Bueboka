@@ -18,8 +18,7 @@ export default function PracticeCard({ practice, onEdit }: PracticeCardProps) {
     }
   };
 
-  const totalArrows = practice.ends?.reduce((sum, end) => sum + end.arrows, 0) || 0;
-  const practiceDate = practice.date instanceof Date ? practice.date : new Date(practice.date);
+  const totalArrows = practice.ends?.reduce((sum, end) => sum + (end.arrows || 0), 0) || 0;
   const environmentLabel = practice.environment === 'INDOOR' ? '🏠 Innendørs' : '🌲 Utendørs';
 
   return (
@@ -33,7 +32,7 @@ export default function PracticeCard({ practice, onEdit }: PracticeCardProps) {
       <View style={styles.content}>
         <View style={styles.textSection}>
           <Text style={styles.date}>
-            {practiceDate.toLocaleDateString('nb-NO', {
+            {practice.date.toLocaleDateString('nb-NO', {
               year: 'numeric',
               month: 'short',
               day: 'numeric',

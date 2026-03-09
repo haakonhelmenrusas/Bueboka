@@ -8,7 +8,7 @@ import { User } from '@/types';
 export interface UpdateUserData {
   name?: string;
   club?: string;
-  image?: string;
+  image?: string | null;
 }
 
 /**
@@ -43,7 +43,7 @@ export const userRepository = {
 
   /**
    * Update user avatar
-   * PATCH /api/profile
+   * PATCH /api/users
    */
   async updateAvatar(imageUri: string): Promise<User> {
     try {
@@ -54,11 +54,24 @@ export const userRepository = {
         name: 'avatar.jpg',
       } as any);
 
-      const response = await client.patch<User>('/profile', formData, {
+      const response = await client.patch<User>('/users', formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
       });
+      return response.data;
+    } catch (error) {
+      throw handleApiError(error);
+    }
+  },
+
+  /**
+   * Remove user avatar
+   * PATCH /api/users
+   */
+  async removeAvatar(): Promise<User> {
+    try {
+      const response = await client.patch<User>('/users', { image: null });
       return response.data;
     } catch (error) {
       throw handleApiError(error);

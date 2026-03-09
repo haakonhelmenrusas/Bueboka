@@ -1,13 +1,13 @@
 import { Text, TouchableOpacity, View } from 'react-native';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faStar } from '@fortawesome/free-solid-svg-icons';
-import { ArrowSet } from '@/types';
+import { Arrows } from '@/types';
 import { styles } from './ArrowCardStyles';
 import { colors } from '@/styles/colors';
 import Svg, { Path } from 'react-native-svg';
 
 interface Props {
-  arrowSet: ArrowSet;
+  arrowSet: Arrows;
   onPress: () => void;
 }
 

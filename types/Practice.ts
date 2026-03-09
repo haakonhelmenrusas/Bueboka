@@ -26,14 +26,28 @@ export enum WeatherCondition {
 }
 
 /**
+ * Practice category enum matching backend Prisma schema
+ */
+export enum PracticeCategory {
+  SKIVE_INDOOR = 'SKIVE_INDOOR',
+  SKIVE_OUTDOOR = 'SKIVE_OUTDOOR',
+  JAKT_3D = 'JAKT_3D',
+  FELT = 'FELT',
+}
+
+/**
  * End model - represents a single end/round within a practice session
  */
 export interface End {
   id: string;
   practiceId: string;
-  arrows: number;
+  arrows?: number;
+  arrowsWithoutScore?: number;
   scores: number[];
+  roundScore?: number;
   distanceMeters?: number;
+  distanceFrom?: number;
+  distanceTo?: number;
   targetSizeCm?: number;
   arrowsPerEnd?: number;
   createdAt?: Date;
@@ -46,15 +60,17 @@ export interface End {
 export interface RoundType {
   id: string;
   name: string;
-  environment: Environment;
   distanceMeters?: number;
-  targetSizeCm?: number;
+  targetType?: any;
+  numberArrows?: number;
+  arrowsWithoutScore?: number;
+  roundScore?: number;
   createdAt?: Date;
   updatedAt?: Date;
 }
 
 /**
- * Practice model matching backend Prisma schema (was Training in mobile app)
+ * Practice model matching backend Prisma schema
  */
 export interface Practice {
   id: string;
@@ -62,9 +78,11 @@ export interface Practice {
   date: Date;
   notes?: string;
   totalScore: number;
+  rating?: number;
   location?: string;
   environment: Environment;
   weather?: WeatherCondition[];
+  practiceCategory?: PracticeCategory;
   roundTypeId?: string;
   bowId?: string;
   arrowsId?: string;
