@@ -1,7 +1,6 @@
 import { Text } from 'react-native';
 import { styles } from '@/components/practice/PracticeStyles';
 import { colors } from '@/styles/colors';
-import Summary from '@/components/practice/summary/Summary';
 import PracticeList from '@/components/practice/PracticeList/PracticeList';
 import { Button, Message } from '@/components/common';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
@@ -40,8 +39,8 @@ export default function PracticeScreen() {
         arrowsRepository.getAll(),
       ]);
 
-      // Extract arrays from responses
-      const practicesData = Array.isArray(practicesResponse) ? practicesResponse : practicesResponse?.data || [];
+      // Extract practices array from response
+      const practicesData = practicesResponse.practices || [];
       const bowsListData = Array.isArray(bowsData) ? bowsData : [];
       const arrowsListData = Array.isArray(arrowsData) ? arrowsData : [];
 
@@ -109,7 +108,6 @@ export default function PracticeScreen() {
     <SafeAreaView style={{ flex: 1 }}>
       <GestureHandlerRootView style={styles.container}>
         <Text style={styles.title}>Treninger</Text>
-        <Summary practices={practices} />
         {renderContent()}
         {user && (
           <Button onPress={handleOpenModal} icon={<FontAwesomeIcon icon={faPlus} size={20} color={colors.white} />} label={'Ny trening'} />

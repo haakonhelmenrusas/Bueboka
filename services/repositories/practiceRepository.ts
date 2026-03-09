@@ -64,13 +64,20 @@ export interface PracticeQueryParams {
 }
 
 /**
+ * Practice list response structure (actual API response)
+ */
+export interface PracticeListResponse {
+  practices: Practice[];
+}
+
+/**
  * Practice repository - handles all practice-related API operations
  */
 export const practiceRepository = {
   /**
    * Get all practices for the current user with optional pagination and filters
    */
-  async getAll(params?: PracticeQueryParams): Promise<PaginatedResponse<Practice>> {
+  async getAll(params?: PracticeQueryParams): Promise<PracticeListResponse> {
     try {
       const queryParams = new URLSearchParams();
 
@@ -79,7 +86,7 @@ export const practiceRepository = {
       if (params?.startDate) queryParams.append('startDate', params.startDate.toISOString());
       if (params?.endDate) queryParams.append('endDate', params.endDate.toISOString());
 
-      const response = await client.get<PaginatedResponse<Practice>>(`/practices?${queryParams.toString()}`);
+      const response = await client.get<PracticeListResponse>(`/practices?${queryParams.toString()}`);
       return response.data;
     } catch (error) {
       throw handleApiError(error);
