@@ -21,7 +21,7 @@ import { AppError } from '@/services';
 import { useFocusEffect } from 'expo-router';
 
 export default function Profile() {
-  const { user, isLoading: authLoading } = useAuth();
+  const { user, isLoading: authLoading, refreshUser } = useAuth();
   const [bowModalVisible, setBowModalVisible] = useState(false);
   const [arrowModalVisible, setArrowModalVisible] = useState(false);
   const [bows, setBows] = useState<Bow[]>([]);
@@ -67,9 +67,27 @@ export default function Profile() {
   // Load data when screen gains focus
   useFocusEffect(
     useCallback(() => {
-      loadBows();
-      loadArrows();
-    }, [loadBows, loadArrows]),
+      // Refresh user profile to get latest data including avatar
+      const loadData = async () => {
+        if (!user) return;
+        try {
+          await refreshUser();
+          setError(null);
+          const [bowsData, arrowsData] = await Promise.all([bowRepository.getAll(), arrowsRepository.getAll()]);
+          setBows(bowsData || []);
+          setArrowSets(arrowsData || []);
+        } catch (err) {
+          if (err instanceof AppError) {
+            setError(err.message);
+          }
+        } finally {
+          setIsLoading(false);
+        }
+      };
+
+      loadData();
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []),
   );
 
   // Also reload when modals close
@@ -86,10 +104,35 @@ export default function Profile() {
   async function handleProfileUpdate(data: { name: string; club?: string }) {
     try {
       await userRepository.updateProfile(data);
+      await refreshUser();
     } catch (err) {
       if (err instanceof AppError) {
         alert(err.message);
       }
+    }
+  }
+
+  async function handleAvatarUpload(uri: string) {
+    try {
+      await userRepository.updateAvatar(uri);
+      await refreshUser();
+    } catch (err) {
+      if (err instanceof AppError) {
+        throw new Error(err.message);
+      }
+      throw err;
+    }
+  }
+
+  async function handleAvatarRemove() {
+    try {
+      await userRepository.removeAvatar();
+      await refreshUser();
+    } catch (err) {
+      if (err instanceof AppError) {
+        throw new Error(err.message);
+      }
+      throw err;
     }
   }
 
@@ -116,7 +159,13 @@ export default function Profile() {
     <View style={styles.container}>
       <ScrollView showsVerticalScrollIndicator={false}>
         <Text style={styles.title}>Profil</Text>
-        <ProfileBox user={user} avatarUrl={user.image || undefined} onEdit={() => setIsProfileModalVisible(true)} />
+        <ProfileBox
+          user={user}
+          avatarUrl={user.image || undefined}
+          onEdit={() => setIsProfileModalVisible(true)}
+          onAvatarUpload={handleAvatarUpload}
+          onAvatarRemove={handleAvatarRemove}
+        />
         <ProfileForm
           modalVisible={isProfileModalVisible}
           setModalVisible={setIsProfileModalVisible}
