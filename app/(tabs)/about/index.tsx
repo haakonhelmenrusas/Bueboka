@@ -5,6 +5,7 @@ import { Linking, ScrollView, Text, TouchableOpacity, View } from 'react-native'
 import { styles } from '@/components/about/AboutStyles';
 import { faCrosshairs } from '@fortawesome/free-solid-svg-icons/faCrosshairs';
 import { faExternalLink } from '@fortawesome/free-solid-svg-icons/faExternalLink';
+import { faInfoCircle } from '@fortawesome/free-solid-svg-icons/faInfoCircle';
 import { colors } from '@/styles/colors';
 
 export default function About() {
@@ -28,6 +29,25 @@ export default function About() {
         <Text style={styles.title}>Bueboka</Text>
         <Text style={styles.sub}>Bueboka er en tjeneste for alle bueskyttere i Norge.</Text>
       </View>
+
+      {/* Migration Information Box */}
+      <View style={styles.migrationBox}>
+        <View style={styles.migrationHeader}>
+          <FontAwesomeIcon icon={faInfoCircle} size={24} color="#856404" />
+          <Text style={styles.migrationTitle}>Viktig melding</Text>
+        </View>
+        <Text style={styles.migrationText}>
+          Denne mobilappen vil bli erstattet av en ny og forbedret versjon før sommeren 2026.
+        </Text>
+        <Text style={styles.migrationText}>
+          For å bevare dine treningsdata og siktemerker, opprett en konto på vår nye nettside og legg dem inn der.
+        </Text>
+        <TouchableOpacity style={styles.migrationButton} onPress={() => Linking.openURL('https://bueboka.no')}>
+          <Text style={styles.migrationButtonText}>Gå til bueboka.no</Text>
+          <FontAwesomeIcon icon={faExternalLink} size={16} color="#856404" />
+        </TouchableOpacity>
+      </View>
+
       <View style={styles.box}>
         <View>
           <Text style={styles.text}>Lagre din bue og pilsett</Text>

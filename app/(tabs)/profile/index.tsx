@@ -3,7 +3,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faPlus } from '@fortawesome/free-solid-svg-icons/faPlus';
 import BowCard from '@/components/profile/bowCard/BowCard';
-import { Button, Message } from '@/components/common';
+import { Button, Message, MigrationBanner } from '@/components/common';
 import BowForm from '@/components/profile/bowForm/BowForm';
 import { ArrowSet, Bow, User } from '@/types';
 import { getLocalStorage, sortItems, storeLocalStorage } from '@/utils';
@@ -88,6 +88,7 @@ export default function Profile() {
   return (
     <View style={styles.container}>
       <ScrollView showsVerticalScrollIndicator={false}>
+        <MigrationBanner />
         <Text style={styles.title}>Profil</Text>
         <ProfileBox user={user} onEdit={() => setIsProfileModalVisible(true)} />
         <ProfileForm
