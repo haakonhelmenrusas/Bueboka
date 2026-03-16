@@ -3,7 +3,7 @@ import { styles } from '@/components/training/TrainingStyles';
 import { colors } from '@/styles/colors';
 import Summary from '@/components/training/summary/Summary';
 import TrainingList from '@/components/training/trainingList/TrainingList';
-import { Button } from '@/components/common';
+import { Button, MigrationBanner } from '@/components/common';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faPlus } from '@fortawesome/free-solid-svg-icons/faPlus';
 import { useCallback, useState } from 'react';
@@ -99,6 +99,7 @@ export default function TrainingScreen() {
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <GestureHandlerRootView style={styles.container}>
+        <MigrationBanner />
         <Text style={styles.title}>Treninger</Text>
         <Summary trainings={trainings} />
         {renderTrainingContent()}

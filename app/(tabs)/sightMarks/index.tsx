@@ -6,6 +6,7 @@ import { styles } from '@/components/sightMarks/SightMarksStyles';
 import { getLocalStorage } from '@/utils';
 import { MarksResult } from '@/types';
 import { useFocusEffect } from 'expo-router';
+import { MigrationBanner } from '@/components/common';
 
 export default function SightMarks() {
   const [screen, setScreen] = useState('calculate');
@@ -29,6 +30,7 @@ export default function SightMarks() {
 
   return (
     <View style={styles.container}>
+      <MigrationBanner />
       <Text style={styles.title}>Beregn siktemerker</Text>
       <View style={styles.header}>
         <TouchableOpacity style={styles.headerItem} onPress={() => setScreen('calculate')} activeOpacity={0.7}>
