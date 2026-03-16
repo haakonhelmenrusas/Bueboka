@@ -1,10 +1,8 @@
 import { useCallback, useEffect, useState } from 'react';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { ScrollView, View } from 'react-native';
 import * as Sentry from '@sentry/react-native';
 import { Button, Message } from '@/components/common';
-import { CalculatedMarks, MarksResult } from '@/types';
-import { getLocalStorage } from '@/utils';
+import { CalculatedMarks, MarksResult, SightMark, SightMarkResult } from '@/types';
 import { CalculateMarksModal } from '@/components/sightMarks/calculateMarksModal/CalculateMarksModal';
 import CalculatedMarksTable from '@/components/sightMarks/calculatedMarksTable/CalculatedMarksTable';
 import { faChartLine } from '@fortawesome/free-solid-svg-icons/faChartLine';
@@ -15,31 +13,54 @@ import { styles } from './MarksScreenStyles';
 import { colors } from '@/styles/colors';
 import { useFocusEffect } from 'expo-router';
 import { faRefresh } from '@fortawesome/free-solid-svg-icons';
+import { sightMarksRepository } from '@/services/repositories';
+import { offlineMutation } from '@/services/offline/mutationHelper';
+import { useAuth } from '@/contexts/AuthContext';
 
 interface MarksScreenProps {
   setScreen: (screen: string) => void;
 }
 
 export default function MarksScreen({ setScreen }: MarksScreenProps) {
+  const { user } = useAuth();
   const [showSpeed, setShowSpeed] = useState(false);
   const [showGraph, setShowGraph] = useState(false);
   const [ballistics, setBallistics] = useState<CalculatedMarks | null>(null);
   const [calculatedMarks, setCalculatedMarks] = useState<MarksResult | null>(null);
+  const [activeSightMark, setActiveSightMark] = useState<SightMark | null>(null);
   const [modalVisible, setModalVisible] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
 
   const loadData = useCallback(async () => {
     setIsLoading(true);
     try {
-      const [ballisticsData, calculatedMarksData] = await Promise.all([
-        getLocalStorage<CalculatedMarks>('ballistics'),
-        getLocalStorage<MarksResult>('calculatedMarks'),
-      ]);
+      const marks = await sightMarksRepository.getAll();
+      // Get newest sight mark (most recent)
+      const current = marks.sort((a, b) => new Date(b.createdAt ?? 0).getTime() - new Date(a.createdAt ?? 0).getTime())[0] ?? null;
+      setActiveSightMark(current ?? null);
+      setBallistics((current?.ballisticsParameters as CalculatedMarks) ?? null);
 
-      setBallistics(ballisticsData);
-      setCalculatedMarks(calculatedMarksData);
-    } catch (error) {
-      console.error('Error loading data:', error);
+      if (current) {
+        const results = await sightMarksRepository.getResults(current.id);
+        // Get newest result (most recent)
+        const latest = results.sort((a, b) => new Date(b.createdAt ?? 0).getTime() - new Date(a.createdAt ?? 0).getTime())[0] ?? null;
+        setCalculatedMarks(latest ? mapResult(latest) : null);
+      } else {
+        setCalculatedMarks(null);
+      }
+    } catch (error: any) {
+      // 404 is not an error - it just means no data exists yet
+      if (error?.response?.status === 404) {
+        setActiveSightMark(null);
+        setBallistics(null);
+        setCalculatedMarks(null);
+      } else {
+        // Log actual errors to Sentry
+        Sentry.captureException(error, {
+          tags: { type: 'sight_marks_load_error' },
+          extra: { message: error?.message, status: error?.response?.status },
+        });
+      }
     } finally {
       setIsLoading(false);
     }
@@ -55,6 +76,36 @@ export default function MarksScreen({ setScreen }: MarksScreenProps) {
     }, [loadData]),
   );
 
+  function mapResult(result: SightMarkResult): MarksResult {
+    return {
+      distances: result.distances,
+      sight_marks_by_hill_angle: (result.sightMarksByAngle ?? {}) as any,
+      arrow_speed_by_angle: (result.arrowSpeedByAngle ?? {}) as any,
+    };
+  }
+
+  async function handleRemoveMarks() {
+    try {
+      if (calculatedMarks && activeSightMark) {
+        const results = await sightMarksRepository.getResults(activeSightMark.id);
+        if (results[0]) {
+          await offlineMutation(
+            {
+              type: 'sightMarks/deleteResult',
+              payload: { id: results[0].id },
+            },
+            () => sightMarksRepository.deleteResult(results[0].id),
+            user?.id,
+          );
+        }
+      }
+      setCalculatedMarks(null);
+      setModalVisible(true);
+    } catch (error) {
+      Sentry.captureException('Error removing data', error);
+    }
+  }
+
   function renderContent() {
     if (isLoading) {
       return null;
@@ -63,7 +114,7 @@ export default function MarksScreen({ setScreen }: MarksScreenProps) {
     if (calculatedMarks) {
       return <CalculatedMarksTable marksData={calculatedMarks} showSpeed={showSpeed} />;
     } else if (ballistics) {
-      if (ballistics.given_distances.length > 1) {
+      if (ballistics.given_distances?.length > 1) {
         return (
           <View style={{ marginTop: 'auto', padding: 16 }}>
             <Message
@@ -97,16 +148,6 @@ export default function MarksScreen({ setScreen }: MarksScreenProps) {
           />
         </View>
       );
-    }
-  }
-
-  async function handleRemoveMarks() {
-    try {
-      await AsyncStorage.removeItem('calculatedMarks');
-      setCalculatedMarks(null);
-      setModalVisible(true);
-    } catch (error) {
-      Sentry.captureException('Error removing data', error);
     }
   }
 
@@ -169,6 +210,8 @@ export default function MarksScreen({ setScreen }: MarksScreenProps) {
         closeModal={() => setModalVisible(false)}
         ballistics={ballistics}
         setCalculatedMarks={setCalculatedMarks}
+        sightMarkId={activeSightMark?.id ?? null}
+        onResultCreated={() => loadData()}
       />
     </View>
   );

@@ -3,19 +3,20 @@ import { Text, TouchableOpacity, View } from 'react-native';
 import CalculateScreen from '@/components/sightMarks/screens/CalculateScreen';
 import MarksScreen from '@/components/sightMarks/screens/MarksScreen';
 import { styles } from '@/components/sightMarks/SightMarksStyles';
-import { getLocalStorage } from '@/utils';
-import { MarksResult } from '@/types';
 import { useFocusEffect } from 'expo-router';
-import { MigrationBanner } from '@/components/common';
+import { sightMarksRepository } from '@/services/repositories/sightMarksRepository';
 
 export default function SightMarks() {
   const [screen, setScreen] = useState('calculate');
 
   const loadData = useCallback(async () => {
     try {
-      const calculatedMarksData = await getLocalStorage<MarksResult>('calculatedMarks');
-      if (calculatedMarksData) {
-        setScreen('marks');
+      // Use API to check if user has any sight marks/results
+      if (sightMarksRepository && typeof sightMarksRepository.getAll === 'function') {
+        const sightMarks = await sightMarksRepository.getAll();
+        if (sightMarks && Array.isArray(sightMarks) && sightMarks.length > 0) {
+          setScreen('marks');
+        }
       }
     } catch (error) {
       console.error('Error loading data:', error);
@@ -30,7 +31,6 @@ export default function SightMarks() {
 
   return (
     <View style={styles.container}>
-      <MigrationBanner />
       <Text style={styles.title}>Beregn siktemerker</Text>
       <View style={styles.header}>
         <TouchableOpacity style={styles.headerItem} onPress={() => setScreen('calculate')} activeOpacity={0.7}>

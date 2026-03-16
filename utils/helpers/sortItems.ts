@@ -6,7 +6,12 @@
  * `isFavorite`, `name`, and `bowName` properties.
  * @return {Array<T>} A new array of items sorted by favorite status and then alphabetically by name or bowName.
  */
-export function sortItems<T extends { isFavorite?: boolean; name?: string; bowName?: string }>(items: T[]): T[] {
+export function sortItems<T extends { isFavorite?: boolean; name?: string; bowName?: string }>(items?: T[] | null): T[] {
+  // Handle null, undefined, or non-array input
+  if (!items || !Array.isArray(items)) {
+    return [];
+  }
+
   return [...items].sort((a, b) => {
     // First, sort by favorite status
     if (a.isFavorite && !b.isFavorite) return -1;

@@ -1,12 +1,12 @@
 import { ScrollView, Text, View } from 'react-native';
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faPlus } from '@fortawesome/free-solid-svg-icons/faPlus';
 import BowCard from '@/components/profile/bowCard/BowCard';
 import { Button, Message, MigrationBanner } from '@/components/common';
 import BowForm from '@/components/profile/bowForm/BowForm';
-import { ArrowSet, Bow, User } from '@/types';
-import { getLocalStorage, sortItems, storeLocalStorage } from '@/utils';
+import { Arrows, Bow } from '@/types';
+import { sortItems } from '@/utils';
 import { styles } from '@/components/profile/ProfileStyles';
 import { colors } from '@/styles/colors';
 import ArrowCard from '@/components/profile/arrowCard/ArrowCard';
@@ -15,72 +15,142 @@ import BowDetails from '@/components/profile/bowDetails/BowDetails';
 import ArrowSetDetails from '@/components/profile/arrowSetDetails/ArrowSetDetails';
 import ProfileBox from '@/components/profile/profile/ProfileBox';
 import ProfileForm from '@/components/profile/profileForm/ProfileForm';
+import { useAuth } from '@/hooks';
+import { arrowsRepository, bowRepository, userRepository } from '@/services/repositories';
+import { AppError } from '@/services';
+import { useFocusEffect } from 'expo-router';
 
 export default function Profile() {
+  const { user, isLoading: authLoading, refreshUser } = useAuth();
   const [bowModalVisible, setBowModalVisible] = useState(false);
   const [arrowModalVisible, setArrowModalVisible] = useState(false);
   const [bows, setBows] = useState<Bow[]>([]);
   const [selectedBow, setSelectedBow] = useState<Bow | null>(null);
-  const [arrowSets, setArrowSets] = useState<ArrowSet[]>([]);
-  const [selectedArrowSet, setSelectedArrowSet] = useState<ArrowSet | null>(null);
+  const [arrowSets, setArrowSets] = useState<Arrows[]>([]);
+  const [selectedArrowSet, setSelectedArrowSet] = useState<Arrows | null>(null);
   const [selectedBowForDetails, setSelectedBowForDetails] = useState<Bow | null>(null);
-  const [selectedArrowSetForDetails, setSelectedArrowSetForDetails] = useState<ArrowSet | null>(null);
+  const [selectedArrowSetForDetails, setSelectedArrowSetForDetails] = useState<Arrows | null>(null);
   const [isProfileModalVisible, setIsProfileModalVisible] = useState(false);
-  const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    getLocalStorage<Bow[]>('bows').then((bows) => {
-      if (bows) {
-        setBows(bows);
-      }
-    });
-  }, [bowModalVisible]);
-
-  useEffect(() => {
-    getLocalStorage<ArrowSet[]>('arrowSets').then((data) => {
-      if (data) setArrowSets(data);
-    });
-  }, [arrowModalVisible]);
-
-  useEffect(() => {
-    const loadUser = async () => {
-      try {
-        const userData = await getLocalStorage<User>('user');
-        if (userData) {
-          setUser(userData);
-        } else {
-          // Set default user if no stored data
-          setUser({ name: 'Artemis Archer', club: 'Bueklubben' });
-        }
-      } catch (error) {
-        console.error('Error loading user data:', error);
-        // Set default user on error
-        setUser({ name: 'Artemis Archer', club: 'Bueklubben' });
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    loadUser();
-  }, []);
-
-  const handleProfileUpdate = async (updatedUser: User) => {
-    setUser(updatedUser);
+  const loadBows = useCallback(async () => {
+    if (!user) return;
     try {
-      await storeLocalStorage(updatedUser, 'user');
-    } catch (error) {
-      console.error('Error saving user data:', error);
+      setError(null);
+      const data = await bowRepository.getAll();
+      setBows(data || []);
+    } catch (err) {
+      if (err instanceof AppError) {
+        setError(err.message);
+      }
+      setBows([]);
+    } finally {
+      setIsLoading(false);
     }
-  };
+  }, [user]);
+
+  const loadArrows = useCallback(async () => {
+    if (!user) return;
+    try {
+      setError(null);
+      const data = await arrowsRepository.getAll();
+      setArrowSets(data || []);
+    } catch (err) {
+      if (err instanceof AppError) {
+        setError(err.message);
+      }
+      setArrowSets([]);
+    }
+  }, [user]);
+
+  // Load data when screen gains focus
+  useFocusEffect(
+    useCallback(() => {
+      // Refresh user profile to get latest data including avatar
+      const loadData = async () => {
+        if (!user) return;
+        try {
+          await refreshUser();
+          setError(null);
+          const [bowsData, arrowsData] = await Promise.all([bowRepository.getAll(), arrowsRepository.getAll()]);
+          setBows(bowsData || []);
+          setArrowSets(arrowsData || []);
+        } catch (err) {
+          if (err instanceof AppError) {
+            setError(err.message);
+          }
+        } finally {
+          setIsLoading(false);
+        }
+      };
+
+      loadData();
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []),
+  );
+
+  // Also reload when modals close
+  useEffect(() => {
+    if (!user) return;
+    loadBows();
+  }, [bowModalVisible, loadBows, user]);
+
+  useEffect(() => {
+    if (!user) return;
+    loadArrows();
+  }, [arrowModalVisible, loadArrows, user]);
+
+  async function handleProfileUpdate(data: { name: string; club?: string }) {
+    try {
+      await userRepository.updateProfile(data);
+      await refreshUser();
+    } catch (err) {
+      if (err instanceof AppError) {
+        alert(err.message);
+      }
+    }
+  }
+
+  async function handleAvatarUpload(uri: string) {
+    try {
+      await userRepository.updateAvatar(uri);
+      await refreshUser();
+    } catch (err) {
+      if (err instanceof AppError) {
+        throw new Error(err.message);
+      }
+      throw err;
+    }
+  }
+
+  async function handleAvatarRemove() {
+    try {
+      await userRepository.removeAvatar();
+      await refreshUser();
+    } catch (err) {
+      if (err instanceof AppError) {
+        throw new Error(err.message);
+      }
+      throw err;
+    }
+  }
 
   const sortedBows = useMemo(() => sortItems(bows), [bows]);
   const sortedArrowSets = useMemo(() => sortItems(arrowSets), [arrowSets]);
 
-  if (isLoading || !user) {
+  if (authLoading || isLoading) {
     return (
       <View style={styles.container}>
         <Text>Laster...</Text>
+      </View>
+    );
+  }
+
+  if (!user) {
+    return (
+      <View style={styles.container}>
+        <Message title="Ikke innlogget" description="Vennligst logg inn for å se profilen din." />
       </View>
     );
   }
@@ -90,13 +160,20 @@ export default function Profile() {
       <ScrollView showsVerticalScrollIndicator={false}>
         <MigrationBanner />
         <Text style={styles.title}>Profil</Text>
-        <ProfileBox user={user} onEdit={() => setIsProfileModalVisible(true)} />
+        <ProfileBox
+          user={user}
+          avatarUrl={user.image || undefined}
+          onEdit={() => setIsProfileModalVisible(true)}
+          onAvatarUpload={handleAvatarUpload}
+          onAvatarRemove={handleAvatarRemove}
+        />
         <ProfileForm
           modalVisible={isProfileModalVisible}
           setModalVisible={setIsProfileModalVisible}
           user={user}
           onSave={handleProfileUpdate}
         />
+        {error && <Message title="Feil" description={error} />}
         <View style={styles.actionButtons}>
           <Button
             buttonStyle={{ minWidth: '45%' }}

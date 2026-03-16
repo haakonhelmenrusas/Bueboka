@@ -1,28 +1,25 @@
-import { Image, Text, View } from 'react-native';
+import { Text, View } from 'react-native';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faPencil } from '@fortawesome/free-solid-svg-icons';
 import { styles } from './ProfileBoxStyles';
 import { Button } from '@/components/common';
 import { User } from '@/types';
 import { colors } from '@/styles/colors';
+import ProfileImageManager from './ProfileImageManager';
 
 interface Props {
   user: User;
   avatarUrl?: string;
   onEdit: () => void;
+  onAvatarUpload: (uri: string) => Promise<void>;
+  onAvatarRemove: () => Promise<void>;
 }
 
-export default function ProfileBox({ user, avatarUrl, onEdit }: Props) {
+export default function ProfileBox({ user, avatarUrl, onEdit, onAvatarUpload, onAvatarRemove }: Props) {
   return (
     <View style={styles.container}>
       <View style={styles.content}>
-        <View style={styles.avatar}>
-          {avatarUrl ? (
-            <Image source={{ uri: avatarUrl }} style={styles.avatarImage} />
-          ) : (
-            <Text style={styles.avatarInitial}>{user.name.charAt(0).toUpperCase()}</Text>
-          )}
-        </View>
+        <ProfileImageManager userName={user.name} avatarUrl={avatarUrl} onUpload={onAvatarUpload} onRemove={onAvatarRemove} />
         <View style={styles.info}>
           <Text style={styles.name}>{user.name}</Text>
           {user.club && <Text style={styles.club}>{user.club}</Text>}

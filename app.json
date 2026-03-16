@@ -22,7 +22,8 @@
       "infoPlist": {
         "CFBundleShortVersionString": "1.6.4",
         "CFBundleIconName": "./assets/images/ipad.png",
-        "ITSAppUsesNonExemptEncryption": false
+        "ITSAppUsesNonExemptEncryption": false,
+        "NSPhotoLibraryUsageDescription": "Bueboka trenger tilgang til bilder for at du skal kunne velge profilbilde."
       }
     },
     "runtimeVersion": "1.0.1",
@@ -60,7 +61,16 @@
           "project": "bueboka",
           "organization": "haakon-rusas"
         }
-      ]
+      ],
+      "@react-native-community/datetimepicker",
+      "@sentry/react-native",
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "Bueboka trenger tilgang til bilder for at du skal kunne velge profilbilde."
+        }
+      ],
+      "expo-image"
     ]
   }
 }

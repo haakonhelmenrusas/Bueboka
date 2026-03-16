@@ -36,9 +36,9 @@ const Input = React.forwardRef<TextInput, InputProps>((props, ref: React.Ref<Tex
     <View
       style={[defaultStyles.container, props.containerStyle]}
       accessibilityLabel={Platform.OS === 'android' ? props.label : `${props.label}${': Disabled!'}`}>
-      <View style={[defaultStyles.labelContainer, props.labelStyle]}>
+      <View style={defaultStyles.labelContainer}>
         {props.icon && <View style={defaultStyles.icon}>{props.icon}</View>}
-        <Text style={defaultStyles.label}>{props.label}</Text>
+        <Text style={[defaultStyles.label, props.labelStyle]}>{props.label}</Text>
       </View>
       <TextInput
         ref={ref}

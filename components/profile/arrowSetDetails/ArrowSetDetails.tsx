@@ -1,13 +1,13 @@
 import { Pressable, Text, View } from 'react-native';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
-import { faXmark, faCog } from '@fortawesome/free-solid-svg-icons';
-import { ArrowSet } from '@/types';
+import { faCog, faXmark } from '@fortawesome/free-solid-svg-icons';
+import { Arrows } from '@/types';
 import { styles } from '../DetailsStyles';
 import { colors } from '@/styles/colors';
-import { ModalWrapper, DataValue } from '@/components/common';
+import { DataValue, ModalWrapper } from '@/components/common';
 
 interface Props {
-  arrowSet: ArrowSet;
+  arrowSet: Arrows;
   visible: boolean;
   onClose: () => void;
   onEdit: () => void;
@@ -31,23 +31,28 @@ export default function ArrowSetDetails({ arrowSet, visible, onClose, onEdit }: 
 
         <View style={styles.content}>
           <View style={styles.row}>
+            <Text style={styles.label}>Material</Text>
+            <DataValue value={arrowSet.material} capitalize textStyle={styles.value} />
+          </View>
+
+          <View style={styles.row}>
+            <Text style={styles.label}>Antall piler</Text>
+            <DataValue value={arrowSet.arrowsCount} textStyle={styles.value} />
+          </View>
+
+          <View style={styles.row}>
             <Text style={styles.label}>Spine</Text>
             <DataValue value={arrowSet.spine} textStyle={styles.value} />
           </View>
 
           <View style={styles.row}>
             <Text style={styles.label}>Vekt</Text>
-            <DataValue value={arrowSet.weight} suffix=" gram" textStyle={styles.value} />
+            <DataValue value={arrowSet.weight} suffix=" grain" textStyle={styles.value} />
           </View>
 
           <View style={styles.row}>
             <Text style={styles.label}>Lengde</Text>
-            <DataValue value={arrowSet.length} suffix=" cm" textStyle={styles.value} />
-          </View>
-
-          <View style={styles.row}>
-            <Text style={styles.label}>Material</Text>
-            <DataValue value={arrowSet.material} capitalize textStyle={styles.value} />
+            <DataValue value={arrowSet.length} suffix=" tommer" textStyle={styles.value} />
           </View>
 
           <View style={styles.row}>
@@ -55,10 +60,40 @@ export default function ArrowSetDetails({ arrowSet, visible, onClose, onEdit }: 
             <DataValue value={arrowSet.diameter} suffix=" mm" textStyle={styles.value} />
           </View>
 
-          <View style={styles.row}>
-            <Text style={styles.label}>Antall piler</Text>
-            <DataValue value={arrowSet.numberOfArrows} textStyle={styles.value} />
-          </View>
+          {arrowSet.pointType && (
+            <View style={styles.row}>
+              <Text style={styles.label}>Pilspisstype</Text>
+              <Text style={styles.value}>{arrowSet.pointType}</Text>
+            </View>
+          )}
+
+          {arrowSet.pointWeight && (
+            <View style={styles.row}>
+              <Text style={styles.label}>Spissvekt</Text>
+              <DataValue value={arrowSet.pointWeight} suffix=" grain" textStyle={styles.value} />
+            </View>
+          )}
+
+          {arrowSet.vanes && (
+            <View style={styles.row}>
+              <Text style={styles.label}>Vanes</Text>
+              <Text style={styles.value}>{arrowSet.vanes}</Text>
+            </View>
+          )}
+
+          {arrowSet.nock && (
+            <View style={styles.row}>
+              <Text style={styles.label}>Nock</Text>
+              <Text style={styles.value}>{arrowSet.nock}</Text>
+            </View>
+          )}
+
+          {arrowSet.notes && (
+            <View style={styles.row}>
+              <Text style={styles.label}>Notater</Text>
+              <Text style={styles.value}>{arrowSet.notes}</Text>
+            </View>
+          )}
         </View>
       </View>
     </ModalWrapper>

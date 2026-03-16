@@ -1,16 +1,31 @@
+/**
+ * Material enum matching backend Prisma schema
+ */
 export enum Material {
-  Karbon = 'Karbon',
-  Aluminum = 'Aluminum',
-  Treverk = 'Treverk',
+  KARBON = 'KARBON',
+  ALUMINIUM = 'ALUMINIUM',
+  TREVERK = 'TREVERK',
 }
 
-export interface ArrowSet {
+/**
+ * Arrows model matching backend Prisma schema
+ */
+export interface Arrows {
+  id: string;
+  userId?: string;
   name: string;
-  weight: number;
-  length: number;
-  diameter: number;
+  arrowsCount?: number;
+  diameter?: number;
+  weight?: number;
+  length?: number;
   material: Material;
-  spine: number;
-  numberOfArrows: number;
+  spine?: string;
+  pointType?: string;
+  pointWeight?: number;
+  vanes?: string;
+  nock?: string;
+  notes?: string;
   isFavorite?: boolean;
+  createdAt?: Date;
+  updatedAt?: Date;
 }

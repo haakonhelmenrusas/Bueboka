@@ -1,14 +1,16 @@
 import { Keyboard, KeyboardAvoidingView, Platform, Pressable, TouchableOpacity, View } from 'react-native';
 import { useEffect, useState } from 'react';
-import { Button, Input, ModalHeader, ModalWrapper, Select, Toggle } from '@/components/common';
+import { Button, Checkbox, Input, ModalHeader, ModalWrapper, Select, Textarea } from '@/components/common';
 import { useBowForm } from './useBowForm';
-import { handleNumberChange, storeLocalStorage } from '@/utils';
-import { Bow } from '@/types';
+import { handleNumberChange } from '@/utils';
+import { Bow, BowType } from '@/types';
 import { styles } from './BowFormStyles';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faTrashCan } from '@fortawesome/free-regular-svg-icons/faTrashCan';
 import { colors } from '@/styles/colors';
 import ConfirmModal from '@/components/profile/DeleteArrowSetModal/ConfirmModal';
+import { bowRepository } from '@/services/repositories';
+import { AppError } from '@/services';
 
 interface BowFormProps {
   modalVisible: boolean;
@@ -17,13 +19,14 @@ interface BowFormProps {
   existingBows: Bow[];
 }
 
-const BowForm = ({ modalVisible, setModalVisible, bow, existingBows }: BowFormProps) => {
+const BowForm = ({ modalVisible, setModalVisible, bow, existingBows = [] }: BowFormProps) => {
   const [confirmVisible, setConfirmVisible] = useState(false);
-  const [
-    { bowName, bowNameError, bowType, placement, eyeToNock, eyeToAim, interval_sight_real, intervalSightMeasure, isFavorite },
-    dispatch,
-  ] = useBowForm();
+  const [submitting, setSubmitting] = useState(false);
+  const [{ name, nameError, type, eyeToNock, aimMeasure, eyeToSight, notes, isFavorite }, dispatch] = useBowForm();
   const [prevBow, setPrevBow] = useState<Bow | null>(null);
+
+  // Ensure existingBows is always an array
+  const bows = Array.isArray(existingBows) ? existingBows : [];
 
   useEffect(() => {
     if (!modalVisible) return;
@@ -34,68 +37,88 @@ const BowForm = ({ modalVisible, setModalVisible, bow, existingBows }: BowFormPr
     }
 
     if (bow) {
-      dispatch({ type: 'SET_BOW_NAME', payload: bow.bowName });
-      dispatch({ type: 'SET_BOW_TYPE', payload: bow.bowType });
-      dispatch({ type: 'SET_PLACEMENT', payload: bow.placement });
+      dispatch({ type: 'SET_NAME', payload: bow.name });
+      dispatch({ type: 'SET_TYPE', payload: bow.type });
       dispatch({ type: 'SET_EYE_TO_NOCK', payload: bow.eyeToNock?.toString() ?? '' });
-      dispatch({ type: 'SET_EYE_TO_AIM', payload: bow.eyeToAim?.toString() ?? '' });
-      dispatch({ type: 'SET_INTERVAL_SIGHT_REAL', payload: bow.interval_sight_real?.toString() ?? '' });
-      dispatch({ type: 'SET_INTERVAL_SIGHT_MEASURE', payload: bow.interval_sight_measured?.toString() ?? '' });
+      dispatch({ type: 'SET_AIM_MEASURE', payload: bow.aimMeasure?.toString() ?? '' });
+      dispatch({ type: 'SET_EYE_TO_SIGHT', payload: bow.eyeToSight?.toString() ?? '' });
+      dispatch({ type: 'SET_NOTES', payload: bow.notes ?? '' });
       dispatch({ type: 'SET_IS_FAVORITE', payload: bow.isFavorite ?? false });
     }
 
     setPrevBow(bow);
-  }, [bow, dispatch]);
+  }, [bow, dispatch, modalVisible]);
 
   async function handleSubmit() {
-    if (!bowName) {
-      dispatch({ type: 'SET_BOW_NAME_ERROR', payload: true });
+    if (!name) {
+      dispatch({ type: 'SET_NAME_ERROR', payload: true });
       return;
     }
-    let newBow: Bow = {
-      id: bow?.id || Date.now().toString(),
-      bowName,
-      bowType,
-      placement,
-      eyeToNock: eyeToNock ? parseFloat(eyeToNock) : undefined,
-      eyeToAim: eyeToAim ? parseFloat(eyeToAim) : undefined,
-      interval_sight_real: interval_sight_real ? parseFloat(interval_sight_real) : undefined,
-      interval_sight_measured: intervalSightMeasure ? parseFloat(intervalSightMeasure) : undefined,
-      isFavorite,
-    };
 
-    let updatedBows: Bow[];
+    setSubmitting(true);
+    try {
+      const bowData = {
+        name,
+        type: type as BowType,
+        eyeToNock: eyeToNock ? parseFloat(eyeToNock) : undefined,
+        aimMeasure: aimMeasure ? parseFloat(aimMeasure) : undefined,
+        eyeToSight: eyeToSight ? parseFloat(eyeToSight) : undefined,
+        notes: notes || undefined,
+        isFavorite,
+      };
 
-    if (bow) {
-      // Edit mode: replace the existing one by id
-      updatedBows = existingBows.map((b) => (b.id === bow.id ? newBow : b));
-    } else {
-      // Create mode: add new bow if limit not reached
-      if (existingBows.length >= 5) {
-        //TODO: Add error message to user here
-        return;
+      if (bow) {
+        // Edit mode
+        await bowRepository.update(bow.id, bowData);
+      } else {
+        // Create mode
+        if (bows.length >= 5) {
+          alert('Du kan ikke ha mer enn 5 buer');
+          return;
+        }
+        await bowRepository.create(bowData);
       }
-      updatedBows = [...existingBows, newBow];
-    }
 
-    if (newBow.isFavorite) {
-      updatedBows = updatedBows.map((b) => ({
-        ...b,
-        isFavorite: b.id === newBow.id,
-      }));
-    }
+      // If setting as favorite, unfavorite others
+      if (isFavorite) {
+        const favoriteBows = bows.filter((b) => b.isFavorite && b.id !== bow?.id);
+        for (const favBow of favoriteBows) {
+          await bowRepository.update(favBow.id, { isFavorite: false });
+        }
+      }
 
-    await storeLocalStorage(updatedBows, 'bows');
-    clearForm();
-    setModalVisible(false);
+      clearForm();
+      setModalVisible(false);
+    } catch (error) {
+      console.error('Error saving bow:', error);
+      if (error instanceof AppError) {
+        alert(error.message);
+      } else {
+        alert('Kunne ikke lagre bue');
+      }
+    } finally {
+      setSubmitting(false);
+    }
   }
 
   async function handleDelete() {
     if (!bow) return;
-    const updatedBows = existingBows.filter((b) => b.id !== bow.id);
-    await storeLocalStorage(updatedBows, 'bows');
-    clearForm();
-    setModalVisible(false);
+
+    setSubmitting(true);
+    try {
+      await bowRepository.delete(bow.id);
+      clearForm();
+      setModalVisible(false);
+    } catch (error) {
+      console.error('Error deleting bow:', error);
+      if (error instanceof AppError) {
+        alert(error.message);
+      } else {
+        alert('Kunne ikke slette bue');
+      }
+    } finally {
+      setSubmitting(false);
+    }
   }
 
   function handleCloseModal() {
@@ -104,14 +127,13 @@ const BowForm = ({ modalVisible, setModalVisible, bow, existingBows }: BowFormPr
   }
 
   function clearForm() {
-    dispatch({ type: 'SET_BOW_NAME', payload: '' });
-    dispatch({ type: 'SET_BOW_NAME_ERROR', payload: false });
-    dispatch({ type: 'SET_BOW_TYPE', payload: 'recurve' });
-    dispatch({ type: 'SET_PLACEMENT', payload: 'behind' });
+    dispatch({ type: 'SET_NAME', payload: '' });
+    dispatch({ type: 'SET_NAME_ERROR', payload: false });
+    dispatch({ type: 'SET_TYPE', payload: BowType.RECURVE });
     dispatch({ type: 'SET_EYE_TO_NOCK', payload: '' });
-    dispatch({ type: 'SET_EYE_TO_AIM', payload: '' });
-    dispatch({ type: 'SET_INTERVAL_SIGHT_REAL', payload: '' });
-    dispatch({ type: 'SET_INTERVAL_SIGHT_MEASURE', payload: '' });
+    dispatch({ type: 'SET_AIM_MEASURE', payload: '' });
+    dispatch({ type: 'SET_EYE_TO_SIGHT', payload: '' });
+    dispatch({ type: 'SET_NOTES', payload: '' });
     dispatch({ type: 'SET_IS_FAVORITE', payload: false });
   }
 
@@ -128,38 +150,27 @@ const BowForm = ({ modalVisible, setModalVisible, bow, existingBows }: BowFormPr
             <ModalHeader onPress={handleCloseModal} title={bow ? 'Rediger bue' : 'Ny bue'} />
             <View style={styles.inputs}>
               <Input
-                value={bowName}
-                onChangeText={(value) => dispatch({ type: 'SET_BOW_NAME', payload: value })}
+                value={name}
+                onChangeText={(value) => dispatch({ type: 'SET_NAME', payload: value })}
                 placeholderText="F.eks. Hoyt"
                 label="Navn på bue (obligatorisk)"
-                error={bowNameError}
+                error={nameError}
                 errorMessage="Du må fylle inn navn på bue"
               />
               <Select
                 containerStyle={{ zIndex: 2000 }}
                 label="Buetype"
-                selectedValue={bowType}
+                selectedValue={type}
                 options={[
-                  { label: 'Recurve', value: 'recurve' },
-                  { label: 'Compound', value: 'compound' },
-                  { label: 'Tradisjonell', value: 'tradisjonell' },
-                  { label: 'Langbue', value: 'langbue' },
-                  { label: 'Kyudo', value: 'kyudo' },
-                  { label: 'Barebow', value: 'barebow' },
-                  { label: 'Rytterbue', value: 'rytterbue' },
-                  { label: 'Annet', value: 'annet' },
+                  { label: 'Recurve', value: BowType.RECURVE },
+                  { label: 'Compound', value: BowType.COMPOUND },
+                  { label: 'Langbue', value: BowType.LONGBOW },
+                  { label: 'Barebow', value: BowType.BAREBOW },
+                  { label: 'Rytterbue', value: BowType.HORSEBOW },
+                  { label: 'Tradisjonell', value: BowType.TRADITIONAL },
+                  { label: 'Annet', value: BowType.OTHER },
                 ]}
-                onValueChange={(value) => dispatch({ type: 'SET_BOW_TYPE', payload: value })}
-              />
-              <Select
-                containerStyle={{ zIndex: 1000 }}
-                label="Plassering"
-                selectedValue={placement}
-                options={[
-                  { label: 'Bak linja', value: 'behind' },
-                  { label: 'Over linja', value: '' },
-                ]}
-                onValueChange={(value) => dispatch({ type: 'SET_PLACEMENT', payload: value })}
+                onValueChange={(value) => dispatch({ type: 'SET_TYPE', payload: value })}
               />
               <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 8 }}>
                 <Input
@@ -172,22 +183,32 @@ const BowForm = ({ modalVisible, setModalVisible, bow, existingBows }: BowFormPr
                 />
                 <Input
                   containerStyle={{ width: '48%' }}
-                  label="Øye til sikte (cm)"
+                  label="Siktemåling (cm)"
                   keyboardType="numeric"
                   placeholderText="F.eks. 90"
-                  value={eyeToAim}
-                  onChangeText={(value) => handleNumberChange(value, 'SET_EYE_TO_AIM', dispatch)}
+                  value={aimMeasure}
+                  onChangeText={(value) => handleNumberChange(value, 'SET_AIM_MEASURE', dispatch)}
                 />
               </View>
               <Input
                 keyboardType="numeric"
-                containerStyle={{ width: '48%', marginBottom: 24 }}
-                label={'Intervall sikte (cm)'}
-                value={interval_sight_real}
+                containerStyle={{ width: '48%', marginBottom: 16 }}
+                label={'Øye til sikte (cm)'}
+                value={eyeToSight}
                 placeholderText="F.eks. 5"
-                onChangeText={(value) => handleNumberChange(value, 'SET_INTERVAL_SIGHT_REAL', dispatch)}
+                onChangeText={(value) => handleNumberChange(value, 'SET_EYE_TO_SIGHT', dispatch)}
               />
-              <Toggle value={isFavorite} label="Favoritt" onToggle={() => dispatch({ type: 'SET_IS_FAVORITE', payload: !isFavorite })} />
+              <Checkbox
+                value={isFavorite}
+                label="Favoritt"
+                onChange={(newValue) => dispatch({ type: 'SET_IS_FAVORITE', payload: newValue })}
+              />
+              <Textarea
+                label="Notater (valgfritt)"
+                value={notes}
+                onChangeText={(value) => dispatch({ type: 'SET_NOTES', payload: value })}
+                placeholderText="F.eks. Spesielle innstillinger eller justeringer"
+              />
             </View>
             <View style={{ marginTop: 'auto' }}>
               {bow && (
@@ -195,7 +216,7 @@ const BowForm = ({ modalVisible, setModalVisible, bow, existingBows }: BowFormPr
                   <FontAwesomeIcon icon={faTrashCan} size={16} color={colors.error} />
                 </TouchableOpacity>
               )}
-              <Button disabled={!bowName} onPress={handleSubmit} label="Lagre" />
+              <Button disabled={!name || submitting} onPress={handleSubmit} label={submitting ? 'Lagrer...' : 'Lagre'} />
               <Button
                 type="outline"
                 onPress={() => {
@@ -211,7 +232,7 @@ const BowForm = ({ modalVisible, setModalVisible, bow, existingBows }: BowFormPr
       <ConfirmModal
         visible={confirmVisible}
         title="Slett bue"
-        message={'Vil du slette buen "' + bowName + '"?'}
+        message={'Vil du slette buen "' + name + '"?'}
         confirmLabel="Slett"
         cancelLabel="Avbryt"
         onCancel={() => setConfirmVisible(false)}

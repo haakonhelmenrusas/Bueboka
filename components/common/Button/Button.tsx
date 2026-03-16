@@ -15,7 +15,7 @@ interface ButtonProps extends PressableProps {
   type?: 'filled' | 'outline';
   loading?: boolean;
   iconPosition?: 'left' | 'right';
-  variant?: 'standard' | 'warning';
+  variant?: 'standard' | 'warning' | 'tertiary';
   size?: 'small' | 'normal';
 }
 
@@ -39,6 +39,11 @@ const Button: React.FC<ButtonProps> = ({
         return {
           main: type === 'outline' ? colors.transparent : colors.error,
           text: type === 'outline' ? colors.error : colors.white,
+        };
+      case 'tertiary':
+        return {
+          main: type === 'outline' ? colors.transparent : colors.tertiary,
+          text: type === 'outline' ? colors.tertiary : colors.primary,
         };
       case 'standard':
       default:

@@ -1,20 +1,36 @@
 import { Keyboard, KeyboardAvoidingView, Platform, View } from 'react-native';
-import { Button, Input, ModalHeader, ModalWrapper } from '@/components/common';
+import { Button, Input, Message, ModalHeader, ModalWrapper } from '@/components/common';
 import { CalculatedMarks, MarksResult } from '@/types';
-import { getLocalStorage, handleNumberChange, storeLocalStorage, useCalculateMarks } from '@/utils';
+import { handleNumberChange } from '@/utils';
 import { useCalcMarksForm } from '@/components/sightMarks/hooks/useCalcMarksForm';
 import { styles } from './CalculateMarksModalStyles';
+import { sightMarksRepository } from '@/services/repositories';
+import { useState } from 'react';
+import { offlineMutation } from '@/services/offline/mutationHelper';
+import { useAuth } from '@/contexts/AuthContext';
+import * as Sentry from '@sentry/react-native';
 
 interface CalculateMarksModalProps {
   modalVisible: boolean;
   closeModal: () => void;
   ballistics: CalculatedMarks | null;
-  setCalculatedMarks: (calculatedMarks: MarksResult) => void;
+  setCalculatedMarks: (calculatedMarks: MarksResult | null) => void;
+  sightMarkId: string | null;
+  onResultCreated?: () => void;
 }
 
-export const CalculateMarksModal = ({ modalVisible, closeModal, ballistics, setCalculatedMarks }: CalculateMarksModalProps) => {
+export const CalculateMarksModal = ({
+  modalVisible,
+  closeModal,
+  ballistics,
+  setCalculatedMarks,
+  sightMarkId,
+  onResultCreated,
+}: CalculateMarksModalProps) => {
+  const { user } = useAuth();
   const [{ distanceFrom, distanceFromError, distanceTo, distanceToError, interval, intervalError, angles }, dispatch] = useCalcMarksForm();
-  const { calculateMarks, status } = useCalculateMarks();
+  const [status, setStatus] = useState<'idle' | 'pending' | 'error'>('idle');
+  const [error, setError] = useState<string | null>(null);
 
   function handleAngleChange(value: string, index: number) {
     const newAngles = [...angles];
@@ -23,23 +39,78 @@ export const CalculateMarksModal = ({ modalVisible, closeModal, ballistics, setC
   }
 
   async function calculateMarksFunc(distanceFrom: number, distanceTo: number, interval: number) {
-    if (ballistics) {
+    if (!ballistics) {
+      setError('Data mangler');
+      return;
+    }
+
+    try {
+      setStatus('pending');
+      setError(null);
+
+      // Filter out empty/invalid angles
+      const validAngles = angles.filter((a) => !isNaN(a) && a !== null && a !== undefined);
+
       const body = {
         ballistics_pars: ballistics.ballistics_pars,
-        distances_def: [distanceFrom, interval, distanceTo],
-        angles: angles.length > 0 ? angles : [0],
+        distances_def: [distanceFrom, distanceTo, interval],
+        angles: validAngles.length > 0 ? validAngles : [0],
       };
 
-      const res = await calculateMarks(body);
+      const res = await sightMarksRepository.calculateSightMarks(body);
 
-      await storeLocalStorage(res, 'calculatedMarks').then(async () => {
-        const marks = await getLocalStorage<MarksResult>('calculatedMarks');
-        if (marks) {
-          setCalculatedMarks(marks);
-        }
-      });
+      // Persist result if we have a sightMarkId with offline queue support
+      if (sightMarkId) {
+        await offlineMutation(
+          {
+            type: 'sightMarks/createResult',
+            payload: {
+              sightMarkId,
+              distanceFrom,
+              distanceTo,
+              interval,
+              angles: body.angles,
+              distances: res.distances,
+              sightMarksByAngle: res.sight_marks_by_hill_angle,
+              arrowSpeedByAngle: res.arrow_speed_by_angle,
+            },
+          },
+          () =>
+            sightMarksRepository.createResult(sightMarkId, {
+              distanceFrom,
+              distanceTo,
+              interval,
+              angles: body.angles,
+              distances: res.distances,
+              sightMarksByAngle: res.sight_marks_by_hill_angle,
+              arrowSpeedByAngle: res.arrow_speed_by_angle,
+            }),
+          user?.id,
+        );
+      }
+
+      setCalculatedMarks(res);
+      onResultCreated?.();
       Keyboard.dismiss();
       closeModal();
+    } catch (error: any) {
+      Sentry.captureException(error, {
+        tags: { type: 'calculate_marks_error' },
+        extra: {
+          distanceFrom,
+          distanceTo,
+          interval,
+          angles,
+          ballistics_pars: ballistics?.ballistics_pars,
+          errorResponse: error?.response?.data,
+        },
+      });
+
+      const errorMessage = error?.response?.data?.message || error?.response?.data?.error || 'Kunne ikke beregne siktemerker';
+      setError(errorMessage);
+      setStatus('error');
+    } finally {
+      setStatus('idle');
     }
   }
 
@@ -132,6 +203,11 @@ export const CalculateMarksModal = ({ modalVisible, closeModal, ballistics, setC
             onChange={(event) => handleAngleChange(event.nativeEvent.text, 2)}
           />
         </View>
+        {error && (
+          <View style={{ marginTop: 16 }}>
+            <Message title="Feil" description={error} onPress={() => setError(null)} buttonLabel="Lukk" />
+          </View>
+        )}
         <View style={styles.buttons}>
           <Button loading={status === 'pending'} width="auto" label="Beregn" onPress={handleSave} />
           <Button
