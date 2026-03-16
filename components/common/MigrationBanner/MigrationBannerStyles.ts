@@ -11,11 +11,11 @@ export const styles = StyleSheet.create({
     marginVertical: 8,
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 8,
   },
   icon: {
     color: '#856404',
     flexShrink: 0,
+    marginRight: 8,
   },
   text: {
     color: '#856404',
@@ -25,5 +25,3 @@ export const styles = StyleSheet.create({
     lineHeight: 18,
   },
 });
-
-

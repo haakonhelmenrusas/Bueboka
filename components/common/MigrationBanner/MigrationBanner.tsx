@@ -11,10 +11,7 @@ export default function MigrationBanner() {
   return (
     <View style={styles.banner}>
       <FontAwesomeIcon style={styles.icon} icon={faInfoCircle} size={16} />
-      <Text style={styles.text}>
-        Denne appen vil bli erstattet før sommeren 2026. Se Om-siden for mer informasjon.
-      </Text>
+      <Text style={styles.text}>Denne appen vil bli erstattet før sommeren 2026. Se Om-siden for mer informasjon.</Text>
     </View>
   );
 }
-
