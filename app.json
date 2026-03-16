@@ -1,6 +1,5 @@
 {
   "expo": {
-    "newArchEnabled": true,
     "scheme": "bueboka",
     "owner": "rusas_design",
     "web": {
@@ -8,7 +7,7 @@
     },
     "name": "Bueboka",
     "slug": "bueboka",
-    "version": "1.6.3",
+    "version": "1.6.4",
     "icon": "./assets/images/icon.png",
     "extra": {
       "eas": {
@@ -16,18 +15,17 @@
       }
     },
     "android": {
-      "edgeToEdgeEnabled": true,
       "package": "com.aaronshade.bueboka"
     },
     "ios": {
       "bundleIdentifier": "com.aaronshade.bueboka",
       "infoPlist": {
-        "CFBundleShortVersionString": "1.6.3",
+        "CFBundleShortVersionString": "1.6.4",
         "CFBundleIconName": "./assets/images/ipad.png",
         "ITSAppUsesNonExemptEncryption": false
       }
     },
-    "runtimeVersion": "1.0.0",
+    "runtimeVersion": "1.0.1",
     "updates": {
       "url": "https://u.expo.dev/a740b024-fdf9-420d-9998-a6ae076ebc43"
     },
@@ -38,8 +36,8 @@
         "expo-build-properties",
         {
           "android": {
-            "compileSdkVersion": 35,
-            "targetSdkVersion": 35,
+            "compileSdkVersion": 36,
+            "targetSdkVersion": 36,
             "buildToolsVersion": "34.0.0"
           },
           "ios": {

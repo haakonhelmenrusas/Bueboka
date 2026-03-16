@@ -106,3 +106,4 @@ out/
 # Windows file system files
 Thumbs.db
 .env.local
+test-build/
