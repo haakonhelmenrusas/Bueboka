@@ -21,7 +21,7 @@ interface AuthScreenProps {
 }
 
 function AuthScreen({ onAuthSuccess }: AuthScreenProps) {
-  const { login, register, loginWithGoogle, loginWithApple, isLoading, error, clearError } = useAuth();
+  const { login, register, loginWithGoogle, isLoading, error, clearError } = useAuth();
   const [isLogin, setIsLogin] = useState(true);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -105,17 +105,6 @@ function AuthScreen({ onAuthSuccess }: AuthScreenProps) {
     }
   };
 
-  const handleAppleLogin = async () => {
-    setLocalError(null);
-    clearError();
-    try {
-      await loginWithApple();
-      onAuthSuccess?.();
-    } catch (error) {
-      handleAuthError(error);
-    }
-  };
-
   const handleVerificationComplete = () => {
     setShowVerification(false);
     setEmail('');
@@ -135,16 +124,6 @@ function AuthScreen({ onAuthSuccess }: AuthScreenProps) {
           <Text style={styles.appTitle}>Bueboka</Text>
           <Image source={require('../assets/images/logo-main-dark.png')} style={styles.logo} resizeMode="contain" />
         </View>
-        {(localError || error) && (
-          <Message
-            title="Feil"
-            description={localError || error || ''}
-            onPress={() => {
-              setLocalError(null);
-              clearError();
-            }}
-          />
-        )}
         <View style={styles.form}>
           {!isLogin && (
             <Input
@@ -181,21 +160,24 @@ function AuthScreen({ onAuthSuccess }: AuthScreenProps) {
           disabled={isLoading}
           variant="tertiary"
         />
-        {!isLogin && (
-          <>
-            <View style={styles.dividerContainer}>
-              <View style={styles.divider} />
-              <Text style={styles.dividerText}>eller</Text>
-              <View style={styles.divider} />
-            </View>
-            <View style={styles.socialButtonsContainer}>
-              <Button label="Fortsett med Google" onPress={handleGoogleLogin} disabled={isLoading} variant="standard" />
-              {Platform.OS === 'ios' && (
-                <Button label="Fortsett med Apple" onPress={handleAppleLogin} disabled={isLoading} variant="standard" />
-              )}
-            </View>
-          </>
+        {(localError || error) && (
+          <Message
+            title="Feil"
+            description={localError || error || ''}
+            onPress={() => {
+              setLocalError(null);
+              clearError();
+            }}
+          />
         )}
+        <View style={styles.dividerContainer}>
+          <View style={styles.divider} />
+          <Text style={styles.dividerText}>eller</Text>
+          <View style={styles.divider} />
+        </View>
+        <View style={styles.socialButtonsContainer}>
+          <Button label="Fortsett med Google" onPress={handleGoogleLogin} disabled={isLoading} variant="standard" />
+        </View>
         <View style={styles.toggleContainer}>
           <TouchableOpacity
             onPress={() => {

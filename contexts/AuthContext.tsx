@@ -1,10 +1,11 @@
-import React, { createContext, ReactNode, useContext, useEffect, useState } from 'react';
+import React, { createContext, ReactNode, useCallback, useContext, useEffect, useState } from 'react';
 import { User } from '@/types';
 import { authService } from '@/services/auth/authService';
-import { clearTokens, getAccessToken } from '@/services/auth/tokenStorage';
+import { clearTokens, getAccessToken, saveTokens } from '@/services/auth/tokenStorage';
 import { registerOfflineHandlers } from '@/services/offline/handlers';
 import * as Sentry from '@sentry/react-native';
 import { authClient } from '@/services/auth/authClient';
+import * as Linking from 'expo-linking';
 
 /**
  * Authentication state interface
@@ -26,7 +27,6 @@ export interface AuthContextValue extends AuthState {
   refreshUser: () => Promise<void>;
   clearError: () => void;
   loginWithGoogle: () => Promise<void>;
-  loginWithApple: () => Promise<void>;
   sendVerificationEmail: (email: string) => Promise<void>;
   resendVerificationEmail: () => Promise<void>;
   verifyEmail: (token: string) => Promise<void>;
@@ -58,13 +58,105 @@ export function AuthProvider({ children }: AuthProviderProps) {
   });
 
   /**
+   * Check current session and update state if user is authenticated
+   */
+  const checkSession = useCallback(async () => {
+    try {
+      const result = await authService.validateSession();
+
+      if (result && result.user) {
+        setState({
+          user: result.user,
+          isAuthenticated: true,
+          isLoading: false,
+          error: null,
+        });
+
+        Sentry.setUser({
+          id: result.user.id,
+          email: result.user.email,
+          username: result.user.name,
+        });
+      } else {
+        setState((prev) => ({ ...prev, isLoading: false }));
+      }
+    } catch (error) {
+      console.warn('[Auth] Session validation failed:', error);
+      setState((prev) => ({ ...prev, isLoading: false }));
+    }
+  }, []);
+
+  /**
+   * Handle OAuth callback from deep link
+   * Extracts session token from URL and stores it
+   */
+  const handleOAuthCallback = useCallback(
+    async (url: string) => {
+      try {
+        const parsedUrl = new URL(url);
+        const cookieParam = parsedUrl.searchParams.get('cookie');
+
+        if (cookieParam) {
+          const decodedCookie = decodeURIComponent(cookieParam);
+          const sessionTokenMatch = decodedCookie.match(/better-auth\.session_token=([^;]+)/);
+
+          if (sessionTokenMatch && sessionTokenMatch[1]) {
+            const sessionToken = sessionTokenMatch[1];
+            const expiresAt = new Date(Date.now() + 604800 * 1000).toISOString();
+
+            await saveTokens({ accessToken: sessionToken, expiresAt });
+
+            // Check session after token is saved
+            setTimeout(() => {
+              checkSession();
+            }, 500);
+          } else {
+            console.warn('[Auth] Could not extract session token from OAuth callback');
+            setState((prev) => ({ ...prev, isLoading: false }));
+          }
+        } else {
+          // No cookie parameter, let expoClient handle it
+          setTimeout(() => {
+            checkSession();
+          }, 1000);
+        }
+      } catch (error) {
+        console.error('[Auth] Error handling OAuth callback:', error);
+        setState((prev) => ({ ...prev, isLoading: false }));
+      }
+    },
+    [checkSession],
+  );
+
+  /**
    * Initialize auth state on mount
    */
   useEffect(() => {
-    // Register offline handlers once on mount
     registerOfflineHandlers();
     initializeAuth();
   }, []);
+
+  /**
+   * Listen for deep link callbacks from OAuth
+   */
+  useEffect(() => {
+    const handleInitialURL = async () => {
+      const url = await Linking.getInitialURL();
+      if (url) {
+        await handleOAuthCallback(url);
+      }
+    };
+
+    handleInitialURL();
+
+    const subscription = Linking.addEventListener('url', async (event) => {
+      await handleOAuthCallback(event.url);
+    });
+
+    return () => {
+      subscription.remove();
+    };
+  }, [handleOAuthCallback]);
 
   /**
    * Initialize authentication state from stored token
@@ -78,7 +170,6 @@ export function AuthProvider({ children }: AuthProviderProps) {
         return;
       }
 
-      // Validate session with backend
       const result = await authService.validateSession();
 
       if (result && result.user) {
@@ -89,14 +180,12 @@ export function AuthProvider({ children }: AuthProviderProps) {
           error: null,
         });
 
-        // Set user context for Sentry
         Sentry.setUser({
           id: result.user.id,
           email: result.user.email,
           username: result.user.name,
         });
       } else {
-        // Invalid session
         await clearTokens();
         setState({
           user: null,
@@ -106,7 +195,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
         });
       }
     } catch (error) {
-      console.warn('Failed to initialize auth:', error);
+      console.warn('[Auth] Failed to initialize auth:', error);
       await clearTokens();
       setState({
         user: null,
@@ -118,27 +207,31 @@ export function AuthProvider({ children }: AuthProviderProps) {
   }
 
   /**
+   * Set authenticated user state
+   */
+  function setAuthenticatedUser(user: User) {
+    setState({
+      user,
+      isAuthenticated: true,
+      isLoading: false,
+      error: null,
+    });
+
+    Sentry.setUser({
+      id: user.id,
+      email: user.email,
+      username: user.name,
+    });
+  }
+
+  /**
    * Login with email and password
    */
   async function login(email: string, password: string): Promise<void> {
     try {
       setState((prev) => ({ ...prev, isLoading: true, error: null }));
-
       const result = await authService.login({ email, password });
-
-      setState({
-        user: result.user,
-        isAuthenticated: true,
-        isLoading: false,
-        error: null,
-      });
-
-      // Set user context for Sentry
-      Sentry.setUser({
-        id: result.user.id,
-        email: result.user.email,
-        username: result.user.name,
-      });
+      setAuthenticatedUser(result.user);
     } catch (error: any) {
       setState((prev) => ({
         ...prev,
@@ -155,24 +248,8 @@ export function AuthProvider({ children }: AuthProviderProps) {
   async function register(email: string, password: string, name: string, club?: string): Promise<void> {
     try {
       setState((prev) => ({ ...prev, isLoading: true, error: null }));
-
       const result = await authService.register({ email, password, name, club });
-
-      // Set user as authenticated immediately after registration
-      // This allows them to access the app while email verification is pending
-      setState({
-        user: result.user,
-        isAuthenticated: true,
-        isLoading: false,
-        error: null,
-      });
-
-      // Set user context for Sentry
-      Sentry.setUser({
-        id: result.user.id,
-        email: result.user.email,
-        username: result.user.name,
-      });
+      setAuthenticatedUser(result.user);
     } catch (error: any) {
       setState((prev) => ({
         ...prev,
@@ -190,19 +267,9 @@ export function AuthProvider({ children }: AuthProviderProps) {
     try {
       setState((prev) => ({ ...prev, isLoading: true }));
       await authService.logout();
-
-      // Clear Sentry user context
-      Sentry.setUser(null);
-
-      setState({
-        user: null,
-        isAuthenticated: false,
-        isLoading: false,
-        error: null,
-      });
     } catch (error: any) {
-      console.warn('Logout error:', error);
-      // Still clear local state even if logout request fails
+      console.warn('[Auth] Logout error:', error);
+    } finally {
       Sentry.setUser(null);
       setState({
         user: null,
@@ -284,16 +351,12 @@ export function AuthProvider({ children }: AuthProviderProps) {
     try {
       setState((prev) => ({ ...prev, isLoading: true, error: null }));
 
-      // Use Better Auth client's built-in social sign-in
-      // The expoClient plugin handles the OAuth redirect automatically
       const result = await authClient.signIn.social({
         provider: 'google',
-        callbackURL: '/',
+        callbackURL: 'bueboka://',
       });
 
-      // Handle error response
       if (result.error) {
-        console.log('Google login error:', result);
         const errorMsg =
           typeof result.error === 'object' && 'message' in result.error
             ? result.error.message || 'Google login failed'
@@ -306,7 +369,6 @@ export function AuthProvider({ children }: AuthProviderProps) {
         return;
       }
 
-      // Check if we have data
       if (!result.data) {
         setState((prev) => ({
           ...prev,
@@ -316,108 +378,27 @@ export function AuthProvider({ children }: AuthProviderProps) {
         return;
       }
 
-      // Check if this is a redirect response (OAuth flow initiated)
+      // OAuth flow initiated - callback will handle the rest
       if ('redirect' in result.data && result.data.redirect) {
-        // expoClient handles the redirect automatically
-        // After OAuth flow completes, the user will be authenticated
-        // The callback will trigger a session update
         return;
       }
 
-      // Check if we got a successful response with user data
+      // Direct response with user data
       if ('user' in result.data && result.data.user) {
-        const user = result.data.user as User;
-
-        setState({
-          user,
-          isAuthenticated: true,
+        setAuthenticatedUser(result.data.user as User);
+      } else {
+        setState((prev) => ({
+          ...prev,
           isLoading: false,
-          error: null,
-        });
-
-        Sentry.setUser({
-          id: user.id,
-          email: user.email,
-          username: user.name,
-        });
+          error: 'Unexpected response from authentication',
+        }));
       }
     } catch (error: any) {
+      console.error('[Auth] Google login error:', error);
       setState((prev) => ({
         ...prev,
         isLoading: false,
         error: error?.message || 'Google login failed',
-      }));
-    }
-  }
-
-  /**
-   * Login with Apple OAuth
-   */
-  async function loginWithApple(): Promise<void> {
-    try {
-      setState((prev) => ({ ...prev, isLoading: true, error: null }));
-
-      // Use Better Auth client's built-in social sign-in
-      // The expoClient plugin handles the OAuth redirect automatically
-      const result = await authClient.signIn.social({
-        provider: 'apple',
-        callbackURL: '/',
-      });
-
-      // Handle error response
-      if (result.error) {
-        const errorMsg =
-          typeof result.error === 'object' && 'message' in result.error
-            ? result.error.message || 'Apple login failed'
-            : 'Apple login failed';
-        setState((prev) => ({
-          ...prev,
-          isLoading: false,
-          error: errorMsg,
-        }));
-        return;
-      }
-
-      // Check if we have data
-      if (!result.data) {
-        setState((prev) => ({
-          ...prev,
-          isLoading: false,
-          error: 'No response from authentication',
-        }));
-        return;
-      }
-
-      // Check if this is a redirect response (OAuth flow initiated)
-      if ('redirect' in result.data && result.data.redirect) {
-        // expoClient handles the redirect automatically
-        // After OAuth flow completes, the user will be authenticated
-        // The callback will trigger a session update
-        return;
-      }
-
-      // Check if we got a successful response with user data
-      if ('user' in result.data && result.data.user) {
-        const user = result.data.user as User;
-
-        setState({
-          user,
-          isAuthenticated: true,
-          isLoading: false,
-          error: null,
-        });
-
-        Sentry.setUser({
-          id: user.id,
-          email: user.email,
-          username: user.name,
-        });
-      }
-    } catch (error: any) {
-      setState((prev) => ({
-        ...prev,
-        isLoading: false,
-        error: error?.message || 'Apple login failed',
       }));
     }
   }
@@ -474,19 +455,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
     try {
       setState((prev) => ({ ...prev, isLoading: true, error: null }));
       const result = await authService.verifyEmail(token);
-
-      setState({
-        user: result.user,
-        isAuthenticated: true,
-        isLoading: false,
-        error: null,
-      });
-
-      Sentry.setUser({
-        id: result.user.id,
-        email: result.user.email,
-        username: result.user.name,
-      });
+      setAuthenticatedUser(result.user);
     } catch (error: any) {
       setState((prev) => ({
         ...prev,
@@ -506,7 +475,6 @@ export function AuthProvider({ children }: AuthProviderProps) {
     refreshUser,
     clearError,
     loginWithGoogle,
-    loginWithApple,
     sendVerificationEmail,
     resendVerificationEmail,
     verifyEmail,

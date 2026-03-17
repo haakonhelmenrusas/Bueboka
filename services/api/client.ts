@@ -4,15 +4,6 @@ import * as Sentry from '@sentry/react-native';
 
 const API_BASE_URL = process.env.EXPO_PUBLIC_API_URL || 'http://localhost:3000/api';
 
-interface RefreshResponse {
-  session: {
-    token: string;
-    expiresAt: string;
-  };
-}
-
-let authRefreshPromise: Promise<RefreshResponse> | null = null;
-
 /**
  * Axios client configured for the backend API
  */
@@ -32,9 +23,10 @@ client.interceptors.request.use(
     try {
       const token = await SecureStore.getItemAsync('auth_token');
       if (token && config.headers) {
-        config.headers.Authorization = `Bearer ${token}`;
+        // For better-auth, always send token as a cookie header
+        config.headers.Cookie = `better-auth.session_token=${token}`;
       }
-    } catch (error) {
+    } catch {
       Sentry.addBreadcrumb({
         category: 'auth',
         message: 'Failed to get auth token from secure store',
@@ -57,45 +49,21 @@ client.interceptors.request.use(
 );
 
 /**
- * Response interceptor: Handle 401 errors and token refresh
+ * Response interceptor: Handle 401 errors and invalid sessions
  */
 client.interceptors.response.use(
   (response) => response,
   async (error: AxiosError) => {
     const originalRequest = error.config as any;
 
-    // If 401 and haven't already tried to refresh, attempt token refresh
+    // Handle 401 Unauthorized errors
     if (error.response?.status === 401 && !originalRequest._retried) {
       originalRequest._retried = true;
 
-      try {
-        // Use a promise to prevent multiple simultaneous refresh requests
-        if (!authRefreshPromise) {
-          authRefreshPromise = refreshSession();
-        }
+      // For better-auth, 401 means session is invalid - clear and force re-login
+      await SecureStore.deleteItemAsync('auth_token').catch(() => {});
 
-        const { session } = await authRefreshPromise;
-        authRefreshPromise = null;
-
-        // Store new token
-        await SecureStore.setItemAsync('auth_token', session.token);
-
-        // Retry original request with new token
-        if (originalRequest.headers) {
-          originalRequest.headers.Authorization = `Bearer ${session.token}`;
-        }
-        return client(originalRequest);
-      } catch (refreshError) {
-        authRefreshPromise = null;
-        // Token refresh failed, user needs to log in again
-        await SecureStore.deleteItemAsync('auth_token').catch(() => {});
-
-        Sentry.captureException(refreshError, {
-          tags: { type: 'token_refresh_failed' },
-        });
-
-        return Promise.reject(refreshError);
-      }
+      return Promise.reject(error);
     }
 
     // Log server errors to Sentry
@@ -114,28 +82,5 @@ client.interceptors.response.use(
     return Promise.reject(error);
   },
 );
-
-/**
- * Refresh the session token
- */
-async function refreshSession(): Promise<RefreshResponse> {
-  const token = await SecureStore.getItemAsync('auth_token');
-  if (!token) {
-    throw new Error('No auth token available');
-  }
-
-  // Use a separate axios instance to avoid interceptor loops
-  const response = await axios.post<RefreshResponse>(
-    `${API_BASE_URL}/auth/refresh`,
-    {},
-    {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    },
-  );
-
-  return response.data;
-}
 
 export default client;

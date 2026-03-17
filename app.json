@@ -70,7 +70,8 @@
           "photosPermission": "Bueboka trenger tilgang til bilder for at du skal kunne velge profilbilde."
         }
       ],
-      "expo-image"
+      "expo-image",
+      "expo-web-browser"
     ]
   }
 }
