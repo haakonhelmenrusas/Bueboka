@@ -23,7 +23,12 @@
         "CFBundleShortVersionString": "1.6.4",
         "CFBundleIconName": "./assets/images/ipad.png",
         "ITSAppUsesNonExemptEncryption": false,
-        "NSPhotoLibraryUsageDescription": "Bueboka trenger tilgang til bilder for at du skal kunne velge profilbilde."
+        "NSPhotoLibraryUsageDescription": "Bueboka trenger tilgang til bilder for at du skal kunne velge profilbilde.",
+        "CFBundleURLTypes": [
+          {
+            "CFBundleURLSchemes": ["bueboka"]
+          }
+        ]
       }
     },
     "runtimeVersion": "1.0.1",
