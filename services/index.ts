@@ -2,6 +2,8 @@
 export { default as apiClient } from './api/client';
 export * from './api/types';
 export * from './api/errors';
+export * from './api/publicProfilesApi';
+export * from './api/statsApi';
 
 // Auth exports
 export * from './auth/authService';

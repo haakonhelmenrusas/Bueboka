@@ -5,6 +5,7 @@ export { BowType } from './Bow';
 export type { Arrows } from './ArrowSet';
 export { Material } from './ArrowSet';
 export type { User } from './User';
+export type { PublicProfile } from './PublicProfile';
 export type { Practice, End, RoundType } from './Practice';
 export { Environment, WeatherCondition, PracticeCategory } from './Practice';
 export type {

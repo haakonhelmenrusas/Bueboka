@@ -2,12 +2,14 @@ import { faBullseye } from '@fortawesome/free-solid-svg-icons/faBullseye';
 import { faUser as userSolid } from '@fortawesome/free-solid-svg-icons/faUser';
 import { faUser } from '@fortawesome/free-regular-svg-icons/faUser';
 import { faGear } from '@fortawesome/free-solid-svg-icons/faGear';
+import { faUsers } from '@fortawesome/free-solid-svg-icons/faUsers';
+import { faChartLine } from '@fortawesome/free-solid-svg-icons/faChartLine';
+import { faHome } from '@fortawesome/free-solid-svg-icons/faHome';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { Tabs } from 'expo-router';
 import { colors } from '@/styles/colors';
 import { Platform, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { faChartLine } from '@fortawesome/free-solid-svg-icons/faChartLine';
 import { OfflineBanner } from '@/components/common';
 
 export default function AppLayout() {
@@ -27,6 +29,16 @@ export default function AppLayout() {
             paddingTop: Platform.OS === 'ios' ? 8 : 0,
           },
         }}>
+        <Tabs.Screen
+          name="home"
+          options={{
+            tabBarIcon: ({ focused }) => <FontAwesomeIcon icon={faHome} color={focused ? colors.primary : colors.inactive} />,
+            headerShadowVisible: false,
+            headerShown: false,
+            tabBarLabel: 'Hjem',
+            tabBarLabelStyle: { fontSize: 14 },
+          }}
+        />
         <Tabs.Screen
           name="practice"
           options={{
@@ -48,14 +60,12 @@ export default function AppLayout() {
           }}
         />
         <Tabs.Screen
-          name="profile"
+          name="skyttere"
           options={{
-            tabBarIcon: ({ focused }) => (
-              <FontAwesomeIcon icon={focused ? userSolid : faUser} color={focused ? colors.primary : colors.inactive} />
-            ),
+            tabBarIcon: ({ focused }) => <FontAwesomeIcon icon={faUsers} color={focused ? colors.primary : colors.inactive} />,
             headerShadowVisible: false,
             headerShown: false,
-            tabBarLabel: 'Profil',
+            tabBarLabel: 'Skyttere',
             tabBarLabelStyle: { fontSize: 14 },
           }}
         />
@@ -67,6 +77,20 @@ export default function AppLayout() {
             headerShown: false,
             tabBarLabel: 'Innstillinger',
             tabBarLabelStyle: { fontSize: 14 },
+          }}
+        />
+        <Tabs.Screen
+          name="training"
+          options={{
+            href: null,
+            headerShown: false,
+          }}
+        />
+        <Tabs.Screen
+          name="profile"
+          options={{
+            href: null,
+            headerShown: false,
           }}
         />
       </Tabs>

@@ -9,11 +9,51 @@ import { useAuth } from '@/hooks';
 import { useState } from 'react';
 import AboutContent from '@/components/about/AboutContent';
 import EmailVerificationBanner from '@/components/auth/EmailVerificationBanner';
+import ProfileBox from '@/components/profile/profile/ProfileBox';
+import ProfileForm from '@/components/profile/profileForm/ProfileForm';
+import { userRepository } from '@/services/repositories';
+import { AppError } from '@/services';
 
 export default function Settings() {
-  const { logout, deleteAccount, user } = useAuth();
+  const { logout, deleteAccount, user, refreshUser } = useAuth();
   const [isLoggingOut, setIsLoggingOut] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
+  const [isProfileModalVisible, setIsProfileModalVisible] = useState(false);
+
+  async function handleProfileUpdate(data: { name: string; club?: string }) {
+    try {
+      await userRepository.updateProfile(data);
+      await refreshUser();
+    } catch (err) {
+      if (err instanceof AppError) {
+        alert(err.message);
+      }
+    }
+  }
+
+  async function handleAvatarUpload(uri: string) {
+    try {
+      await userRepository.updateAvatar(uri);
+      await refreshUser();
+    } catch (err) {
+      if (err instanceof AppError) {
+        throw new Error(err.message);
+      }
+      throw err;
+    }
+  }
+
+  async function handleAvatarRemove() {
+    try {
+      await userRepository.removeAvatar();
+      await refreshUser();
+    } catch (err) {
+      if (err instanceof AppError) {
+        throw new Error(err.message);
+      }
+      throw err;
+    }
+  }
 
   const handleLogout = () => {
     Alert.alert('Logg ut', 'Er du sikker på at du vil logge ut?', [
@@ -74,6 +114,20 @@ export default function Settings() {
       <EmailVerificationBanner />
       <ScrollView style={styles.container} contentContainerStyle={styles.contentContainer}>
         <Text style={styles.title}>Innstillinger</Text>
+
+        {/* User Profile Section */}
+        {user && (
+          <View style={styles.section}>
+            <ProfileBox
+              user={user}
+              avatarUrl={user.image || undefined}
+              onEdit={() => setIsProfileModalVisible(true)}
+              onAvatarUpload={handleAvatarUpload}
+              onAvatarRemove={handleAvatarRemove}
+            />
+          </View>
+        )}
+
         {user && (
           <View style={styles.section}>
             <View style={styles.sectionCard}>
@@ -129,6 +183,18 @@ export default function Settings() {
           </View>
         )}
       </ScrollView>
+
+      {/* Profile Edit Modal */}
+      {user && (
+        <ProfileForm
+          modalVisible={isProfileModalVisible}
+          setModalVisible={setIsProfileModalVisible}
+          user={user}
+          onSave={async (data) => {
+            await handleProfileUpdate(data);
+          }}
+        />
+      )}
     </SafeAreaView>
   );
 }

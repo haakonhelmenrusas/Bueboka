@@ -223,25 +223,12 @@ export function AuthProvider({ children }: AuthProviderProps) {
       return;
     }
 
-    // Log individual fields to debug
-    console.log('[Auth] User fields:', {
-      id: user.id,
-      email: user.email,
-      name: user.name,
-      image: user.image,
-      emailVerified: user.emailVerified,
-      club: user.club,
-    });
-
     setState({
       user,
       isAuthenticated: true,
       isLoading: false,
       error: null,
     });
-
-    // Verify state was set
-    console.log('[Auth] State updated with user:', user.email);
 
     Sentry.setUser({
       id: user.id,
@@ -346,24 +333,14 @@ export function AuthProvider({ children }: AuthProviderProps) {
    */
   async function refreshUser(): Promise<void> {
     try {
-      console.log('[Auth] refreshUser: Fetching latest user data from API...');
       const result = await authService.validateSession();
 
       if (result && result.user) {
-        console.log('[Auth] refreshUser: Got user from API:', {
-          id: result.user.id,
-          email: result.user.email,
-          name: result.user.name,
-          image: result.user.image,
-        });
-
         setState((prev) => ({
           ...prev,
           user: result.user,
           isAuthenticated: true,
         }));
-
-        console.log('[Auth] refreshUser: State updated');
       } else {
         console.warn('[Auth] refreshUser: No user returned from API');
         await logout();
@@ -611,7 +588,6 @@ export function useAuth(): AuthContextValue {
   if (context === undefined) {
     throw new Error('useAuth must be used within an AuthProvider');
   }
-
 
   return context;
 }
