@@ -145,33 +145,14 @@ export default function HomePage() {
       </LinearGradient>
 
       {/* Bow Form Modal */}
-      <BowForm
-        visible={bowModalVisible}
-        onClose={() => {
-          setBowModalVisible(false);
-          setSelectedBow(null);
-        }}
-        bow={selectedBow}
-        onSuccess={() => {
-          setBowModalVisible(false);
-          setSelectedBow(null);
-          loadData();
-        }}
-      />
+      <BowForm modalVisible={bowModalVisible} setModalVisible={setBowModalVisible} bow={selectedBow} existingBows={bows} />
 
       {/* Arrow Form Modal */}
       <ArrowForm
-        visible={arrowModalVisible}
-        onClose={() => {
-          setArrowModalVisible(false);
-          setSelectedArrowSet(null);
-        }}
+        modalVisible={arrowModalVisible}
+        setArrowModalVisible={setArrowModalVisible}
         arrowSet={selectedArrowSet}
-        onSuccess={() => {
-          setArrowModalVisible(false);
-          setSelectedArrowSet(null);
-          loadData();
-        }}
+        existingArrowSets={arrows}
       />
 
       {/* Bow Details Modal */}
@@ -180,32 +161,25 @@ export default function HomePage() {
           visible={!!selectedBowForDetails}
           bow={selectedBowForDetails}
           onClose={() => setSelectedBowForDetails(null)}
-          onEdit={(bow) => {
+          onEdit={() => {
+            const bowToEdit = selectedBowForDetails;
             setSelectedBowForDetails(null);
-            setSelectedBow(bow);
+            setSelectedBow(bowToEdit);
             setBowModalVisible(true);
-          }}
-          onDelete={() => {
-            setSelectedBowForDetails(null);
-            loadData();
           }}
         />
       )}
 
-      {/* Arrow Set Details Modal */}
       {selectedArrowSetForDetails && (
         <ArrowSetDetails
           visible={!!selectedArrowSetForDetails}
           arrowSet={selectedArrowSetForDetails}
           onClose={() => setSelectedArrowSetForDetails(null)}
-          onEdit={(arrowSet) => {
+          onEdit={() => {
+            const arrowToEdit = selectedArrowSetForDetails;
             setSelectedArrowSetForDetails(null);
-            setSelectedArrowSet(arrowSet);
+            setSelectedArrowSet(arrowToEdit);
             setArrowModalVisible(true);
-          }}
-          onDelete={() => {
-            setSelectedArrowSetForDetails(null);
-            loadData();
           }}
         />
       )}
