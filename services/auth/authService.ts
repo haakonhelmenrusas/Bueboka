@@ -23,17 +23,10 @@ export interface LoginData {
   password: string;
 }
 
-/**
- * Safely extract token and expiry from better-auth response
- * better-auth returns: { data: { user, session: { token, expiresAt } } } or similar variants
- */
 function extractTokenAndExpiry(responseData: any): { token?: string; expiresAt?: string } {
   if (!responseData) return {};
 
-  // Check if response has nested structure
   const data = responseData.data || responseData;
-
-  // Try common paths
   const session = data.session || {};
   const token = session.token || data.token || data.accessToken || data.sessionToken;
   const expiresAt = session.expiresAt || session.expires_at || data.expiresAt || data.expires_at || undefined;
@@ -43,7 +36,6 @@ function extractTokenAndExpiry(responseData: any): { token?: string; expiresAt?:
 
 function ensureExpiryString(expiresAt?: string): string | undefined {
   if (!expiresAt) return undefined;
-  // Normalize to ISO string if it's a Date-like value
   try {
     const d = new Date(expiresAt);
     if (!isNaN(d.getTime())) return d.toISOString();
@@ -103,8 +95,7 @@ export const authService = {
   async logout(): Promise<void> {
     try {
       await client.post('/auth/sign-out');
-    } catch (error) {
-      // Even if logout fails on server, clear local tokens
+    } catch (_error) {
       Sentry.addBreadcrumb({
         category: 'auth',
         message: 'Logout request failed, clearing local tokens anyway',
@@ -155,8 +146,9 @@ export const authService = {
   async validateSession(): Promise<{ user: User } | null> {
     try {
       const response = await client.get<SessionResponse>('/auth/get-session');
-      // Some backends return { user } only; others include session
-      const user = (response.data as any).user || response.data;
+
+      const user = (response.data as any).data?.user || (response.data as any).user || response.data;
+
       return { user };
     } catch (_error) {
       return null;

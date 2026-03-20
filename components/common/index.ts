@@ -10,7 +10,6 @@ import Checkbox from './Checkbox/Checkbox';
 import DataValue from './DataValue/DataValue';
 import ModalHeader from './ModalHeader/ModalHeader';
 import DatePicker from './DatePicker/DatePicker';
-import MigrationBanner from './MigrationBanner/MigrationBanner';
 import { OfflineBanner } from './OfflineBanner/OfflineBanner';
 
 export {
@@ -27,5 +26,4 @@ export {
   DataValue,
   ModalHeader,
   OfflineBanner,
-  MigrationBanner
 };

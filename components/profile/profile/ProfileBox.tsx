@@ -16,12 +16,13 @@ interface Props {
 }
 
 export default function ProfileBox({ user, avatarUrl, onEdit, onAvatarUpload, onAvatarRemove }: Props) {
+
   return (
     <View style={styles.container}>
       <View style={styles.content}>
-        <ProfileImageManager userName={user.name} avatarUrl={avatarUrl} onUpload={onAvatarUpload} onRemove={onAvatarRemove} />
+        <ProfileImageManager userName={user.name || user.email} avatarUrl={avatarUrl} onUpload={onAvatarUpload} onRemove={onAvatarRemove} />
         <View style={styles.info}>
-          <Text style={styles.name}>{user.name}</Text>
+          <Text style={styles.name}>{user.name || user.email || 'Bruker'}</Text>
           {user.club && <Text style={styles.club}>{user.club}</Text>}
         </View>
       </View>
