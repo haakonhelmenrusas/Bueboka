@@ -1,4 +1,4 @@
-import client from '@/services/api/client';
+import { authFetchClient as client } from '@/services/api/authFetch';
 import { handleApiError } from '@/services/api/errors';
 import { AuthResponse, SessionResponse } from '@/services/api/types';
 import { clearTokens, saveTokens } from '@/services/auth/tokenStorage';
@@ -22,11 +22,6 @@ export interface LoginData {
   email: string;
   password: string;
 }
-
-/**
- * OAuth provider types
- */
-export type OAuthProvider = 'google' | 'apple';
 
 /**
  * Safely extract token and expiry from better-auth response
@@ -88,39 +83,6 @@ export const authService = {
   async login(data: LoginData): Promise<{ user: User }> {
     try {
       const response = await client.post<AuthResponse>('/auth/sign-in/email', data);
-      const { user } = response.data as any;
-
-      const { token, expiresAt } = extractTokenAndExpiry(response.data);
-      if (token) {
-        const normalized = ensureExpiryString(expiresAt);
-        await saveTokens({ accessToken: token, expiresAt: normalized ?? '' });
-      }
-
-      return { user };
-    } catch (error) {
-      throw handleApiError(error);
-    }
-  },
-
-  /**
-   * Initiate OAuth login (Google or Apple)
-   * Returns the OAuth URL to redirect to
-   */
-  async initiateOAuth(provider: OAuthProvider): Promise<{ url: string }> {
-    try {
-      const response = await client.get<{ url: string }>(`/auth/oauth/${provider}`);
-      return response.data;
-    } catch (error) {
-      throw handleApiError(error);
-    }
-  },
-
-  /**
-   * Complete OAuth login with callback data
-   */
-  async completeOAuth(provider: OAuthProvider, code: string): Promise<{ user: User }> {
-    try {
-      const response = await client.post<AuthResponse>(`/auth/oauth/${provider}/callback`, { code });
       const { user } = response.data as any;
 
       const { token, expiresAt } = extractTokenAndExpiry(response.data);

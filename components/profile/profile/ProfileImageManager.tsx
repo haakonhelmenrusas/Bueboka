@@ -8,7 +8,7 @@ import { styles } from './ProfileImageManagerStyles';
 const MAX_IMAGE_SIZE_BYTES = 5 * 1024 * 1024;
 
 interface Props {
-  userName: string;
+  userName?: string;
   avatarUrl?: string;
   onUpload: (uri: string) => Promise<void>;
   onRemove: () => Promise<void>;
@@ -109,7 +109,7 @@ export default function ProfileImageManager({ userName, avatarUrl, onUpload, onR
         {avatarUrl ? (
           <Image source={{ uri: avatarUrl }} style={styles.avatarImage} />
         ) : (
-          <Text style={styles.avatarInitial}>{userName.charAt(0).toUpperCase()}</Text>
+          <Text style={styles.avatarInitial}>{userName?.charAt(0).toUpperCase() || '?'}</Text>
         )}
       </TouchableOpacity>
 

@@ -33,8 +33,8 @@ export interface SightMarkResult {
   interval: number;
   angles: number[];
   distances: number[];
-  sightMarksByAngle: Record<string, number[]>;
-  arrowSpeedByAngle: Record<string, number[]>;
+  sightMarksByAngle: number[];
+  arrowSpeedByAngle: number[];
   createdAt?: Date;
   updatedAt?: Date;
 }
@@ -71,6 +71,6 @@ export interface SightMarkCalc {
 
 export interface MarksResult {
   distances: number[];
-  sight_marks_by_hill_angle: Record<string, number[]>;
-  arrow_speed_by_angle: Record<string, number[]>;
+  sight_marks_by_hill_angle: number[];
+  arrow_speed_by_angle: number[];
 }

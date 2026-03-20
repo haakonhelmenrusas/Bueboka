@@ -21,12 +21,21 @@ const client: AxiosInstance = axios.create({
 client.interceptors.request.use(
   async (config: InternalAxiosRequestConfig) => {
     try {
-      const token = await SecureStore.getItemAsync('auth_token');
-      if (token && config.headers) {
-        // For better-auth, always send token as a cookie header
-        config.headers.Cookie = `better-auth.session_token=${token}`;
+      // Check both storage locations for token
+      let token = await SecureStore.getItemAsync('auth_token');
+
+      // If not found in auth_token, try bueboka.session_token (used by @better-auth/expo)
+      if (!token) {
+        token = await SecureStore.getItemAsync('bueboka.session_token');
       }
-    } catch {
+
+      if (token && config.headers) {
+        // Try both Cookie and Authorization headers
+        config.headers.Cookie = `better-auth.session_token=${token}`;
+        config.headers.Authorization = `Bearer ${token}`;
+      }
+    } catch (error) {
+      console.warn('[API] Failed to get auth token:', error);
       Sentry.addBreadcrumb({
         category: 'auth',
         message: 'Failed to get auth token from secure store',
@@ -35,7 +44,6 @@ client.interceptors.request.use(
     }
 
     // Add Origin header for better-auth CSRF protection
-    // On React Native, we set it based on the API URL
     if (config.headers) {
       const urlObj = new URL(API_BASE_URL);
       config.headers['Origin'] = `${urlObj.protocol}//${urlObj.host}`;

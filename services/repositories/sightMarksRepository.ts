@@ -1,4 +1,4 @@
-import client from '@/services/api/client';
+import { authFetchClient as client } from '@/services/api/authFetch';
 import { AimDistanceMark, BowSpecification, CalculatedMarks, MarksResult, SightMark, SightMarkCalc, SightMarkResult } from '@/types';
 import * as Sentry from '@sentry/react-native';
 

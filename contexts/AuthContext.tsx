@@ -6,6 +6,12 @@ import { registerOfflineHandlers } from '@/services/offline/handlers';
 import * as Sentry from '@sentry/react-native';
 import { authClient } from '@/services/auth/authClient';
 import * as Linking from 'expo-linking';
+import * as WebBrowser from 'expo-web-browser';
+import * as SecureStore from 'expo-secure-store';
+
+// Complete any pending OAuth sessions
+// This must be called at module level for iOS deep linking to work properly
+WebBrowser.maybeCompleteAuthSession();
 
 /**
  * Authentication state interface
@@ -105,18 +111,20 @@ export function AuthProvider({ children }: AuthProviderProps) {
             const expiresAt = new Date(Date.now() + 604800 * 1000).toISOString();
 
             await saveTokens({ accessToken: sessionToken, expiresAt });
-
-            // Check session after token is saved
-            setTimeout(() => {
-              checkSession();
-            }, 500);
+            setTimeout(() => checkSession(), 500);
           } else {
-            console.warn('[Auth] Could not extract session token from OAuth callback');
             setState((prev) => ({ ...prev, isLoading: false }));
           }
         } else {
-          // No cookie parameter, let expoClient handle it
-          setTimeout(() => {
+          // No cookie parameter, check if expoClient has stored the token
+          setTimeout(async () => {
+            const token = await SecureStore.getItemAsync('bueboka.session_token');
+
+            if (token) {
+              const expiresAt = new Date(Date.now() + 604800 * 1000).toISOString();
+              await saveTokens({ accessToken: token, expiresAt });
+            }
+
             checkSession();
           }, 1000);
         }
@@ -378,8 +386,9 @@ export function AuthProvider({ children }: AuthProviderProps) {
         return;
       }
 
-      // OAuth flow initiated - callback will handle the rest
+      // OAuth flow initiated - poll for session completion
       if ('redirect' in result.data && result.data.redirect) {
+        pollForOAuthSession();
         return;
       }
 
@@ -401,6 +410,84 @@ export function AuthProvider({ children }: AuthProviderProps) {
         error: error?.message || 'Google login failed',
       }));
     }
+  }
+
+  /**
+   * Poll for OAuth session completion
+   * This is needed because the deep link callback may not be triggered on iOS
+   */
+  async function pollForOAuthSession() {
+    const maxAttempts = 30; // 30 seconds max (30 attempts * 1 second)
+    let attempts = 0;
+
+    const pollInterval = setInterval(async () => {
+      attempts++;
+
+      try {
+        // Use authClient to get session - this should use the expoClient storage
+        const session = await authClient.getSession();
+
+        if (session?.data?.user) {
+          clearInterval(pollInterval);
+
+          // Get token from session object first (most reliable)
+          const sessionToken = (session.data as any).session?.token || (session.data as any).token;
+          const expoToken = await SecureStore.getItemAsync('bueboka.session_token');
+          const buebokaToken = await SecureStore.getItemAsync('bueboka.token');
+          const authToken = await SecureStore.getItemAsync('auth_token');
+
+          const token = sessionToken || expoToken || buebokaToken || authToken;
+
+          if (token) {
+            const expiresAt = new Date(Date.now() + 604800 * 1000).toISOString();
+
+            try {
+              // Sync to both storage locations
+              await Promise.all([SecureStore.setItemAsync('bueboka.session_token', token), saveTokens({ accessToken: token, expiresAt })]);
+
+              // Small delay to ensure storage is persisted
+              await new Promise((resolve) => setTimeout(resolve, 100));
+            } catch (error) {
+              console.error('[Auth] Error syncing token:', error);
+            }
+          }
+
+          // Set authenticated user
+          setAuthenticatedUser(session.data.user as User);
+          return;
+        }
+
+        // Also check storage directly as fallback
+        const expoToken = await SecureStore.getItemAsync('bueboka.session_token');
+        const authToken = await SecureStore.getItemAsync('auth_token');
+
+        if (expoToken || authToken) {
+          clearInterval(pollInterval);
+
+          const token = expoToken || authToken;
+          if (token) {
+            const expiresAt = new Date(Date.now() + 604800 * 1000).toISOString();
+            await Promise.all([SecureStore.setItemAsync('bueboka.session_token', token), saveTokens({ accessToken: token, expiresAt })]);
+          }
+
+          await checkSession();
+          return;
+        }
+
+        // Stop polling after max attempts
+        if (attempts >= maxAttempts) {
+          clearInterval(pollInterval);
+          console.warn('[Auth] OAuth polling timeout');
+          setState((prev) => ({
+            ...prev,
+            isLoading: false,
+            error: 'OAuth authentication timed out. Please try again.',
+          }));
+        }
+      } catch (error) {
+        console.error('[Auth] Error during OAuth polling:', error);
+      }
+    }, 1000); // Poll every 1 second
   }
 
   /**

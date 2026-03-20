@@ -1,4 +1,4 @@
-import client from '@/services/api/client';
+import { authFetchClient as client } from '@/services/api/authFetch';
 import { handleApiError } from '@/services/api/errors';
 import { User } from '@/types';
 
