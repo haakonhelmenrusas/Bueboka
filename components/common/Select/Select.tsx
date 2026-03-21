@@ -1,5 +1,18 @@
-import React, { useRef, useState } from 'react';
-import { Animated, Easing, Modal, Platform, Pressable, ScrollView, StyleProp, Text, TouchableOpacity, View, ViewStyle } from 'react-native';
+import React, { useRef, useState, useMemo } from 'react';
+import {
+  Animated,
+  Easing,
+  Modal,
+  Platform,
+  Pressable,
+  ScrollView,
+  StyleProp,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+  ViewStyle,
+} from 'react-native';
 import styles from './SelectStyles';
 import { colors } from '@/styles/colors';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
@@ -18,13 +31,31 @@ type Props = {
   onValueChange: (value: any) => void;
   containerStyle?: StyleProp<ViewStyle>;
   zIndex?: number;
+  searchable?: boolean;
+  placeholder?: string;
 };
 
-export const Select: React.FC<Props> = ({ label, options, selectedValue, onValueChange, containerStyle, zIndex = 1000 }) => {
+export const Select: React.FC<Props> = ({
+  label,
+  options,
+  selectedValue,
+  onValueChange,
+  containerStyle,
+  zIndex = 1000,
+  searchable = false,
+  placeholder = 'Velg et alternativ',
+}) => {
   const [open, setOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
   const [selectBoxPosition, setSelectBoxPosition] = useState({ x: 0, y: 0, width: 0, height: 0 });
   const rotateAnim = useRef(new Animated.Value(0)).current;
   const selectBoxRef = useRef<any>(null);
+  const searchInputRef = useRef<TextInput>(null);
+
+  const filteredOptions = useMemo(() => {
+    if (!searchable || !searchQuery) return options;
+    return options.filter((opt) => opt.label.toLowerCase().includes(searchQuery.toLowerCase()));
+  }, [options, searchable, searchQuery]);
 
   const toggleDropdown = () => {
     if (!open && Platform.OS === 'android') {
@@ -34,10 +65,18 @@ export const Select: React.FC<Props> = ({ label, options, selectedValue, onValue
       });
     }
 
-    setOpen((prev) => !prev);
+    const nextState = !open;
+    setOpen(nextState);
+
+    if (nextState && searchable) {
+      // Reset search when opening
+      setSearchQuery('');
+      // Small delay to focus input after opening
+      setTimeout(() => searchInputRef.current?.focus(), 100);
+    }
 
     Animated.timing(rotateAnim, {
-      toValue: open ? 0 : 1,
+      toValue: nextState ? 1 : 0,
       duration: 180,
       easing: Easing.out(Easing.ease),
       useNativeDriver: true,
@@ -47,6 +86,7 @@ export const Select: React.FC<Props> = ({ label, options, selectedValue, onValue
   const handleSelect = (value: string) => {
     onValueChange(value);
     setOpen(false);
+    setSearchQuery('');
     Animated.timing(rotateAnim, {
       toValue: 0,
       duration: 180,
@@ -59,7 +99,7 @@ export const Select: React.FC<Props> = ({ label, options, selectedValue, onValue
     outputRange: ['0deg', '180deg'],
   });
 
-  const selectedLabel = options.find((opt) => opt.value === selectedValue)?.label || 'Velg et alternativ';
+  const selectedLabel = options.find((opt) => opt.value === selectedValue)?.label || placeholder;
 
   const renderOption = (item: Option, index: number) => (
     <Pressable
@@ -81,7 +121,13 @@ export const Select: React.FC<Props> = ({ label, options, selectedValue, onValue
       showsVerticalScrollIndicator={true}
       keyboardShouldPersistTaps="handled"
       bounces={Platform.OS === 'ios'}>
-      {options.map(renderOption)}
+      {filteredOptions.length > 0 ? (
+        filteredOptions.map(renderOption)
+      ) : (
+        <View style={styles.option}>
+          <Text style={[styles.optionText, { color: colors.dimmed }]}>Ingen treff</Text>
+        </View>
+      )}
     </ScrollView>
   );
 
@@ -91,9 +137,22 @@ export const Select: React.FC<Props> = ({ label, options, selectedValue, onValue
     <View style={wrapperStyle}>
       <Text style={styles.label}>{label}</Text>
       <TouchableOpacity ref={selectBoxRef} style={styles.selectBox} onPress={toggleDropdown} activeOpacity={0.7}>
-        <Text style={styles.selectText} numberOfLines={1}>
-          {selectedLabel}
-        </Text>
+        {searchable && open ? (
+          <TextInput
+            ref={searchInputRef}
+            style={styles.searchInput}
+            value={searchQuery}
+            onChangeText={setSearchQuery}
+            placeholder="Søk..."
+            placeholderTextColor={colors.dimmed}
+            underlineColorAndroid="transparent"
+            autoCorrect={false}
+          />
+        ) : (
+          <Text style={styles.selectText} numberOfLines={1}>
+            {selectedLabel}
+          </Text>
+        )}
         <Animated.View style={{ transform: [{ rotate }] }}>
           <FontAwesomeIcon icon={faChevronDown} size={16} color={colors.primary} />
         </Animated.View>

@@ -33,6 +33,14 @@ const styles = StyleSheet.create({
     flex: 1,
     marginRight: 8,
   },
+  searchInput: {
+    fontSize: 14,
+    color: colors.primary,
+    flex: 1,
+    padding: 0,
+    marginRight: 8,
+    height: '100%',
+  },
   // iOS/Web Overlay
   overlay: {
     position: 'absolute',
