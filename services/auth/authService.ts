@@ -23,17 +23,6 @@ export interface LoginData {
   password: string;
 }
 
-function extractTokenAndExpiry(responseData: any): { token?: string; expiresAt?: string } {
-  if (!responseData) return {};
-
-  const data = responseData.data || responseData;
-  const session = data.session || {};
-  const token = session.token || data.token || data.accessToken || data.sessionToken;
-  const expiresAt = session.expiresAt || session.expires_at || data.expiresAt || data.expires_at || undefined;
-
-  return { token, expiresAt };
-}
-
 function ensureExpiryString(expiresAt?: string): string | undefined {
   if (!expiresAt) return undefined;
   try {
@@ -54,10 +43,12 @@ export const authService = {
    */
   async register(data: RegisterData): Promise<{ user: User }> {
     try {
-      const response = await client.post<AuthResponse>('/auth/sign-up/email', data);
-      const { user } = response.data as any;
+      const response = await client.post<{ data: any }>('/auth/sign-up/email', data);
+      const authData = response.data.data;
+      const user = authData.user;
+      const token = authData.token;
+      const expiresAt = authData.expiresAt;
 
-      const { token, expiresAt } = extractTokenAndExpiry(response.data);
       if (token) {
         const normalized = ensureExpiryString(expiresAt);
         await saveTokens({ accessToken: token, expiresAt: normalized ?? '' });
@@ -74,10 +65,12 @@ export const authService = {
    */
   async login(data: LoginData): Promise<{ user: User }> {
     try {
-      const response = await client.post<AuthResponse>('/auth/sign-in/email', data);
-      const { user } = response.data as any;
+      const response = await client.post<{ data: any }>('/auth/sign-in/email', data);
+      const authData = response.data.data;
+      const user = authData.user;
+      const token = authData.token;
+      const expiresAt = authData.expiresAt;
 
-      const { token, expiresAt } = extractTokenAndExpiry(response.data);
       if (token) {
         const normalized = ensureExpiryString(expiresAt);
         await saveTokens({ accessToken: token, expiresAt: normalized ?? '' });
@@ -95,7 +88,7 @@ export const authService = {
   async logout(): Promise<void> {
     try {
       await client.post('/auth/sign-out');
-    } catch (_error) {
+    } catch (error) {
       Sentry.addBreadcrumb({
         category: 'auth',
         message: 'Logout request failed, clearing local tokens anyway',
@@ -145,9 +138,9 @@ export const authService = {
    */
   async validateSession(): Promise<{ user: User } | null> {
     try {
-      const response = await client.get<SessionResponse>('/auth/get-session');
-
-      const user = (response.data as any).data?.user || (response.data as any).user || response.data;
+      const response = await client.get<{ data: any }>('/auth/get-session');
+      const sessionData = response.data.data;
+      const user = sessionData.user;
 
       return { user };
     } catch (_error) {

@@ -14,10 +14,9 @@ export interface ApiError {
  */
 export interface AuthResponse {
   user: User;
-  session: {
-    token: string;
-    expiresAt: string;
-  };
+  token: string;
+  expiresAt?: string;
+  redirect?: boolean;
 }
 
 /**
@@ -44,7 +43,8 @@ export interface PaginatedResponse<T> {
  */
 export interface SessionResponse {
   user: User;
-  session: {
+  session?: {
     expiresAt: string;
   };
 }
+

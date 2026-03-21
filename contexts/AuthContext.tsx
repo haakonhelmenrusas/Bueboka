@@ -243,8 +243,8 @@ export function AuthProvider({ children }: AuthProviderProps) {
   async function login(email: string, password: string): Promise<void> {
     try {
       setState((prev) => ({ ...prev, isLoading: true, error: null }));
-      const result = await authService.login({ email, password });
-      setAuthenticatedUser(result.user);
+      const { user } = await authService.login({ email, password });
+      setAuthenticatedUser(user);
     } catch (error: any) {
       setState((prev) => ({
         ...prev,
@@ -261,8 +261,8 @@ export function AuthProvider({ children }: AuthProviderProps) {
   async function register(email: string, password: string, name: string, club?: string): Promise<void> {
     try {
       setState((prev) => ({ ...prev, isLoading: true, error: null }));
-      const result = await authService.register({ email, password, name, club });
-      setAuthenticatedUser(result.user);
+      const { user } = await authService.register({ email, password, name, club });
+      setAuthenticatedUser(user);
     } catch (error: any) {
       setState((prev) => ({
         ...prev,
