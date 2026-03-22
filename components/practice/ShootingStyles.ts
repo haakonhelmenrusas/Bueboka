@@ -77,6 +77,20 @@ export const styles = StyleSheet.create({
     fontSize: 16,
     color: colors.secondary,
   },
+  scoreButton: {
+    backgroundColor: colors.secondary,
+    marginTop: 20,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: 15,
+    borderRadius: 8,
+  },
+  scoreButtonText: {
+    color: colors.white,
+    fontWeight: 'bold',
+    marginLeft: 10,
+  },
   saveButton: {
     backgroundColor: colors.primary,
     justifyContent: 'center',
