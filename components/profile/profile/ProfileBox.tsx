@@ -16,7 +16,6 @@ interface Props {
 }
 
 export default function ProfileBox({ user, avatarUrl, onEdit, onAvatarUpload, onAvatarRemove }: Props) {
-
   return (
     <View style={styles.container}>
       <View style={styles.content}>
@@ -24,6 +23,7 @@ export default function ProfileBox({ user, avatarUrl, onEdit, onAvatarUpload, on
         <View style={styles.info}>
           <Text style={styles.name}>{user.name || user.email || 'Bruker'}</Text>
           {user.club && <Text style={styles.club}>{user.club}</Text>}
+          {user.skytternr && <Text style={styles.club}>Skytternr: {user.skytternr}</Text>}
         </View>
       </View>
       <Button

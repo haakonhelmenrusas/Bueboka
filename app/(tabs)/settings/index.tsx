@@ -6,7 +6,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faRightFromBracket } from '@fortawesome/free-solid-svg-icons/faRightFromBracket';
 import { colors } from '@/styles/colors';
 import { useAuth } from '@/hooks';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import AboutContent from '@/components/about/AboutContent';
 import EmailVerificationBanner from '@/components/auth/EmailVerificationBanner';
 import ProfileBox from '@/components/profile/profile/ProfileBox';
@@ -20,7 +20,11 @@ export default function Settings() {
   const [isDeleting, setIsDeleting] = useState(false);
   const [isProfileModalVisible, setIsProfileModalVisible] = useState(false);
 
-  async function handleProfileUpdate(data: { name: string; club?: string }) {
+  useEffect(() => {
+    refreshUser();
+  }, [refreshUser]);
+
+  async function handleProfileUpdate(data: { name: string; club?: string; skytternr?: string }) {
     try {
       await userRepository.updateProfile(data);
       await refreshUser();
@@ -114,8 +118,6 @@ export default function Settings() {
       <EmailVerificationBanner />
       <ScrollView style={styles.container} contentContainerStyle={styles.contentContainer}>
         <Text style={styles.title}>Innstillinger</Text>
-
-        {/* User Profile Section */}
         {user && (
           <View style={styles.section}>
             <ProfileBox
@@ -140,6 +142,18 @@ export default function Settings() {
                 <Text style={styles.label}>E-post</Text>
                 <Text style={styles.value}>{user.email || 'Ikke angitt'}</Text>
               </View>
+              {user.club && (
+                <View style={styles.infoCard}>
+                  <Text style={styles.label}>Klubb</Text>
+                  <Text style={styles.value}>{user.club}</Text>
+                </View>
+              )}
+              {user.skytternr && (
+                <View style={styles.infoCard}>
+                  <Text style={styles.label}>Skytternr</Text>
+                  <Text style={styles.value}>{user.skytternr}</Text>
+                </View>
+              )}
             </View>
           </View>
         )}

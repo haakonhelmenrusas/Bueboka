@@ -2,26 +2,33 @@
  * SightMarks feature types
  */
 
+export enum Placement {
+  BAK_LINJEN = 'BAK_LINJEN',
+  OVER_LINJEN = 'OVER_LINJEN',
+  ANNET = 'ANNET',
+}
+
 export interface BowSpecification {
   id: string;
   userId: string;
   bowId: string;
-  intervalSightReal?: number;
-  intervalSightMeasured?: number;
-  placement?: number;
-  createdAt?: Date;
-  updatedAt?: Date;
+  intervalSightReal: number | null;
+  intervalSightMeasured: number | null;
+  placement: Placement | null;
+  createdAt: string;
+  updatedAt: string;
 }
 
 export interface SightMark {
   id: string;
   userId: string;
   bowSpecificationId: string;
+  name: string | null;
   givenMarks: number[];
   givenDistances: number[];
-  ballisticsParameters: Record<string, any>;
-  createdAt?: Date;
-  updatedAt?: Date;
+  ballisticsParameters: any;
+  createdAt: string;
+  updatedAt: string;
 }
 
 export interface SightMarkResult {
@@ -33,10 +40,10 @@ export interface SightMarkResult {
   interval: number;
   angles: number[];
   distances: number[];
-  sightMarksByAngle: number[];
-  arrowSpeedByAngle: number[];
-  createdAt?: Date;
-  updatedAt?: Date;
+  sightMarksByAngle: any;
+  arrowSpeedByAngle: any;
+  createdAt: string;
+  updatedAt: string;
 }
 
 export interface AimDistanceMark {

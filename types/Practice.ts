@@ -41,17 +41,18 @@ export enum PracticeCategory {
 export interface End {
   id: string;
   practiceId: string;
-  arrows?: number;
-  arrowsWithoutScore?: number;
+  arrows: number | null;
+  arrowsWithoutScore: number | null;
   scores: number[];
-  roundScore?: number;
-  distanceMeters?: number;
-  distanceFrom?: number;
-  distanceTo?: number;
-  targetSizeCm?: number;
-  arrowsPerEnd?: number;
-  createdAt?: Date;
-  updatedAt?: Date;
+  roundScore: number | null;
+  distanceMeters: number | null;
+  distanceFrom: number | null;
+  distanceTo: number | null;
+  targetSizeCm: number | null;
+  targetType: string | null;
+  arrowsPerEnd: number | null;
+  createdAt: string;
+  updatedAt: string;
 }
 
 /**
@@ -60,13 +61,13 @@ export interface End {
 export interface RoundType {
   id: string;
   name: string;
-  distanceMeters?: number;
-  targetType?: any;
-  numberArrows?: number;
-  arrowsWithoutScore?: number;
-  roundScore?: number;
-  createdAt?: Date;
-  updatedAt?: Date;
+  distanceMeters: number | null;
+  targetType: any;
+  numberArrows: number | null;
+  arrowsWithoutScore: number | null;
+  roundScore: number | null;
+  createdAt: string;
+  updatedAt: string;
 }
 
 /**
@@ -74,21 +75,21 @@ export interface RoundType {
  */
 export interface Practice {
   id: string;
-  userId?: string;
-  date: Date;
-  notes?: string;
+  userId: string;
+  date: string;
+  notes: string | null;
   totalScore: number;
-  rating?: number;
-  location?: string;
+  rating: number | null;
+  location: string | null;
   environment: Environment;
-  weather?: WeatherCondition[];
-  practiceCategory?: PracticeCategory;
-  roundTypeId?: string;
-  bowId?: string;
-  arrowsId?: string;
-  ends?: End[];
-  createdAt?: Date;
-  updatedAt?: Date;
+  weather: WeatherCondition[];
+  practiceCategory: PracticeCategory;
+  roundTypeId: string | null;
+  bowId: string | null;
+  arrowsId: string | null;
+  ends: End[];
+  createdAt: string;
+  updatedAt: string;
 
   // Optional populated relations (when fetched with includes)
   bow?: Bow;

@@ -12,20 +12,20 @@ export enum Material {
  */
 export interface Arrows {
   id: string;
-  userId?: string;
+  userId: string;
   name: string;
-  arrowsCount?: number;
-  diameter?: number;
-  weight?: number;
-  length?: number;
+  arrowsCount: number | null;
+  diameter: number | null;
+  weight: number | null;
+  length: number | null;
   material: Material;
-  spine?: string;
-  pointType?: string;
-  pointWeight?: number;
-  vanes?: string;
-  nock?: string;
-  notes?: string;
-  isFavorite?: boolean;
-  createdAt?: Date;
-  updatedAt?: Date;
+  spine: string | null;
+  pointType: string | null;
+  pointWeight: number | null;
+  vanes: string | null;
+  nock: string | null;
+  notes: string | null;
+  isFavorite: boolean;
+  createdAt: string;
+  updatedAt: string;
 }

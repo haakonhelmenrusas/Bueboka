@@ -11,7 +11,7 @@ import {
   View,
 } from 'react-native';
 import { colors } from '@/styles/colors';
-import { Button, Input, Message } from '@/components/common';
+import { Button, Input, Message, Select } from '@/components/common';
 import { useAuth } from '@/hooks';
 import { AppError } from '@/services';
 import EmailVerification from '@/components/auth/EmailVerification';
@@ -19,6 +19,12 @@ import EmailVerification from '@/components/auth/EmailVerification';
 interface AuthScreenProps {
   onAuthSuccess?: () => void;
 }
+
+const CLUB_OPTIONS = [
+  { label: 'Klubb A', value: 'klubb_a' },
+  { label: 'Klubb B', value: 'klubb_b' },
+  { label: 'Klubb C', value: 'klubb_c' },
+];
 
 function AuthScreen({ onAuthSuccess }: AuthScreenProps) {
   const { login, register, loginWithGoogle, isLoading, error, clearError } = useAuth();
@@ -30,6 +36,11 @@ function AuthScreen({ onAuthSuccess }: AuthScreenProps) {
   const [localError, setLocalError] = useState<string | null>(null);
   const [showVerification, setShowVerification] = useState(false);
   const [registeredEmail, setRegisteredEmail] = useState<string>('');
+
+  const clearAuthErrors = () => {
+    setLocalError(null);
+    clearError();
+  };
 
   const handleAuthError = (error: any) => {
     if (error instanceof AppError) {
@@ -129,16 +140,37 @@ function AuthScreen({ onAuthSuccess }: AuthScreenProps) {
             <Input
               label="Navn"
               value={name}
-              onChangeText={setName}
+              onChangeText={(text) => {
+                setName(text);
+                if (localError || error) clearAuthErrors();
+              }}
               editable={!isLoading}
               placeholder="Navn"
               labelStyle={styles.whiteLabel}
+              autoCapitalize="words"
             />
           )}
+          {!isLogin && (
+            <Select
+              label="Klubb"
+              options={CLUB_OPTIONS}
+              selectedValue={club}
+              onValueChange={(val) => {
+                setClub(val);
+                if (localError || error) clearAuthErrors();
+              }}
+              searchable={true}
+              placeholder="Velg en klubb"
+            />
+          )}
+
           <Input
             label="E-post"
             value={email}
-            onChangeText={setEmail}
+            onChangeText={(text) => {
+              setEmail(text);
+              if (localError || error) clearAuthErrors();
+            }}
             keyboardType="email-address"
             autoCapitalize="none"
             editable={!isLoading}
@@ -147,7 +179,10 @@ function AuthScreen({ onAuthSuccess }: AuthScreenProps) {
           <Input
             label="Passord"
             value={password}
-            onChangeText={setPassword}
+            onChangeText={(text) => {
+              setPassword(text);
+              if (localError || error) clearAuthErrors();
+            }}
             secureTextEntry
             editable={!isLoading}
             labelStyle={styles.whiteLabel}

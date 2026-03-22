@@ -25,23 +25,27 @@ export function handleApiError(error: unknown): AppError {
 
     // Handle specific HTTP status codes
     if (error.response?.status === 401) {
-      return new AppError('UNAUTHORIZED', 'Session expired. Please login again.', error);
+      const message = apiError?.message?.toLowerCase();
+      if (message?.includes('invalid') || message?.includes('credential') || message?.includes('user')) {
+        return new AppError('UNAUTHORIZED', 'Feil e-post eller passord. Vennligst prøv igjen.', error);
+      }
+      return new AppError('UNAUTHORIZED', 'Sesjonen er utløpt. Vennligst logg inn på nytt.', error);
     }
 
     if (error.response?.status === 400) {
-      return new AppError('BAD_REQUEST', apiError?.message || 'Invalid request data', error);
+      return new AppError('BAD_REQUEST', apiError?.message || 'Ugyldig forespørsel', error);
     }
 
     if (error.response?.status === 404) {
-      return new AppError('NOT_FOUND', 'Resource not found', error);
+      return new AppError('NOT_FOUND', 'Ressursen ble ikke funnet', error);
     }
 
     if (error.response?.status === 409) {
-      return new AppError('CONFLICT', apiError?.message || 'Resource already exists', error);
+      return new AppError('CONFLICT', apiError?.message || 'Ressursen eksisterer allerede', error);
     }
 
     if (error.response?.status === 429) {
-      return new AppError('RATE_LIMITED', 'Too many requests. Please try again later.', error);
+      return new AppError('RATE_LIMITED', 'For mange forespørsler. Vennligst prøv igjen senere.', error);
     }
 
     if (error.response?.status && error.response.status >= 500) {
@@ -53,23 +57,28 @@ export function handleApiError(error: unknown): AppError {
           data: error.response?.data,
         },
       });
-      return new AppError('SERVER_ERROR', 'Server error. Please try again later.', error);
+      return new AppError('SERVER_ERROR', 'Serverfeil. Vennligst prøv igjen senere.', error);
     }
 
     if (error.code === 'ECONNABORTED' || error.code === 'ETIMEDOUT') {
-      return new AppError('TIMEOUT', 'Request timed out. Please try again.', error);
+      return new AppError('TIMEOUT', 'Forespørselen tok for lang tid. Vennligst prøv igjen.', error);
     }
 
     if (error.code === 'ERR_NETWORK' || error.message.includes('Network Error')) {
-      return new AppError('NETWORK_ERROR', 'Network connection error. Check your internet.', error);
+      return new AppError('NETWORK_ERROR', 'Nettverksfeil. Sjekk internettforbindelsen din.', error);
     }
 
-    return new AppError('UNKNOWN', apiError?.message || error.message || 'An unknown error occurred', error);
+    return new AppError('UNKNOWN', apiError?.message || error.message || 'En ukjent feil oppstod', error);
   }
 
   if (error instanceof Error) {
+    // Specifically handle the "Cannot read property 'user' of null" error
+    if (error.message?.includes("property 'user' of null")) {
+      return new AppError('UNAUTHORIZED', 'Feil e-post eller passord.', error);
+    }
     return new AppError('UNKNOWN', error.message, error);
   }
 
-  return new AppError('UNKNOWN', 'An unknown error occurred', error);
+  return new AppError('UNKNOWN', 'En ukjent feil oppstod', error);
 }
+

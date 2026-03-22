@@ -16,49 +16,14 @@ export enum BowType {
  */
 export interface Bow {
   id: string;
-  userId?: string;
-  /**
-   * The name of the bow.
-   */
+  userId: string;
   name: string;
-
-  /**
-   * The type of the bow.
-   */
   type: BowType;
-
-  /**
-   * The distance from the eye to the nock point in cm (optional).
-   */
-  eyeToNock?: number;
-
-  /**
-   * The aim measure distance in cm (optional).
-   */
-  aimMeasure?: number;
-
-  /**
-   * The distance from the eye to the sight in cm (optional).
-   */
-  eyeToSight?: number;
-
-  /**
-   * Additional notes about the bow.
-   */
-  notes?: string;
-
-  /**
-   * A boolean flag indicating whether the item is marked as a favorite.
-   */
-  isFavorite?: boolean;
-
-  /**
-   * Creation timestamp
-   */
-  createdAt?: Date;
-
-  /**
-   * Last update timestamp
-   */
-  updatedAt?: Date;
+  eyeToNock: number | null;
+  aimMeasure: number | null;
+  eyeToSight: number | null;
+  notes: string | null;
+  isFavorite: boolean;
+  createdAt: string;
+  updatedAt: string;
 }

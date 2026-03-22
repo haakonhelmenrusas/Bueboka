@@ -7,52 +7,96 @@ interface InputProps extends TextInputProps {
   label: string;
   error?: boolean;
   errorMessage?: string;
-  placeholderText?: string;
+  helpText?: string;
+  optional?: boolean;
   containerStyle?: StyleProp<ViewStyle>;
   labelStyle?: StyleProp<TextStyle>;
   inputStyle?: StyleProp<TextStyle>;
   icon?: React.ReactNode;
+  leftAddon?: React.ReactNode;
+  rightAddon?: React.ReactNode;
 }
 
 /**
- * Input component with label, optional icon and error message.
- *
- *
- * @param label - label text
- * @param error - if true, error message will be displayed
- * @param errorMessage - error message to be displayed
- * @param placeholderText - placeholder text for the input
- * @param containerStyle - custom style of the container
- * @param labelStyle - custom style of the label
- * @param inputStyle - custom style of the input
- * @param icon - icon to be displayed on the left side of the input
- * @param props - other TextInput props
- * @returns Input component
+ * Input component matching web version design.
+ * Supports label, help text, optional hint, icons/addons and error message.
  */
-const Input = React.forwardRef<TextInput, InputProps>((props, ref: React.Ref<TextInput>) => {
-  const [isFocused, setIsFocused] = useState(false);
+const Input = React.forwardRef<TextInput, InputProps>(
+  (
+    {
+      label,
+      error,
+      errorMessage,
+      helpText,
+      optional,
+      containerStyle,
+      labelStyle,
+      inputStyle,
+      icon,
+      leftAddon,
+      rightAddon,
+      placeholder,
+      onFocus,
+      onBlur,
+      editable = true,
+      ...props
+    },
+    ref
+  ) => {
+    const [isFocused, setIsFocused] = useState(false);
+    const showError = Boolean(errorMessage) || Boolean(error);
 
-  return (
-    <View
-      style={[defaultStyles.container, props.containerStyle]}
-      accessibilityLabel={Platform.OS === 'android' ? props.label : `${props.label}${': Disabled!'}`}>
-      <View style={defaultStyles.labelContainer}>
-        {props.icon && <View style={defaultStyles.icon}>{props.icon}</View>}
-        <Text style={[defaultStyles.label, props.labelStyle]}>{props.label}</Text>
+    const handleFocus = (e: any) => {
+      setIsFocused(true);
+      onFocus?.(e);
+    };
+
+    const handleBlur = (e: any) => {
+      setIsFocused(false);
+      onBlur?.(e);
+    };
+
+    return (
+      <View style={[defaultStyles.container, containerStyle]}>
+        <View style={defaultStyles.labelContainer}>
+          <Text style={[defaultStyles.label, labelStyle]}>
+            {label}
+            {optional && <Text style={defaultStyles.optional}> (valgfritt)</Text>}
+          </Text>
+        </View>
+
+        {helpText ? <Text style={defaultStyles.help}>{helpText}</Text> : null}
+
+        <View
+          style={[
+            defaultStyles.control,
+            isFocused && defaultStyles.controlFocused,
+            showError && defaultStyles.controlError,
+            !editable && defaultStyles.controlDisabled,
+          ]}>
+          {icon || leftAddon ? <View style={defaultStyles.left}>{icon ?? leftAddon}</View> : null}
+
+          <TextInput
+            ref={ref}
+            testID="input"
+            style={[defaultStyles.input, inputStyle]}
+            placeholder={isFocused ? '' : placeholder}
+            placeholderTextColor={colors.secondary}
+            onFocus={handleFocus}
+            onBlur={handleBlur}
+            editable={editable}
+            {...props}
+          />
+
+          {rightAddon ? <View style={defaultStyles.right}>{rightAddon}</View> : null}
+        </View>
+
+        {showError && errorMessage ? <Text style={defaultStyles.errorMessage}>{errorMessage}</Text> : null}
       </View>
-      <TextInput
-        ref={ref}
-        testID="input"
-        style={[defaultStyles.input, props.inputStyle]}
-        placeholder={isFocused ? '' : props.placeholderText}
-        placeholderTextColor={colors.secondary}
-        onFocus={() => setIsFocused(true)}
-        onBlur={() => setIsFocused(false)}
-        {...props}
-      />
-      {props.error && <Text style={{ color: colors.error, fontSize: 12 }}>{props.errorMessage}</Text>}
-    </View>
-  );
-});
+    );
+  }
+);
+
+Input.displayName = 'Input';
 
 export default Input;

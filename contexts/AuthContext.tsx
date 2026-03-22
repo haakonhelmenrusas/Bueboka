@@ -68,20 +68,23 @@ export function AuthProvider({ children }: AuthProviderProps) {
    */
   const checkSession = useCallback(async () => {
     try {
-      const result = await authService.validateSession();
+      // Use profile endpoint to get full user data instead of minimal session data
+      const { userRepository } = await import('@/services/repositories/userRepository');
+      const fullUser = await userRepository.getCurrentUser();
+      console.log('[Auth] checkSession full profile result:', JSON.stringify(fullUser, null, 2));
 
-      if (result && result.user) {
+      if (fullUser) {
         setState({
-          user: result.user,
+          user: fullUser,
           isAuthenticated: true,
           isLoading: false,
           error: null,
         });
 
         Sentry.setUser({
-          id: result.user.id,
-          email: result.user.email,
-          username: result.user.name,
+          id: fullUser.id,
+          email: fullUser.email,
+          username: fullUser.name || undefined,
         });
       } else {
         setState((prev) => ({ ...prev, isLoading: false }));
@@ -145,79 +148,10 @@ export function AuthProvider({ children }: AuthProviderProps) {
   }, []);
 
   /**
-   * Listen for deep link callbacks from OAuth
-   */
-  useEffect(() => {
-    const handleInitialURL = async () => {
-      const url = await Linking.getInitialURL();
-      if (url) {
-        await handleOAuthCallback(url);
-      }
-    };
-
-    handleInitialURL();
-
-    const subscription = Linking.addEventListener('url', async (event) => {
-      await handleOAuthCallback(event.url);
-    });
-
-    return () => {
-      subscription.remove();
-    };
-  }, [handleOAuthCallback]);
-
-  /**
-   * Initialize authentication state from stored token
-   */
-  async function initializeAuth() {
-    try {
-      const token = await getAccessToken();
-
-      if (!token) {
-        setState((prev) => ({ ...prev, isLoading: false }));
-        return;
-      }
-
-      const result = await authService.validateSession();
-
-      if (result && result.user) {
-        setState({
-          user: result.user,
-          isAuthenticated: true,
-          isLoading: false,
-          error: null,
-        });
-
-        Sentry.setUser({
-          id: result.user.id,
-          email: result.user.email,
-          username: result.user.name,
-        });
-      } else {
-        await clearTokens();
-        setState({
-          user: null,
-          isAuthenticated: false,
-          isLoading: false,
-          error: null,
-        });
-      }
-    } catch (error) {
-      console.warn('[Auth] Failed to initialize auth:', error);
-      await clearTokens();
-      setState({
-        user: null,
-        isAuthenticated: false,
-        isLoading: false,
-        error: null,
-      });
-    }
-  }
-
-  /**
    * Set authenticated user state
    */
   function setAuthenticatedUser(user: User) {
+    console.log('[Auth] setAuthenticatedUser called with:', JSON.stringify(user, null, 2));
     if (!user || typeof user !== 'object') {
       console.error('[Auth] Invalid user object received!');
       return;
@@ -233,7 +167,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
     Sentry.setUser({
       id: user.id,
       email: user.email,
-      username: user.name,
+      username: user.name || undefined,
     });
   }
 
@@ -276,7 +210,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
   /**
    * Logout current user
    */
-  async function logout(): Promise<void> {
+  const logout = useCallback(async (): Promise<void> => {
     try {
       setState((prev) => ({ ...prev, isLoading: true }));
       await authService.logout();
@@ -284,6 +218,118 @@ export function AuthProvider({ children }: AuthProviderProps) {
       console.warn('[Auth] Logout error:', error);
     } finally {
       Sentry.setUser(null);
+      setState({
+        user: null,
+        isAuthenticated: false,
+        isLoading: false,
+        error: null,
+      });
+    }
+  }, []);
+
+  /**
+   * Refresh user data from backend
+   */
+  const refreshUser = useCallback(async () => {
+    try {
+      // Use userRepository.getCurrentUser() to get the full profile data from /api/profile
+      // as the default auth session endpoint returns a limited user object
+      const { userRepository } = await import('@/services/repositories/userRepository');
+      const response = (await userRepository.getCurrentUser()) as any;
+
+      // Handle the nested data structure if present
+      const fullUser = response.data?.profile || response;
+
+      if (fullUser && fullUser.id) {
+        setState((prev) => ({
+          ...prev,
+          user: fullUser,
+          isAuthenticated: true,
+        }));
+
+        Sentry.setUser({
+          id: fullUser.id,
+          email: fullUser.email,
+          username: fullUser.name || undefined,
+        });
+      } else {
+        console.warn('[Auth] refreshUser: No valid user returned from profile API', response);
+        setState((prev) => ({ ...prev, isLoading: false }));
+      }
+    } catch (error) {
+      console.error('[Auth] refreshUser failed:', error);
+      setState((prev) => ({ ...prev, isLoading: false }));
+    }
+  }, []);
+
+  /**
+   * Listen for deep link callbacks from OAuth
+   */
+  useEffect(() => {
+    const handleInitialURL = async () => {
+      const url = await Linking.getInitialURL();
+      if (url) {
+        await handleOAuthCallback(url);
+      }
+    };
+
+    handleInitialURL();
+
+    const subscription = Linking.addEventListener('url', async (event) => {
+      await handleOAuthCallback(event.url);
+    });
+
+    return () => {
+      subscription.remove();
+    };
+  }, [handleOAuthCallback]);
+
+  /**
+   * Initialize authentication state from stored token
+   */
+  async function initializeAuth() {
+    try {
+      const token = await getAccessToken();
+
+      if (!token) {
+        setState((prev) => ({ ...prev, isLoading: false }));
+        return;
+      }
+
+      // Use profile endpoint instead of session endpoint to get full user data on init
+      const { userRepository } = await import('@/services/repositories/userRepository');
+      const response = (await userRepository.getCurrentUser()) as any;
+
+      // Handle the nested data structure if present
+      const fullUser = response.data?.profile || response;
+
+      console.log('[Auth] initializeAuth full profile result:', JSON.stringify(fullUser, null, 2));
+
+      if (fullUser && fullUser.id) {
+        setState({
+          user: fullUser,
+          isAuthenticated: true,
+          isLoading: false,
+          error: null,
+        });
+
+        Sentry.setUser({
+          id: fullUser.id,
+          email: fullUser.email,
+          username: fullUser.name || undefined,
+        });
+      } else {
+        await clearTokens();
+        setState({
+          user: null,
+          isAuthenticated: false,
+          isLoading: false,
+          error: null,
+        });
+      }
+    } catch (error) {
+      console.warn('[Auth] Failed to initialize auth:', error);
+      await clearTokens();
       setState({
         user: null,
         isAuthenticated: false,
@@ -307,7 +353,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
       await userRepository.deleteAccount();
 
       // Logout to clear session
-      await authService.logout();
+      await logout();
 
       // Clear Sentry user context
       Sentry.setUser(null);
@@ -325,29 +371,6 @@ export function AuthProvider({ children }: AuthProviderProps) {
         error: error.message || 'Kunne ikke slette konto',
       }));
       throw error;
-    }
-  }
-
-  /**
-   * Refresh user data from backend
-   */
-  async function refreshUser(): Promise<void> {
-    try {
-      const result = await authService.validateSession();
-
-      if (result && result.user) {
-        setState((prev) => ({
-          ...prev,
-          user: result.user,
-          isAuthenticated: true,
-        }));
-      } else {
-        console.warn('[Auth] refreshUser: No user returned from API');
-        await logout();
-      }
-    } catch (error) {
-      console.error('[Auth] refreshUser failed:', error);
-      await logout();
     }
   }
 
@@ -400,7 +423,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
       // Direct response with user data
       if ('user' in result.data && result.data.user) {
-        setAuthenticatedUser(result.data.user as User);
+        setAuthenticatedUser(result.data.user as unknown as User);
       } else {
         setState((prev) => ({
           ...prev,
@@ -462,7 +485,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
           }
 
           // Set authenticated user
-          setAuthenticatedUser(session.data.user as User);
+          setAuthenticatedUser(session.data.user as unknown as User);
           return;
         }
 

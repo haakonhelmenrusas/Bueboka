@@ -82,7 +82,6 @@ export default function HomePage() {
           showsVerticalScrollIndicator={false}
           contentContainerStyle={styles.scrollContent}
           refreshControl={<RefreshControl refreshing={refreshing} onRefresh={handleRefresh} tintColor="#FFFFFF" />}>
-          {/* Header Section */}
           <View style={styles.header}>
             <View>
               <Text style={styles.greeting}>Hei, {user.name?.split(' ')[0] || 'Skytter'}!</Text>
