@@ -11,6 +11,7 @@ import DataValue from './DataValue/DataValue';
 import ModalHeader from './ModalHeader/ModalHeader';
 import DatePicker from './DatePicker/DatePicker';
 import { OfflineBanner } from './OfflineBanner/OfflineBanner';
+import { Badge } from './Badge/Badge';
 
 export {
   Button,
@@ -26,4 +27,5 @@ export {
   DataValue,
   ModalHeader,
   OfflineBanner,
+  Badge,
 };

@@ -2,7 +2,7 @@ import { Text, View } from 'react-native';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faPencil } from '@fortawesome/free-solid-svg-icons';
 import { styles } from './ProfileBoxStyles';
-import { Button } from '@/components/common';
+import { Button, Badge } from '@/components/common';
 import { User } from '@/types';
 import { colors } from '@/styles/colors';
 import ProfileImageManager from './ProfileImageManager';
@@ -23,7 +23,11 @@ export default function ProfileBox({ user, avatarUrl, onEdit, onAvatarUpload, on
         <View style={styles.info}>
           <Text style={styles.name}>{user.name || user.email || 'Bruker'}</Text>
           {user.club && <Text style={styles.club}>{user.club}</Text>}
-          {user.skytternr && <Text style={styles.club}>Skytternr: {user.skytternr}</Text>}
+          {user.skytternr && (
+            <Badge variant="default" size="md" style={{ marginTop: 4 }}>
+              #{user.skytternr}
+            </Badge>
+          )}
         </View>
       </View>
       <Button
