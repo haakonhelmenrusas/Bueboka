@@ -1,6 +1,5 @@
 import { authFetchClient as client } from '@/services/api/authFetch';
 import { handleApiError } from '@/services/api/errors';
-import { AuthResponse, SessionResponse } from '@/services/api/types';
 import { clearTokens, saveTokens } from '@/services/auth/tokenStorage';
 import { User } from '@/types';
 import * as Sentry from '@sentry/react-native';
@@ -88,7 +87,7 @@ export const authService = {
   async logout(): Promise<void> {
     try {
       await client.post('/auth/sign-out');
-    } catch (error) {
+    } catch {
       Sentry.addBreadcrumb({
         category: 'auth',
         message: 'Logout request failed, clearing local tokens anyway',
@@ -143,7 +142,7 @@ export const authService = {
       const user = sessionData.user;
 
       return { user };
-    } catch (_error) {
+    } catch {
       return null;
     }
   },

@@ -10,14 +10,14 @@ describe('Input', () => {
   });
 
   test('should render with placeholder text', () => {
-    const { getByPlaceholderText } = render(<Input label="Test" placeholderText="My text" />);
+    const { getByPlaceholderText } = render(<Input label="Test" placeholder="My text" />);
     expect(getByPlaceholderText('My text')).toBeTruthy();
   });
 
   it('should call onChangeText', () => {
     const onChangeText = jest.fn();
     const { getByTestId } = render(<Input label="Test" onChangeText={onChangeText} />);
-    fireEvent.changeText(getByTestId('input'), 90);
-    expect(onChangeText).toHaveBeenCalledWith(90);
+    fireEvent.changeText(getByTestId('input'), '90');
+    expect(onChangeText).toHaveBeenCalledWith('90');
   });
 });
