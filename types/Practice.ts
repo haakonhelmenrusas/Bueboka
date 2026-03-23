@@ -51,6 +51,7 @@ export interface End {
   targetSizeCm: number | null;
   targetType: string | null;
   arrowsPerEnd: number | null;
+  arrowCoordinates?: { x: number; y: number }[];
   createdAt: string;
   updatedAt: string;
 }

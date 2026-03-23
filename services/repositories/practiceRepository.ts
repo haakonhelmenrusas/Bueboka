@@ -1,7 +1,6 @@
 import { authFetchClient as client } from '@/services/api/authFetch';
 import { handleApiError } from '@/services/api/errors';
 import { End, Environment, Practice, PracticeCategory, WeatherCondition } from '@/types';
-import { PaginatedResponse } from '@/services/api/types';
 
 /**
  * End creation data structure (for creating practice ends)
@@ -16,6 +15,7 @@ export interface CreateEndData {
   distanceTo?: number;
   targetSizeCm?: number;
   arrowsPerEnd?: number;
+  arrowCoordinates?: { x: number; y: number }[];
 }
 
 /**
@@ -51,6 +51,7 @@ export interface UpdatePracticeData {
   arrowsId?: string;
   roundTypeId?: string;
   notes?: string;
+  ends?: CreateEndData[];
 }
 
 /**
@@ -122,7 +123,7 @@ export const practiceRepository = {
    */
   async update(id: string, data: UpdatePracticeData): Promise<Practice> {
     try {
-      const response = await client.put<Practice>(`/practices/${id}`, data);
+      const response = await client.patch<Practice>(`/practices/${id}`, data);
       return response.data;
     } catch (error) {
       throw handleApiError(error);
@@ -181,7 +182,7 @@ export const practiceRepository = {
   async getByDateRange(startDate: Date, endDate: Date): Promise<Practice[]> {
     try {
       const response = await this.getAll({ startDate, endDate, limit: 1000 });
-      return response.data;
+      return response.practices;
     } catch (error) {
       throw handleApiError(error);
     }

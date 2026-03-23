@@ -2,8 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { Keyboard, KeyboardAvoidingView, Platform, Pressable, ScrollView, TouchableOpacity, View } from 'react-native';
 import { Button, DatePicker, Input, ModalHeader, ModalWrapper, Select, Textarea } from '@/components/common';
 import { styles } from './CreatePracticeFormStyles';
-import { Arrows, Bow, Environment, Practice } from '@/types';
-import { Link } from 'expo-router';
+import { Arrows, Bow, Environment, Practice, PracticeCategory } from '@/types';
+import { useRouter } from 'expo-router';
 import * as Sentry from '@sentry/react-native';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faTrashCan } from '@fortawesome/free-regular-svg-icons/faTrashCan';
@@ -27,6 +27,7 @@ export default function CreatePracticeForm({
   onPracticeSaved,
   editingPractice = null,
 }: CreatePracticeFormProps) {
+  const router = useRouter();
   const [date, setDate] = useState(new Date());
   const [selectedBow, setSelectedBow] = useState('');
   const [selectedArrowSet, setSelectedArrowSet] = useState('');
@@ -62,13 +63,21 @@ export default function CreatePracticeForm({
 
     return {
       id: editingPractice?.id || new Date().getTime().toString() + Math.random().toString(36).substring(2, 9),
-      date: new Date(date),
+      userId: '',
+      date: date.toISOString(),
       totalScore: totalScore ? parseInt(totalScore) : 0,
       environment: environment,
-      location: location || undefined,
-      bowId: selectedBowObject?.id,
-      arrowsId: selectedArrowSetObject?.id,
-      notes: notes || undefined,
+      location: location || null,
+      bowId: selectedBowObject?.id ?? null,
+      arrowsId: selectedArrowSetObject?.id ?? null,
+      notes: notes || null,
+      rating: null,
+      weather: [],
+      practiceCategory: PracticeCategory.SKIVE_INDOOR,
+      roundTypeId: null,
+      ends: [],
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
     };
   };
 
@@ -77,28 +86,27 @@ export default function CreatePracticeForm({
       if (editingPractice) {
         // For updates, send only the fields that can be updated
         const updateData = {
-          date: practice.date,
+          date: new Date(practice.date),
           environment: practice.environment,
           totalScore: practice.totalScore,
-          location: practice.location,
+          location: practice.location ?? undefined,
           weather: practice.weather,
-          bowId: practice.bowId,
-          arrowsId: practice.arrowsId,
-          notes: practice.notes,
+          bowId: practice.bowId ?? undefined,
+          arrowsId: practice.arrowsId ?? undefined,
+          notes: practice.notes ?? undefined,
         };
         await practiceRepository.update(editingPractice.id, updateData);
       } else {
         // For creates, don't send the client-generated ID
         const createData = {
-          date: practice.date,
+          date: new Date(practice.date),
           environment: practice.environment,
           totalScore: practice.totalScore,
-          location: practice.location,
+          location: practice.location ?? undefined,
           weather: practice.weather,
-          bowId: practice.bowId,
-          arrowsId: practice.arrowsId,
-          notes: practice.notes,
-          ends: practice.ends,
+          bowId: practice.bowId ?? undefined,
+          arrowsId: practice.arrowsId ?? undefined,
+          notes: practice.notes ?? undefined,
         };
         await practiceRepository.create(createData);
       }
@@ -124,11 +132,35 @@ export default function CreatePracticeForm({
 
   const handleStartShooting = async () => {
     try {
-      await savePracticeToApi(practiceData);
+      const createData = {
+        date: date,
+        environment: environment,
+        totalScore: totalScore ? parseInt(totalScore) : 0,
+        location: location || undefined,
+        bowId: selectedBow || undefined,
+        arrowsId: selectedArrowSet || undefined,
+        notes: notes || undefined,
+      };
+      const savedPractice = await practiceRepository.create(createData);
+      if (onPracticeSaved) onPracticeSaved();
+
+      router.push({
+        pathname: '/practice/shooting',
+        params: {
+          id: savedPractice.id,
+          date: date.toISOString().split('T')[0],
+          bowId: selectedBow || '',
+          arrowSet: selectedArrowSet || '',
+          totalScore: totalScore,
+          notes: notes || '',
+          environment: environment,
+          location: location || '',
+        },
+      });
       onClose();
     } catch (error) {
       console.error('Error starting shooting session:', error);
-      Sentry.captureException('Error starting shooting session', error);
+      Sentry.captureException(error);
       alert('Kunne ikke starte skyteøkten. Vennligst prøv igjen.');
     }
   };
@@ -169,18 +201,6 @@ export default function CreatePracticeForm({
     onClose();
   };
 
-  const practiceData = createPracticeObject();
-  const shootingParams = {
-    id: practiceData.id,
-    date: practiceData.date.toISOString().split('T')[0],
-    bowId: selectedBow,
-    arrowSet: selectedArrowSet,
-    totalScore: totalScore,
-    notes: practiceData.notes,
-    environment: environment,
-    location: location || undefined,
-  };
-
   const isEditing = !!editingPractice;
 
   return (
@@ -208,7 +228,7 @@ export default function CreatePracticeForm({
                 label="📍 Sted (valgfritt)"
                 value={location}
                 onChangeText={setLocation}
-                placeholderText="F.eks. Oslo Bueskytterhall"
+                placeholder="F.eks. Oslo Bueskytterhall"
                 containerStyle={styles.inputContainer}
               />
               {bowOptions.length > 0 && (
@@ -244,18 +264,7 @@ export default function CreatePracticeForm({
                 placeholderText="Legg til notater om treningsøkten..."
                 containerStyle={styles.inputContainer}
               />
-              {!isEditing && (
-                <Link
-                  href={{
-                    pathname: '/practice/shooting',
-                    params: shootingParams,
-                  }}
-                  onPress={handleStartShooting}
-                  asChild
-                  style={styles.startButton}>
-                  <Button label="Start skyting" />
-                </Link>
-              )}
+              {!isEditing && <Button label="Start skyting" onPress={handleStartShooting} buttonStyle={styles.startButton} />}
             </View>
             {isEditing && (
               <TouchableOpacity testID="delete-practice-button" onPress={() => setConfirmVisible(true)}>

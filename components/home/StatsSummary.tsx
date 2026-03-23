@@ -9,17 +9,22 @@ interface StatsData {
 }
 
 interface Props {
-  last7Days: StatsData;
-  last30Days: StatsData;
-  overall: StatsData;
+  last7Days?: StatsData;
+  last30Days?: StatsData;
+  overall?: StatsData;
 }
 
+const EMPTY: StatsData = { totalArrows: 0, scoredArrows: 0, unscoredArrows: 0, avgScorePerArrow: null };
+
 export function StatsSummary({ last7Days, last30Days, overall }: Props) {
+  const d7 = last7Days ?? EMPTY;
+  const d30 = last30Days ?? EMPTY;
+  const tot = overall ?? EMPTY;
   return (
     <View style={styles.container}>
-      <StatCard label="Siste 7 dager" arrows={last7Days.totalArrows} scored={last7Days.scoredArrows} avg={last7Days.avgScorePerArrow} />
-      <StatCard label="Siste 30 dager" arrows={last30Days.totalArrows} scored={last30Days.scoredArrows} avg={last30Days.avgScorePerArrow} />
-      <StatCard label="Totalt" arrows={overall.totalArrows} scored={overall.scoredArrows} avg={overall.avgScorePerArrow} />
+      <StatCard label="Siste 7 dager" arrows={d7.totalArrows} scored={d7.scoredArrows} avg={d7.avgScorePerArrow} />
+      <StatCard label="Siste 30 dager" arrows={d30.totalArrows} scored={d30.scoredArrows} avg={d30.avgScorePerArrow} />
+      <StatCard label="Totalt" arrows={tot.totalArrows} scored={tot.scoredArrows} avg={tot.avgScorePerArrow} />
     </View>
   );
 }

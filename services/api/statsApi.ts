@@ -1,4 +1,5 @@
-import client from '@/services/api/client';
+import { authFetchClient as client } from '@/services/api/authFetch';
+import { handleApiError } from '@/services/api/errors';
 
 export interface StatsData {
   totalArrows: number;
@@ -13,6 +14,13 @@ export interface StatsResponse {
   overall: StatsData;
 }
 
+const EMPTY_STATS_DATA: StatsData = {
+  totalArrows: 0,
+  scoredArrows: 0,
+  unscoredArrows: 0,
+  avgScorePerArrow: null,
+};
+
 /**
  * Stats API service
  */
@@ -22,10 +30,17 @@ export const statsApi = {
    */
   async getStats(): Promise<StatsResponse> {
     try {
-      const response = await client.get<{ stats: StatsResponse }>('/stats');
-      return response.data.stats;
+      const response = await client.get<{ stats: StatsResponse } | StatsResponse>('/stats');
+      // Handle both { stats: StatsResponse } and StatsResponse directly
+      const data = response.data as any;
+      const raw = (data?.stats ?? data) as Partial<StatsResponse> | null | undefined;
+      return {
+        last7Days: raw?.last7Days ?? EMPTY_STATS_DATA,
+        last30Days: raw?.last30Days ?? EMPTY_STATS_DATA,
+        overall: raw?.overall ?? EMPTY_STATS_DATA,
+      };
     } catch (error) {
-      throw error;
+      throw handleApiError(error);
     }
   },
 };
