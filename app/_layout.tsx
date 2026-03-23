@@ -32,7 +32,7 @@ if (process.env.NODE_ENV !== 'development' && !isRunningInExpoGo()) {
 
 function RootLayoutContent() {
   const ref = useNavigationContainerRef();
-  const { isAuthenticated, isLoading } = useAuth();
+  const { isAuthenticated } = useAuth();
 
   useEffect(() => {
     if (ref?.current && navigationIntegration) {
@@ -40,16 +40,15 @@ function RootLayoutContent() {
     }
   }, [ref]);
 
-  // Show nothing while loading auth state
-  if (isLoading) {
-    return null;
-  }
-
   return (
     <>
       <StatusBar barStyle="dark-content" />
       <Stack screenOptions={{ headerShown: false }}>
-        {isAuthenticated ? <Stack.Screen name="(tabs)" /> : <Stack.Screen name="auth" />}
+        {isAuthenticated ? (
+          <Stack.Screen name="(tabs)" />
+        ) : (
+          <Stack.Screen name="auth" />
+        )}
       </Stack>
     </>
   );

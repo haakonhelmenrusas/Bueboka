@@ -45,12 +45,12 @@ export default function HomePage() {
         practiceRepository.getAll({ page: 1, limit: 5 }),
       ]);
 
-      setStats(statsData);
+      if (statsData) setStats((prev) => ({ ...prev, ...statsData }));
       setBows(bowsData || []);
       setArrows(arrowsData || []);
       setPractices(practicesData?.practices || []);
     } catch (_error) {
-      // Handle silently
+      console.error('[HomePage] Error loading data:', _error);
     } finally {
       setRefreshing(false);
     }
@@ -88,8 +88,6 @@ export default function HomePage() {
               {user.club && <Text style={styles.club}>{user.club}</Text>}
             </View>
           </View>
-
-          {/* Stats Summary Card */}
           <View style={styles.card}>
             <View style={styles.cardHeader}>
               <Text style={styles.cardTitle}>Oppsummering</Text>
@@ -103,8 +101,6 @@ export default function HomePage() {
               <Button label="Se detaljert statistikk" onPress={() => router.push('/(tabs)/training')} />
             </View>
           </View>
-
-          {/* Equipment Section */}
           <View style={styles.card}>
             <EquipmentSection
               bows={bows}
@@ -129,8 +125,6 @@ export default function HomePage() {
               }}
             />
           </View>
-
-          {/* Practices Section */}
           <View style={styles.card}>
             <PracticesSection
               practices={practices}
@@ -142,19 +136,13 @@ export default function HomePage() {
           </View>
         </ScrollView>
       </LinearGradient>
-
-      {/* Bow Form Modal */}
       <BowForm modalVisible={bowModalVisible} setModalVisible={setBowModalVisible} bow={selectedBow} existingBows={bows} />
-
-      {/* Arrow Form Modal */}
       <ArrowForm
         modalVisible={arrowModalVisible}
         setArrowModalVisible={setArrowModalVisible}
         arrowSet={selectedArrowSet}
         existingArrowSets={arrows}
       />
-
-      {/* Bow Details Modal */}
       {selectedBowForDetails && (
         <BowDetails
           visible={!!selectedBowForDetails}

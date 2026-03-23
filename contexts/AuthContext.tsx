@@ -71,7 +71,6 @@ export function AuthProvider({ children }: AuthProviderProps) {
       // Use profile endpoint to get full user data instead of minimal session data
       const { userRepository } = await import('@/services/repositories/userRepository');
       const fullUser = await userRepository.getCurrentUser();
-      console.log('[Auth] checkSession full profile result:', JSON.stringify(fullUser, null, 2));
 
       if (fullUser) {
         setState({
@@ -151,7 +150,6 @@ export function AuthProvider({ children }: AuthProviderProps) {
    * Set authenticated user state
    */
   function setAuthenticatedUser(user: User) {
-    console.log('[Auth] setAuthenticatedUser called with:', JSON.stringify(user, null, 2));
     if (!user || typeof user !== 'object') {
       console.error('[Auth] Invalid user object received!');
       return;
@@ -319,23 +317,11 @@ export function AuthProvider({ children }: AuthProviderProps) {
           username: fullUser.name || undefined,
         });
       } else {
-        await clearTokens();
-        setState({
-          user: null,
-          isAuthenticated: false,
-          isLoading: false,
-          error: null,
-        });
+        setState((prev) => ({ ...prev, isLoading: false }));
       }
     } catch (error) {
       console.warn('[Auth] Failed to initialize auth:', error);
-      await clearTokens();
-      setState({
-        user: null,
-        isAuthenticated: false,
-        isLoading: false,
-        error: null,
-      });
+      setState((prev) => ({ ...prev, isLoading: false }));
     }
   }
 

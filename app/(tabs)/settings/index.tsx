@@ -40,10 +40,8 @@ export default function Settings() {
       await userRepository.updateAvatar(uri);
       await refreshUser();
     } catch (err) {
-      if (err instanceof AppError) {
-        throw new Error(err.message);
-      }
-      throw err;
+      const message = err instanceof AppError ? err.message : 'Kunne ikke laste opp bilde. Prøv igjen.';
+      Alert.alert('Feil', message);
     }
   }
 
@@ -52,10 +50,8 @@ export default function Settings() {
       await userRepository.removeAvatar();
       await refreshUser();
     } catch (err) {
-      if (err instanceof AppError) {
-        throw new Error(err.message);
-      }
-      throw err;
+      const message = err instanceof AppError ? err.message : 'Kunne ikke fjerne bilde. Prøv igjen.';
+      Alert.alert('Feil', message);
     }
   }
 

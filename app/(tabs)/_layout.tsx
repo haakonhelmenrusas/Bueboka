@@ -1,6 +1,4 @@
 import { faBullseye } from '@fortawesome/free-solid-svg-icons/faBullseye';
-import { faUser as userSolid } from '@fortawesome/free-solid-svg-icons/faUser';
-import { faUser } from '@fortawesome/free-regular-svg-icons/faUser';
 import { faGear } from '@fortawesome/free-solid-svg-icons/faGear';
 import { faUsers } from '@fortawesome/free-solid-svg-icons/faUsers';
 import { faChartLine } from '@fortawesome/free-solid-svg-icons/faChartLine';
@@ -8,12 +6,27 @@ import { faHome } from '@fortawesome/free-solid-svg-icons/faHome';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { Tabs } from 'expo-router';
 import { colors } from '@/styles/colors';
-import { Platform, View } from 'react-native';
+import { Platform, View, ActivityIndicator } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { OfflineBanner } from '@/components/common';
+import { useAuth } from '@/hooks';
+import { Redirect } from 'expo-router';
 
 export default function AppLayout() {
   const insets = useSafeAreaInsets();
+  const { isAuthenticated, isLoading } = useAuth();
+
+  if (isLoading) {
+    return (
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: colors.background }}>
+        <ActivityIndicator size="large" color={colors.primary} />
+      </View>
+    );
+  }
+
+  if (!isAuthenticated) {
+    return <Redirect href="/auth" />;
+  }
 
   return (
     <View style={{ flex: 1 }}>
