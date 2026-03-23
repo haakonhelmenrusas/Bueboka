@@ -1,10 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import { Text, TouchableOpacity, View } from 'react-native';
+import { Alert, Text, TouchableOpacity, View } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { colors } from '@/styles/colors';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faMinus, faPlus, faBullseye } from '@fortawesome/free-solid-svg-icons';
-import { Environment, Practice } from '@/types';
 import * as Sentry from '@sentry/react-native';
 import { styles } from '@/components/practice/ShootingStyles';
 import { Button } from '@/components/common';
@@ -37,30 +36,14 @@ export default function ShootingScreen() {
 
     setIsSaving(true);
     try {
-      const currentPractice: Practice = {
-        id: params.id as string,
-        userId: '', // Will be added by service or from context
-        date: params.date as string,
+      await practiceRepository.update(params.id as string, {
         totalScore: arrowCount,
-        environment: Environment.INDOOR,
-        bowId: params.bowId as string,
-        arrowsId: params.arrowSet as string,
-        notes: (params.notes as string) || null,
-        practiceCategory: (params.category as any) || 'SKIVE_INDOOR',
-        weather: [],
-        ends: [],
-        rating: null,
-        location: null,
-        roundTypeId: null,
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
-      };
-      await practiceRepository.update(currentPractice.id, currentPractice as any);
-      await new Promise((resolve) => setTimeout(resolve, 200));
+      });
 
-      router.replace('/(tabs)/training');
+      router.replace('/(tabs)/practice');
     } catch (error) {
-      Sentry.captureException('Error saving practice from shooting screen', error);
+      Sentry.captureException(error);
+      Alert.alert('Feil', 'Kunne ikke lagre treningen. Vennligst prøv igjen.');
     } finally {
       setIsSaving(false);
     }

@@ -1,5 +1,5 @@
 import React from 'react';
-import Svg, { Circle, G, Text } from 'react-native-svg';
+import Svg, { Circle, G } from 'react-native-svg';
 
 interface TargetFaceProps {
   size: number;
@@ -36,17 +36,7 @@ export const TargetFace: React.FC<TargetFaceProps> = ({ size }) => {
       <G>
         {rings.map((ring, index) => {
           const radius = unit * (11 - index);
-          return (
-            <Circle
-              key={ring.value}
-              cx={center}
-              cy={center}
-              r={radius}
-              fill={ring.color}
-              stroke={ring.stroke}
-              strokeWidth={1}
-            />
-          );
+          return <Circle key={ring.value} cx={center} cy={center} r={radius} fill={ring.color} stroke={ring.stroke} strokeWidth={1} />;
         })}
         {/* Center X */}
         <Circle cx={center} cy={center} r={unit * 0.5} fill="transparent" stroke="#000000" strokeWidth={0.5} />
@@ -54,4 +44,3 @@ export const TargetFace: React.FC<TargetFaceProps> = ({ size }) => {
     </Svg>
   );
 };
-
