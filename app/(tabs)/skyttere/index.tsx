@@ -6,7 +6,7 @@ import { faSearch, faUsers } from '@fortawesome/free-solid-svg-icons';
 import { PublicProfileList } from '@/components/skyttere';
 import { publicProfilesApi } from '@/services';
 import { PublicProfile } from '@/types';
-import { styles } from './SkyttereStyles';
+import { styles } from '@/components/skyttere/SkyttereStyles';
 import { colors } from '@/styles/colors';
 import { useAuth } from '@/hooks';
 import { Message } from '@/components/common';

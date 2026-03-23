@@ -7,7 +7,7 @@ import { useRouter } from 'expo-router';
 import * as Sentry from '@sentry/react-native';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faTrashCan } from '@fortawesome/free-regular-svg-icons/faTrashCan';
-import ConfirmModal from '@/components/profile/DeleteArrowSetModal/ConfirmModal';
+import ConfirmModal from '@/components/home/DeleteArrowSetModal/ConfirmModal';
 import { practiceRepository } from '@/services/repositories';
 
 interface CreatePracticeFormProps {

@@ -1,6 +1,14 @@
 import { StyleSheet } from 'react-native';
 import { colors } from '@/styles/colors';
 
+/** Compose rgba from a hex color constant and an opacity value */
+const rgba = (hex: string, opacity: number) => {
+  const r = parseInt(hex.slice(1, 3), 16);
+  const g = parseInt(hex.slice(3, 5), 16);
+  const b = parseInt(hex.slice(5, 7), 16);
+  return `rgba(${r}, ${g}, ${b}, ${opacity})`;
+};
+
 export const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -22,9 +30,9 @@ export const styles = StyleSheet.create({
     width: 72,
     height: 72,
     borderRadius: 36,
-    backgroundColor: 'rgba(255, 255, 255, 0.12)',
+    backgroundColor: rgba(colors.white, 0.12),
     borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.2)',
+    borderColor: rgba(colors.white, 0.2),
     alignItems: 'center',
     justifyContent: 'center',
     marginBottom: 8,
@@ -32,14 +40,14 @@ export const styles = StyleSheet.create({
   title: {
     fontSize: 38,
     fontWeight: '900',
-    color: '#FFFFFF',
+    color: colors.white,
     textAlign: 'center',
     marginBottom: 12,
     letterSpacing: -0.5,
   },
   subtitle: {
     fontSize: 16,
-    color: '#FFFFFF',
+    color: colors.white,
     textAlign: 'center',
     lineHeight: 25,
     marginBottom: 24,
@@ -49,20 +57,20 @@ export const styles = StyleSheet.create({
   searchWrap: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: 'rgba(255, 255, 255, 0.12)',
+    backgroundColor: rgba(colors.white, 0.12),
     borderRadius: 24,
     paddingHorizontal: 16,
     paddingVertical: 14,
     borderWidth: 1.5,
-    borderColor: 'rgba(255, 255, 255, 0.25)',
+    borderColor: rgba(colors.white, 0.25),
     width: '100%',
     maxWidth: 480,
     marginTop: 16,
   },
   searchWrapFocused: {
-    backgroundColor: 'rgba(255, 255, 255, 0.18)',
-    borderColor: 'rgba(255, 255, 255, 0.5)',
-    shadowColor: '#FFFFFF',
+    backgroundColor: rgba(colors.white, 0.18),
+    borderColor: rgba(colors.white, 0.5),
+    shadowColor: colors.white,
     shadowOffset: { width: 0, height: 0 },
     shadowOpacity: 0.1,
     shadowRadius: 8,
@@ -74,7 +82,7 @@ export const styles = StyleSheet.create({
   searchInput: {
     flex: 1,
     fontSize: 16,
-    color: '#FFFFFF',
+    color: colors.white,
     padding: 0,
   },
   results: {
@@ -101,7 +109,7 @@ export const styles = StyleSheet.create({
     position: 'absolute',
     borderRadius: 70,
     borderWidth: 1.5,
-    borderColor: 'rgba(255, 255, 255, 0.18)',
+    borderColor: rgba(colors.white, 0.18),
   },
   idleRing1: {
     width: 140,
@@ -119,16 +127,16 @@ export const styles = StyleSheet.create({
     width: 52,
     height: 52,
     borderRadius: 26,
-    backgroundColor: 'rgba(255, 255, 255, 0.1)',
+    backgroundColor: rgba(colors.white, 0.1),
     borderWidth: 1.5,
-    borderColor: 'rgba(255, 255, 255, 0.25)',
+    borderColor: rgba(colors.white, 0.25),
     justifyContent: 'center',
     alignItems: 'center',
     zIndex: 1,
   },
   idleHint: {
     fontSize: 14,
-    color: 'rgba(255, 255, 255, 0.5)',
+    color: rgba(colors.white, 0.5),
     textAlign: 'center',
     letterSpacing: 0.2,
   },

@@ -11,10 +11,10 @@ import { colors } from '@/styles/colors';
 import { statsApi, StatsResponse } from '@/services/api/statsApi';
 import { arrowsRepository, bowRepository, practiceRepository } from '@/services/repositories';
 import { Bow, Arrows, Practice } from '@/types';
-import BowForm from '@/components/profile/bowForm/BowForm';
-import ArrowForm from '@/components/profile/arrowForm/ArrowForm';
-import BowDetails from '@/components/profile/bowDetails/BowDetails';
-import ArrowSetDetails from '@/components/profile/arrowSetDetails/ArrowSetDetails';
+import BowForm from '@/components/home/bowForm/BowForm';
+import ArrowForm from '@/components/home/arrowForm/ArrowForm';
+import BowDetails from '@/components/home/bowDetails/BowDetails';
+import ArrowSetDetails from '@/components/home/arrowSetDetails/ArrowSetDetails';
 
 export default function HomePage() {
   const { user } = useAuth();

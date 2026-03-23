@@ -8,7 +8,7 @@ import { styles } from './BowFormStyles';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faTrashCan } from '@fortawesome/free-regular-svg-icons/faTrashCan';
 import { colors } from '@/styles/colors';
-import ConfirmModal from '@/components/profile/DeleteArrowSetModal/ConfirmModal';
+import ConfirmModal from '@/components/home/DeleteArrowSetModal/ConfirmModal';
 import { bowRepository } from '@/services/repositories';
 import { AppError } from '@/services';
 

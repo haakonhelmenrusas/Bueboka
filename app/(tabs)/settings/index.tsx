@@ -9,8 +9,8 @@ import { useAuth } from '@/hooks';
 import { useEffect, useState } from 'react';
 import AboutContent from '@/components/about/AboutContent';
 import EmailVerificationBanner from '@/components/auth/EmailVerificationBanner';
-import ProfileBox from '@/components/profile/profile/ProfileBox';
-import ProfileForm from '@/components/profile/profileForm/ProfileForm';
+import ProfileBox from '@/components/home/profile/ProfileBox';
+import ProfileForm from '@/components/home/profileForm/ProfileForm';
 import { userRepository } from '@/services/repositories';
 import { AppError } from '@/services';
 

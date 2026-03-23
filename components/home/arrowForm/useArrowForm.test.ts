@@ -1,5 +1,5 @@
 import { Material } from '@/types';
-import { Action, ArrowSetState, reducer } from '@/components/profile/arrowForm/useArrowForm';
+import { Action, ArrowSetState, reducer } from '@/components/home/arrowForm/useArrowForm';
 
 const INITIAL_STATE: ArrowSetState = {
   name: '',

@@ -4,11 +4,11 @@ import { Button, Input, ModalHeader, ModalWrapper, Select, Textarea, Toggle } fr
 import { handleNumberChange } from '@/utils';
 import { Arrows, Material } from '@/types';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
-import { useArrowForm } from '@/components/profile/arrowForm/useArrowForm';
+import { useArrowForm } from '@/components/home/arrowForm/useArrowForm';
 import { styles } from './ArrowFormStyles';
 import { colors } from '@/styles/colors';
 import { faTrash } from '@fortawesome/free-solid-svg-icons/faTrash';
-import ConfirmModal from '@/components/profile/DeleteArrowSetModal/ConfirmModal';
+import ConfirmModal from '@/components/home/DeleteArrowSetModal/ConfirmModal';
 import { arrowsRepository } from '@/services/repositories';
 import { AppError } from '@/services';
 
