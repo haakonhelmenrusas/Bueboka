@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   ActivityIndicator,
   Image,
@@ -10,8 +10,10 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
+import { useRouter } from 'expo-router';
 import { colors } from '@/styles/colors';
-import { Button, Input, Message, Select } from '@/components/common';
+import { Button, Input, Message } from '@/components/common';
+import { GoogleLogo } from '@/components/common/GoogleLogo/GoogleLogo';
 import { useAuth } from '@/hooks';
 import { AppError } from '@/services';
 import EmailVerification from '@/components/auth/EmailVerification';
@@ -20,22 +22,23 @@ interface AuthScreenProps {
   onAuthSuccess?: () => void;
 }
 
-const CLUB_OPTIONS = [
-  { label: 'Klubb A', value: 'klubb_a' },
-  { label: 'Klubb B', value: 'klubb_b' },
-  { label: 'Klubb C', value: 'klubb_c' },
-];
-
 function AuthScreen({ onAuthSuccess }: AuthScreenProps) {
-  const { login, register, loginWithGoogle, isLoading, error, clearError } = useAuth();
+  const { login, register, loginWithGoogle, isLoading, isAuthenticated, error, clearError } = useAuth();
+  const router = useRouter();
   const [isLogin, setIsLogin] = useState(true);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [name, setName] = useState('');
-  const [club, setClub] = useState('');
   const [localError, setLocalError] = useState<string | null>(null);
   const [showVerification, setShowVerification] = useState(false);
   const [registeredEmail, setRegisteredEmail] = useState<string>('');
+
+  // Redirect to home as soon as authentication state is confirmed
+  useEffect(() => {
+    if (isAuthenticated) {
+      router.replace('/(tabs)/home');
+    }
+  }, [isAuthenticated, router]);
 
   const clearAuthErrors = () => {
     setLocalError(null);
@@ -84,13 +87,12 @@ function AuthScreen({ onAuthSuccess }: AuthScreenProps) {
     }
 
     try {
-      await register(email, password, name, club || undefined);
+      await register(email, password, name);
       // After successful registration, user will be automatically redirected to main screen
       // by the AuthContext setting isAuthenticated: true
       setEmail('');
       setPassword('');
       setName('');
-      setClub('');
       onAuthSuccess?.();
     } catch (error) {
       handleAuthError(error);
@@ -150,20 +152,6 @@ function AuthScreen({ onAuthSuccess }: AuthScreenProps) {
               autoCapitalize="words"
             />
           )}
-          {!isLogin && (
-            <Select
-              label="Klubb"
-              options={CLUB_OPTIONS}
-              selectedValue={club}
-              onValueChange={(val) => {
-                setClub(val);
-                if (localError || error) clearAuthErrors();
-              }}
-              searchable={true}
-              placeholder="Velg en klubb"
-            />
-          )}
-
           <Input
             label="E-post"
             value={email}
@@ -184,12 +172,13 @@ function AuthScreen({ onAuthSuccess }: AuthScreenProps) {
               if (localError || error) clearAuthErrors();
             }}
             secureTextEntry
+            autoCapitalize={'none'}
             editable={!isLoading}
             labelStyle={styles.whiteLabel}
           />
         </View>
         <Button
-          buttonStyle={{ marginTop: 16 }}
+          buttonStyle={{ marginTop: 8 }}
           label={isLoading ? 'Venter...' : isLogin ? 'Logg inn' : 'Opprett konto'}
           onPress={handleSubmit}
           disabled={isLoading}
@@ -211,7 +200,14 @@ function AuthScreen({ onAuthSuccess }: AuthScreenProps) {
           <View style={styles.divider} />
         </View>
         <View style={styles.socialButtonsContainer}>
-          <Button label="Fortsett med Google" onPress={handleGoogleLogin} disabled={isLoading} variant="standard" />
+          <Button
+            label="Fortsett med Google"
+            onPress={handleGoogleLogin}
+            disabled={isLoading}
+            variant="tertiary"
+            icon={<GoogleLogo size={20} />}
+            iconPosition="left"
+          />
         </View>
         <View style={styles.toggleContainer}>
           <TouchableOpacity
@@ -274,8 +270,8 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   form: {
-    marginBottom: 24,
-    gap: 16,
+    marginBottom: 20,
+    gap: 4,
   },
   whiteLabel: {
     color: colors.white,
