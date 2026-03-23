@@ -55,29 +55,15 @@ export default function Settings() {
     }
   }
 
-  const handleLogout = () => {
-    Alert.alert('Logg ut', 'Er du sikker på at du vil logge ut?', [
-      {
-        text: 'Avbryt',
-        style: 'cancel',
-      },
-      {
-        text: 'Logg ut',
-        style: 'destructive',
-        onPress: async () => {
-          setIsLoggingOut(true);
-          try {
-            await logout();
-            // Navigation will be handled by auth state change
-          } catch (error) {
-            console.error('Error logging out:', error);
-            Alert.alert('Feil', 'Kunne ikke logge ut. Prøv igjen.');
-          } finally {
-            setIsLoggingOut(false);
-          }
-        },
-      },
-    ]);
+  const handleLogout = async () => {
+    setIsLoggingOut(true);
+    try {
+      await logout();
+    } catch (error) {
+      console.error('Error logging out:', error);
+    } finally {
+      setIsLoggingOut(false);
+    }
   };
 
   const handleDeleteAccount = () => {
@@ -125,7 +111,6 @@ export default function Settings() {
             />
           </View>
         )}
-
         {user && (
           <View style={styles.section}>
             <View style={styles.sectionCard}>
@@ -138,28 +123,14 @@ export default function Settings() {
                 <Text style={styles.label}>E-post</Text>
                 <Text style={styles.value}>{user.email || 'Ikke angitt'}</Text>
               </View>
-              {user.club && (
-                <View style={styles.infoCard}>
-                  <Text style={styles.label}>Klubb</Text>
-                  <Text style={styles.value}>{user.club}</Text>
-                </View>
-              )}
-              {user.skytternr && (
-                <View style={styles.infoCard}>
-                  <Text style={styles.label}>Skytternr</Text>
-                  <Text style={styles.value}>{user.skytternr}</Text>
-                </View>
-              )}
             </View>
           </View>
         )}
-
         <View style={styles.section}>
           <View style={styles.sectionCard}>
             <AboutContent />
           </View>
         </View>
-
         {user && (
           <View style={styles.section}>
             <View style={styles.sectionCard}>
@@ -176,7 +147,6 @@ export default function Settings() {
             </View>
           </View>
         )}
-
         {user && (
           <View style={styles.section}>
             <View style={styles.sectionCard}>
@@ -193,8 +163,6 @@ export default function Settings() {
           </View>
         )}
       </ScrollView>
-
-      {/* Profile Edit Modal */}
       {user && (
         <ProfileForm
           modalVisible={isProfileModalVisible}
