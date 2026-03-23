@@ -1,13 +1,6 @@
 import { StyleSheet } from 'react-native';
 import { colors } from '@/styles/colors';
-
-/** Compose rgba from a hex color constant and an opacity value */
-const rgba = (hex: string, opacity: number) => {
-  const r = parseInt(hex.slice(1, 3), 16);
-  const g = parseInt(hex.slice(3, 5), 16);
-  const b = parseInt(hex.slice(5, 7), 16);
-  return `rgba(${r}, ${g}, ${b}, ${opacity})`;
-};
+import { hexToRgba } from '@/utils';
 
 export const styles = StyleSheet.create({
   container: {
@@ -30,9 +23,9 @@ export const styles = StyleSheet.create({
     width: 72,
     height: 72,
     borderRadius: 36,
-    backgroundColor: rgba(colors.white, 0.12),
+    backgroundColor: hexToRgba(colors.white, 0.12),
     borderWidth: 1,
-    borderColor: rgba(colors.white, 0.2),
+    borderColor: hexToRgba(colors.white, 0.2),
     alignItems: 'center',
     justifyContent: 'center',
     marginBottom: 8,
@@ -57,24 +50,19 @@ export const styles = StyleSheet.create({
   searchWrap: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: rgba(colors.white, 0.12),
+    backgroundColor: hexToRgba(colors.white, 0.12),
     borderRadius: 24,
     paddingHorizontal: 16,
     paddingVertical: 14,
     borderWidth: 1.5,
-    borderColor: rgba(colors.white, 0.25),
+    borderColor: hexToRgba(colors.white, 0.25),
     width: '100%',
     maxWidth: 480,
     marginTop: 16,
   },
   searchWrapFocused: {
-    backgroundColor: rgba(colors.white, 0.18),
-    borderColor: rgba(colors.white, 0.5),
-    shadowColor: colors.white,
-    shadowOffset: { width: 0, height: 0 },
-    shadowOpacity: 0.1,
-    shadowRadius: 8,
-    elevation: 4,
+    // intentionally empty – focus colours are animated in the component via Animated.Value
+    // to avoid a setState re-render that loses native TextInput focus
   },
   searchIcon: {
     marginRight: 12,
@@ -109,7 +97,7 @@ export const styles = StyleSheet.create({
     position: 'absolute',
     borderRadius: 70,
     borderWidth: 1.5,
-    borderColor: rgba(colors.white, 0.18),
+    borderColor: hexToRgba(colors.white, 0.18),
   },
   idleRing1: {
     width: 140,
@@ -127,16 +115,16 @@ export const styles = StyleSheet.create({
     width: 52,
     height: 52,
     borderRadius: 26,
-    backgroundColor: rgba(colors.white, 0.1),
+    backgroundColor: hexToRgba(colors.white, 0.1),
     borderWidth: 1.5,
-    borderColor: rgba(colors.white, 0.25),
+    borderColor: hexToRgba(colors.white, 0.25),
     justifyContent: 'center',
     alignItems: 'center',
     zIndex: 1,
   },
   idleHint: {
     fontSize: 14,
-    color: rgba(colors.white, 0.5),
+    color: hexToRgba(colors.white, 0.5),
     textAlign: 'center',
     letterSpacing: 0.2,
   },

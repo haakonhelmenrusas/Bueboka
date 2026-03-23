@@ -1,8 +1,10 @@
-import { ActivityIndicator, FlatList, Image, Text, View } from 'react-native';
+import { ActivityIndicator, Image, Text, View } from 'react-native';
 import { PublicProfile } from '@/types';
 import { styles } from './PublicProfileListStyles';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faUser } from '@fortawesome/free-regular-svg-icons';
+import { colors } from '@/styles/colors';
+import { hexToRgba } from '@/utils';
 
 interface Props {
   profiles: PublicProfile[];
@@ -15,7 +17,7 @@ export function PublicProfileList({ profiles, loading, searched, query }: Props)
   if (loading) {
     return (
       <View style={styles.centerContainer}>
-        <ActivityIndicator size="large" color="#FFFFFF" />
+        <ActivityIndicator size="large" color={colors.white} />
         <Text style={styles.loadingText}>Søker...</Text>
       </View>
     );
@@ -24,7 +26,7 @@ export function PublicProfileList({ profiles, loading, searched, query }: Props)
   if (searched && profiles.length === 0) {
     return (
       <View style={styles.centerContainer}>
-        <FontAwesomeIcon icon={faUser} size={48} color="rgba(255, 255, 255, 0.4)" />
+        <FontAwesomeIcon icon={faUser} size={48} color={hexToRgba(colors.white, 0.4)} />
         <Text style={styles.emptyTitle}>Ingen resultater</Text>
         <Text style={styles.emptySubtitle}>Fant ingen bueskyttere som matcher &quot;{query}&quot;</Text>
       </View>
@@ -36,15 +38,14 @@ export function PublicProfileList({ profiles, loading, searched, query }: Props)
   }
 
   return (
-    <FlatList
-      data={profiles}
-      keyExtractor={(item) => item.id}
-      renderItem={({ item }) => <ProfileCard profile={item} />}
-      contentContainerStyle={styles.listContent}
-      ItemSeparatorComponent={() => <View style={styles.separator} />}
-      showsVerticalScrollIndicator={false}
-      scrollEnabled={false}
-    />
+    <View style={styles.listContent}>
+      {profiles.map((profile, index) => (
+        <View key={profile.id}>
+          <ProfileCard profile={profile} />
+          {index < profiles.length - 1 && <View style={styles.separator} />}
+        </View>
+      ))}
+    </View>
   );
 }
 
@@ -60,7 +61,7 @@ function ProfileCard({ profile }: ProfileCardProps) {
           <Image source={{ uri: profile.image }} style={styles.avatar} />
         ) : (
           <View style={styles.avatarPlaceholder}>
-            <FontAwesomeIcon icon={faUser} size={24} color="#9697B6" />
+            <FontAwesomeIcon icon={faUser} size={24} color={colors.inactive} />
           </View>
         )}
       </View>

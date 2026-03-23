@@ -6,4 +6,5 @@ export interface PublicProfile {
   name: string;
   club?: string;
   image?: string;
+  skytternr?: string;
 }
