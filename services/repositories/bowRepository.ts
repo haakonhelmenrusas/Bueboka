@@ -2,25 +2,10 @@ import { authFetchClient as client } from '@/services/api/authFetch';
 import { handleApiError } from '@/services/api/errors';
 import { Bow, BowType } from '@/types';
 
-/**
- * Bow creation data structure
- */
-export interface CreateBowData {
+/** Fields for creating or updating a bow. Required fields (name, type) are only enforced on create. */
+export interface BowData {
   name: string;
   type: BowType;
-  eyeToNock?: number;
-  aimMeasure?: number;
-  eyeToSight?: number;
-  notes?: string;
-  isFavorite?: boolean;
-}
-
-/**
- * Bow update data structure
- */
-export interface UpdateBowData {
-  name?: string;
-  type?: BowType;
   eyeToNock?: number;
   aimMeasure?: number;
   eyeToSight?: number;
@@ -39,19 +24,7 @@ export const bowRepository = {
     try {
       const response = await client.get<{ bows: Bow[] }>('/bows');
       if (!response.data) return [];
-      return Array.isArray(response.data) ? response.data : response.data.bows ?? [];
-    } catch (error) {
-      throw handleApiError(error);
-    }
-  },
-
-  /**
-   * Get a specific bow by ID
-   */
-  async getById(id: string): Promise<Bow> {
-    try {
-      const response = await client.get<{ bow: Bow }>(`/bows/${id}`);
-      return response.data.bow;
+      return Array.isArray(response.data) ? response.data : (response.data.bows ?? []);
     } catch (error) {
       throw handleApiError(error);
     }
@@ -60,7 +33,7 @@ export const bowRepository = {
   /**
    * Create a new bow
    */
-  async create(data: CreateBowData): Promise<Bow> {
+  async create(data: BowData): Promise<Bow> {
     try {
       const response = await client.post<{ bow: Bow }>('/bows', data);
       return response.data.bow;
@@ -72,7 +45,7 @@ export const bowRepository = {
   /**
    * Update an existing bow
    */
-  async update(id: string, data: UpdateBowData): Promise<Bow> {
+  async update(id: string, data: Partial<BowData>): Promise<Bow> {
     try {
       const response = await client.patch<{ bow: Bow }>(`/bows/${id}`, data);
       return response.data.bow;
