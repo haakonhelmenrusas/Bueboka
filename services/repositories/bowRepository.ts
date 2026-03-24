@@ -38,8 +38,8 @@ export const bowRepository = {
   async getAll(): Promise<Bow[]> {
     try {
       const response = await client.get<{ bows: Bow[] }>('/bows');
-      // Extract the bows array from the response object
-      return Array.isArray(response.data) ? response.data : response.data.bows || [];
+      if (!response.data) return [];
+      return Array.isArray(response.data) ? response.data : response.data.bows ?? [];
     } catch (error) {
       throw handleApiError(error);
     }
@@ -50,8 +50,8 @@ export const bowRepository = {
    */
   async getById(id: string): Promise<Bow> {
     try {
-      const response = await client.get<Bow>(`/bows/${id}`);
-      return response.data;
+      const response = await client.get<{ bow: Bow }>(`/bows/${id}`);
+      return response.data.bow;
     } catch (error) {
       throw handleApiError(error);
     }
@@ -62,8 +62,8 @@ export const bowRepository = {
    */
   async create(data: CreateBowData): Promise<Bow> {
     try {
-      const response = await client.post<Bow>('/bows', data);
-      return response.data;
+      const response = await client.post<{ bow: Bow }>('/bows', data);
+      return response.data.bow;
     } catch (error) {
       throw handleApiError(error);
     }
@@ -74,8 +74,8 @@ export const bowRepository = {
    */
   async update(id: string, data: UpdateBowData): Promise<Bow> {
     try {
-      const response = await client.patch<Bow>(`/bows/${id}`, data);
-      return response.data;
+      const response = await client.patch<{ bow: Bow }>(`/bows/${id}`, data);
+      return response.data.bow;
     } catch (error) {
       throw handleApiError(error);
     }
@@ -97,8 +97,8 @@ export const bowRepository = {
    */
   async toggleFavorite(id: string, isFavorite: boolean): Promise<Bow> {
     try {
-      const response = await client.patch<Bow>(`/bows/${id}`, { isFavorite });
-      return response.data;
+      const response = await client.patch<{ bow: Bow }>(`/bows/${id}`, { isFavorite });
+      return response.data.bow;
     } catch (error) {
       throw handleApiError(error);
     }

@@ -38,17 +38,25 @@ export default function HomePage() {
   const loadData = useCallback(async () => {
     if (!user) return;
     try {
-      const [statsData, bowsData, arrowsData, practicesData] = await Promise.all([
+      const [statsResult, bowsResult, arrowsResult, practicesResult] = await Promise.allSettled([
         statsApi.getStats(),
         bowRepository.getAll(),
         arrowsRepository.getAll(),
         practiceRepository.getAll({ page: 1, limit: 5 }),
       ]);
 
-      if (statsData) setStats((prev) => ({ ...prev, ...statsData }));
-      setBows(bowsData || []);
-      setArrows(arrowsData || []);
-      setPractices(practicesData?.practices || []);
+      if (statsResult.status === 'fulfilled' && statsResult.value) {
+        setStats((prev) => ({ ...prev, ...statsResult.value }));
+      }
+      if (bowsResult.status === 'fulfilled') {
+        setBows(bowsResult.value || []);
+      }
+      if (arrowsResult.status === 'fulfilled') {
+        setArrows(arrowsResult.value || []);
+      }
+      if (practicesResult.status === 'fulfilled') {
+        setPractices(practicesResult.value?.practices || []);
+      }
     } catch (_error) {
       console.error('[HomePage] Error loading data:', _error);
     } finally {
@@ -136,7 +144,17 @@ export default function HomePage() {
           </View>
         </ScrollView>
       </LinearGradient>
-      <BowForm modalVisible={bowModalVisible} setModalVisible={setBowModalVisible} bow={selectedBow} existingBows={bows} />
+      <BowForm
+        modalVisible={bowModalVisible}
+        setModalVisible={setBowModalVisible}
+        bow={selectedBow}
+        existingBows={bows}
+        onSuccess={loadData}
+        onDeleteSuccess={(bowId) => {
+          setBows((prev) => prev.filter((b) => b.id !== bowId));
+          loadData();
+        }}
+      />
       <ArrowForm
         modalVisible={arrowModalVisible}
         setArrowModalVisible={setArrowModalVisible}

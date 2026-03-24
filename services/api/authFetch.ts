@@ -10,12 +10,17 @@ export async function authFetch<T = any>(endpoint: string, options: RequestInit 
   const url = endpoint.startsWith('http') ? endpoint : `${API_BASE_URL}${endpoint}`;
 
   try {
-    const response = await authClient.$fetch(url, {
+    const raw = await authClient.$fetch(url, {
       ...options,
-      credentials: 'include', // Important for cookies
+      credentials: 'include',
     });
 
-    return { data: response as T };
+    // authClient.$fetch wraps every response in { data: T, error: null }.
+    // Unwrap it so callers receive the actual API response body.
+    const isWrapped = raw !== null && typeof raw === 'object' && 'data' in (raw as object) && 'error' in (raw as object);
+
+    const data = isWrapped ? (raw as { data: T }).data : (raw as T);
+    return { data };
   } catch (error: any) {
     console.error('[AuthFetch] Error:', endpoint, error);
     throw error;

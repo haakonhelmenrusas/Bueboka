@@ -72,13 +72,12 @@ export function handleApiError(error: unknown): AppError {
   }
 
   if (error instanceof Error) {
-    // Specifically handle the "Cannot read property 'user' of null" error
-    if (error.message?.includes("property 'user' of null")) {
-      return new AppError('UNAUTHORIZED', 'Feil e-post eller passord.', error);
+    // Specifically handle "Cannot read property 'user' of null/undefined" – bad credentials
+    if (error.message?.includes("property 'user' of null") || error.message?.includes("property 'user' of undefined")) {
+      return new AppError('UNAUTHORIZED', 'Feil e-post eller passord. Vennligst prøv igjen.', error);
     }
-    return new AppError('UNKNOWN', error.message, error);
+    return new AppError('UNKNOWN', 'En ukjent feil oppstod. Vennligst prøv igjen.', error);
   }
 
-  return new AppError('UNKNOWN', 'En ukjent feil oppstod', error);
+  return new AppError('UNKNOWN', 'En ukjent feil oppstod. Vennligst prøv igjen.', error);
 }
-

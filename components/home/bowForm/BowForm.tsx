@@ -1,4 +1,4 @@
-import { Keyboard, KeyboardAvoidingView, Platform, Pressable, TouchableOpacity, View } from 'react-native';
+import { Keyboard, KeyboardAvoidingView, Platform, Pressable, Text, TouchableOpacity, View } from 'react-native';
 import { useEffect, useState } from 'react';
 import { Button, Checkbox, Input, ModalHeader, ModalWrapper, Select, Textarea } from '@/components/common';
 import { useBowForm } from './useBowForm';
@@ -7,6 +7,7 @@ import { Bow, BowType } from '@/types';
 import { styles } from './BowFormStyles';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faTrashCan } from '@fortawesome/free-regular-svg-icons/faTrashCan';
+import { faChevronDown } from '@fortawesome/free-solid-svg-icons/faChevronDown';
 import { colors } from '@/styles/colors';
 import ConfirmModal from '@/components/home/DeleteArrowSetModal/ConfirmModal';
 import { bowRepository } from '@/services/repositories';
@@ -17,24 +18,21 @@ interface BowFormProps {
   setModalVisible: (visible: boolean) => void;
   bow: Bow | null;
   existingBows: Bow[];
+  onSuccess?: () => void;
+  onDeleteSuccess?: (bowId: string) => void;
 }
 
-const BowForm = ({ modalVisible, setModalVisible, bow, existingBows = [] }: BowFormProps) => {
+const BowForm = ({ modalVisible, setModalVisible, bow, existingBows = [], onSuccess, onDeleteSuccess }: BowFormProps) => {
   const [confirmVisible, setConfirmVisible] = useState(false);
   const [submitting, setSubmitting] = useState(false);
+  const [advancedOpen, setAdvancedOpen] = useState(false);
   const [{ name, nameError, type, eyeToNock, aimMeasure, eyeToSight, notes, isFavorite }, dispatch] = useBowForm();
-  const [prevBow, setPrevBow] = useState<Bow | null>(null);
 
   // Ensure existingBows is always an array
   const bows = Array.isArray(existingBows) ? existingBows : [];
 
   useEffect(() => {
     if (!modalVisible) return;
-
-    // Clear form if we're switching from editing to creating new
-    if (prevBow !== null && bow === null) {
-      clearForm();
-    }
 
     if (bow) {
       dispatch({ type: 'SET_NAME', payload: bow.name });
@@ -44,10 +42,15 @@ const BowForm = ({ modalVisible, setModalVisible, bow, existingBows = [] }: BowF
       dispatch({ type: 'SET_EYE_TO_SIGHT', payload: bow.eyeToSight?.toString() ?? '' });
       dispatch({ type: 'SET_NOTES', payload: bow.notes ?? '' });
       dispatch({ type: 'SET_IS_FAVORITE', payload: bow.isFavorite ?? false });
+      // Open advanced section if any measurement is already set
+      setAdvancedOpen(!!(bow.eyeToNock || bow.aimMeasure || bow.eyeToSight));
+    } else {
+      // Always start fresh when opening in create mode so stale errors are cleared
+      clearForm();
+      setAdvancedOpen(false);
     }
-
-    setPrevBow(bow);
-  }, [bow, dispatch, modalVisible]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [bow, modalVisible]);
 
   async function handleSubmit() {
     if (!name) {
@@ -79,16 +82,21 @@ const BowForm = ({ modalVisible, setModalVisible, bow, existingBows = [] }: BowF
         await bowRepository.create(bowData);
       }
 
-      // If setting as favorite, unfavorite others
+      // Best-effort: unfavourite other bows. Don't let this block the success path.
       if (isFavorite) {
         const favoriteBows = bows.filter((b) => b.isFavorite && b.id !== bow?.id);
         for (const favBow of favoriteBows) {
-          await bowRepository.update(favBow.id, { isFavorite: false });
+          try {
+            await bowRepository.update(favBow.id, { isFavorite: false });
+          } catch (e) {
+            console.error('[BowForm] Could not unfavourite bow:', favBow.id, e);
+          }
         }
       }
 
       clearForm();
       setModalVisible(false);
+      onSuccess?.();
     } catch (error) {
       console.error('Error saving bow:', error);
       if (error instanceof AppError) {
@@ -109,6 +117,8 @@ const BowForm = ({ modalVisible, setModalVisible, bow, existingBows = [] }: BowF
       await bowRepository.delete(bow.id);
       clearForm();
       setModalVisible(false);
+      onDeleteSuccess?.(bow.id);
+      onSuccess?.();
     } catch (error) {
       console.error('Error deleting bow:', error);
       if (error instanceof AppError) {
@@ -152,8 +162,7 @@ const BowForm = ({ modalVisible, setModalVisible, bow, existingBows = [] }: BowF
               <Input
                 value={name}
                 onChangeText={(value) => dispatch({ type: 'SET_NAME', payload: value })}
-                placeholderText="F.eks. Hoyt"
-                label="Navn på bue (obligatorisk)"
+                label="Navn på bue"
                 error={nameError}
                 errorMessage="Du må fylle inn navn på bue"
               />
@@ -172,37 +181,55 @@ const BowForm = ({ modalVisible, setModalVisible, bow, existingBows = [] }: BowF
                 ]}
                 onValueChange={(value) => dispatch({ type: 'SET_TYPE', payload: value })}
               />
-              <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 8 }}>
-                <Input
-                  containerStyle={{ width: '48%' }}
-                  label="Øye til nock (cm)"
-                  keyboardType="numeric"
-                  placeholderText="F.eks. 10"
-                  value={eyeToNock}
-                  onChangeText={(value) => handleNumberChange(value, 'SET_EYE_TO_NOCK', dispatch)}
-                />
-                <Input
-                  containerStyle={{ width: '48%' }}
-                  label="Siktemåling (cm)"
-                  keyboardType="numeric"
-                  placeholderText="F.eks. 90"
-                  value={aimMeasure}
-                  onChangeText={(value) => handleNumberChange(value, 'SET_AIM_MEASURE', dispatch)}
-                />
-              </View>
-              <Input
-                keyboardType="numeric"
-                containerStyle={{ width: '48%', marginBottom: 16 }}
-                label={'Øye til sikte (cm)'}
-                value={eyeToSight}
-                placeholderText="F.eks. 5"
-                onChangeText={(value) => handleNumberChange(value, 'SET_EYE_TO_SIGHT', dispatch)}
-              />
               <Checkbox
                 value={isFavorite}
                 label="Favoritt"
                 onChange={(newValue) => dispatch({ type: 'SET_IS_FAVORITE', payload: newValue })}
               />
+
+              {/* ── Avansert ──────────────────────────────────────────────── */}
+              <TouchableOpacity activeOpacity={0.7} style={styles.advancedToggle} onPress={() => setAdvancedOpen((prev) => !prev)}>
+                <View style={styles.advancedLine} />
+                <View style={styles.advancedLabelWrap}>
+                  <Text style={styles.advancedLabel}>Avansert</Text>
+                  <FontAwesomeIcon
+                    icon={faChevronDown}
+                    size={11}
+                    color={colors.textSecondary}
+                    style={{ transform: [{ rotate: advancedOpen ? '180deg' : '0deg' }] }}
+                  />
+                </View>
+                <View style={styles.advancedLine} />
+              </TouchableOpacity>
+
+              {advancedOpen && (
+                <View style={styles.advancedContent}>
+                  <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+                    <Input
+                      containerStyle={{ width: '48%' }}
+                      label="Øye til nock (cm)"
+                      keyboardType="numeric"
+                      value={eyeToNock}
+                      onChangeText={(value) => handleNumberChange(value, 'SET_EYE_TO_NOCK', dispatch)}
+                    />
+                    <Input
+                      containerStyle={{ width: '48%' }}
+                      label="Siktemåling (cm)"
+                      keyboardType="numeric"
+                      value={aimMeasure}
+                      onChangeText={(value) => handleNumberChange(value, 'SET_AIM_MEASURE', dispatch)}
+                    />
+                  </View>
+                  <Input
+                    keyboardType="numeric"
+                    containerStyle={{ width: '48%' }}
+                    label="Øye til sikte (cm)"
+                    value={eyeToSight}
+                    onChangeText={(value) => handleNumberChange(value, 'SET_EYE_TO_SIGHT', dispatch)}
+                  />
+                </View>
+              )}
+
               <Textarea
                 label="Notater (valgfritt)"
                 value={notes}

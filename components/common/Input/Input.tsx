@@ -44,7 +44,7 @@ const Input = React.forwardRef<TextInput, InputProps>(
     ref
   ) => {
     const [isFocused, setIsFocused] = useState(false);
-    const showError = Boolean(errorMessage) || Boolean(error);
+    const showError = Boolean(error);
 
     const handleFocus = (e: any) => {
       setIsFocused(true);

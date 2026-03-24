@@ -27,4 +27,28 @@ export const styles = StyleSheet.create({
     alignSelf: 'flex-end',
     marginBottom: 4,
   },
+  advancedToggle: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginVertical: 4,
+  },
+  advancedLine: {
+    flex: 1,
+    height: 1,
+    backgroundColor: colors.border,
+  },
+  advancedLabelWrap: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+    paddingHorizontal: 10,
+  },
+  advancedLabel: {
+    fontSize: 13,
+    fontWeight: '600',
+    color: colors.textSecondary,
+  },
+  advancedContent: {
+    gap: 16,
+  },
 });
