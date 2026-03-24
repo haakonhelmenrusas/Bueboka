@@ -1,4 +1,3 @@
-import { faBullseye } from '@fortawesome/free-solid-svg-icons/faBullseye';
 import { faGear } from '@fortawesome/free-solid-svg-icons/faGear';
 import { faUsers } from '@fortawesome/free-solid-svg-icons/faUsers';
 import { faChartLine } from '@fortawesome/free-solid-svg-icons/faChartLine';
@@ -49,16 +48,6 @@ export default function AppLayout() {
             headerShadowVisible: false,
             headerShown: false,
             tabBarLabel: 'Hjem',
-            tabBarLabelStyle: { fontSize: 14 },
-          }}
-        />
-        <Tabs.Screen
-          name="practice"
-          options={{
-            tabBarIcon: ({ focused }) => <FontAwesomeIcon icon={faBullseye} color={focused ? colors.primary : colors.inactive} />,
-            headerShadowVisible: false,
-            headerShown: false,
-            tabBarLabel: 'Trening',
             tabBarLabelStyle: { fontSize: 14 },
           }}
         />

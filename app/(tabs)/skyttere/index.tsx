@@ -11,9 +11,11 @@ import { colors } from '@/styles/colors';
 import { useAuth } from '@/hooks';
 import { Message } from '@/components/common';
 import { hexToRgba } from '@/utils';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 export default function SkytterePage() {
   const { user } = useAuth();
+  const insets = useSafeAreaInsets();
   const [query, setQuery] = useState('');
   const [profiles, setProfiles] = useState<PublicProfile[]>([]);
   const [loading, setLoading] = useState(false);
@@ -78,7 +80,10 @@ export default function SkytterePage() {
   return (
     <View style={styles.container}>
       <LinearGradient colors={[colors.primary, colors.secondary, '#1a4f66']} style={styles.gradient}>
-        <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.scrollContent} keyboardShouldPersistTaps="always">
+        <ScrollView
+          showsVerticalScrollIndicator={false}
+          contentContainerStyle={[styles.scrollContent, { paddingTop: insets.top }]}
+          keyboardShouldPersistTaps="always">
           <View style={styles.hero}>
             <View style={styles.heroIcon}>
               <FontAwesomeIcon icon={faUsers} size={36} color={colors.white} />

@@ -1,5 +1,6 @@
 import { Alert, ScrollView, Text, View } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { LinearGradient } from 'expo-linear-gradient';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { styles } from '@/components/settings/SettingsStyles';
 import { Button } from '@/components/common';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
@@ -16,6 +17,7 @@ import { AppError } from '@/services';
 
 export default function Settings() {
   const { logout, deleteAccount, user, refreshUser } = useAuth();
+  const insets = useSafeAreaInsets();
   const [isLoggingOut, setIsLoggingOut] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
   const [isProfileModalVisible, setIsProfileModalVisible] = useState(false);
@@ -96,61 +98,59 @@ export default function Settings() {
   };
 
   return (
-    <SafeAreaView style={{ flex: 1 }}>
-      <EmailVerificationBanner />
-      <ScrollView style={styles.container} contentContainerStyle={styles.contentContainer}>
-        <Text style={styles.title}>Innstillinger</Text>
-        {user && (
+    <View style={styles.container}>
+      <LinearGradient colors={[colors.primary, colors.secondary, '#1a4f66']} style={styles.gradient}>
+        <View style={{ paddingTop: insets.top }}>
+          <EmailVerificationBanner />
+        </View>
+        <ScrollView contentContainerStyle={styles.contentContainer}>
+          <Text style={styles.title}>Innstillinger</Text>
           <View style={styles.section}>
-            <ProfileBox
-              user={user}
-              avatarUrl={user.image || undefined}
-              onEdit={() => setIsProfileModalVisible(true)}
-              onAvatarUpload={handleAvatarUpload}
-              onAvatarRemove={handleAvatarRemove}
+            {user && (
+              <ProfileBox
+                user={user}
+                avatarUrl={user.image || undefined}
+                onEdit={() => setIsProfileModalVisible(true)}
+                onAvatarUpload={handleAvatarUpload}
+                onAvatarRemove={handleAvatarRemove}
+              />
+            )}
+          </View>
+          {user && (
+            <View style={styles.section}>
+              <View style={styles.sectionCard}>
+                <Text style={styles.sectionTitle}>Konto</Text>
+                <View style={styles.infoCard}>
+                  <Text style={styles.label}>Navn</Text>
+                  <Text style={styles.value}>{user.name || 'Ikke angitt'}</Text>
+                </View>
+                <View style={styles.infoCard}>
+                  <Text style={styles.label}>E-post</Text>
+                  <Text style={styles.value}>{user.email || 'Ikke angitt'}</Text>
+                </View>
+              </View>
+            </View>
+          )}
+          <View style={styles.section}>
+            <View style={styles.sectionCard}>
+              <AboutContent />
+            </View>
+          </View>
+          <View style={styles.section}>
+            <Button
+              variant="tertiary"
+              label={isLoggingOut ? 'Logger ut...' : 'Logg ut'}
+              disabled={isLoggingOut}
+              loading={isLoggingOut}
+              buttonStyle={styles.logoutButton}
+              textStyle={styles.logoutLabel}
+              iconPosition="right"
+              icon={<FontAwesomeIcon icon={faRightFromBracket} size={16} color={colors.primary} />}
+              onPress={handleLogout}
             />
           </View>
-        )}
-        {user && (
           <View style={styles.section}>
             <View style={styles.sectionCard}>
-              <Text style={styles.sectionTitle}>Konto</Text>
-              <View style={styles.infoCard}>
-                <Text style={styles.label}>Navn</Text>
-                <Text style={styles.value}>{user.name || 'Ikke angitt'}</Text>
-              </View>
-              <View style={styles.infoCard}>
-                <Text style={styles.label}>E-post</Text>
-                <Text style={styles.value}>{user.email || 'Ikke angitt'}</Text>
-              </View>
-            </View>
-          </View>
-        )}
-        <View style={styles.section}>
-          <View style={styles.sectionCard}>
-            <AboutContent />
-          </View>
-        </View>
-        {user && (
-          <View style={styles.section}>
-            <View style={styles.sectionCard}>
-              <Button
-                variant="warning"
-                label={isLoggingOut ? 'Logger ut...' : 'Logg ut'}
-                disabled={isLoggingOut}
-                loading={isLoggingOut}
-                buttonStyle={styles.logoutButton}
-                textStyle={styles.logoutLabel}
-                icon={<FontAwesomeIcon icon={faRightFromBracket} size={16} color={colors.white} />}
-                onPress={handleLogout}
-              />
-            </View>
-          </View>
-        )}
-        {user && (
-          <View style={styles.section}>
-            <View style={styles.sectionCard}>
-              <Text style={styles.sectionTitle}>Farlig sone</Text>
               <Button
                 variant="warning"
                 label={isDeleting ? 'Sletter konto...' : 'Slett konto'}
@@ -161,8 +161,8 @@ export default function Settings() {
               <Text style={styles.dangerText}>Dette vil permanent slette kontoen din og alle tilknyttede data. Dette kan ikke angres.</Text>
             </View>
           </View>
-        )}
-      </ScrollView>
+        </ScrollView>
+      </LinearGradient>
       {user && (
         <ProfileForm
           modalVisible={isProfileModalVisible}
@@ -173,6 +173,6 @@ export default function Settings() {
           }}
         />
       )}
-    </SafeAreaView>
+    </View>
   );
 }

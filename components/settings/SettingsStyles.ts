@@ -4,17 +4,19 @@ import { colors } from '@/styles/colors';
 export const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingHorizontal: 16,
-    paddingVertical: 12,
-    backgroundColor: colors.background,
+  },
+  gradient: {
+    flex: 1,
   },
   contentContainer: {
-    paddingBottom: 28,
+    paddingHorizontal: 16,
+    paddingTop: 16,
+    paddingBottom: 40,
   },
   title: {
     fontSize: 28,
     fontWeight: '700',
-    color: colors.primary,
+    color: colors.white,
     textAlign: 'center',
     marginTop: 4,
     marginBottom: 18,
