@@ -15,6 +15,11 @@ describe('useBowForm', () => {
         eyeToNock: '',
         aimMeasure: '',
         eyeToSight: '',
+        limbs: '',
+        riser: '',
+        handOrientation: '',
+        drawWeight: '',
+        bowLength: '',
         notes: '',
         isFavorite: false,
       });

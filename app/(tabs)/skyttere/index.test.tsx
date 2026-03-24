@@ -1,5 +1,5 @@
 import React from 'react';
-import { act, fireEvent, render, waitFor } from '@testing-library/react-native';
+import { act, fireEvent, render } from '@testing-library/react-native';
 import SkytterePage from './index';
 import { useAuth } from '@/hooks';
 import { publicProfilesApi } from '@/services';
@@ -150,20 +150,20 @@ describe('SkytterePage', () => {
 
   it('shows profile cards when search returns results', async () => {
     mockedSearch.mockResolvedValueOnce([profile]);
-    const { getByPlaceholderText, findByText } = render(<SkytterePage />);
+    const { getByPlaceholderText, getByText } = render(<SkytterePage />);
 
     await searchFor(getByPlaceholderText('Søk etter navn eller klubb…'), 'haakon');
 
-    expect(await findByText('Haakon Test')).toBeTruthy();
-    expect(await findByText('Sarpsborg Bueskyttere')).toBeTruthy();
+    expect(getByText('Haakon Test')).toBeTruthy();
+    expect(getByText('Sarpsborg Bueskyttere')).toBeTruthy();
   });
 
   it('hides the idle illustration once results are shown', async () => {
     mockedSearch.mockResolvedValueOnce([profile]);
-    const { getByPlaceholderText, findByText, queryByText } = render(<SkytterePage />);
+    const { getByPlaceholderText, getByText, queryByText } = render(<SkytterePage />);
 
     await searchFor(getByPlaceholderText('Søk etter navn eller klubb…'), 'haakon');
-    await findByText('Haakon Test');
+    expect(getByText('Haakon Test')).toBeTruthy();
 
     expect(queryByText('Begynn å skrive for å søke')).toBeNull();
   });
@@ -172,25 +172,27 @@ describe('SkytterePage', () => {
 
   it('shows "Ingen resultater" when the search returns nothing', async () => {
     mockedSearch.mockResolvedValueOnce([]);
-    const { getByPlaceholderText, findByText } = render(<SkytterePage />);
+    const { getByPlaceholderText, getByText } = render(<SkytterePage />);
 
     await searchFor(getByPlaceholderText('Søk etter navn eller klubb…'), 'xyz');
 
-    expect(await findByText('Ingen resultater')).toBeTruthy();
+    expect(getByText('Ingen resultater')).toBeTruthy();
   });
 
   // ── Clearing the query ─────────────────────────────────────────────────────
 
   it('returns to the idle state when the query is cleared', async () => {
     mockedSearch.mockResolvedValueOnce([profile]);
-    const { getByPlaceholderText, findByText, getByText } = render(<SkytterePage />);
+    const { getByPlaceholderText, getByText } = render(<SkytterePage />);
     const input = getByPlaceholderText('Søk etter navn eller klubb…');
 
     await searchFor(input, 'haakon');
-    await findByText('Haakon Test');
+    expect(getByText('Haakon Test')).toBeTruthy();
 
-    fireEvent.changeText(input, '');
-    await waitFor(() => expect(getByText('Begynn å skrive for å søke')).toBeTruthy());
+    await act(async () => {
+      fireEvent.changeText(input, '');
+    });
+    expect(getByText('Begynn å skrive for å søke')).toBeTruthy();
   });
 
   it('does not call search when the query is empty', async () => {
@@ -209,20 +211,20 @@ describe('SkytterePage', () => {
 
   it('shows "Ingen resultater" when the search call throws', async () => {
     mockedSearch.mockRejectedValueOnce(new Error('Network error'));
-    const { getByPlaceholderText, findByText } = render(<SkytterePage />);
+    const { getByPlaceholderText, getByText } = render(<SkytterePage />);
 
     await searchFor(getByPlaceholderText('Søk etter navn eller klubb…'), 'fail');
 
-    expect(await findByText('Ingen resultater')).toBeTruthy();
+    expect(getByText('Ingen resultater')).toBeTruthy();
   });
 
   it('does not crash and keeps the UI intact after a search error', async () => {
     mockedSearch.mockRejectedValueOnce(new Error('Network error'));
-    const { getByPlaceholderText, findByText } = render(<SkytterePage />);
+    const { getByPlaceholderText, getByText } = render(<SkytterePage />);
     const input = getByPlaceholderText('Søk etter navn eller klubb…');
 
     await searchFor(input, 'fail');
-    await findByText('Ingen resultater');
+    expect(getByText('Ingen resultater')).toBeTruthy();
 
     // Input is still usable
     expect(input).toBeTruthy();
