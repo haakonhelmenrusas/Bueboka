@@ -2,9 +2,41 @@ import { StyleSheet } from 'react-native';
 import { colors } from '@/styles/colors';
 
 export const styles = StyleSheet.create({
-  grid: {
-    gap: 16,
+  // Carousel wrapper
+  carousel: {
     marginVertical: 12,
+    gap: 12,
+  },
+  carouselRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+  },
+  chevron: {
+    width: 28,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  cardWrap: {
+    flex: 1,
+  },
+
+  // Dot indicators
+  dots: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    gap: 6,
+  },
+  dot: {
+    width: 6,
+    height: 6,
+    borderRadius: 3,
+    backgroundColor: colors.dimmed,
+  },
+  dotActive: {
+    width: 18,
+    borderRadius: 3,
+    backgroundColor: colors.primary,
   },
 
   // Card

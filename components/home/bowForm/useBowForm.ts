@@ -8,6 +8,11 @@ interface BowTypeState {
   eyeToNock: string;
   aimMeasure: string;
   eyeToSight: string;
+  limbs: string;
+  riser: string;
+  handOrientation: 'RH' | 'LH' | '';
+  drawWeight: string;
+  bowLength: string;
   notes: string;
   isFavorite: boolean;
 }
@@ -19,6 +24,11 @@ export type Action =
   | { type: 'SET_EYE_TO_NOCK'; payload: string }
   | { type: 'SET_AIM_MEASURE'; payload: string }
   | { type: 'SET_EYE_TO_SIGHT'; payload: string }
+  | { type: 'SET_LIMBS'; payload: string }
+  | { type: 'SET_RISER'; payload: string }
+  | { type: 'SET_HAND_ORIENTATION'; payload: 'RH' | 'LH' | '' }
+  | { type: 'SET_DRAW_WEIGHT'; payload: string }
+  | { type: 'SET_BOW_LENGTH'; payload: string }
   | { type: 'SET_NOTES'; payload: string }
   | { type: 'SET_IS_FAVORITE'; payload: boolean };
 
@@ -36,6 +46,16 @@ function reducer(state: BowTypeState, action: Action): BowTypeState {
       return { ...state, aimMeasure: action.payload };
     case 'SET_EYE_TO_SIGHT':
       return { ...state, eyeToSight: action.payload };
+    case 'SET_LIMBS':
+      return { ...state, limbs: action.payload };
+    case 'SET_RISER':
+      return { ...state, riser: action.payload };
+    case 'SET_HAND_ORIENTATION':
+      return { ...state, handOrientation: action.payload };
+    case 'SET_DRAW_WEIGHT':
+      return { ...state, drawWeight: action.payload };
+    case 'SET_BOW_LENGTH':
+      return { ...state, bowLength: action.payload };
     case 'SET_NOTES':
       return { ...state, notes: action.payload };
     case 'SET_IS_FAVORITE':
@@ -53,6 +73,11 @@ export const useBowForm = () => {
     eyeToNock: '',
     aimMeasure: '',
     eyeToSight: '',
+    limbs: '',
+    riser: '',
+    handOrientation: '',
+    drawWeight: '',
+    bowLength: '',
     notes: '',
     isFavorite: false,
   };

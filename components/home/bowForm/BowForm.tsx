@@ -1,4 +1,4 @@
-import { Keyboard, KeyboardAvoidingView, Platform, Pressable, Text, TouchableOpacity, View } from 'react-native';
+import { Keyboard, KeyboardAvoidingView, Platform, Pressable, ScrollView, Text, TouchableOpacity, View } from 'react-native';
 import { useEffect, useState } from 'react';
 import { Button, Checkbox, Input, ModalHeader, ModalWrapper, Select, Textarea } from '@/components/common';
 import { useBowForm } from './useBowForm';
@@ -26,7 +26,8 @@ const BowForm = ({ modalVisible, setModalVisible, bow, existingBows = [], onSucc
   const [confirmVisible, setConfirmVisible] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [advancedOpen, setAdvancedOpen] = useState(false);
-  const [{ name, nameError, type, eyeToNock, aimMeasure, eyeToSight, notes, isFavorite }, dispatch] = useBowForm();
+  const [sightMarkOpen, setSightMarkOpen] = useState(false);
+  const [{ name, nameError, type, eyeToNock, aimMeasure, eyeToSight, limbs, riser, handOrientation, drawWeight, bowLength, notes, isFavorite }, dispatch] = useBowForm();
 
   // Ensure existingBows is always an array
   const bows = Array.isArray(existingBows) ? existingBows : [];
@@ -40,10 +41,17 @@ const BowForm = ({ modalVisible, setModalVisible, bow, existingBows = [], onSucc
       dispatch({ type: 'SET_EYE_TO_NOCK', payload: bow.eyeToNock?.toString() ?? '' });
       dispatch({ type: 'SET_AIM_MEASURE', payload: bow.aimMeasure?.toString() ?? '' });
       dispatch({ type: 'SET_EYE_TO_SIGHT', payload: bow.eyeToSight?.toString() ?? '' });
+      dispatch({ type: 'SET_LIMBS', payload: bow.limbs ?? '' });
+      dispatch({ type: 'SET_RISER', payload: bow.riser ?? '' });
+      dispatch({ type: 'SET_HAND_ORIENTATION', payload: (bow.handOrientation as 'RH' | 'LH') ?? '' });
+      dispatch({ type: 'SET_DRAW_WEIGHT', payload: bow.drawWeight?.toString() ?? '' });
+      dispatch({ type: 'SET_BOW_LENGTH', payload: bow.bowLength?.toString() ?? '' });
       dispatch({ type: 'SET_NOTES', payload: bow.notes ?? '' });
       dispatch({ type: 'SET_IS_FAVORITE', payload: bow.isFavorite ?? false });
-      // Open advanced section if any measurement is already set
-      setAdvancedOpen(!!(bow.eyeToNock || bow.aimMeasure || bow.eyeToSight));
+      // Open advanced section if any advanced field is already set
+      setAdvancedOpen(!!(bow.limbs || bow.riser || bow.handOrientation || bow.drawWeight || bow.bowLength));
+      // Open sight mark section if any measurement is already set
+      setSightMarkOpen(!!(bow.eyeToNock || bow.aimMeasure || bow.eyeToSight));
     } else {
       // Always start fresh when opening in create mode so stale errors are cleared
       clearForm();
@@ -66,6 +74,11 @@ const BowForm = ({ modalVisible, setModalVisible, bow, existingBows = [], onSucc
         eyeToNock: eyeToNock ? parseFloat(eyeToNock) : undefined,
         aimMeasure: aimMeasure ? parseFloat(aimMeasure) : undefined,
         eyeToSight: eyeToSight ? parseFloat(eyeToSight) : undefined,
+        limbs: limbs || undefined,
+        riser: riser || undefined,
+        handOrientation: (handOrientation || null) as 'RH' | 'LH' | null,
+        drawWeight: drawWeight ? parseFloat(drawWeight) : undefined,
+        bowLength: bowLength ? parseFloat(bowLength) : undefined,
         notes: notes || undefined,
         isFavorite,
       };
@@ -143,6 +156,11 @@ const BowForm = ({ modalVisible, setModalVisible, bow, existingBows = [], onSucc
     dispatch({ type: 'SET_EYE_TO_NOCK', payload: '' });
     dispatch({ type: 'SET_AIM_MEASURE', payload: '' });
     dispatch({ type: 'SET_EYE_TO_SIGHT', payload: '' });
+    dispatch({ type: 'SET_LIMBS', payload: '' });
+    dispatch({ type: 'SET_RISER', payload: '' });
+    dispatch({ type: 'SET_HAND_ORIENTATION', payload: '' });
+    dispatch({ type: 'SET_DRAW_WEIGHT', payload: '' });
+    dispatch({ type: 'SET_BOW_LENGTH', payload: '' });
     dispatch({ type: 'SET_NOTES', payload: '' });
     dispatch({ type: 'SET_IS_FAVORITE', payload: false });
   }
@@ -155,9 +173,12 @@ const BowForm = ({ modalVisible, setModalVisible, bow, existingBows = [], onSucc
         setModalVisible(false);
       }}>
       <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={styles.modal}>
-        <View style={{ flex: 1 }}>
-          <Pressable style={{ flex: 1 }} onPress={() => Keyboard.dismiss()}>
-            <ModalHeader onPress={handleCloseModal} title={bow ? 'Rediger bue' : 'Ny bue'} />
+        <ModalHeader onPress={handleCloseModal} title={bow ? 'Rediger bue' : 'Ny bue'} />
+        <ScrollView
+          keyboardShouldPersistTaps="handled"
+          showsVerticalScrollIndicator={false}
+          contentContainerStyle={styles.scrollContent}>
+          <Pressable onPress={() => Keyboard.dismiss()}>
             <View style={styles.inputs}>
               <Input
                 value={name}
@@ -204,28 +225,89 @@ const BowForm = ({ modalVisible, setModalVisible, bow, existingBows = [], onSucc
 
               {advancedOpen && (
                 <View style={styles.advancedContent}>
-                  <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+                  {/* Row 1: Equipment */}
+                  <View style={styles.row}>
                     <Input
-                      containerStyle={{ width: '48%' }}
-                      label="Øye til nock (cm)"
-                      keyboardType="numeric"
-                      value={eyeToNock}
-                      onChangeText={(value) => handleNumberChange(value, 'SET_EYE_TO_NOCK', dispatch)}
+                      containerStyle={{ flex: 1 }}
+                      label="Lemmer"
+                      value={limbs}
+                      onChangeText={(value) => dispatch({ type: 'SET_LIMBS', payload: value })}
                     />
                     <Input
-                      containerStyle={{ width: '48%' }}
-                      label="Siktemåling (cm)"
-                      keyboardType="numeric"
-                      value={aimMeasure}
-                      onChangeText={(value) => handleNumberChange(value, 'SET_AIM_MEASURE', dispatch)}
+                      containerStyle={{ flex: 1 }}
+                      label="Midtstykke"
+                      value={riser}
+                      onChangeText={(value) => dispatch({ type: 'SET_RISER', payload: value })}
                     />
                   </View>
+                  {/* Row 2: Draw specs */}
+                  <View style={styles.numberRow}>
+                    <Select
+                      containerStyle={{ flex: 1, zIndex: 1500 }}
+                      label="Hånd"
+                      selectedValue={handOrientation}
+                      options={[
+                        { label: 'Velg hånd', value: '' },
+                        { label: 'Høyre (RH)', value: 'RH' },
+                        { label: 'Venstre (LH)', value: 'LH' },
+                      ]}
+                      onValueChange={(value) => dispatch({ type: 'SET_HAND_ORIENTATION', payload: value as 'RH' | 'LH' | '' })}
+                    />
+                    <Input
+                      containerStyle={{ flex: 1 }}
+                      label="Styrke (pund)"
+                      keyboardType="numeric"
+                      value={drawWeight}
+                      onChangeText={(value) => handleNumberChange(value, 'SET_DRAW_WEIGHT', dispatch)}
+                    />
+                    <Input
+                      containerStyle={{ flex: 1 }}
+                      label="Lengde (tommer)"
+                      keyboardType="numeric"
+                      value={bowLength}
+                      onChangeText={(value) => handleNumberChange(value, 'SET_BOW_LENGTH', dispatch)}
+                    />
+                  </View>
+                </View>
+              )}
+
+              {/* ── Siktemerke ────────────────────────────────────────────── */}
+              <TouchableOpacity activeOpacity={0.7} style={styles.advancedToggle} onPress={() => setSightMarkOpen((prev) => !prev)}>
+                <View style={styles.advancedLine} />
+                <View style={styles.advancedLabelWrap}>
+                  <Text style={styles.advancedLabel}>Siktemerke</Text>
+                  <FontAwesomeIcon
+                    icon={faChevronDown}
+                    size={11}
+                    color={colors.textSecondary}
+                    style={{ transform: [{ rotate: sightMarkOpen ? '180deg' : '0deg' }] }}
+                  />
+                </View>
+                <View style={styles.advancedLine} />
+              </TouchableOpacity>
+
+              {sightMarkOpen && (
+                <View style={styles.numberRow}>
                   <Input
+                    containerStyle={{ flex: 1 }}
+                    label="Øye til nock (cm)"
                     keyboardType="numeric"
-                    containerStyle={{ width: '48%' }}
+                    value={eyeToNock}
+                    onChangeText={(value) => handleNumberChange(value, 'SET_EYE_TO_NOCK', dispatch)}
+                  />
+                  <Input
+                    containerStyle={{ flex: 1 }}
                     label="Øye til sikte (cm)"
+                    keyboardType="numeric"
                     value={eyeToSight}
                     onChangeText={(value) => handleNumberChange(value, 'SET_EYE_TO_SIGHT', dispatch)}
+                  />
+                  <Input
+                    containerStyle={{ flex: 1 }}
+                    label="Målt sikte"
+                    keyboardType="numeric"
+                    value={aimMeasure}
+                    onChangeText={(value) => handleNumberChange(value, 'SET_AIM_MEASURE', dispatch)}
                   />
                 </View>
               )}
@@ -237,23 +319,23 @@ const BowForm = ({ modalVisible, setModalVisible, bow, existingBows = [], onSucc
                 placeholderText="F.eks. Spesielle innstillinger eller justeringer"
               />
             </View>
-            <View style={{ marginTop: 'auto' }}>
-              {bow && (
-                <TouchableOpacity style={styles.trashIcon} onPress={() => setConfirmVisible(true)}>
-                  <FontAwesomeIcon icon={faTrashCan} size={16} color={colors.error} />
-                </TouchableOpacity>
-              )}
-              <Button disabled={!name || submitting} onPress={handleSubmit} label={submitting ? 'Lagrer...' : 'Lagre'} />
-              <Button
-                type="outline"
-                onPress={() => {
-                  clearForm();
-                  setModalVisible(false);
-                }}
-                label="Avbryt"
-              />
-            </View>
           </Pressable>
+        </ScrollView>
+        <View style={styles.footer}>
+          {bow && (
+            <TouchableOpacity style={styles.trashIcon} onPress={() => setConfirmVisible(true)}>
+              <FontAwesomeIcon icon={faTrashCan} size={16} color={colors.error} />
+            </TouchableOpacity>
+          )}
+          <Button disabled={!name || submitting} onPress={handleSubmit} label={submitting ? 'Lagrer...' : 'Lagre'} />
+          <Button
+            type="outline"
+            onPress={() => {
+              clearForm();
+              setModalVisible(false);
+            }}
+            label="Avbryt"
+          />
         </View>
       </KeyboardAvoidingView>
       <ConfirmModal

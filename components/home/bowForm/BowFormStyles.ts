@@ -51,4 +51,23 @@ export const styles = StyleSheet.create({
   advancedContent: {
     gap: 16,
   },
+  scrollContent: {
+    paddingBottom: 8,
+  },
+  footer: {
+    paddingTop: 8,
+    gap: 8,
+  },
+  // Two equal columns
+  row: {
+    flexDirection: 'row',
+    gap: 12,
+    alignItems: 'flex-end',
+  },
+  // Three equal columns
+  numberRow: {
+    flexDirection: 'row',
+    gap: 10,
+    alignItems: 'flex-end',
+  },
 });

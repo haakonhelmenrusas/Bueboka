@@ -99,11 +99,7 @@ export default function HomePage() {
           <View style={styles.card}>
             <View style={styles.cardHeader}>
               <Text style={styles.cardTitle}>Oppsummering</Text>
-              <TouchableOpacity onPress={() => router.push('/(tabs)/training')}>
-                <FontAwesomeIcon icon={faChartLine} size={20} color={colors.primary} />
-              </TouchableOpacity>
             </View>
-            <Text style={styles.cardSubtitle}>Piler skutt siste 7 dager, siste 30 dager og totalt</Text>
             <StatsSummary last7Days={stats.last7Days} last30Days={stats.last30Days} overall={stats.overall} />
             <View style={styles.buttonContainer}>
               <Button label="Se detaljert statistikk" onPress={() => router.push('/(tabs)/training')} />

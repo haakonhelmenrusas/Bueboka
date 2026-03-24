@@ -1,4 +1,5 @@
-import { View, Text } from 'react-native';
+import { useState } from 'react';
+import { View, Text, TouchableOpacity } from 'react-native';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import type { IconDefinition } from '@fortawesome/fontawesome-svg-core';
 import { faCalendarDays } from '@fortawesome/free-solid-svg-icons/faCalendarDays';
@@ -7,6 +8,8 @@ import { faChartBar } from '@fortawesome/free-solid-svg-icons/faChartBar';
 import { faBullseye } from '@fortawesome/free-solid-svg-icons/faBullseye';
 import { faCircleCheck } from '@fortawesome/free-solid-svg-icons/faCircleCheck';
 import { faCircleXmark } from '@fortawesome/free-solid-svg-icons/faCircleXmark';
+import { faChevronLeft } from '@fortawesome/free-solid-svg-icons/faChevronLeft';
+import { faChevronRight } from '@fortawesome/free-solid-svg-icons/faChevronRight';
 import { colors } from '@/styles/colors';
 import { styles } from './StatsSummaryStyles';
 
@@ -58,11 +61,45 @@ function PeriodCard({ title, icon, data }: { title: string; icon: IconDefinition
 }
 
 export function StatsSummary({ last7Days, last30Days, overall }: Props) {
+  const [index, setIndex] = useState(0);
+
+  const cards = [
+    { title: 'Siste 7 dager', icon: faCalendarDays, data: last7Days ?? EMPTY },
+    { title: 'Siste 30 dager', icon: faArrowTrendUp, data: last30Days ?? EMPTY },
+    { title: 'Totalt', icon: faChartBar, data: overall ?? EMPTY },
+  ];
+
+  const current = cards[index];
+
   return (
-    <View style={styles.grid}>
-      <PeriodCard title="Siste 7 dager" icon={faCalendarDays} data={last7Days ?? EMPTY} />
-      <PeriodCard title="Siste 30 dager" icon={faArrowTrendUp} data={last30Days ?? EMPTY} />
-      <PeriodCard title="Totalt" icon={faChartBar} data={overall ?? EMPTY} />
+    <View style={styles.carousel}>
+      <View style={styles.carouselRow}>
+        <TouchableOpacity
+          onPress={() => setIndex((i) => i - 1)}
+          disabled={index === 0}
+          style={styles.chevron}
+          hitSlop={{ top: 12, bottom: 12, left: 8, right: 8 }}>
+          <FontAwesomeIcon icon={faChevronLeft} size={16} color={index === 0 ? colors.dimmed : colors.primary} />
+        </TouchableOpacity>
+
+        <View style={styles.cardWrap}>
+          <PeriodCard title={current.title} icon={current.icon} data={current.data} />
+        </View>
+
+        <TouchableOpacity
+          onPress={() => setIndex((i) => i + 1)}
+          disabled={index === cards.length - 1}
+          style={styles.chevron}
+          hitSlop={{ top: 12, bottom: 12, left: 8, right: 8 }}>
+          <FontAwesomeIcon icon={faChevronRight} size={16} color={index === cards.length - 1 ? colors.dimmed : colors.primary} />
+        </TouchableOpacity>
+      </View>
+
+      <View style={styles.dots}>
+        {cards.map((_, i) => (
+          <View key={i} style={[styles.dot, i === index && styles.dotActive]} />
+        ))}
+      </View>
     </View>
   );
 }

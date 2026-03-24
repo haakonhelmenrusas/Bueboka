@@ -22,6 +22,11 @@ export interface Bow {
   eyeToNock: number | null;
   aimMeasure: number | null;
   eyeToSight: number | null;
+  limbs: string | null;
+  riser: string | null;
+  handOrientation: 'RH' | 'LH' | null;
+  drawWeight: number | null;
+  bowLength: number | null;
   notes: string | null;
   isFavorite: boolean;
   createdAt: string;

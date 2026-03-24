@@ -40,12 +40,38 @@ export default function BowDetails({ bow, visible, onClose, onEdit }: Props) {
             <DataValue textStyle={styles.value} value={bow.eyeToNock} suffix=" cm" />
           </View>
           <View style={styles.row}>
-            <Text style={styles.label}>Siktemåling</Text>
-            <DataValue textStyle={styles.value} value={bow.aimMeasure} suffix=" cm" />
-          </View>
-          <View style={styles.row}>
             <Text style={styles.label}>Fra øye til sikte</Text>
             <DataValue textStyle={styles.value} value={bow.eyeToSight} suffix=" cm" />
+          </View>
+          <View style={styles.row}>
+            <Text style={styles.label}>Målt sikte</Text>
+            <DataValue textStyle={styles.value} value={bow.aimMeasure} suffix=" cm" />
+          </View>
+          {bow.limbs && (
+            <View style={styles.row}>
+              <Text style={styles.label}>Lemmer</Text>
+              <Text style={styles.value}>{bow.limbs}</Text>
+            </View>
+          )}
+          {bow.riser && (
+            <View style={styles.row}>
+              <Text style={styles.label}>Midtstykke</Text>
+              <Text style={styles.value}>{bow.riser}</Text>
+            </View>
+          )}
+          {bow.handOrientation && (
+            <View style={styles.row}>
+              <Text style={styles.label}>Hånd</Text>
+              <Text style={styles.value}>{bow.handOrientation === 'RH' ? 'Høyre (RH)' : 'Venstre (LH)'}</Text>
+            </View>
+          )}
+          <View style={styles.row}>
+            <Text style={styles.label}>Styrke</Text>
+            <DataValue textStyle={styles.value} value={bow.drawWeight} suffix=" pund" />
+          </View>
+          <View style={styles.row}>
+            <Text style={styles.label}>Lengde</Text>
+            <DataValue textStyle={styles.value} value={bow.bowLength} suffix={'"'} />
           </View>
           {bow.notes && (
             <View style={styles.row}>

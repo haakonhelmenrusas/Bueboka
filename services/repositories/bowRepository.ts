@@ -9,6 +9,11 @@ export interface BowData {
   eyeToNock?: number;
   aimMeasure?: number;
   eyeToSight?: number;
+  limbs?: string;
+  riser?: string;
+  handOrientation?: 'RH' | 'LH' | null;
+  drawWeight?: number;
+  bowLength?: number;
   notes?: string;
   isFavorite?: boolean;
 }
