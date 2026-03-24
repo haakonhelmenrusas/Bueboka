@@ -21,8 +21,10 @@ export const userRepository = {
    */
   async getCurrentUser(): Promise<User> {
     try {
-      const response = await client.get<User>('/profile');
-      return response.data;
+      const response = await client.get<{ profile: User } | User>('/profile');
+      // The API returns { profile: {...} } — unwrap it if present
+      const data = response.data as any;
+      return data?.profile ?? data;
     } catch (error) {
       throw handleApiError(error);
     }
