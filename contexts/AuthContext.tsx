@@ -240,12 +240,9 @@ export function AuthProvider({ children }: AuthProviderProps) {
       // Use userRepository.getCurrentUser() to get the full profile data from /api/profile
       // as the default auth session endpoint returns a limited user object
       const { userRepository } = await import('@/services/repositories/userRepository');
-      const [response, session] = await Promise.all([userRepository.getCurrentUser() as any, authClient.getSession()]);
+      const [profileUser, session] = await Promise.all([userRepository.getCurrentUser(), authClient.getSession()]);
 
-      // Handle the nested data structure if present
-      const profileUser = response.data?.profile || response;
-
-      if (profileUser && profileUser.id) {
+      if (profileUser?.id) {
         // /api/profile doesn't include emailVerified (it's in the auth table),
         // so merge it from the Better Auth session
         const fullUser: User = {
@@ -265,7 +262,6 @@ export function AuthProvider({ children }: AuthProviderProps) {
           username: fullUser.name || undefined,
         });
       } else {
-        console.warn('[Auth] refreshUser: No valid user returned from profile API', response);
         setState((prev) => ({ ...prev, isLoading: false }));
       }
     } catch (error) {
