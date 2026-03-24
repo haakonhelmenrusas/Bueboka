@@ -2,9 +2,7 @@ import { StyleSheet } from 'react-native';
 import { colors } from '@/styles/colors';
 
 export const styles = StyleSheet.create({
-  // Carousel wrapper
   carousel: {
-    marginVertical: 12,
     gap: 12,
   },
   carouselRow: {
@@ -20,8 +18,6 @@ export const styles = StyleSheet.create({
   cardWrap: {
     flex: 1,
   },
-
-  // Dot indicators
   dots: {
     flexDirection: 'row',
     justifyContent: 'center',
@@ -38,8 +34,6 @@ export const styles = StyleSheet.create({
     borderRadius: 3,
     backgroundColor: colors.primary,
   },
-
-  // Card
   card: {
     backgroundColor: colors.white,
     borderRadius: 12,
@@ -53,8 +47,6 @@ export const styles = StyleSheet.create({
     shadowRadius: 8,
     elevation: 2,
   },
-
-  // Header row: coloured icon + title with primary underline
   cardHeader: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -79,8 +71,6 @@ export const styles = StyleSheet.create({
     textTransform: 'uppercase',
     letterSpacing: 0.6,
   },
-
-  // Stat rows
   cardStats: {
     gap: 8,
   },
@@ -104,8 +94,6 @@ export const styles = StyleSheet.create({
     fontWeight: '700',
     color: colors.text,
   },
-
-  // Divider between total-arrows and scored/unscored
   divider: {
     height: 1,
     backgroundColor: colors.border,

@@ -28,11 +28,7 @@ export function PracticesSection({ practices, loading, onSelectPractice }: Props
       ) : (
         <View style={styles.list}>
           {practices.slice(0, 5).map((practice) => (
-            <PracticeCard
-              key={practice.id}
-              practice={practice}
-              onEdit={(p) => onSelectPractice(p.id)}
-            />
+            <PracticeCard key={practice.id} practice={practice} onEdit={(p) => onSelectPractice(p.id)} />
           ))}
         </View>
       )}

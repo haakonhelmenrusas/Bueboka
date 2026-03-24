@@ -17,8 +17,8 @@ export const styles = StyleSheet.create({
     marginBottom: 8,
   },
   greeting: {
-    fontSize: 32,
-    fontWeight: '900',
+    fontSize: 24,
+    fontWeight: '800',
     color: colors.white,
     marginBottom: 4,
   },
@@ -37,9 +37,5 @@ export const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: '900',
     color: colors.white,
-  },
-  buttonContainer: {
-    marginTop: 16,
-    alignItems: 'center',
   },
 });

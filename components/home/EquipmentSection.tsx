@@ -14,7 +14,7 @@ interface Props {
 export function EquipmentSection({ bows, arrows, onSelectBow, onSelectArrows }: Props) {
   return (
     <View style={styles.container}>
-      <View style={styles.section}>
+      <View>
         <View style={styles.header}>
           <Text style={styles.title}>Buer</Text>
         </View>
@@ -31,7 +31,7 @@ export function EquipmentSection({ bows, arrows, onSelectBow, onSelectArrows }: 
         )}
       </View>
 
-      <View style={styles.section}>
+      <View>
         <View style={styles.header}>
           <Text style={styles.title}>Piler</Text>
         </View>

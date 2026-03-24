@@ -25,7 +25,6 @@ export function FilterControls({
 
   return (
     <View style={styles.container}>
-      {/* Date range */}
       <Text style={styles.label}>Periode</Text>
       <View style={styles.chipRow}>
         {DATE_RANGE_OPTIONS.map((opt) => {

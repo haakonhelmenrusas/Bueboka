@@ -15,6 +15,8 @@ import ArrowForm from '@/components/home/arrowForm/ArrowForm';
 import BowDetails from '@/components/home/bowDetails/BowDetails';
 import ArrowSetDetails from '@/components/home/arrowSetDetails/ArrowSetDetails';
 import { styles } from '@/components/home/HomeScreenStyles';
+import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
+import { faChevronRight } from '@fortawesome/free-solid-svg-icons/faChevronRight';
 
 export default function HomeScreen() {
   const { user } = useAuth();
@@ -92,37 +94,31 @@ export default function HomeScreen() {
           contentContainerStyle={[styles.scrollContent, { paddingTop: insets.top + 20 }]}
           refreshControl={<RefreshControl refreshing={refreshing} onRefresh={handleRefresh} tintColor="#FFFFFF" />}>
           <View style={styles.header}>
-            <View>
-              <Text style={styles.greeting}>Hei, {user.name?.split(' ')[0] || 'Skytter'}!</Text>
-              {user.club && <Text style={styles.club}>{user.club}</Text>}
-            </View>
+            <Text style={styles.greeting}>Hei, {user.name?.split(' ')[0] || 'Skytter'}!</Text>
+            {user.club && <Text style={styles.club}>{user.club}</Text>}
           </View>
-          <View>
-            <View style={styles.cardHeader}>
-              <Text style={styles.cardTitle}>Oppsummering</Text>
-            </View>
-            <StatsSummary last7Days={stats.last7Days} last30Days={stats.last30Days} overall={stats.overall} />
-            <View style={styles.buttonContainer}>
-              <Button label="Se detaljert statistikk" onPress={() => router.push('/(tabs)/home/statistics')} />
-            </View>
-          </View>
-          <View>
-            <EquipmentSection
-              bows={bows}
-              arrows={arrows}
-              onSelectBow={(bow) => {
-                setSelectedBowForDetails(bow);
-                setSelectedBow(null);
-              }}
-              onSelectArrows={(arrow) => {
-                setSelectedArrowSetForDetails(arrow);
-                setSelectedArrowSet(null);
-              }}
-            />
-          </View>
-          <View>
-            <PracticesSection practices={practices} loading={false} onSelectPractice={(_id) => router.push('/(tabs)/practice')} />
-          </View>
+          <StatsSummary last7Days={stats.last7Days} last30Days={stats.last30Days} overall={stats.overall} />
+          <Button
+            iconPosition="right"
+            size="small"
+            buttonStyle={{ alignSelf: 'center' }}
+            icon={<FontAwesomeIcon icon={faChevronRight} size={16} color={colors.warning} />}
+            label="Se detaljert statistikk"
+            onPress={() => router.push('/(tabs)/home/statistics')}
+          />
+          <EquipmentSection
+            bows={bows}
+            arrows={arrows}
+            onSelectBow={(bow) => {
+              setSelectedBowForDetails(bow);
+              setSelectedBow(null);
+            }}
+            onSelectArrows={(arrow) => {
+              setSelectedArrowSetForDetails(arrow);
+              setSelectedArrowSet(null);
+            }}
+          />
+          <PracticesSection practices={practices} loading={false} onSelectPractice={(_id) => router.push('/(tabs)/practice')} />
         </ScrollView>
       </LinearGradient>
       <BowForm
@@ -169,7 +165,6 @@ export default function HomeScreen() {
           }}
         />
       )}
-
       <MobileActionButton
         onCreatePractice={() => router.push('/(tabs)/practice')}
         onCreateCompetition={() => router.push('/(tabs)/practice')}
@@ -187,4 +182,3 @@ export default function HomeScreen() {
     </View>
   );
 }
-

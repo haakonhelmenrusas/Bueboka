@@ -5,9 +5,6 @@ export const styles = StyleSheet.create({
   container: {
     gap: 24,
   },
-  section: {
-    marginBottom: 16,
-  },
   header: {
     flexDirection: 'row',
     justifyContent: 'space-between',

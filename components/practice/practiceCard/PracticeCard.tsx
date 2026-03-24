@@ -1,7 +1,7 @@
 import { Text, TouchableOpacity, View } from 'react-native';
 import { Practice } from '@/types';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
-import { faEdit, faHouse, faMapPin, faStar, faBullseye, faTree, faTrophy } from '@fortawesome/free-solid-svg-icons';
+import { faHouse, faMapPin, faStar, faBullseye, faTree, faTrophy } from '@fortawesome/free-solid-svg-icons';
 import { styles } from './PracticeCardStyles';
 import { LinearGradient } from 'expo-linear-gradient';
 import { colors } from '@/styles/colors';
@@ -100,10 +100,6 @@ export default function PracticeCard({ practice, onEdit }: PracticeCardProps) {
             )}
           </View>
         )}
-
-        <TouchableOpacity onPress={handleEdit} style={styles.editButton}>
-          <FontAwesomeIcon icon={faEdit} size={16} color={colors.white} />
-        </TouchableOpacity>
       </View>
     </TouchableOpacity>
   );
