@@ -19,22 +19,6 @@ export const styles = StyleSheet.create({
     fontWeight: '800',
     color: colors.text,
   },
-  addButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 6,
-    paddingVertical: 6,
-    paddingHorizontal: 12,
-    backgroundColor: colors.primary06,
-    borderRadius: 8,
-    borderWidth: 1,
-    borderColor: colors.primary08,
-  },
-  addButtonText: {
-    fontSize: 14,
-    fontWeight: '600',
-    color: colors.primary,
-  },
   list: {
     gap: 8,
   },

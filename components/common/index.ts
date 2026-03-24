@@ -12,6 +12,7 @@ import ModalHeader from './ModalHeader/ModalHeader';
 import DatePicker from './DatePicker/DatePicker';
 import { OfflineBanner } from './OfflineBanner/OfflineBanner';
 import { Badge } from './Badge/Badge';
+import { MobileActionButton } from './MobileActionButton/MobileActionButton';
 
 export {
   Button,
@@ -28,4 +29,5 @@ export {
   ModalHeader,
   OfflineBanner,
   Badge,
+  MobileActionButton,
 };

@@ -1,12 +1,10 @@
 import { useState, useCallback } from 'react';
-import { View, Text, ScrollView, StyleSheet, RefreshControl, TouchableOpacity } from 'react-native';
+import { View, Text, ScrollView, StyleSheet, RefreshControl } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter, useFocusEffect } from 'expo-router';
-import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
-import { faChartLine } from '@fortawesome/free-solid-svg-icons';
 import { StatsSummary, EquipmentSection, PracticesSection } from '@/components/home';
 import { useAuth } from '@/hooks';
-import { Message, Button } from '@/components/common';
+import { Message, Button, MobileActionButton } from '@/components/common';
 import { colors } from '@/styles/colors';
 import { statsApi, StatsResponse } from '@/services/api/statsApi';
 import { arrowsRepository, bowRepository, practiceRepository } from '@/services/repositories';
@@ -109,16 +107,6 @@ export default function HomePage() {
             <EquipmentSection
               bows={bows}
               arrows={arrows}
-              onCreateBow={() => {
-                setSelectedBow(null);
-                setSelectedBowForDetails(null);
-                setBowModalVisible(true);
-              }}
-              onCreateArrows={() => {
-                setSelectedArrowSet(null);
-                setSelectedArrowSetForDetails(null);
-                setArrowModalVisible(true);
-              }}
               onSelectBow={(bow) => {
                 setSelectedBowForDetails(bow);
                 setSelectedBow(null);
@@ -130,13 +118,7 @@ export default function HomePage() {
             />
           </View>
           <View style={styles.card}>
-            <PracticesSection
-              practices={practices}
-              loading={false}
-              onCreate={() => router.push('/(tabs)/practice')}
-              onCreateCompetition={() => router.push('/(tabs)/practice')}
-              onSelectPractice={(_id) => router.push('/(tabs)/practice')}
-            />
+            <PracticesSection practices={practices} loading={false} onSelectPractice={(_id) => router.push('/(tabs)/practice')} />
           </View>
         </ScrollView>
       </LinearGradient>
@@ -184,6 +166,21 @@ export default function HomePage() {
           }}
         />
       )}
+
+      <MobileActionButton
+        onCreatePractice={() => router.push('/(tabs)/practice')}
+        onCreateCompetition={() => router.push('/(tabs)/practice')}
+        onCreateBow={() => {
+          setSelectedBow(null);
+          setSelectedBowForDetails(null);
+          setBowModalVisible(true);
+        }}
+        onCreateArrows={() => {
+          setSelectedArrowSet(null);
+          setSelectedArrowSetForDetails(null);
+          setArrowModalVisible(true);
+        }}
+      />
     </View>
   );
 }
