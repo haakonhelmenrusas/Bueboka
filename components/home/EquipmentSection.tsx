@@ -1,10 +1,11 @@
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, Text, TouchableOpacity } from 'react-native';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
 import { Bow, Arrows } from '@/types';
 import { colors } from '@/styles/colors';
 import BowCard from '@/components/home/bowCard/BowCard';
 import ArrowCard from '@/components/home/arrowCard/ArrowCard';
+import { styles } from './EquipmentSectionStyles';
 
 interface Props {
   bows: Bow[];
@@ -62,56 +63,3 @@ export function EquipmentSection({ bows, arrows, onCreateBow, onCreateArrows, on
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    gap: 24,
-  },
-  section: {
-    marginBottom: 16,
-  },
-  header: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: 12,
-  },
-  title: {
-    fontSize: 18,
-    fontWeight: '800',
-    color: colors.text,
-  },
-  addButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 6,
-    paddingVertical: 6,
-    paddingHorizontal: 12,
-    backgroundColor: 'rgba(5, 53, 70, 0.06)',
-    borderRadius: 8,
-    borderWidth: 1,
-    borderColor: 'rgba(5, 53, 70, 0.1)',
-  },
-  addButtonText: {
-    fontSize: 14,
-    fontWeight: '600',
-    color: colors.primary,
-  },
-  list: {
-    gap: 8,
-  },
-  placeholder: {
-    backgroundColor: 'rgba(12, 130, 172, 0.05)',
-    borderWidth: 1,
-    borderStyle: 'dashed',
-    borderColor: 'rgba(12, 130, 172, 0.26)',
-    borderRadius: 12,
-    padding: 20,
-    alignItems: 'center',
-  },
-  placeholderText: {
-    fontSize: 14,
-    fontWeight: '600',
-    color: colors.textSecondary,
-  },
-});

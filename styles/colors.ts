@@ -17,4 +17,9 @@ export const colors = {
   text: '#00171F',
   textSecondary: '#6B7280',
   border: '#E5E7EB',
+  // Semi-transparent tints
+  primarySubtle: 'rgba(5, 53, 70, 0.06)',
+  primarySubtleBorder: 'rgba(5, 53, 70, 0.1)',
+  secondarySubtle: 'rgba(12, 130, 172, 0.05)',
+  secondarySubtleBorder: 'rgba(12, 130, 172, 0.26)',
 };
