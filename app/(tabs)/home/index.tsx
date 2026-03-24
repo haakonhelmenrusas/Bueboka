@@ -1,7 +1,8 @@
 import { useState, useCallback } from 'react';
-import { View, Text, ScrollView, StyleSheet, RefreshControl } from 'react-native';
+import { View, Text, ScrollView, RefreshControl } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter, useFocusEffect } from 'expo-router';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { StatsSummary, EquipmentSection, PracticesSection } from '@/components/home';
 import { useAuth } from '@/hooks';
 import { Message, Button, MobileActionButton } from '@/components/common';
@@ -13,10 +14,12 @@ import BowForm from '@/components/home/bowForm/BowForm';
 import ArrowForm from '@/components/home/arrowForm/ArrowForm';
 import BowDetails from '@/components/home/bowDetails/BowDetails';
 import ArrowSetDetails from '@/components/home/arrowSetDetails/ArrowSetDetails';
+import { styles } from '@/components/home/HomeScreenStyles';
 
-export default function HomePage() {
+export default function HomeScreen() {
   const { user } = useAuth();
   const router = useRouter();
+  const insets = useSafeAreaInsets();
   const [refreshing, setRefreshing] = useState(false);
   const [stats, setStats] = useState<StatsResponse>({
     last7Days: { totalArrows: 0, scoredArrows: 0, unscoredArrows: 0, avgScorePerArrow: null },
@@ -86,7 +89,7 @@ export default function HomePage() {
       <LinearGradient colors={[colors.primary, colors.secondary, '#1a4f66']} style={styles.gradient}>
         <ScrollView
           showsVerticalScrollIndicator={false}
-          contentContainerStyle={styles.scrollContent}
+          contentContainerStyle={[styles.scrollContent, { paddingTop: insets.top + 20 }]}
           refreshControl={<RefreshControl refreshing={refreshing} onRefresh={handleRefresh} tintColor="#FFFFFF" />}>
           <View style={styles.header}>
             <View>
@@ -94,7 +97,7 @@ export default function HomePage() {
               {user.club && <Text style={styles.club}>{user.club}</Text>}
             </View>
           </View>
-          <View style={styles.card}>
+          <View>
             <View style={styles.cardHeader}>
               <Text style={styles.cardTitle}>Oppsummering</Text>
             </View>
@@ -103,7 +106,7 @@ export default function HomePage() {
               <Button label="Se detaljert statistikk" onPress={() => router.push('/(tabs)/training')} />
             </View>
           </View>
-          <View style={styles.card}>
+          <View>
             <EquipmentSection
               bows={bows}
               arrows={arrows}
@@ -117,7 +120,7 @@ export default function HomePage() {
               }}
             />
           </View>
-          <View style={styles.card}>
+          <View>
             <PracticesSection practices={practices} loading={false} onSelectPractice={(_id) => router.push('/(tabs)/practice')} />
           </View>
         </ScrollView>
@@ -185,62 +188,3 @@ export default function HomePage() {
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-  gradient: {
-    flex: 1,
-  },
-  scrollContent: {
-    paddingHorizontal: 20,
-    paddingTop: 20,
-    paddingBottom: 40,
-    gap: 20,
-  },
-  header: {
-    marginBottom: 8,
-  },
-  greeting: {
-    fontSize: 32,
-    fontWeight: '900',
-    color: '#FFFFFF',
-    marginBottom: 4,
-  },
-  club: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: 'rgba(255, 255, 255, 0.8)',
-  },
-  card: {
-    backgroundColor: '#FFFFFF',
-    borderRadius: 16,
-    padding: 20,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.15,
-    shadowRadius: 12,
-    elevation: 4,
-  },
-  cardHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: 8,
-  },
-  cardTitle: {
-    fontSize: 20,
-    fontWeight: '900',
-    color: colors.text,
-  },
-  cardSubtitle: {
-    fontSize: 14,
-    fontWeight: '600',
-    color: colors.textSecondary,
-    marginBottom: 8,
-  },
-  buttonContainer: {
-    marginTop: 16,
-    alignItems: 'center',
-  },
-});

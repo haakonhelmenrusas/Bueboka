@@ -17,6 +17,9 @@
     "android": {
       "package": "com.aaronshade.bueboka"
     },
+    "androidStatusBar": {
+      "barStyle": "light-content"
+    },
     "ios": {
       "bundleIdentifier": "com.aaronshade.bueboka",
       "infoPlist": {

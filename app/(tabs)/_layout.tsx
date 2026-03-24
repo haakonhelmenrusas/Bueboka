@@ -29,7 +29,7 @@ export default function AppLayout() {
   }
 
   return (
-    <View style={{ flex: 1 }}>
+    <View style={{ flex: 1, backgroundColor: colors.primary }}>
       <OfflineBanner />
       <Tabs
         screenOptions={{

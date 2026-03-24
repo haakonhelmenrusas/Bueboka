@@ -3,10 +3,7 @@ import { colors } from '@/styles/colors';
 
 export const styles = StyleSheet.create({
   container: {
-    gap: 24,
-  },
-  section: {
-    marginBottom: 16,
+    marginTop: 8,
   },
   header: {
     flexDirection: 'row',
@@ -23,10 +20,10 @@ export const styles = StyleSheet.create({
     gap: 8,
   },
   placeholder: {
-    backgroundColor: colors.dark05,
+    backgroundColor: 'rgba(12, 130, 172, 0.05)',
     borderWidth: 1,
     borderStyle: 'dashed',
-    borderColor: colors.primary25,
+    borderColor: 'rgba(12, 130, 172, 0.26)',
     borderRadius: 12,
     padding: 20,
     alignItems: 'center',
@@ -35,5 +32,9 @@ export const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: '600',
     color: colors.textSecondary,
+  },
+  loadingContainer: {
+    padding: 40,
+    alignItems: 'center',
   },
 });

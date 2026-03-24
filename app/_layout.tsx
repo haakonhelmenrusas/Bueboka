@@ -1,4 +1,4 @@
-import { StatusBar } from 'react-native';
+import { StatusBar } from 'expo-status-bar';
 import { Stack, useNavigationContainerRef } from 'expo-router';
 import * as Sentry from '@sentry/react-native';
 import * as Clarity from '@microsoft/react-native-clarity';
@@ -6,6 +6,7 @@ import { isRunningInExpoGo } from 'expo';
 import React, { useEffect } from 'react';
 import { AuthProvider } from '@/contexts';
 import { useAuth } from '@/hooks';
+import { colors } from '@/styles/colors';
 
 let navigationIntegration: any = null;
 
@@ -42,10 +43,10 @@ function RootLayoutContent() {
 
   return (
     <>
-      <StatusBar barStyle="dark-content" />
+      <StatusBar style="light" />
       <Stack screenOptions={{ headerShown: false }}>
         {isAuthenticated ? (
-          <Stack.Screen name="(tabs)" />
+          <Stack.Screen name="(tabs)" options={{ contentStyle: { backgroundColor: colors.primary } }} />
         ) : (
           <Stack.Screen name="auth" />
         )}
