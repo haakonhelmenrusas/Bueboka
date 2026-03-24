@@ -1,5 +1,6 @@
 import { authFetchClient as client } from '@/services/api/authFetch';
 import { handleApiError } from '@/services/api/errors';
+import type { Series } from '@/types';
 
 export interface StatsData {
   totalArrows: number;
@@ -39,6 +40,18 @@ export const statsApi = {
         last30Days: raw?.last30Days ?? EMPTY_STATS_DATA,
         overall: raw?.overall ?? EMPTY_STATS_DATA,
       };
+    } catch (error) {
+      throw handleApiError(error);
+    }
+  },
+
+  /**
+   * Get detailed statistics with per-series breakdown
+   */
+  async getDetailedStats(): Promise<Series[]> {
+    try {
+      const response = await client.get<{ series: Series[] }>('/stats/detailed');
+      return response.data?.series ?? [];
     } catch (error) {
       throw handleApiError(error);
     }

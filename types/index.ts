@@ -17,3 +17,4 @@ export type {
   SightMarkCalc,
   MarksResult,
 } from './SightMarks';
+export type { Series, SeriesData } from './Statistics';

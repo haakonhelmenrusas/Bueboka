@@ -103,7 +103,7 @@ export default function HomeScreen() {
             </View>
             <StatsSummary last7Days={stats.last7Days} last30Days={stats.last30Days} overall={stats.overall} />
             <View style={styles.buttonContainer}>
-              <Button label="Se detaljert statistikk" onPress={() => router.push('/(tabs)/training')} />
+              <Button label="Se detaljert statistikk" onPress={() => router.push('/(tabs)/home/statistics')} />
             </View>
           </View>
           <View>
