@@ -21,13 +21,13 @@ export const styles = StyleSheet.create({
   subtitleToday: {
     fontSize: 16,
     fontWeight: 500,
-    color: colors.dark_primary,
+    color: colors.primaryDark,
     marginTop: 4,
   },
   subtitlePast: {
     fontSize: 16,
     fontWeight: 500,
-    color: colors.dark_primary,
+    color: colors.primaryDark,
     marginTop: 16,
   },
 });

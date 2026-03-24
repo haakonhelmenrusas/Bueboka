@@ -65,7 +65,7 @@ export const styles = StyleSheet.create({
   detailText: {
     fontSize: 13,
     fontWeight: '500',
-    color: colors.dark_primary,
+    color: colors.primaryDark,
   },
   editButton: {
     position: 'absolute',

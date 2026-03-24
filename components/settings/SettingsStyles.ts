@@ -57,7 +57,7 @@ export const styles = StyleSheet.create({
   value: {
     fontSize: 17,
     fontWeight: '600',
-    color: colors.dark_primary,
+    color: colors.primaryDark,
   },
   logoutButton: {
     minHeight: 52,

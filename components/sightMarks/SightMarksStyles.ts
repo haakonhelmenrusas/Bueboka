@@ -25,7 +25,7 @@ export const styles = StyleSheet.create({
     fontSize: 16,
     paddingBottom: 8,
     fontWeight: '500',
-    color: colors.dark_primary,
+    color: colors.primaryDark,
   },
   activeText: {
     color: colors.secondary,

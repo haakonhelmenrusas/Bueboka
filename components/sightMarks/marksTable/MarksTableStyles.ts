@@ -63,7 +63,7 @@ export const styles = StyleSheet.create({
   },
   theadBlack: {
     fontWeight: '400',
-    color: colors.dark_primary,
+    color: colors.primaryDark,
     textAlign: 'center',
     fontSize: 14,
   },

@@ -61,7 +61,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: colors.primary,
     elevation: Platform.OS === 'android' ? 15 : 0,
-    shadowColor: colors.dark_primary,
+    shadowColor: colors.primaryDark,
     shadowOffset: {
       width: 0,
       height: 6,

@@ -42,7 +42,7 @@ export const styles = StyleSheet.create({
     borderRadius: 12,
     justifyContent: 'center',
     alignItems: 'center',
-    shadowColor: colors.dark_primary,
+    shadowColor: colors.primaryDark,
     shadowOffset: {
       width: 0,
       height: 2,
@@ -58,7 +58,7 @@ export const styles = StyleSheet.create({
     borderRadius: 12,
     justifyContent: 'center',
     alignItems: 'center',
-    shadowColor: colors.dark_primary,
+    shadowColor: colors.primaryDark,
     shadowOffset: {
       width: 0,
       height: 2,

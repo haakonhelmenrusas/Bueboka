@@ -28,7 +28,7 @@ export const styles = StyleSheet.create({
     fontWeight: '600',
     textAlign: 'center',
     marginHorizontal: 12,
-    color: colors.dark_primary,
+    color: colors.primaryDark,
     lineHeight: 24,
   },
   box: {
@@ -95,7 +95,7 @@ export const styles = StyleSheet.create({
   },
   webInfoText: {
     fontSize: 14,
-    color: colors.dark_primary,
+    color: colors.primaryDark,
     textAlign: 'center',
     lineHeight: 20,
   },

@@ -3,7 +3,7 @@ import { colors } from '@/styles/colors';
 
 export const defaultStyles = StyleSheet.create({
   container: {
-    marginBottom: 16,
+    marginBottom: 0,
     width: '100%',
   },
   labelContainer: {
