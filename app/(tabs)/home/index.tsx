@@ -118,7 +118,7 @@ export default function HomeScreen() {
               setSelectedArrowSet(null);
             }}
           />
-          <PracticesSection practices={practices} loading={false} onSelectPractice={(_id) => router.push('/(tabs)/practice')} />
+          <PracticesSection practices={practices} loading={false} onSelectPractice={(_id) => {}} />
         </ScrollView>
       </LinearGradient>
       <BowForm
@@ -166,8 +166,8 @@ export default function HomeScreen() {
         />
       )}
       <MobileActionButton
-        onCreatePractice={() => router.push('/(tabs)/practice')}
-        onCreateCompetition={() => router.push('/(tabs)/practice')}
+        onCreatePractice={() => {}}
+        onCreateCompetition={() => {}}
         onCreateBow={() => {
           setSelectedBow(null);
           setSelectedBowForDetails(null);
