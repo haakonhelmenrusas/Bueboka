@@ -1,14 +1,61 @@
 import React, { useEffect, useState } from 'react';
-import { Keyboard, KeyboardAvoidingView, Platform, Pressable, ScrollView, TouchableOpacity, View } from 'react-native';
-import { Button, DatePicker, Input, ModalHeader, ModalWrapper, Select, Textarea } from '@/components/common';
-import { styles } from './CreatePracticeFormStyles';
-import { Arrows, Bow, Environment, Practice, PracticeCategory } from '@/types';
+import { Keyboard, KeyboardAvoidingView, Platform, Pressable, ScrollView, Text, TouchableOpacity, View } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useRouter } from 'expo-router';
 import * as Sentry from '@sentry/react-native';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faTrashCan } from '@fortawesome/free-regular-svg-icons/faTrashCan';
+import { faPlus } from '@fortawesome/free-solid-svg-icons/faPlus';
+import { faXmark } from '@fortawesome/free-solid-svg-icons/faXmark';
+
+import { Button, DatePicker, Input, ModalHeader, ModalWrapper, Select, Textarea } from '@/components/common';
 import ConfirmModal from '@/components/home/DeleteArrowSetModal/ConfirmModal';
 import { practiceRepository } from '@/services/repositories';
+import { Arrows, Bow, Environment, Practice, PracticeCategory, WeatherCondition } from '@/types';
+import { TARGET_TYPE_OPTIONS } from '@/utils/Constants';
+import { colors } from '@/styles/colors';
+import { styles } from './CreatePracticeFormStyles';
+
+// ─── Storage keys ───────────────────────────────────────────────────────────
+const STORAGE_KEY_DISTANCE = 'bueboka_last_distance';
+const STORAGE_KEY_TARGET = 'bueboka_last_target';
+
+// ─── Option lists ────────────────────────────────────────────────────────────
+const PRACTICE_CATEGORY_OPTIONS = [
+  { label: 'Skive innendørs', value: PracticeCategory.SKIVE_INDOOR },
+  { label: 'Skive utendørs', value: PracticeCategory.SKIVE_OUTDOOR },
+  { label: 'Jakt 3D', value: PracticeCategory.JAKT_3D },
+  { label: 'Felt', value: PracticeCategory.FELT },
+];
+
+const ENVIRONMENT_OPTIONS = [
+  { label: 'Innendørs', value: Environment.INDOOR },
+  { label: 'Utendørs', value: Environment.OUTDOOR },
+];
+
+const WEATHER_OPTIONS: { value: WeatherCondition; label: string }[] = [
+  { value: WeatherCondition.SUN, label: '☀️ Sol' },
+  { value: WeatherCondition.CLOUDED, label: '⛅ Skyet' },
+  { value: WeatherCondition.CLEAR, label: '🌤 Klart' },
+  { value: WeatherCondition.RAIN, label: '🌧 Regn' },
+  { value: WeatherCondition.WIND, label: '💨 Vind' },
+  { value: WeatherCondition.SNOW, label: '❄️ Snø' },
+  { value: WeatherCondition.FOG, label: '🌫 Tåke' },
+  { value: WeatherCondition.THUNDER, label: '⛈ Torden' },
+  { value: WeatherCondition.CHANGING_CONDITIONS, label: '🔄 Skiftende' },
+  { value: WeatherCondition.OTHER, label: '🌡 Annet' },
+];
+
+// ─── Types ───────────────────────────────────────────────────────────────────
+export interface RoundInput {
+  distanceMeters?: number;
+  distanceFrom?: number;
+  distanceTo?: number;
+  targetType: string;
+  numberArrows?: number;
+  arrowsWithoutScore?: number;
+  roundScore: number;
+}
 
 interface CreatePracticeFormProps {
   visible: boolean;
@@ -19,6 +66,25 @@ interface CreatePracticeFormProps {
   editingPractice?: Practice | null;
 }
 
+// ─── Helpers ─────────────────────────────────────────────────────────────────
+function isRangeCategory(cat: PracticeCategory): boolean {
+  return cat === PracticeCategory.JAKT_3D || cat === PracticeCategory.FELT;
+}
+
+function emptyRound(cat: PracticeCategory): RoundInput {
+  return isRangeCategory(cat)
+    ? {
+        distanceFrom: undefined,
+        distanceTo: undefined,
+        targetType: '',
+        numberArrows: undefined,
+        arrowsWithoutScore: undefined,
+        roundScore: 0,
+      }
+    : { distanceMeters: undefined, targetType: '', numberArrows: undefined, arrowsWithoutScore: undefined, roundScore: 0 };
+}
+
+// ─── Component ───────────────────────────────────────────────────────────────
 export default function CreatePracticeForm({
   visible,
   onClose,
@@ -28,121 +94,231 @@ export default function CreatePracticeForm({
   editingPractice = null,
 }: CreatePracticeFormProps) {
   const router = useRouter();
+
+  // Form state
   const [date, setDate] = useState(new Date());
+  const [practiceCategory, setPracticeCategory] = useState<PracticeCategory>(PracticeCategory.SKIVE_INDOOR);
+  const [environment, setEnvironment] = useState<Environment>(Environment.INDOOR);
+  const [weather, setWeather] = useState<WeatherCondition[]>([]);
+  const [location, setLocation] = useState('');
   const [selectedBow, setSelectedBow] = useState('');
   const [selectedArrowSet, setSelectedArrowSet] = useState('');
-  const [totalScore, setTotalScore] = useState('0');
+  const [rounds, setRounds] = useState<RoundInput[]>([emptyRound(PracticeCategory.SKIVE_INDOOR)]);
+  const [rating, setRating] = useState<number | null>(null);
   const [notes, setNotes] = useState('');
-  const [location, setLocation] = useState('');
-  const [environment, setEnvironment] = useState<Environment>(Environment.INDOOR);
+
+  // UI state
+  const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const [confirmVisible, setConfirmVisible] = useState(false);
 
-  // Safely handle undefined or null props - ensure always arrays
+  // Derived
   const validBows = Array.isArray(bows) ? bows : [];
   const validArrowSets = Array.isArray(arrowSets) ? arrowSets : [];
-  const bowOptions = validBows.map((bow) => ({ label: bow.name, value: bow.id }));
-  const arrowSetOptions = validArrowSets.map((arrowSet) => ({ label: arrowSet.name, value: arrowSet.id }));
+  const bowOptions = validBows.map((b) => ({ label: b.name, value: b.id }));
+  const arrowSetOptions = validArrowSets.map((a) => ({ label: a.name, value: a.id }));
+  const isEditing = !!editingPractice;
 
+  // ─── Init form ─────────────────────────────────────────────────────────────
   useEffect(() => {
-    if (editingPractice) {
+    if (!visible) return;
+
+    if (isEditing && editingPractice) {
       setDate(new Date(editingPractice.date));
-      setSelectedBow(editingPractice.bowId || '');
-      setSelectedArrowSet(editingPractice.arrowsId || '');
-      setTotalScore(editingPractice.totalScore?.toString() || '0');
-      setNotes(editingPractice.notes || '');
-      setLocation(editingPractice.location || '');
-      setEnvironment(editingPractice.environment || Environment.INDOOR);
-    } else {
-      resetForm();
-    }
-  }, [editingPractice, visible]);
+      setPracticeCategory(editingPractice.practiceCategory ?? PracticeCategory.SKIVE_INDOOR);
+      setEnvironment(editingPractice.environment ?? Environment.INDOOR);
+      setWeather(editingPractice.weather ?? []);
+      setLocation(editingPractice.location ?? '');
+      setSelectedBow(editingPractice.bowId ?? '');
+      setSelectedArrowSet(editingPractice.arrowsId ?? '');
+      setRating(editingPractice.rating ?? null);
+      setNotes(editingPractice.notes ?? '');
 
-  const createPracticeObject = (): Practice => {
-    const selectedBowObject = validBows.find((bow) => bow.id === selectedBow);
-    const selectedArrowSetObject = validArrowSets.find((arrowSet) => arrowSet.id === selectedArrowSet);
-
-    return {
-      id: editingPractice?.id || new Date().getTime().toString() + Math.random().toString(36).substring(2, 9),
-      userId: '',
-      date: date.toISOString(),
-      totalScore: totalScore ? parseInt(totalScore) : 0,
-      environment: environment,
-      location: location || null,
-      bowId: selectedBowObject?.id ?? null,
-      arrowsId: selectedArrowSetObject?.id ?? null,
-      notes: notes || null,
-      rating: null,
-      weather: [],
-      practiceCategory: PracticeCategory.SKIVE_INDOOR,
-      roundTypeId: null,
-      ends: [],
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
-    };
-  };
-
-  const savePracticeToApi = async (practice: Practice) => {
-    try {
-      if (editingPractice) {
-        // For updates, send only the fields that can be updated
-        const updateData = {
-          date: new Date(practice.date),
-          environment: practice.environment,
-          totalScore: practice.totalScore,
-          location: practice.location ?? undefined,
-          weather: practice.weather,
-          bowId: practice.bowId ?? undefined,
-          arrowsId: practice.arrowsId ?? undefined,
-          notes: practice.notes ?? undefined,
-        };
-        await practiceRepository.update(editingPractice.id, updateData);
+      if (editingPractice.ends && editingPractice.ends.length > 0) {
+        setRounds(
+          editingPractice.ends.map((end) => ({
+            distanceMeters: end.distanceMeters ?? undefined,
+            distanceFrom: end.distanceFrom ?? undefined,
+            distanceTo: end.distanceTo ?? undefined,
+            targetType: end.targetType ?? (end.targetSizeCm ? `${end.targetSizeCm}cm` : ''),
+            numberArrows: end.arrows ?? undefined,
+            arrowsWithoutScore: end.arrowsWithoutScore ?? undefined,
+            roundScore: end.roundScore ?? 0,
+          })),
+        );
       } else {
-        // For creates, don't send the client-generated ID
-        const createData = {
-          date: new Date(practice.date),
-          environment: practice.environment,
-          totalScore: practice.totalScore,
-          location: practice.location ?? undefined,
-          weather: practice.weather,
-          bowId: practice.bowId ?? undefined,
-          arrowsId: practice.arrowsId ?? undefined,
-          notes: practice.notes ?? undefined,
-        };
-        await practiceRepository.create(createData);
+        setRounds([emptyRound(editingPractice.practiceCategory ?? PracticeCategory.SKIVE_INDOOR)]);
       }
-      if (onPracticeSaved) onPracticeSaved();
-    } catch (error) {
-      console.error('Error saving practice:', error);
-      Sentry.captureException('Error saving practice to API', error);
-      // Re-throw to show user feedback
-      throw error;
+    } else {
+      // Create mode – restore last-used defaults from storage
+      resetForm();
+      AsyncStorage.multiGet([STORAGE_KEY_DISTANCE, STORAGE_KEY_TARGET])
+        .then(([distEntry, targetEntry]) => {
+          const lastDist = distEntry[1] ? parseFloat(distEntry[1]) : undefined;
+          const lastTarget = targetEntry[1] ?? '';
+          setRounds([
+            { distanceMeters: lastDist, targetType: lastTarget, numberArrows: undefined, arrowsWithoutScore: undefined, roundScore: 0 },
+          ]);
+        })
+        .catch(() => {});
+
+      // Prefer favourite equipment
+      const favBow = validBows.find((b) => b.isFavorite);
+      setSelectedBow(favBow ? favBow.id : '');
+      const favArrows = validArrowSets.find((a) => a.isFavorite);
+      setSelectedArrowSet(favArrows ? favArrows.id : '');
     }
+
+    setError(null);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [visible, isEditing, editingPractice]);
+
+  // Clear weather when switching to INDOOR
+  useEffect(() => {
+    if (environment !== Environment.OUTDOOR) setWeather([]);
+  }, [environment]);
+
+  // ─── Reset ─────────────────────────────────────────────────────────────────
+  const resetForm = () => {
+    setDate(new Date());
+    setPracticeCategory(PracticeCategory.SKIVE_INDOOR);
+    setEnvironment(Environment.INDOOR);
+    setWeather([]);
+    setLocation('');
+    setSelectedBow('');
+    setSelectedArrowSet('');
+    setRounds([emptyRound(PracticeCategory.SKIVE_INDOOR)]);
+    setRating(null);
+    setNotes('');
   };
 
-  const deletePracticeFromApi = async () => {
-    try {
-      if (editingPractice) {
-        await practiceRepository.delete(editingPractice.id);
-        if (onPracticeSaved) onPracticeSaved();
-      }
-    } catch (error) {
-      Sentry.captureException('Error deleting practice from API', error);
-    }
+  const handleClose = () => {
+    resetForm();
+    onClose();
   };
 
-  const handleStartShooting = async () => {
+  // ─── Practice category ────────────────────────────────────────────────────
+  const handleCategoryChange = (cat: PracticeCategory) => {
+    setPracticeCategory(cat);
+    setRounds([emptyRound(cat)]);
+  };
+
+  // ─── Rounds ───────────────────────────────────────────────────────────────
+  const addRound = () => {
+    if (rounds.length < 20) setRounds((prev) => [...prev, emptyRound(practiceCategory)]);
+  };
+
+  const removeRound = (index: number) => {
+    if (rounds.length > 1) setRounds((prev) => prev.filter((_, i) => i !== index));
+  };
+
+  const updateRound = <K extends keyof RoundInput>(index: number, field: K, value: RoundInput[K]) => {
+    setRounds((prev) => {
+      const next = [...prev];
+      next[index] = { ...next[index], [field]: value };
+      return next;
+    });
+  };
+
+  const parseNum = (text: string): number | undefined => {
+    const n = parseFloat(text);
+    return isNaN(n) ? undefined : n;
+  };
+
+  // ─── Weather chips ────────────────────────────────────────────────────────
+  const toggleWeather = (condition: WeatherCondition) => {
+    setWeather((prev) => (prev.includes(condition) ? prev.filter((w) => w !== condition) : [...prev, condition]));
+  };
+
+  // ─── Persist last used values ─────────────────────────────────────────────
+  const persistLastUsed = async (validRounds: RoundInput[]) => {
+    if (validRounds.length === 0) return;
+    const first = validRounds[0];
+    const pairs: [string, string][] = [];
+    if (first.distanceMeters && first.distanceMeters > 0) {
+      pairs.push([STORAGE_KEY_DISTANCE, first.distanceMeters.toString()]);
+    }
+    if (first.targetType) pairs.push([STORAGE_KEY_TARGET, first.targetType]);
+    if (pairs.length > 0) await AsyncStorage.multiSet(pairs).catch(() => {});
+  };
+
+  // ─── Build ends payload ───────────────────────────────────────────────────
+  const buildEnds = (validRounds: RoundInput[]) =>
+    validRounds.map((r) => ({
+      arrows: r.numberArrows,
+      arrowsWithoutScore: r.arrowsWithoutScore,
+      scores: [] as number[],
+      roundScore: r.roundScore || 0,
+      distanceMeters: r.distanceMeters,
+      distanceFrom: r.distanceFrom,
+      distanceTo: r.distanceTo,
+      targetType: r.targetType || undefined,
+    }));
+
+  // ─── Save (finished practice) ─────────────────────────────────────────────
+  const handleSaveAndFinish = async () => {
+    setSubmitting(true);
+    setError(null);
     try {
-      const createData = {
-        date: date,
-        environment: environment,
-        totalScore: totalScore ? parseInt(totalScore) : 0,
+      const validRounds = rounds.filter(
+        (r) =>
+          (r.distanceMeters && r.distanceMeters > 0) ||
+          (r.distanceFrom && r.distanceFrom > 0) ||
+          (r.distanceTo && r.distanceTo > 0) ||
+          r.targetType ||
+          (r.numberArrows ?? 0) > 0 ||
+          r.roundScore > 0,
+      );
+
+      await persistLastUsed(validRounds);
+
+      const payload = {
+        date,
+        environment,
+        practiceCategory,
+        weather,
         location: location || undefined,
         bowId: selectedBow || undefined,
         arrowsId: selectedArrowSet || undefined,
         notes: notes || undefined,
+        rating: rating ?? undefined,
+        ends: buildEnds(validRounds),
       };
-      const savedPractice = await practiceRepository.create(createData);
-      if (onPracticeSaved) onPracticeSaved();
+
+      if (isEditing && editingPractice) {
+        await practiceRepository.update(editingPractice.id, payload);
+      } else {
+        await practiceRepository.create(payload);
+      }
+
+      onPracticeSaved?.();
+      onClose();
+    } catch (err) {
+      Sentry.captureException(err);
+      setError(err instanceof Error ? err.message : 'Kunne ikke lagre trening.');
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  // ─── Start shooting (create + navigate to shooting screen) ───────────────
+  const handleStartShooting = async () => {
+    setSubmitting(true);
+    setError(null);
+    try {
+      const savedPractice = await practiceRepository.create({
+        date,
+        environment,
+        practiceCategory,
+        weather,
+        location: location || undefined,
+        bowId: selectedBow || undefined,
+        arrowsId: selectedArrowSet || undefined,
+        notes: notes || undefined,
+        rating: rating ?? undefined,
+      });
+
+      onPracticeSaved?.();
 
       router.push({
         pathname: '/practice/shooting',
@@ -151,150 +327,305 @@ export default function CreatePracticeForm({
           date: date.toISOString().split('T')[0],
           bowId: selectedBow || '',
           arrowSet: selectedArrowSet || '',
-          totalScore: totalScore,
           notes: notes || '',
-          environment: environment,
+          environment,
           location: location || '',
         },
       });
       onClose();
-    } catch (error) {
-      console.error('Error starting shooting session:', error);
-      Sentry.captureException(error);
-      alert('Kunne ikke starte skyteøkten. Vennligst prøv igjen.');
+    } catch (err) {
+      Sentry.captureException(err);
+      setError(err instanceof Error ? err.message : 'Kunne ikke starte skyteøkten.');
+    } finally {
+      setSubmitting(false);
     }
   };
 
-  const handleSaveAndFinish = async () => {
+  // ─── Delete ───────────────────────────────────────────────────────────────
+  const handleDelete = async () => {
+    if (!editingPractice) return;
     try {
-      const practiceData = createPracticeObject();
-      await savePracticeToApi(practiceData);
+      await practiceRepository.delete(editingPractice.id);
+      onPracticeSaved?.();
       onClose();
-    } catch (error) {
-      console.error('Error saving practice:', error);
-      Sentry.captureException('Error saving and finishing practice', error);
-      alert('Kunne ikke lagre treningen. Vennligst prøv igjen.');
+    } catch (err) {
+      Sentry.captureException(err);
     }
   };
 
-  const handleDeletePractice = async () => {
-    try {
-      await deletePracticeFromApi();
-      onClose();
-    } catch (error) {
-      Sentry.captureException('Error deleting practice', error);
-    }
-  };
-
-  const resetForm = () => {
-    setDate(new Date());
-    setSelectedBow('');
-    setSelectedArrowSet('');
-    setTotalScore('0');
-    setNotes('');
-    setLocation('');
-    setEnvironment(Environment.INDOOR);
-  };
-
-  const handleClose = () => {
-    resetForm();
-    onClose();
-  };
-
-  const isEditing = !!editingPractice;
-
+  // ─── Render ───────────────────────────────────────────────────────────────
   return (
     <ModalWrapper visible={visible} onClose={handleClose}>
-      <KeyboardAvoidingView
-        style={styles.container}
-        behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-        keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 0}>
+      <KeyboardAvoidingView style={styles.container} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
         <ScrollView contentContainerStyle={styles.scrollContainer} keyboardShouldPersistTaps="handled" showsVerticalScrollIndicator={false}>
-          <Pressable style={{ flex: 1 }} onPress={() => Keyboard.dismiss()}>
+          <Pressable onPress={() => Keyboard.dismiss()}>
             <ModalHeader title={isEditing ? 'Rediger trening' : 'Ny trening'} onPress={handleClose} />
+
             <View style={styles.content}>
-              <DatePicker label="Dato" value={date} onDateChange={setDate} containerStyle={styles.inputContainer} testID="date-picker" />
-              <Select
-                label="🌍 Miljø"
-                options={[
-                  { label: 'Innendørs', value: Environment.INDOOR },
-                  { label: 'Utendørs', value: Environment.OUTDOOR },
-                ]}
-                selectedValue={environment}
-                onValueChange={(value) => setEnvironment(value as Environment)}
-                containerStyle={styles.inputContainer}
-              />
-              <Input
-                label="📍 Sted (valgfritt)"
-                value={location}
-                onChangeText={setLocation}
-                placeholder="F.eks. Oslo Bueskytterhall"
-                containerStyle={styles.inputContainer}
-              />
-              {bowOptions.length > 0 && (
+              {/* ── Date & Category row ────────────────────────────────────── */}
+              <View style={styles.row}>
+                <DatePicker label="Dato" value={date} onDateChange={setDate} containerStyle={styles.field} />
                 <Select
-                  label="🏹 Bue (valgfritt)"
-                  options={bowOptions}
-                  selectedValue={selectedBow}
-                  onValueChange={setSelectedBow}
-                  containerStyle={styles.inputContainer}
+                  label="Kategori"
+                  options={PRACTICE_CATEGORY_OPTIONS}
+                  selectedValue={practiceCategory}
+                  onValueChange={(v) => handleCategoryChange(v as PracticeCategory)}
+                  containerStyle={styles.field}
                 />
-              )}
-              {arrowSetOptions.length > 0 && (
+              </View>
+
+              {/* ── Environment & Location row ─────────────────────────────── */}
+              <View style={styles.row}>
                 <Select
-                  label="🎯 Pilsett (valgfritt)"
-                  options={arrowSetOptions}
-                  selectedValue={selectedArrowSet}
-                  onValueChange={setSelectedArrowSet}
-                  containerStyle={styles.inputContainer}
+                  label="Miljø"
+                  options={ENVIRONMENT_OPTIONS}
+                  selectedValue={environment}
+                  onValueChange={(v) => setEnvironment(v as Environment)}
+                  containerStyle={styles.field}
                 />
+                <Input
+                  label="Sted"
+                  value={location}
+                  onChangeText={setLocation}
+                  placeholder="F.eks. Oslo"
+                  maxLength={64}
+                  containerStyle={styles.field}
+                />
+              </View>
+
+              {/* ── Weather chips (only outdoors) ──────────────────────────── */}
+              {environment === Environment.OUTDOOR && (
+                <View style={styles.weatherSection}>
+                  <Text style={styles.weatherLabel}>Vær (valgfritt)</Text>
+                  <View style={styles.weatherChips}>
+                    {WEATHER_OPTIONS.map((opt) => {
+                      const active = weather.includes(opt.value);
+                      return (
+                        <Pressable
+                          key={opt.value}
+                          style={[styles.weatherChip, active && styles.weatherChipActive]}
+                          onPress={() => toggleWeather(opt.value)}>
+                          <Text style={[styles.weatherChipText, active && styles.weatherChipTextActive]}>{opt.label}</Text>
+                        </Pressable>
+                      );
+                    })}
+                  </View>
+                </View>
               )}
-              <Input
-                label="Total score (valgfritt)"
-                inputStyle={{ width: '30%' }}
-                value={totalScore}
-                onChangeText={setTotalScore}
-                keyboardType="numeric"
-                containerStyle={styles.inputContainer}
-              />
+
+              {/* ── Bow & Arrows row ──────────────────────────────────────── */}
+              {(bowOptions.length > 0 || arrowSetOptions.length > 0) && (
+                <View style={styles.row}>
+                  {bowOptions.length > 0 && (
+                    <Select
+                      label="🏹 Bue"
+                      options={bowOptions}
+                      selectedValue={selectedBow}
+                      onValueChange={setSelectedBow}
+                      placeholder="Velg bue (valgfritt)"
+                      containerStyle={styles.field}
+                    />
+                  )}
+                  {arrowSetOptions.length > 0 && (
+                    <Select
+                      label="🎯 Piler"
+                      options={arrowSetOptions}
+                      selectedValue={selectedArrowSet}
+                      onValueChange={setSelectedArrowSet}
+                      placeholder="Velg piler (valgfritt)"
+                      containerStyle={styles.field}
+                    />
+                  )}
+                </View>
+              )}
+
+              {/* ── Rounds ────────────────────────────────────────────────── */}
+              <View style={styles.roundsSection}>
+                <Text style={styles.sectionTitle}>Runder</Text>
+
+                {rounds.map((round, index) => {
+                  const rangeMode = isRangeCategory(practiceCategory);
+                  return (
+                    <View key={index} style={styles.roundCard}>
+                      {/* Header */}
+                      <View style={styles.roundHeader}>
+                        <Text style={styles.roundNumber}>Runde {index + 1}</Text>
+                        {rounds.length > 1 && (
+                          <TouchableOpacity
+                            style={styles.removeRoundBtn}
+                            onPress={() => removeRound(index)}
+                            accessibilityLabel="Fjern runde">
+                            <FontAwesomeIcon icon={faXmark} size={16} color={colors.textSecondary} />
+                          </TouchableOpacity>
+                        )}
+                      </View>
+
+                      {/* Distance inputs */}
+                      <View style={styles.roundFields}>
+                        {rangeMode ? (
+                          <>
+                            <Input
+                              label="Fra (m)"
+                              value={round.distanceFrom !== undefined ? String(round.distanceFrom) : ''}
+                              onChangeText={(t) => updateRound(index, 'distanceFrom', parseNum(t))}
+                              keyboardType="numeric"
+                              containerStyle={styles.roundField}
+                            />
+                            <Input
+                              label="Til (m)"
+                              value={round.distanceTo !== undefined ? String(round.distanceTo) : ''}
+                              onChangeText={(t) => updateRound(index, 'distanceTo', parseNum(t))}
+                              keyboardType="numeric"
+                              containerStyle={styles.roundField}
+                            />
+                          </>
+                        ) : (
+                          <>
+                            <Input
+                              label="Avstand (m)"
+                              value={round.distanceMeters !== undefined ? String(round.distanceMeters) : ''}
+                              onChangeText={(t) => updateRound(index, 'distanceMeters', parseNum(t))}
+                              keyboardType="numeric"
+                              containerStyle={styles.roundField}
+                            />
+                            <Select
+                              label="Skive"
+                              options={TARGET_TYPE_OPTIONS}
+                              selectedValue={round.targetType}
+                              onValueChange={(v) => updateRound(index, 'targetType', v as string)}
+                              placeholder="Velg"
+                              searchable
+                              containerStyle={styles.roundField}
+                            />
+                          </>
+                        )}
+                      </View>
+
+                      {/* Score inputs */}
+                      <View style={styles.roundFields}>
+                        <Input
+                          label="Piler m/score"
+                          optional
+                          value={round.numberArrows !== undefined ? String(round.numberArrows) : ''}
+                          onChangeText={(t) => updateRound(index, 'numberArrows', parseNum(t))}
+                          keyboardType="numeric"
+                          containerStyle={styles.roundField}
+                        />
+                        <Input
+                          label="Score"
+                          optional
+                          value={round.roundScore !== 0 ? String(round.roundScore) : ''}
+                          onChangeText={(t) => updateRound(index, 'roundScore', parseNum(t) ?? 0)}
+                          keyboardType="numeric"
+                          containerStyle={styles.roundField}
+                        />
+                      </View>
+
+                      {/* Arrows without score */}
+                      <Input
+                        label="Piler u/score"
+                        optional
+                        value={round.arrowsWithoutScore !== undefined ? String(round.arrowsWithoutScore) : ''}
+                        onChangeText={(t) => updateRound(index, 'arrowsWithoutScore', parseNum(t))}
+                        keyboardType="numeric"
+                        containerStyle={{ width: '48%' }}
+                      />
+                    </View>
+                  );
+                })}
+
+                {/* Add round */}
+                <TouchableOpacity
+                  style={[styles.addRoundBtn, rounds.length >= 20 && { opacity: 0.4 }]}
+                  onPress={addRound}
+                  disabled={rounds.length >= 20}>
+                  <FontAwesomeIcon icon={faPlus} size={14} color={colors.primary} />
+                  <Text style={styles.addRoundBtnText}>Legg til runde</Text>
+                </TouchableOpacity>
+                {rounds.length >= 20 && <Text style={styles.limitMessage}>Maksimalt 20 runder er tillatt</Text>}
+              </View>
+
+              {/* ── Rating ────────────────────────────────────────────────── */}
+              <View style={styles.ratingSection}>
+                <Text style={styles.ratingLabel}>Vurdering (valgfritt)</Text>
+                <Text style={styles.ratingHelpText}>Hvordan vil du vurdere treningen?</Text>
+                <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+                  <View style={styles.ratingButtons}>
+                    {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((num) => {
+                      const active = rating === num;
+                      return (
+                        <Pressable
+                          key={num}
+                          style={[styles.ratingButton, active && styles.ratingButtonActive]}
+                          onPress={() => setRating(active ? null : num)}
+                          accessibilityLabel={`Vurdering ${num} av 10`}>
+                          <Text style={[styles.ratingButtonText, active && styles.ratingButtonTextActive]}>{num}</Text>
+                        </Pressable>
+                      );
+                    })}
+                  </View>
+                </ScrollView>
+              </View>
+
+              {/* ── Notes ─────────────────────────────────────────────────── */}
               <Textarea
                 label="Notater (valgfritt)"
                 value={notes}
                 onChangeText={setNotes}
-                placeholderText="Legg til notater om treningsøkten..."
+                placeholderText="Hvordan gikk treningen?&#10;&#10;Hva gikk bra? Hva kan forbedres?"
+                maxLength={500}
                 containerStyle={styles.inputContainer}
               />
-              {!isEditing && <Button label="Start skyting" onPress={handleStartShooting} buttonStyle={styles.startButton} />}
+
+              {error && <Text style={styles.error}>{error}</Text>}
             </View>
+
+            {/* ── Delete icon (edit mode) ────────────────────────────────── */}
             {isEditing && (
-              <TouchableOpacity testID="delete-practice-button" onPress={() => setConfirmVisible(true)}>
-                <FontAwesomeIcon
-                  icon={faTrashCan}
-                  style={{ padding: 8, marginBottom: 12, alignSelf: 'flex-end' }}
-                  color={'#FF0000'}
-                  size={20}
-                />
-              </TouchableOpacity>
+              <View style={styles.deleteRow}>
+                <TouchableOpacity style={styles.deleteBtn} onPress={() => setConfirmVisible(true)} testID="delete-practice-button">
+                  <FontAwesomeIcon icon={faTrashCan} size={20} color={colors.error} />
+                </TouchableOpacity>
+              </View>
             )}
+
+            {/* ── Footer buttons ─────────────────────────────────────────── */}
             <View style={styles.footer}>
-              <Button
-                label={isEditing ? 'Oppdater trening' : 'Lagre og avslutt'}
-                onPress={handleSaveAndFinish}
-                buttonStyle={styles.saveButton}
-              />
+              {isEditing ? (
+                <Button
+                  label={submitting ? 'Lagrer...' : 'Lagre endringer'}
+                  onPress={handleSaveAndFinish}
+                  disabled={submitting}
+                  loading={submitting}
+                />
+              ) : (
+                <>
+                  <View style={styles.actions}>
+                    <Button label="Start skyting" onPress={handleStartShooting} disabled={submitting} loading={submitting} type="outline" />
+                    <Button
+                      label={submitting ? 'Lagrer...' : 'Lagre trening'}
+                      onPress={handleSaveAndFinish}
+                      disabled={submitting}
+                      loading={submitting}
+                      buttonStyle={styles.saveButton}
+                    />
+                  </View>
+                </>
+              )}
             </View>
           </Pressable>
         </ScrollView>
       </KeyboardAvoidingView>
+
       <ConfirmModal
         visible={confirmVisible}
         title="Slett trening"
-        message={'Vil du slette treningen?'}
+        message="Vil du slette treningen?"
         confirmLabel="Slett"
         cancelLabel="Avbryt"
         onCancel={() => setConfirmVisible(false)}
         onConfirm={() => {
-          handleDeletePractice();
+          handleDelete();
           setConfirmVisible(false);
         }}
       />

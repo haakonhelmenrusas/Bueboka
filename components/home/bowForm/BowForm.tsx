@@ -27,7 +27,10 @@ const BowForm = ({ modalVisible, setModalVisible, bow, existingBows = [], onSucc
   const [submitting, setSubmitting] = useState(false);
   const [advancedOpen, setAdvancedOpen] = useState(false);
   const [sightMarkOpen, setSightMarkOpen] = useState(false);
-  const [{ name, nameError, type, eyeToNock, aimMeasure, eyeToSight, limbs, riser, handOrientation, drawWeight, bowLength, notes, isFavorite }, dispatch] = useBowForm();
+  const [
+    { name, nameError, type, eyeToNock, aimMeasure, eyeToSight, limbs, riser, handOrientation, drawWeight, bowLength, notes, isFavorite },
+    dispatch,
+  ] = useBowForm();
 
   // Ensure existingBows is always an array
   const bows = Array.isArray(existingBows) ? existingBows : [];
@@ -174,10 +177,7 @@ const BowForm = ({ modalVisible, setModalVisible, bow, existingBows = [], onSucc
       }}>
       <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={styles.modal}>
         <ModalHeader onPress={handleCloseModal} title={bow ? 'Rediger bue' : 'Ny bue'} />
-        <ScrollView
-          keyboardShouldPersistTaps="handled"
-          showsVerticalScrollIndicator={false}
-          contentContainerStyle={styles.scrollContent}>
+        <ScrollView keyboardShouldPersistTaps="handled" showsVerticalScrollIndicator={false} contentContainerStyle={styles.scrollContent}>
           <Pressable onPress={() => Keyboard.dismiss()}>
             <View style={styles.inputs}>
               <Input
