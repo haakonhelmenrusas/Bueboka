@@ -211,6 +211,7 @@ The app uses a repository pattern for data access, providing a clean abstraction
 ### Offline Support
 
 Bueboka includes robust offline functionality:
+
 - Automatic request queueing when offline
 - Background sync when connection is restored
 - Optimistic UI updates for better user experience
@@ -219,6 +220,7 @@ Bueboka includes robust offline functionality:
 ### Authentication Flow
 
 The app implements a comprehensive authentication system:
+
 - Email/password authentication
 - Social login (Google, Apple)
 - Email verification
@@ -281,6 +283,7 @@ npm run android --variant release
 ### Common Issues
 
 **iOS Build Errors:**
+
 ```bash
 # Clean iOS build
 cd ios && rm -rf build Pods Podfile.lock
@@ -289,6 +292,7 @@ cd ..
 ```
 
 **Android Build Errors:**
+
 ```bash
 # Clean Android build
 cd android
@@ -297,6 +301,7 @@ cd ..
 ```
 
 **Metro Bundler Cache:**
+
 ```bash
 # Clear cache
 expo start -c
@@ -305,6 +310,7 @@ npm start -- --reset-cache
 ```
 
 **Node Modules:**
+
 ```bash
 # Reinstall dependencies
 rm -rf node_modules package-lock.json
@@ -330,6 +336,7 @@ This project is licensed under the terms specified in [LICENSE](./LICENSE).
 ## Authors
 
 **Rusås Design**
+
 - Email: kontakt@rusåsdesign.no
 - Website: [rusasdesign.no](https://rusasdesign.no)
 

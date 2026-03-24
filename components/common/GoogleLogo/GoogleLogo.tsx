@@ -30,4 +30,3 @@ export const GoogleLogo: React.FC<GoogleLogoProps> = ({ size = 20 }) => (
     </G>
   </Svg>
 );
-

@@ -14,6 +14,7 @@ export interface CreateEndData {
   distanceFrom?: number;
   distanceTo?: number;
   targetSizeCm?: number;
+  targetType?: string;
   arrowsPerEnd?: number;
   arrowCoordinates?: { x: number; y: number }[];
 }

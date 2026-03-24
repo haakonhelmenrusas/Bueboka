@@ -47,4 +47,3 @@ export interface SessionResponse {
     expiresAt: string;
   };
 }
-

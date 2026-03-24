@@ -1,6 +1,20 @@
 import { AimDistanceMark } from '@/types';
 
 /**
+ * Target type options for archery practice rounds (value matches the string stored on the backend).
+ */
+export const TARGET_TYPE_OPTIONS: { label: string; value: string }[] = [
+  { label: '40 cm', value: '40cm' },
+  { label: '60 cm', value: '60cm' },
+  { label: '80 cm', value: '80cm' },
+  { label: '122 cm', value: '122cm' },
+  { label: '3D figur', value: '3d' },
+  { label: 'Felt 24 cm', value: '24cm_felt' },
+  { label: 'Felt 60 cm', value: '60cm_felt' },
+  { label: 'Annet', value: 'other' },
+];
+
+/**
  * Standard values for Ballistics calculations. These values are used to calculate the aim distance marks.
  * The user can change these values in the app.
  */

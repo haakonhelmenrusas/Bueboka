@@ -41,7 +41,7 @@ const Input = React.forwardRef<TextInput, InputProps>(
       editable = true,
       ...props
     },
-    ref
+    ref,
   ) => {
     const [isFocused, setIsFocused] = useState(false);
     const showError = Boolean(error);
@@ -94,7 +94,7 @@ const Input = React.forwardRef<TextInput, InputProps>(
         {showError && errorMessage ? <Text style={defaultStyles.errorMessage}>{errorMessage}</Text> : null}
       </View>
     );
-  }
+  },
 );
 
 Input.displayName = 'Input';

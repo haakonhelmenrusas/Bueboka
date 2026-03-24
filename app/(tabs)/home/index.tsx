@@ -14,6 +14,7 @@ import BowForm from '@/components/home/bowForm/BowForm';
 import ArrowForm from '@/components/home/arrowForm/ArrowForm';
 import BowDetails from '@/components/home/bowDetails/BowDetails';
 import ArrowSetDetails from '@/components/home/arrowSetDetails/ArrowSetDetails';
+import CreatePracticeForm from '@/components/practice/practiceForm/CreatePracticeForm';
 import { styles } from '@/components/home/HomeScreenStyles';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faChevronRight } from '@fortawesome/free-solid-svg-icons/faChevronRight';
@@ -33,6 +34,8 @@ export default function HomeScreen() {
   const [practices, setPractices] = useState<Practice[]>([]);
   const [bowModalVisible, setBowModalVisible] = useState(false);
   const [arrowModalVisible, setArrowModalVisible] = useState(false);
+  const [practiceModalVisible, setPracticeModalVisible] = useState(false);
+  const [editingPractice, setEditingPractice] = useState<Practice | null>(null);
   const [selectedBow, setSelectedBow] = useState<Bow | null>(null);
   const [selectedArrowSet, setSelectedArrowSet] = useState<Arrows | null>(null);
   const [selectedBowForDetails, setSelectedBowForDetails] = useState<Bow | null>(null);
@@ -118,7 +121,17 @@ export default function HomeScreen() {
               setSelectedArrowSet(null);
             }}
           />
-          <PracticesSection practices={practices} loading={false} onSelectPractice={(_id) => {}} />
+          <PracticesSection
+            practices={practices}
+            loading={false}
+            onSelectPractice={(id) => {
+              const found = practices.find((p) => p.id === id);
+              if (found) {
+                setEditingPractice(found);
+                setPracticeModalVisible(true);
+              }
+            }}
+          />
         </ScrollView>
       </LinearGradient>
       <BowForm
@@ -166,7 +179,10 @@ export default function HomeScreen() {
         />
       )}
       <MobileActionButton
-        onCreatePractice={() => {}}
+        onCreatePractice={() => {
+          setEditingPractice(null);
+          setPracticeModalVisible(true);
+        }}
         onCreateCompetition={() => {}}
         onCreateBow={() => {
           setSelectedBow(null);
@@ -178,6 +194,17 @@ export default function HomeScreen() {
           setSelectedArrowSetForDetails(null);
           setArrowModalVisible(true);
         }}
+      />
+      <CreatePracticeForm
+        visible={practiceModalVisible}
+        onClose={() => {
+          setPracticeModalVisible(false);
+          setEditingPractice(null);
+        }}
+        bows={bows}
+        arrowSets={arrows}
+        editingPractice={editingPractice}
+        onPracticeSaved={loadData}
       />
     </View>
   );

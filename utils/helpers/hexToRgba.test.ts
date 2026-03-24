@@ -29,4 +29,3 @@ describe('hexToRgba', () => {
     expect(hexToRgba('#FF0000', 1)).toBe('rgba(255, 0, 0, 1)');
   });
 });
-

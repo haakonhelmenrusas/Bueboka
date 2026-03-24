@@ -1,6 +1,7 @@
 # Bueboka – AI Agent Guide
 
 ## Overview
+
 React Native archery-tracking app built with **Expo SDK 55**, **Expo Router** (file-based navigation), and **TypeScript**. Targets iOS, Android, and Web from a single codebase.
 
 ## Architecture
@@ -24,18 +25,19 @@ styles/colors.ts  ← Single source of truth for all colors
 ```
 
 ## Path Alias
+
 `@/*` resolves to the project root (e.g., `@/services/repositories` → `./services/repositories`).
 
 ## Key Workflows
 
-| Task | Command |
-|------|---------|
-| Dev server | `npm start` |
-| iOS | `npm run ios` |
-| Android | `npm run android` |
-| Tests | `npm test` |
-| Lint | `npm run lint` |
-| Format | `npm run format` |
+| Task       | Command           |
+| ---------- | ----------------- |
+| Dev server | `npm start`       |
+| iOS        | `npm run ios`     |
+| Android    | `npm run android` |
+| Tests      | `npm test`        |
+| Lint       | `npm run lint`    |
+| Format     | `npm run format`  |
 
 Set `EXPO_PUBLIC_API_URL` (e.g., `http://192.168.x.x:3000/api`) to point at a local backend. Auth base URL is derived automatically as `$EXPO_PUBLIC_API_URL/auth`.
 
@@ -60,11 +62,7 @@ All API errors are routed through `handleApiError()` → `AppError` (code + mess
 Mutations that may fail offline use `offlineMutation()` from `services/offline/mutationHelper.ts`:
 
 ```ts
-await offlineMutation(
-  { type: 'bows/create', payload: data },
-  () => bowRepository.create(data),
-  userId,
-);
+await offlineMutation({ type: 'bows/create', payload: data }, () => bowRepository.create(data), userId);
 ```
 
 On `NETWORK_ERROR`, the operation is queued in `AsyncStorage` (`offline_queue:{userId}`). Handlers are registered with `syncManager.registerHandler('bows/create', fn)` in `services/offline/handlers.ts` and wired up via `registerOfflineHandlers()` called from `AuthContext`.
@@ -90,4 +88,3 @@ Sentry and Microsoft Clarity are initialized only when `NODE_ENV !== 'developmen
 ## Testing
 
 Jest + `jest-expo` preset. Setup file: `jestSetup.ts`. Mocks for native modules are handled by jest-expo. Run `npm test` for CI mode.
-

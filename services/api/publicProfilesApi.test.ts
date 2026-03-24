@@ -18,9 +18,7 @@ const envelope = (profiles: object[]) => ({
 
 describe('publicProfilesApi.search', () => {
   it('extracts profiles from the nested server envelope', async () => {
-    mockGet.mockResolvedValueOnce(
-      envelope([{ id: '1', name: 'Haakon Test', club: 'Sarpsborg Bueskyttere' }]),
-    );
+    mockGet.mockResolvedValueOnce(envelope([{ id: '1', name: 'Haakon Test', club: 'Sarpsborg Bueskyttere' }]));
     const result = await publicProfilesApi.search('haakon');
     expect(result).toHaveLength(1);
     expect(result[0]).toMatchObject({ id: '1', name: 'Haakon Test', club: 'Sarpsborg Bueskyttere' });
@@ -82,4 +80,3 @@ describe('publicProfilesApi.search', () => {
     await expect(publicProfilesApi.search('test')).rejects.toBeTruthy();
   });
 });
-

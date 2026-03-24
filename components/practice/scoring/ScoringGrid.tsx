@@ -31,11 +31,11 @@ export const ScoringGrid: React.FC<ScoringGridProps> = ({ hits, onAddHit }) => {
       isZoomed.value = true;
       touchX.value = event.x;
       touchY.value = event.y;
-      
+
       // Set initial translation immediately without animation to prevent jumping
       translateX.value = TARGET_SIZE / 2 - event.x;
       translateY.value = TARGET_SIZE / 2 - event.y;
-      
+
       // Then animate scale
       scale.value = withSpring(2.5, { damping: 15, stiffness: 150 });
     })
@@ -62,11 +62,7 @@ export const ScoringGrid: React.FC<ScoringGridProps> = ({ hits, onAddHit }) => {
     });
 
   const animatedStyle = useAnimatedStyle(() => ({
-    transform: [
-      { translateX: translateX.value },
-      { translateY: translateY.value },
-      { scale: scale.value },
-    ],
+    transform: [{ translateX: translateX.value }, { translateY: translateY.value }, { scale: scale.value }],
   }));
 
   const combinedGesture = Gesture.Exclusive(tap, pan);
@@ -89,18 +85,16 @@ export const ScoringGrid: React.FC<ScoringGridProps> = ({ hits, onAddHit }) => {
                 ]}
               />
             ))}
-            <Animated.View 
+            <Animated.View
               style={[
                 styles.previewHit,
                 useAnimatedStyle(() => ({
                   opacity: isZoomed.value ? 1 : 0,
                   left: touchX.value - 5,
                   top: touchY.value - 5,
-                  transform: [
-                    { scale: 1.5 }
-                  ]
-                }))
-              ]} 
+                  transform: [{ scale: 1.5 }],
+                })),
+              ]}
             />
           </Animated.View>
         </GestureDetector>
