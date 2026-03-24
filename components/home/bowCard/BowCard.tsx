@@ -51,11 +51,15 @@ export default function BowCard({ bow, onPress }: Props) {
           <FontAwesomeIcon icon={faStar} size={16} color={colors.warning} />
         </View>
       )}
-      <View style={styles.image}>
-        <BowIcon />
+      <View style={styles.iconWrap}>
+        <BowIcon width={32} height={32} />
       </View>
-      <Text style={styles.name}>{bow.name}</Text>
-      <Text style={styles.type}>{capitalizeFirstLetter(bow.type)}</Text>
+      <View style={styles.textWrap}>
+        <Text style={styles.name} numberOfLines={1}>
+          {bow.name}
+        </Text>
+        <Text style={styles.type}>{capitalizeFirstLetter(bow.type)}</Text>
+      </View>
     </TouchableOpacity>
   );
 }

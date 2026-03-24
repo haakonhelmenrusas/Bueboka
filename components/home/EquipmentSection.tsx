@@ -1,9 +1,10 @@
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
-import { faStar as faStarSolid } from '@fortawesome/free-solid-svg-icons/faStar';
 import { Bow, Arrows } from '@/types';
 import { colors } from '@/styles/colors';
+import BowCard from '@/components/home/bowCard/BowCard';
+import ArrowCard from '@/components/home/arrowCard/ArrowCard';
 
 interface Props {
   bows: Bow[];
@@ -32,13 +33,7 @@ export function EquipmentSection({ bows, arrows, onCreateBow, onCreateArrows, on
         ) : (
           <View style={styles.list}>
             {bows.slice(0, 3).map((bow) => (
-              <TouchableOpacity key={bow.id} style={styles.item} onPress={() => onSelectBow?.(bow)}>
-                <View style={styles.itemContent}>
-                  <Text style={styles.itemName}>{bow.name}</Text>
-                  <Text style={styles.itemMeta}>{bow.type}</Text>
-                </View>
-                {bow.isFavorite && <FontAwesomeIcon icon={faStarSolid} size={16} color="#FFA500" />}
-              </TouchableOpacity>
+              <BowCard key={bow.id} bow={bow} onPress={() => onSelectBow?.(bow)} />
             ))}
           </View>
         )}
@@ -59,13 +54,7 @@ export function EquipmentSection({ bows, arrows, onCreateBow, onCreateArrows, on
         ) : (
           <View style={styles.list}>
             {arrows.slice(0, 3).map((arrow) => (
-              <TouchableOpacity key={arrow.id} style={styles.item} onPress={() => onSelectArrows?.(arrow)}>
-                <View style={styles.itemContent}>
-                  <Text style={styles.itemName}>{arrow.name}</Text>
-                  <Text style={styles.itemMeta}>{arrow.material}</Text>
-                </View>
-                {arrow.isFavorite && <FontAwesomeIcon icon={faStarSolid} size={16} color="#FFA500" />}
-              </TouchableOpacity>
+              <ArrowCard key={arrow.id} arrowSet={arrow} onPress={() => onSelectArrows?.(arrow)} />
             ))}
           </View>
         )}
@@ -110,30 +99,6 @@ const styles = StyleSheet.create({
   },
   list: {
     gap: 8,
-  },
-  item: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    backgroundColor: 'rgba(12, 130, 172, 0.06)',
-    padding: 16,
-    borderRadius: 12,
-    borderWidth: 1,
-    borderColor: 'rgba(12, 130, 172, 0.14)',
-  },
-  itemContent: {
-    flex: 1,
-    gap: 4,
-  },
-  itemName: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: colors.text,
-  },
-  itemMeta: {
-    fontSize: 14,
-    fontWeight: '500',
-    color: colors.textSecondary,
   },
   placeholder: {
     backgroundColor: 'rgba(12, 130, 172, 0.05)',

@@ -34,11 +34,17 @@ export default function ArrowCard({ arrowSet, onPress }: Props) {
           <FontAwesomeIcon icon={faStar} size={16} color={colors.warning} />
         </View>
       )}
-      <View style={styles.image}>
-        <ArrowIcon />
+      <View style={styles.iconWrap}>
+        <ArrowIcon width={24} height={24} />
       </View>
-      <Text style={styles.name}>{arrowSet.name}</Text>
-      <Text style={styles.type}>{arrowSet.material}</Text>
+      <View style={styles.textWrap}>
+        <Text style={styles.name} numberOfLines={1}>
+          {arrowSet.name}
+        </Text>
+        <Text style={styles.type} numberOfLines={1}>
+          {arrowSet.material}
+        </Text>
+      </View>
     </TouchableOpacity>
   );
 }

@@ -1,37 +1,41 @@
-import { Dimensions, StyleSheet } from 'react-native';
+import { StyleSheet } from 'react-native';
 import { colors } from '@/styles/colors';
-
-const windowWidth = Dimensions.get('window').width;
-const cardWidth = (windowWidth - 48) / 2;
 
 export const styles = StyleSheet.create({
   container: {
-    width: cardWidth,
     backgroundColor: colors.white,
     borderRadius: 12,
     padding: 16,
+    flexDirection: 'row',
     alignItems: 'center',
+    gap: 12,
     shadowColor: colors.dark_primary,
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
+    shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.2,
     shadowRadius: 3,
     elevation: 3,
     position: 'relative',
   },
-  image: {
-    height: 80,
-    marginBottom: 4,
+  iconWrap: {
+    width: 40,
+    height: 40,
+    borderRadius: 8,
+    backgroundColor: colors.tertiary,
+    alignItems: 'center',
+    justifyContent: 'center',
+    flexShrink: 0,
+  },
+  textWrap: {
+    flex: 1,
+    gap: 2,
   },
   name: {
-    fontSize: 16,
+    fontSize: 15,
     fontWeight: '600',
-    marginBottom: 4,
+    color: colors.text,
   },
   type: {
-    fontSize: 14,
+    fontSize: 13,
     color: colors.secondary,
   },
   starContainer: {
