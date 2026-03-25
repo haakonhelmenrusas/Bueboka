@@ -1,12 +1,12 @@
 import React, { FC, useEffect, useRef, useState } from 'react';
-import { Keyboard, KeyboardAvoidingView, Platform, TextInput, View } from 'react-native';
+import { Keyboard, Platform, TextInput, View } from 'react-native';
 import { Button, Input, Notch } from '@/components/common';
 import { MarkValue } from '@/types';
 import { faRulerHorizontal } from '@fortawesome/free-solid-svg-icons/faRulerHorizontal';
 import { faCrosshairs } from '@fortawesome/free-solid-svg-icons/faCrosshairs';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { styles } from './MarksFormStyles';
-import Animated, { runOnJS, SharedValue, useAnimatedStyle, withSpring, withTiming } from 'react-native-reanimated';
+import Animated, { runOnJS, SharedValue, useAnimatedStyle, useSharedValue, withSpring, withTiming } from 'react-native-reanimated';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 import { colors } from '@/styles/colors';
 import { checkDecimalCount } from '@/utils';
@@ -22,12 +22,14 @@ const MarksForm: FC<MarksFormProps> = ({ sendMarks, status, setIsFormVisible, tr
   const [aimValue, setAimValue] = useState('');
   const [distanceValue, setDistance] = useState('');
   const distanceInputRef = useRef<TextInput>(null);
+  const keyboardHeight = useSharedValue(0);
 
   const animatedStyle = useAnimatedStyle(() => ({
-    transform: [{ translateY: translateY.value }],
+    transform: [{ translateY: translateY.value - keyboardHeight.value }],
   }));
 
   const closeForm = () => {
+    Keyboard.dismiss();
     translateY.value = withTiming(300, { duration: 200 }, () => {
       runOnJS(setIsFormVisible)(false);
     });
@@ -47,6 +49,35 @@ const MarksForm: FC<MarksFormProps> = ({ sendMarks, status, setIsFormVisible, tr
       }
     });
 
+  useEffect(() => {
+    const showEvent = Platform.OS === 'ios' ? 'keyboardWillShow' : 'keyboardDidShow';
+    const hideEvent = Platform.OS === 'ios' ? 'keyboardWillHide' : 'keyboardDidHide';
+
+    const showSub = Keyboard.addListener(showEvent, (e) => {
+      keyboardHeight.value = withTiming(e.endCoordinates.height, {
+        duration: Platform.OS === 'ios' ? (e.duration ?? 250) : 200,
+      });
+    });
+
+    const hideSub = Keyboard.addListener(hideEvent, (e) => {
+      keyboardHeight.value = withTiming(0, {
+        duration: Platform.OS === 'ios' ? (e.duration ?? 250) : 200,
+      });
+    });
+
+    return () => {
+      showSub.remove();
+      hideSub.remove();
+    };
+  }, [keyboardHeight]);
+
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      distanceInputRef.current?.focus();
+    }, 280);
+    return () => clearTimeout(timeout);
+  }, []);
+
   async function handleAddMark() {
     if (aimValue && distanceValue) {
       const newEntry: MarkValue = { aim: parseFloat(aimValue), distance: parseFloat(distanceValue) };
@@ -61,10 +92,7 @@ const MarksForm: FC<MarksFormProps> = ({ sendMarks, status, setIsFormVisible, tr
   function handleDistanceChange(value: string) {
     const cleanValue = value.replace(/[^0-9.]/g, '');
     const parsedValue = parseFloat(cleanValue);
-
-    if (!checkDecimalCount(cleanValue, 3)) {
-      return;
-    }
+    if (!checkDecimalCount(cleanValue, 3)) return;
     if (!isNaN(parsedValue)) {
       setDistance(value.replace(',', '.'));
     } else {
@@ -75,10 +103,7 @@ const MarksForm: FC<MarksFormProps> = ({ sendMarks, status, setIsFormVisible, tr
   function handleAimChange(value: string) {
     const cleanValue = value.replace(/[^0-9.]/g, '');
     const parsedValue = parseFloat(cleanValue);
-
-    if (!checkDecimalCount(cleanValue, 3)) {
-      return;
-    }
+    if (!checkDecimalCount(cleanValue, 3)) return;
     if (!isNaN(parsedValue)) {
       setAimValue(value.replace(',', '.'));
     } else {
@@ -86,21 +111,8 @@ const MarksForm: FC<MarksFormProps> = ({ sendMarks, status, setIsFormVisible, tr
     }
   }
 
-  useEffect(() => {
-    const timeout = setTimeout(() => {
-      if (distanceInputRef.current) {
-        distanceInputRef.current?.focus();
-      }
-    }, 280);
-
-    return () => clearTimeout(timeout);
-  }, []);
-
   return (
-    <KeyboardAvoidingView
-      style={styles.container}
-      keyboardVerticalOffset={Platform.OS === 'ios' ? 300 : undefined}
-      behavior={Platform.OS === 'ios' ? 'position' : 'height'}>
+    <View>
       <GestureDetector gesture={gesture}>
         <Animated.View style={[styles.form, animatedStyle]}>
           <Notch />
@@ -109,24 +121,22 @@ const MarksForm: FC<MarksFormProps> = ({ sendMarks, status, setIsFormVisible, tr
               textAlign="center"
               labelStyle={{ justifyContent: 'center' }}
               label="Avstand"
-              placeholderText="F.eks. 20"
               keyboardType="numeric"
               value={distanceValue}
               onChangeText={(value) => handleDistanceChange(value)}
               icon={<FontAwesomeIcon icon={faRulerHorizontal} color={colors.secondary} />}
-              inputStyle={{ width: 160 }}
+              containerStyle={{ flex: 1 }}
               ref={distanceInputRef}
             />
             <Input
               textAlign="center"
               labelStyle={{ justifyContent: 'center' }}
               label="Merke"
-              placeholderText="F.eks. 2.3"
               keyboardType="numeric"
               value={aimValue}
               onChangeText={(value) => handleAimChange(value)}
               icon={<FontAwesomeIcon icon={faCrosshairs} color={colors.secondary} />}
-              inputStyle={{ width: 160 }}
+              containerStyle={{ flex: 1 }}
             />
           </View>
           <Button
@@ -138,7 +148,7 @@ const MarksForm: FC<MarksFormProps> = ({ sendMarks, status, setIsFormVisible, tr
           />
         </Animated.View>
       </GestureDetector>
-    </KeyboardAvoidingView>
+    </View>
   );
 };
 

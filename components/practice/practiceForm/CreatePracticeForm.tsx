@@ -356,7 +356,7 @@ export default function CreatePracticeForm({
   // ─── Render ───────────────────────────────────────────────────────────────
   return (
     <ModalWrapper visible={visible} onClose={handleClose}>
-      <KeyboardAvoidingView style={styles.container} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
+      <KeyboardAvoidingView style={styles.container} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
         <ScrollView contentContainerStyle={styles.scrollContainer} keyboardShouldPersistTaps="handled" showsVerticalScrollIndicator={false}>
           <Pressable onPress={() => Keyboard.dismiss()}>
             <ModalHeader title={isEditing ? 'Rediger trening' : 'Ny trening'} onPress={handleClose} />

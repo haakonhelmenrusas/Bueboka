@@ -265,7 +265,7 @@ export default function CalculateScreen() {
           {renderContent()}
         </Pressable>
       </View>
-      <View style={{ flex: 1, justifyContent: 'flex-end' }}>
+      <View>
         {!isFormVisible ? (
           <Button
             icon={<FontAwesomeIcon icon={faPlus} color={colors.tertiary} />}
