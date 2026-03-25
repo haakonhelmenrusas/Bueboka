@@ -16,11 +16,19 @@ export const styles = StyleSheet.create({
   header: {
     marginBottom: 8,
   },
+  headerRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+  },
+  headerInfo: {
+    flex: 1,
+  },
   greeting: {
-    fontSize: 24,
+    fontSize: 22,
     fontWeight: '800',
     color: colors.white,
-    marginBottom: 4,
+    marginBottom: 2,
   },
   club: {
     fontSize: 16,

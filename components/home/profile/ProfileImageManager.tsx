@@ -12,9 +12,12 @@ interface Props {
   avatarUrl?: string;
   onUpload: (uri: string) => Promise<void>;
   onRemove: () => Promise<void>;
+  size?: number;
 }
 
-export default function ProfileImageManager({ userName, avatarUrl, onUpload, onRemove }: Props) {
+export default function ProfileImageManager({ userName, avatarUrl, onUpload, onRemove, size }: Props) {
+  const avatarSize = size ?? 72;
+  const fontSize = size ? Math.round(size * 0.44) : 32;
   const [isUploading, setIsUploading] = useState(false);
   const [isRemoving, setIsRemoving] = useState(false);
   const [showMenu, setShowMenu] = useState(false);
@@ -105,11 +108,15 @@ export default function ProfileImageManager({ userName, avatarUrl, onUpload, onR
 
   return (
     <View style={styles.container}>
-      <TouchableOpacity style={styles.avatar} onPress={() => setShowMenu(true)} disabled={isUploading || isRemoving} activeOpacity={0.7}>
+      <TouchableOpacity
+        style={[styles.avatar, { width: avatarSize, height: avatarSize, borderRadius: avatarSize / 2 }]}
+        onPress={() => setShowMenu(true)}
+        disabled={isUploading || isRemoving}
+        activeOpacity={0.7}>
         {avatarUrl ? (
-          <Image source={{ uri: avatarUrl }} style={styles.avatarImage} />
+          <Image source={{ uri: avatarUrl }} style={[styles.avatarImage, { width: avatarSize, height: avatarSize }]} />
         ) : (
-          <Text style={styles.avatarInitial}>{userName?.charAt(0).toUpperCase() || '?'}</Text>
+          <Text style={[styles.avatarInitial, { fontSize }]}>{userName?.charAt(0).toUpperCase() || '?'}</Text>
         )}
       </TouchableOpacity>
 

@@ -1,5 +1,5 @@
 import { useState, useCallback } from 'react';
-import { View, Text, ScrollView, RefreshControl } from 'react-native';
+import { Alert, View, Text, ScrollView, RefreshControl } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter, useFocusEffect } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -8,7 +8,7 @@ import { useAuth } from '@/hooks';
 import { Message, Button, MobileActionButton } from '@/components/common';
 import { colors } from '@/styles/colors';
 import { statsApi, StatsResponse } from '@/services/api/statsApi';
-import { arrowsRepository, bowRepository, practiceRepository } from '@/services/repositories';
+import { arrowsRepository, bowRepository, practiceRepository, userRepository } from '@/services/repositories';
 import { Bow, Arrows, Practice } from '@/types';
 import BowForm from '@/components/home/bowForm/BowForm';
 import ArrowForm from '@/components/home/arrowForm/ArrowForm';
@@ -18,9 +18,11 @@ import CreatePracticeForm from '@/components/practice/practiceForm/CreatePractic
 import { styles } from '@/components/home/HomeScreenStyles';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faChevronRight } from '@fortawesome/free-solid-svg-icons/faChevronRight';
+import ProfileImageManager from '@/components/home/profile/ProfileImageManager';
+import { AppError } from '@/services';
 
 export default function HomeScreen() {
-  const { user } = useAuth();
+  const { user, refreshUser } = useAuth();
   const router = useRouter();
   const insets = useSafeAreaInsets();
   const [refreshing, setRefreshing] = useState(false);
@@ -81,6 +83,26 @@ export default function HomeScreen() {
     await loadData();
   };
 
+  async function handleAvatarUpload(uri: string) {
+    try {
+      await userRepository.updateAvatar(uri);
+      await refreshUser();
+    } catch (err) {
+      const message = err instanceof AppError ? err.message : 'Kunne ikke laste opp bilde. Prøv igjen.';
+      Alert.alert('Feil', message);
+    }
+  }
+
+  async function handleAvatarRemove() {
+    try {
+      await userRepository.removeAvatar();
+      await refreshUser();
+    } catch (err) {
+      const message = err instanceof AppError ? err.message : 'Kunne ikke fjerne bilde. Prøv igjen.';
+      Alert.alert('Feil', message);
+    }
+  }
+
   if (!user) {
     return (
       <View style={styles.container}>
@@ -97,8 +119,19 @@ export default function HomeScreen() {
           contentContainerStyle={[styles.scrollContent, { paddingTop: insets.top + 20 }]}
           refreshControl={<RefreshControl refreshing={refreshing} onRefresh={handleRefresh} tintColor="#FFFFFF" />}>
           <View style={styles.header}>
-            <Text style={styles.greeting}>Hei, {user.name?.split(' ')[0] || 'Skytter'}!</Text>
-            {user.club && <Text style={styles.club}>{user.club}</Text>}
+            <View style={styles.headerRow}>
+              <ProfileImageManager
+                userName={user.name || user.email}
+                avatarUrl={user.image || undefined}
+                onUpload={handleAvatarUpload}
+                onRemove={handleAvatarRemove}
+                size={48}
+              />
+              <View style={styles.headerInfo}>
+                <Text style={styles.greeting}>{user.name?.split(' ')[0] || 'Skytter'}</Text>
+                {user.club && <Text style={styles.club}>{user.club}</Text>}
+              </View>
+            </View>
           </View>
           <StatsSummary last7Days={stats.last7Days} last30Days={stats.last30Days} overall={stats.overall} />
           <Button

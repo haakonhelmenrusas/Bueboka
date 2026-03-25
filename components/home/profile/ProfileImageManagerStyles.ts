@@ -4,13 +4,14 @@ import { colors } from '@/styles/colors';
 export const styles = StyleSheet.create({
   container: {
     alignItems: 'center',
-    marginRight: 16,
   },
   avatar: {
     width: 72,
     height: 72,
     borderRadius: 36,
     backgroundColor: colors.secondary,
+    borderColor: colors.secondary,
+    borderWidth: 1,
     justifyContent: 'center',
     alignItems: 'center',
     overflow: 'hidden',

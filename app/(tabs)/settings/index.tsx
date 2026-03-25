@@ -17,7 +17,6 @@ import { colors } from '@/styles/colors';
 import { useAuth } from '@/hooks';
 import { useEffect, useState } from 'react';
 import EmailVerificationBanner from '@/components/auth/EmailVerificationBanner';
-import ProfileBox from '@/components/home/profile/ProfileBox';
 import ProfileForm from '@/components/home/profileForm/ProfileForm';
 import ConfirmModal from '@/components/home/DeleteArrowSetModal/ConfirmModal';
 import { userRepository } from '@/services/repositories';
@@ -101,26 +100,6 @@ export default function Settings() {
     }
   }
 
-  async function handleAvatarUpload(uri: string) {
-    try {
-      await userRepository.updateAvatar(uri);
-      await refreshUser();
-    } catch (err) {
-      const message = err instanceof AppError ? err.message : 'Kunne ikke laste opp bilde. Prøv igjen.';
-      Alert.alert('Feil', message);
-    }
-  }
-
-  async function handleAvatarRemove() {
-    try {
-      await userRepository.removeAvatar();
-      await refreshUser();
-    } catch (err) {
-      const message = err instanceof AppError ? err.message : 'Kunne ikke fjerne bilde. Prøv igjen.';
-      Alert.alert('Feil', message);
-    }
-  }
-
   async function handleLogout() {
     setIsLoggingOut(true);
     try {
@@ -153,15 +132,6 @@ export default function Settings() {
         </View>
         <ScrollView contentContainerStyle={styles.contentContainer} showsVerticalScrollIndicator={false}>
           <Text style={styles.title}>Innstillinger</Text>
-          {user && (
-            <ProfileBox
-              user={user}
-              avatarUrl={user.image || undefined}
-              onEdit={() => setIsProfileModalVisible(true)}
-              onAvatarUpload={handleAvatarUpload}
-              onAvatarRemove={handleAvatarRemove}
-            />
-          )}
           {user && (
             <View style={styles.section}>
               <Text style={styles.sectionTitle}>Konto</Text>
