@@ -173,6 +173,41 @@ export const styles = StyleSheet.create({
     textDecorationLine: 'underline',
   },
 
+  // ── Sponsor ────────────────────────────────────────────────────────────────
+  sponsorCard: {
+    backgroundColor: colors.white,
+    borderRadius: 16,
+    paddingVertical: 14,
+    paddingHorizontal: 16,
+    borderWidth: 1,
+    borderColor: 'rgba(0,0,0,0.06)',
+    alignItems: 'center',
+    gap: 8,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.06,
+    shadowRadius: 6,
+    elevation: 2,
+  },
+  sponsorLabel: {
+    fontSize: 14,
+    fontWeight: '700',
+    color: colors.inactive,
+    textTransform: 'uppercase',
+    letterSpacing: 0.8,
+  },
+  sponsorLogo: {
+    height: 64,
+    width: 200,
+  },
+  sponsorLink: {
+    display: 'flex',
+    alignItems: 'center',
+    fontSize: 16,
+    fontWeight: '500',
+    color: colors.primaryDark,
+    textDecorationLine: 'underline',
+  },
   // ── Logout ─────────────────────────────────────────────────────────────────
   logoutButton: {
     minHeight: 52,

@@ -1,4 +1,5 @@
-import { Alert, Linking, ScrollView, Text, View } from 'react-native';
+import { Alert, Linking, ScrollView, Text, TouchableOpacity, View } from 'react-native';
+import { Image } from 'expo-image';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { styles } from '@/components/settings/SettingsStyles';
@@ -21,6 +22,7 @@ import ProfileForm from '@/components/home/profileForm/ProfileForm';
 import ConfirmModal from '@/components/home/DeleteArrowSetModal/ConfirmModal';
 import { userRepository } from '@/services/repositories';
 import { AppError } from '@/services';
+import { faExternalLink } from '@fortawesome/free-solid-svg-icons';
 
 type FeedbackMsg = { type: 'success' | 'error'; text: string } | null;
 
@@ -151,8 +153,6 @@ export default function Settings() {
         </View>
         <ScrollView contentContainerStyle={styles.contentContainer} showsVerticalScrollIndicator={false}>
           <Text style={styles.title}>Innstillinger</Text>
-
-          {/* ── Profile avatar box ──────────────────────────────────────── */}
           {user && (
             <ProfileBox
               user={user}
@@ -162,8 +162,6 @@ export default function Settings() {
               onAvatarRemove={handleAvatarRemove}
             />
           )}
-
-          {/* ── Konto ───────────────────────────────────────────────────── */}
           {user && (
             <View style={styles.section}>
               <Text style={styles.sectionTitle}>Konto</Text>
@@ -200,8 +198,6 @@ export default function Settings() {
               </View>
             </View>
           )}
-
-          {/* ── Offentlig profil ────────────────────────────────────────── */}
           <View style={styles.section}>
             <View style={styles.sectionTitleRow}>
               <FontAwesomeIcon icon={faGlobe} size={18} color={colors.white} />
@@ -257,8 +253,6 @@ export default function Settings() {
               )}
             </View>
           </View>
-
-          {/* ── Personvern ──────────────────────────────────────────────── */}
           <View style={styles.section}>
             <Text style={styles.sectionTitle}>Personvern og datasikkerhet</Text>
             <View style={styles.sectionCard}>
@@ -323,8 +317,23 @@ export default function Settings() {
               </Text>
             </View>
           </View>
-
-          {/* ── Logg ut ─────────────────────────────────────────────────── */}
+          <View style={styles.sponsorCard}>
+            <Text style={styles.sponsorLabel}>Sponset av</Text>
+            <Image
+              style={styles.sponsorLogo}
+              contentFit="contain"
+              source={require('../../../assets/images/arcticBueLogo.png')}
+              transition={200}
+              accessibilityLabel="Arctic Buesport AS"
+            />
+            <TouchableOpacity activeOpacity={0.75} onPress={() => Linking.openURL('https://arcticbuesport.no')}>
+              <View style={styles.sponsorLink}>
+                <Text>
+                  Besøk nettsiden <FontAwesomeIcon icon={faExternalLink} size={14} color={colors.primary} />
+                </Text>
+              </View>
+            </TouchableOpacity>
+          </View>
           <Button
             variant="tertiary"
             label={isLoggingOut ? 'Logger ut...' : 'Logg ut'}
@@ -336,8 +345,6 @@ export default function Settings() {
             icon={<FontAwesomeIcon icon={faRightFromBracket} size={16} color={colors.primary} />}
             onPress={handleLogout}
           />
-
-          {/* ── Danger zone ─────────────────────────────────────────────── */}
           <View style={styles.dangerCard}>
             <Text style={styles.dangerHeading}>Slett konto</Text>
             <Text style={styles.dangerDescription}>

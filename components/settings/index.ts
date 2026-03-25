@@ -1,1 +1,1 @@
-export { default as AboutContent } from '../about/AboutContent';
+// Settings barrel – add exports here as needed
