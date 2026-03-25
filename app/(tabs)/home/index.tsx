@@ -1,5 +1,5 @@
 import { useState, useCallback } from 'react';
-import { Alert, View, Text, ScrollView, RefreshControl } from 'react-native';
+import { Alert, View, Text, ScrollView, RefreshControl, TouchableOpacity } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter, useFocusEffect } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -18,6 +18,7 @@ import CreatePracticeForm from '@/components/practice/practiceForm/CreatePractic
 import { styles } from '@/components/home/HomeScreenStyles';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faChevronRight } from '@fortawesome/free-solid-svg-icons/faChevronRight';
+import { faTrophy } from '@fortawesome/free-solid-svg-icons/faTrophy';
 import ProfileImageManager from '@/components/home/profile/ProfileImageManager';
 import { AppError } from '@/services';
 
@@ -131,6 +132,13 @@ export default function HomeScreen() {
                 <Text style={styles.greeting}>{user.name?.split(' ')[0] || 'Skytter'}</Text>
                 {user.club && <Text style={styles.club}>{user.club}</Text>}
               </View>
+              <TouchableOpacity
+                style={styles.trophyButton}
+                onPress={() => router.push('/(tabs)/home/achievements')}
+                accessibilityLabel="Mine prestasjoner"
+              >
+                <FontAwesomeIcon icon={faTrophy} size={20} color={colors.warning} />
+              </TouchableOpacity>
             </View>
           </View>
           <StatsSummary last7Days={stats.last7Days} last30Days={stats.last30Days} overall={stats.overall} />

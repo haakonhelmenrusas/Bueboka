@@ -5,3 +5,4 @@ export * from './arrowsRepository';
 export * from './practiceRepository';
 export * from './roundTypeRepository';
 export * from './sightMarksRepository';
+export * from './achievementRepository';

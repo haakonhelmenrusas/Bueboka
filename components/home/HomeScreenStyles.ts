@@ -46,4 +46,12 @@ export const styles = StyleSheet.create({
     fontWeight: '900',
     color: colors.white,
   },
+  trophyButton: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: 'rgba(255, 255, 255, 0.15)',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
 });

@@ -18,3 +18,16 @@ export type {
   MarksResult,
 } from './SightMarks';
 export type { Series, SeriesData } from './Statistics';
+export type {
+  Achievement,
+  AchievementCategory,
+  AchievementRarity,
+  AchievementTier,
+  AchievementProgress,
+  AchievementData,
+  AchievementSummary,
+  AchievementRequirement,
+  FilterStatus,
+  FilterCategory,
+  FilterRarity,
+} from './Achievement';
