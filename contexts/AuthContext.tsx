@@ -5,6 +5,7 @@ import { getAccessToken, saveTokens } from '@/services/auth/tokenStorage';
 import { registerOfflineHandlers } from '@/services/offline/handlers';
 import * as Sentry from '@sentry/react-native';
 import { authClient } from '@/services/auth/authClient';
+import { authStorage } from '@/services/auth/authStorage';
 import * as Linking from 'expo-linking';
 import * as WebBrowser from 'expo-web-browser';
 import * as SecureStore from 'expo-secure-store';
@@ -296,6 +297,9 @@ export function AuthProvider({ children }: AuthProviderProps) {
    * Initialize authentication state from stored token
    */
   async function initializeAuth() {
+    // Warm the sync cookie cache before any API calls fire so that
+    // expoClient can attach the session cookie to the very first request.
+    await authStorage.initialize();
     try {
       const token = await getAccessToken();
 
