@@ -29,6 +29,11 @@ export interface SightMark {
   ballisticsParameters: any;
   createdAt: string;
   updatedAt: string;
+  /** Populated by the API when the relation is included */
+  bowSpec?: {
+    id: string;
+    bow?: { id: string; name: string };
+  };
 }
 
 export interface SightMarkResult {
@@ -73,11 +78,12 @@ export interface CalculatedMarks {
 export interface SightMarkCalc {
   ballistics_pars: number[];
   distances_def: number[];
+  distances?: number[];
   angles: number[];
 }
 
 export interface MarksResult {
   distances: number[];
-  sight_marks_by_hill_angle: number[];
-  arrow_speed_by_angle: number[];
+  sight_marks_by_hill_angle: Record<string, number[]>;
+  arrow_speed_by_angle: Record<string, number[]>;
 }

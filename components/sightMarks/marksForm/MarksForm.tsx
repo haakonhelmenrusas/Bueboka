@@ -16,11 +16,14 @@ interface MarksFormProps {
   sendMarks: (newMark: MarkValue) => Promise<void>;
   setIsFormVisible: (visible: boolean) => void;
   translateY: SharedValue<number>;
+  /** When true, shows a name input for the new sight mark set. */
+  isNewSet?: boolean;
 }
 
-const MarksForm: FC<MarksFormProps> = ({ sendMarks, status, setIsFormVisible, translateY }) => {
+const MarksForm: FC<MarksFormProps> = ({ sendMarks, status, setIsFormVisible, translateY, isNewSet = false }) => {
   const [aimValue, setAimValue] = useState('');
   const [distanceValue, setDistance] = useState('');
+  const [nameValue, setNameValue] = useState('');
   const distanceInputRef = useRef<TextInput>(null);
   const keyboardHeight = useSharedValue(0);
 
@@ -80,10 +83,11 @@ const MarksForm: FC<MarksFormProps> = ({ sendMarks, status, setIsFormVisible, tr
 
   async function handleAddMark() {
     if (aimValue && distanceValue) {
-      const newEntry: MarkValue = { aim: parseFloat(aimValue), distance: parseFloat(distanceValue) };
+      const newEntry: MarkValue = { aim: parseFloat(aimValue), distance: parseFloat(distanceValue), name: nameValue || undefined };
       await sendMarks(newEntry);
       setAimValue('');
       setDistance('');
+      setNameValue('');
       Keyboard.dismiss();
       setIsFormVisible(false);
     }
@@ -116,6 +120,15 @@ const MarksForm: FC<MarksFormProps> = ({ sendMarks, status, setIsFormVisible, tr
       <GestureDetector gesture={gesture}>
         <Animated.View style={[styles.form, animatedStyle]}>
           <Notch />
+          {isNewSet && (
+            <Input
+              label="Navn på innskyting (valgfritt)"
+              value={nameValue}
+              onChangeText={setNameValue}
+              containerStyle={{ marginBottom: 8 }}
+              placeholder="F.eks. Utendørs 2025"
+            />
+          )}
           <View style={styles.inputs}>
             <Input
               textAlign="center"

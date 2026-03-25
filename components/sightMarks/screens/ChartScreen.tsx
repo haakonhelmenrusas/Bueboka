@@ -1,4 +1,4 @@
-import { ScrollView, StyleSheet, Text, View } from 'react-native';
+import { ScrollView, StyleSheet, View } from 'react-native';
 import { LineChart } from 'react-native-gifted-charts';
 import { CalculatedMarks, MarksResult } from '@/types';
 import { Message } from '@/components/common';
@@ -10,76 +10,39 @@ interface ChartScreenProps {
   setModalVisible: (visible: boolean) => void;
 }
 
-export default function ChartScreen({ calculatedMarks, marks, setModalVisible }: ChartScreenProps) {
-  const customDataPoint = () => {
-    return (
-      <View
-        style={{
-          width: 12,
-          height: 12,
-          backgroundColor: colors.white,
-          borderWidth: 3,
-          borderRadius: 6,
-          borderColor: colors.secondary,
-        }}
-      />
-    );
+export default function ChartScreen({ calculatedMarks, marks: _marks, setModalVisible }: ChartScreenProps) {
+  // Use the first available angle key (usually '0' for flat ground)
+  const primaryAngleKey = calculatedMarks ? (Object.keys(calculatedMarks.sight_marks_by_hill_angle)[0] ?? '0') : '0';
+
+  // Compute the axis ceiling from the maximum absolute mark value
+  const getMaxAbsValue = (): number => {
+    if (!calculatedMarks) return 30;
+    const values = calculatedMarks.sight_marks_by_hill_angle[primaryAngleKey] ?? [];
+    if (values.length === 0) return 30;
+    return Math.ceil(Math.max(...values) * 1.15); // 15 % headroom
   };
 
-  const customLabel = (val: number) => {
-    return (
-      <View style={{ width: 64, marginLeft: 16 }}>
-        <Text style={{ color: colors.primary, fontWeight: '500' }}>{val}m</Text>
-      </View>
-    );
-  };
-
+  // Values are negated so the y-axis reads 0 at the top and increases downward
   const calculatedData = () => {
-    if (!calculatedMarks) return [];
-    if (calculatedMarks.distances.length <= 0) return [];
+    if (!calculatedMarks || calculatedMarks.distances.length === 0) return [];
+    const markValues = calculatedMarks.sight_marks_by_hill_angle[primaryAngleKey] ?? [];
 
-    return calculatedMarks.distances.map((distance, index) => {
-      let value = Number(calculatedMarks.sight_marks_by_hill_angle['0'][index]);
-      let mark = parseFloat(value.toFixed(2));
-
-      return {
-        value: mark,
-        labelComponent: () => customLabel(distance),
-        customLabel: customLabel,
-      };
+    return calculatedMarks.distances.map((_distance, index) => {
+      const abs = parseFloat(Number(markValues[index] ?? 0).toFixed(2));
+      return { value: -abs, label: String(abs) };
     });
   };
 
-  const marksData = () => {
-    if (!marks) return [];
-    if (marks.given_marks.length <= 0) return [];
-    if (!calculatedMarks) return [];
+  const maxAbsValue = getMaxAbsValue();
+  const data = calculatedData();
+  const xLabels = calculatedMarks?.distances.map((d) => `${d}m`) ?? [];
 
-    return calculatedMarks.distances
-      .map((distance) => {
-        const calculatedIndex = marks.given_distances.indexOf(distance);
-        if (calculatedIndex === -1)
-          return {
-            value: 0,
-            customDataPoint: () => <View />,
-          };
-
-        let value = Number(marks.calculated_marks[calculatedIndex]);
-        let mark = parseFloat(value.toFixed(2));
-
-        return {
-          value: mark,
-          customDataPoint: customDataPoint,
-          customLabel: customLabel,
-        };
-      })
-      .filter((dataPoint) => dataPoint !== null);
-  };
+  const axisTextStyle = { color: colors.white, fontSize: 12 };
 
   return (
-    <ScrollView style={styles.page}>
-      {calculatedData().length === 0 ? (
-        <View style={{ marginTop: 'auto', padding: 16 }}>
+    <ScrollView style={styles.page} contentContainerStyle={styles.content}>
+      {data.length === 0 ? (
+        <View style={styles.emptyState}>
           <Message
             title="Ingen beregnede siktemerker"
             description="For å beregne siktemerker kan du trykke på knappen under."
@@ -91,21 +54,38 @@ export default function ChartScreen({ calculatedMarks, marks, setModalVisible }:
         <LineChart
           isAnimated
           curved
+          // Axis range — negated so 0 sits at the top, values grow downward
+          maxValue={0}
+          mostNegativeValue={-maxAbsValue}
+          noOfSectionsBelowXAxis={5}
+          formatYLabel={(label) => String(Math.abs(Number(label)))}
+          // Layout
           initialSpacing={30}
-          textShiftY={-12}
-          textShiftX={-12}
-          textFontSize={14}
-          textColor={colors.primary}
-          showVerticalLines
-          hideRules
-          showValuesAsDataPointsText
-          hideDataPoints1
           spacing={50}
-          height={400}
-          data={calculatedData()}
-          data2={marksData()}
-          color2={colors.white}
+          height={300}
+          // Calculated curve
+          data={data}
+          color1={colors.secondary}
           thickness={2}
+          dataPointsRadius1={6}
+          dataPointsColor1={colors.secondary}
+          // x-axis distance labels
+          xAxisLabelTexts={xLabels}
+          xAxisLabelTextStyle={axisTextStyle}
+          rotateLabel
+          // Labels on curve dots — show positive absolute value
+          showValuesAsDataPointsText
+          textShiftY={-14}
+          textShiftX={-10}
+          textFontSize={12}
+          textColor={colors.white}
+          // Axis styling for gradient background
+          yAxisColor={colors.white}
+          xAxisColor={colors.white}
+          yAxisTextStyle={axisTextStyle}
+          showVerticalLines
+          verticalLinesColor="rgba(255,255,255,0.15)"
+          hideRules
         />
       )}
     </ScrollView>
@@ -115,9 +95,13 @@ export default function ChartScreen({ calculatedMarks, marks, setModalVisible }:
 const styles = StyleSheet.create({
   page: {
     flex: 1,
-    marginTop: 16,
-    minHeight: '60%',
-    padding: 8,
-    backgroundColor: colors.white,
+    marginTop: 8,
+  },
+  content: {
+    paddingHorizontal: 8,
+    paddingBottom: 8,
+  },
+  emptyState: {
+    padding: 16,
   },
 });

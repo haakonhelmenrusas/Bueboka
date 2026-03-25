@@ -84,7 +84,7 @@ const Button: React.FC<ButtonProps> = ({
       icon && React.isValidElement(icon) && iconPosition === 'left' && React.cloneElement(icon, { key: 'icon-left' }),
       <Text
         key="label"
-        style={[textStyle, { fontSize: sizeStyles.fontSize, color: textColor, marginLeft: icon ? 8 : 0, marginRight: icon ? 8 : 0 }]}>
+        style={[{ fontSize: sizeStyles.fontSize, color: textColor, marginLeft: icon ? 8 : 0, marginRight: icon ? 8 : 0 }, textStyle]}>
         {label}
       </Text>,
       icon && React.isValidElement(icon) && iconPosition === 'right' && React.cloneElement(icon, { key: 'icon-right' }),

@@ -44,6 +44,7 @@ export const styles = StyleSheet.create({
     fontWeight: 'bold',
     fontSize: 18,
     marginTop: 8,
+    color: colors.tertiary,
   },
   heading: {
     flex: 1,
