@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { View, Text, TouchableOpacity } from 'react-native';
+import { useRef, useState } from 'react';
+import { Animated, Dimensions, Easing, PanResponder, Text, View } from 'react-native';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import type { IconDefinition } from '@fortawesome/fontawesome-svg-core';
 import { faCalendarDays } from '@fortawesome/free-solid-svg-icons/faCalendarDays';
@@ -8,8 +8,6 @@ import { faChartBar } from '@fortawesome/free-solid-svg-icons/faChartBar';
 import { faBullseye } from '@fortawesome/free-solid-svg-icons/faBullseye';
 import { faCircleCheck } from '@fortawesome/free-solid-svg-icons/faCircleCheck';
 import { faCircleXmark } from '@fortawesome/free-solid-svg-icons/faCircleXmark';
-import { faChevronLeft } from '@fortawesome/free-solid-svg-icons/faChevronLeft';
-import { faChevronRight } from '@fortawesome/free-solid-svg-icons/faChevronRight';
 import { colors } from '@/styles/colors';
 import { styles } from './StatsSummaryStyles';
 
@@ -27,6 +25,8 @@ interface Props {
 }
 
 const EMPTY: StatsData = { totalArrows: 0, scoredArrows: 0, unscoredArrows: 0, avgScorePerArrow: null };
+const CARD_COUNT = 3;
+const SLIDE = Dimensions.get('window').width;
 
 function StatRow({ icon, label, value }: { icon: IconDefinition; label: string; value: number }) {
   return (
@@ -61,7 +61,12 @@ function PeriodCard({ title, icon, data }: { title: string; icon: IconDefinition
 }
 
 export function StatsSummary({ last7Days, last30Days, overall }: Props) {
-  const [index, setIndex] = useState(0);
+  const [displayIndex, setDisplayIndex] = useState(0);
+  // Use a ref so the PanResponder closure always reads the latest index
+  const indexRef = useRef(0);
+  const translateX = useRef(new Animated.Value(0)).current;
+  // Animated value for the active dot's width (pill expand/contract)
+  const dotWidth = useRef(new Animated.Value(18)).current;
 
   const cards = [
     { title: 'Siste 7 dager', icon: faCalendarDays, data: last7Days ?? EMPTY },
@@ -69,36 +74,70 @@ export function StatsSummary({ last7Days, last30Days, overall }: Props) {
     { title: 'Totalt', icon: faChartBar, data: overall ?? EMPTY },
   ];
 
-  const current = cards[index];
+  // dir: +1 = next (swipe left), -1 = prev (swipe right)
+  function navigate(dir: 1 | -1) {
+    const next = Math.max(0, Math.min(indexRef.current + dir, CARD_COUNT - 1));
+    if (next === indexRef.current) return;
+
+    const easing = Easing.out(Easing.cubic);
+
+    // Shrink the current active dot pill before the slide
+    Animated.timing(dotWidth, { toValue: 6, duration: 120, useNativeDriver: false }).start();
+
+    // Slide current card out
+    Animated.timing(translateX, {
+      toValue: -dir * SLIDE,
+      duration: 230,
+      easing,
+      useNativeDriver: true,
+    }).start(() => {
+      // Snap to incoming side instantly, then slide in
+      translateX.setValue(dir * SLIDE);
+      indexRef.current = next;
+      setDisplayIndex(next);
+
+      Animated.timing(translateX, {
+        toValue: 0,
+        duration: 230,
+        easing,
+        useNativeDriver: true,
+      }).start();
+
+      // Expand the new active dot pill after the slide starts
+      Animated.timing(dotWidth, { toValue: 18, duration: 180, useNativeDriver: false }).start();
+    });
+  }
+
+  const panResponder = useRef(
+    PanResponder.create({
+      onMoveShouldSetPanResponder: (_, { dx, dy }) => Math.abs(dx) > Math.abs(dy) && Math.abs(dx) > 10,
+      onPanResponderRelease: (_, { dx }) => {
+        if (dx < -40) navigate(1);
+        else if (dx > 40) navigate(-1);
+      },
+    }),
+  ).current;
+
+  const current = cards[displayIndex];
 
   return (
     <View style={styles.carousel}>
-      <View style={styles.carouselRow}>
-        <TouchableOpacity
-          onPress={() => setIndex((i) => i - 1)}
-          disabled={index === 0}
-          style={styles.chevron}
-          hitSlop={{ top: 12, bottom: 12, left: 8, right: 8 }}>
-          <FontAwesomeIcon icon={faChevronLeft} size={16} color={index === 0 ? colors.dimmed : colors.primary} />
-        </TouchableOpacity>
-
-        <View style={styles.cardWrap}>
+      {/* Clip the sliding card so it doesn't bleed into surrounding UI */}
+      <View style={styles.carouselTrack} {...panResponder.panHandlers}>
+        <Animated.View style={{ transform: [{ translateX }] }}>
           <PeriodCard title={current.title} icon={current.icon} data={current.data} />
-        </View>
-
-        <TouchableOpacity
-          onPress={() => setIndex((i) => i + 1)}
-          disabled={index === cards.length - 1}
-          style={styles.chevron}
-          hitSlop={{ top: 12, bottom: 12, left: 8, right: 8 }}>
-          <FontAwesomeIcon icon={faChevronRight} size={16} color={index === cards.length - 1 ? colors.dimmed : colors.primary} />
-        </TouchableOpacity>
+        </Animated.View>
       </View>
 
+      {/* Dot indicators */}
       <View style={styles.dots}>
-        {cards.map((_, i) => (
-          <View key={i} style={[styles.dot, i === index && styles.dotActive]} />
-        ))}
+        {cards.map((_, i) =>
+          i === displayIndex ? (
+            <Animated.View key={i} style={[styles.dot, styles.dotActive, { width: dotWidth }]} />
+          ) : (
+            <View key={i} style={styles.dot} />
+          ),
+        )}
       </View>
     </View>
   );

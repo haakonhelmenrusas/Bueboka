@@ -3,24 +3,15 @@ import { colors } from '@/styles/colors';
 
 export const styles = StyleSheet.create({
   carousel: {
-    gap: 12,
+    gap: 10,
   },
-  carouselRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
-  },
-  chevron: {
-    width: 28,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  cardWrap: {
-    flex: 1,
+  carouselTrack: {
+    overflow: 'hidden',
   },
   dots: {
     flexDirection: 'row',
     justifyContent: 'center',
+    alignItems: 'center',
     gap: 6,
   },
   dot: {
@@ -30,7 +21,8 @@ export const styles = StyleSheet.create({
     backgroundColor: colors.dimmed,
   },
   dotActive: {
-    width: 18,
+    // width is animated (18 → 6 → 18), so only the base shape is here
+    height: 6,
     borderRadius: 3,
     backgroundColor: colors.primary,
   },
@@ -39,8 +31,8 @@ export const styles = StyleSheet.create({
     borderRadius: 12,
     borderWidth: 1,
     borderColor: colors.border,
-    padding: 20,
-    gap: 16,
+    padding: 16,
+    gap: 10,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.06,
@@ -51,13 +43,13 @@ export const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: 12,
-    paddingBottom: 12,
+    paddingBottom: 8,
     borderBottomWidth: 2,
     borderBottomColor: colors.primary,
   },
   cardIconWrap: {
-    width: 36,
-    height: 36,
+    width: 32,
+    height: 32,
     borderRadius: 8,
     backgroundColor: colors.primary,
     alignItems: 'center',
@@ -65,14 +57,14 @@ export const styles = StyleSheet.create({
     flexShrink: 0,
   },
   cardTitle: {
-    fontSize: 16,
+    fontSize: 15,
     fontWeight: '800',
     color: colors.primary,
     textTransform: 'uppercase',
     letterSpacing: 0.6,
   },
   cardStats: {
-    gap: 8,
+    gap: 4,
   },
   statRow: {
     flexDirection: 'row',
@@ -90,13 +82,13 @@ export const styles = StyleSheet.create({
     color: colors.textSecondary,
   },
   statValue: {
-    fontSize: 16,
+    fontSize: 15,
     fontWeight: '700',
     color: colors.text,
   },
   divider: {
     height: 1,
     backgroundColor: colors.border,
-    marginVertical: 4,
+    marginVertical: 2,
   },
 });
