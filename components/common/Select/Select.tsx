@@ -26,6 +26,9 @@ type Option = {
 
 type Props = {
   label: string;
+  info?: string;
+  optional?: boolean;
+  helpText?: string;
   options: Option[];
   selectedValue?: string;
   onValueChange: (value: any) => void;
@@ -37,6 +40,9 @@ type Props = {
 
 export const Select: React.FC<Props> = ({
   label,
+  info,
+  optional,
+  helpText,
   options,
   selectedValue,
   onValueChange,
@@ -135,28 +141,43 @@ export const Select: React.FC<Props> = ({
 
   return (
     <View style={wrapperStyle}>
-      <Text style={styles.label}>{label}</Text>
-      <TouchableOpacity ref={selectBoxRef} style={styles.selectBox} onPress={toggleDropdown} activeOpacity={0.7}>
-        {searchable && open ? (
-          <TextInput
-            ref={searchInputRef}
-            style={styles.searchInput}
-            value={searchQuery}
-            onChangeText={setSearchQuery}
-            placeholder="Søk..."
-            placeholderTextColor={colors.dimmed}
-            underlineColorAndroid="transparent"
-            autoCorrect={false}
-          />
-        ) : (
-          <Text style={styles.selectText} numberOfLines={1}>
-            {selectedLabel}
-          </Text>
+      <View style={styles.labelContainer}>
+        <Text style={styles.label}>
+          {label}
+          {optional && <Text style={styles.optional}> (valgfritt)</Text>}
+        </Text>
+        {info ? <Text style={styles.infoText}>{info}</Text> : null}
+      </View>
+      {helpText ? <Text style={styles.help}>{helpText}</Text> : null}
+      <View style={{ position: 'relative' }}>
+        <TouchableOpacity ref={selectBoxRef} style={styles.selectBox} onPress={toggleDropdown} activeOpacity={0.7}>
+          {searchable && open ? (
+            <TextInput
+              ref={searchInputRef}
+              style={styles.searchInput}
+              value={searchQuery}
+              onChangeText={setSearchQuery}
+              placeholder="Søk..."
+              placeholderTextColor={colors.dimmed}
+              underlineColorAndroid="transparent"
+              autoCorrect={false}
+            />
+          ) : (
+            <Text style={styles.selectText} numberOfLines={1}>
+              {selectedLabel}
+            </Text>
+          )}
+          <Animated.View style={{ transform: [{ rotate }] }}>
+            <FontAwesomeIcon icon={faChevronDown} size={16} color={colors.primary} />
+          </Animated.View>
+        </TouchableOpacity>
+        {Platform.OS !== 'android' && open && (
+          <>
+            <Pressable style={[styles.overlay, { zIndex: zIndex + 1500 }]} onPress={toggleDropdown} />
+            <View style={[styles.dropdown, { zIndex: zIndex + 2000 }]}>{renderDropdownContent()}</View>
+          </>
         )}
-        <Animated.View style={{ transform: [{ rotate }] }}>
-          <FontAwesomeIcon icon={faChevronDown} size={16} color={colors.primary} />
-        </Animated.View>
-      </TouchableOpacity>
+      </View>
       {Platform.OS === 'android' && (
         <Modal visible={open} transparent={true} animationType="fade" onRequestClose={() => setOpen(false)}>
           <Pressable style={styles.modalBackdrop} onPress={() => setOpen(false)}>
@@ -173,12 +194,6 @@ export const Select: React.FC<Props> = ({
             </View>
           </Pressable>
         </Modal>
-      )}
-      {Platform.OS !== 'android' && open && (
-        <>
-          <Pressable style={[styles.overlay, { zIndex: zIndex + 1500 }]} onPress={toggleDropdown} />
-          <View style={[styles.dropdown, { zIndex: zIndex + 2000 }]}>{renderDropdownContent()}</View>
-        </>
       )}
     </View>
   );

@@ -5,57 +5,90 @@ import { colors } from '@/styles/colors';
 
 interface TextareaProps extends TextInputProps {
   label: string;
+  info?: string;
+  optional?: boolean;
+  helpText?: string;
+  /** Legacy convenience prop – maps to the native placeholder prop */
+  placeholderText?: string;
   error?: boolean;
   errorMessage?: string;
-  placeholderText?: string;
   containerStyle?: StyleProp<ViewStyle>;
   labelStyle?: StyleProp<TextStyle>;
   inputStyle?: StyleProp<TextStyle>;
   icon?: React.ReactNode;
 }
 
-/**
- * Textarea component with label, optional icon and error message.
- * Similar to Input but supports multiple lines.
- *
- * @param label - label text
- * @param error - if true, an error message will be displayed
- * @param errorMessage - error message to be displayed
- * @param placeholderText - placeholder text for the textarea
- * @param containerStyle - custom style of the container
- * @param labelStyle - custom style of the label
- * @param inputStyle - custom style of the textarea
- * @param icon - icon to be displayed on the left side of the textarea
- * @param props - other TextInput props
- * @returns Textarea component
- */
-const Textarea = React.forwardRef<TextInput, TextareaProps>((props, ref: React.Ref<TextInput>) => {
-  const [isFocused, setIsFocused] = useState(false);
+const Textarea = React.forwardRef<TextInput, TextareaProps>(
+  (
+    {
+      label,
+      info,
+      optional,
+      helpText,
+      placeholderText,
+      error,
+      errorMessage,
+      containerStyle,
+      labelStyle,
+      inputStyle,
+      icon,
+      placeholder,
+      onFocus,
+      onBlur,
+      ...props
+    },
+    ref,
+  ) => {
+    const [isFocused, setIsFocused] = useState(false);
 
-  return (
-    <View
-      style={[defaultStyles.container, props.containerStyle]}
-      accessibilityLabel={Platform.OS === 'android' ? props.label : `${props.label}${': Disabled!'}`}>
-      <View style={[defaultStyles.labelContainer, props.labelStyle]}>
-        {props.icon && <View style={defaultStyles.icon}>{props.icon}</View>}
-        <Text style={defaultStyles.label}>{props.label}</Text>
+    const handleFocus = (e: any) => {
+      setIsFocused(true);
+      onFocus?.(e);
+    };
+
+    const handleBlur = (e: any) => {
+      setIsFocused(false);
+      onBlur?.(e);
+    };
+
+    // placeholderText takes precedence; fall back to native placeholder prop
+    const resolvedPlaceholder = placeholderText ?? placeholder;
+
+    return (
+      <View
+        style={[defaultStyles.container, containerStyle]}
+        accessibilityLabel={Platform.OS === 'android' ? label : `${label}${': Disabled!'}`}>
+        <View style={defaultStyles.labelContainer}>
+          {icon && <View style={defaultStyles.icon}>{icon}</View>}
+          <Text style={[defaultStyles.label, labelStyle]}>
+            {label}
+            {optional && <Text style={defaultStyles.optional}> (valgfritt)</Text>}
+          </Text>
+          {info ? <Text style={defaultStyles.infoText}>{info}</Text> : null}
+        </View>
+
+        {helpText ? <Text style={defaultStyles.help}>{helpText}</Text> : null}
+
+        <TextInput
+          ref={ref}
+          testID="textarea"
+          style={[defaultStyles.textarea, isFocused && defaultStyles.textareaFocused, inputStyle]}
+          placeholder={isFocused ? '' : resolvedPlaceholder}
+          placeholderTextColor={colors.secondary}
+          multiline={true}
+          numberOfLines={4}
+          textAlignVertical="top"
+          onFocus={handleFocus}
+          onBlur={handleBlur}
+          {...props}
+        />
+
+        {error && errorMessage ? <Text style={defaultStyles.errorMessage}>{errorMessage}</Text> : null}
       </View>
-      <TextInput
-        ref={ref}
-        testID="textarea"
-        style={[defaultStyles.textarea, props.inputStyle]}
-        placeholder={isFocused ? '' : props.placeholderText}
-        placeholderTextColor={colors.secondary}
-        multiline={true}
-        numberOfLines={4}
-        textAlignVertical="top"
-        onFocus={() => setIsFocused(true)}
-        onBlur={() => setIsFocused(false)}
-        {...props}
-      />
-      {props.error && <Text style={{ color: colors.error, fontSize: 12 }}>{props.errorMessage}</Text>}
-    </View>
-  );
-});
+    );
+  },
+);
+
+Textarea.displayName = 'Textarea';
 
 export default Textarea;

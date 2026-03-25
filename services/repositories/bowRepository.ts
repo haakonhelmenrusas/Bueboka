@@ -48,7 +48,11 @@ export const bowRepository = {
   },
 
   /**
-   * Update an existing bow
+   * Update an existing bow.
+   *
+   * When { isFavorite: true } is included the API automatically unfavourites
+   * all other bows for the current user in the same transaction, so the
+   * client never needs to send multiple requests.
    */
   async update(id: string, data: Partial<BowData>): Promise<Bow> {
     try {
@@ -65,18 +69,6 @@ export const bowRepository = {
   async delete(id: string): Promise<void> {
     try {
       await client.delete(`/bows/${id}`);
-    } catch (error) {
-      throw handleApiError(error);
-    }
-  },
-
-  /**
-   * Toggle favorite status of a bow
-   */
-  async toggleFavorite(id: string, isFavorite: boolean): Promise<Bow> {
-    try {
-      const response = await client.patch<{ bow: Bow }>(`/bows/${id}`, { isFavorite });
-      return response.data.bow;
     } catch (error) {
       throw handleApiError(error);
     }

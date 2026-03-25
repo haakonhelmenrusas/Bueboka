@@ -569,7 +569,8 @@ export default function CreatePracticeForm({
 
               {/* ── Notes ─────────────────────────────────────────────────── */}
               <Textarea
-                label="Notater (valgfritt)"
+                label="Notater"
+                optional
                 value={notes}
                 onChangeText={setNotes}
                 placeholderText="Hvordan gikk treningen?&#10;&#10;Hva gikk bra? Hva kan forbedres?"

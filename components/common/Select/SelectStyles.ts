@@ -10,18 +10,40 @@ const styles = StyleSheet.create({
     width: '100%',
     marginBottom: 0,
   },
-  label: {
-    fontSize: 16,
-    fontWeight: '500',
+  labelContainer: {
+    flexDirection: 'row',
+    alignItems: 'baseline',
     marginBottom: 4,
+    minHeight: 18,
+  },
+  label: {
+    fontSize: 15,
+    fontWeight: '600',
     color: colors.primary,
+  },
+  infoText: {
+    fontSize: 11,
+    fontWeight: '400',
+    color: colors.secondary,
+    marginLeft: 4,
+  },
+  optional: {
+    fontSize: 11,
+    fontWeight: '400',
+    color: colors.secondary,
+  },
+  help: {
+    color: colors.secondary,
+    fontSize: 11,
+    lineHeight: 15,
+    marginBottom: 6,
   },
   selectBox: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
     padding: 10,
-    borderRadius: 4,
+    borderRadius: 8,
     borderWidth: 1,
     borderColor: colors.secondary,
     backgroundColor: colors.white,
@@ -57,7 +79,7 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     backgroundColor: colors.white,
-    borderRadius: 4,
+    borderRadius: 10,
     borderWidth: 1,
     borderColor: colors.primary,
     elevation: Platform.OS === 'android' ? 15 : 0,
@@ -69,6 +91,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.37,
     shadowRadius: 7.49,
     maxHeight: 200,
+    overflow: 'hidden',
   },
   // Android Modal Styles
   modalBackdrop: {
@@ -77,7 +100,7 @@ const styles = StyleSheet.create({
   modalDropdown: {
     position: 'absolute',
     backgroundColor: colors.white,
-    borderRadius: 4,
+    borderRadius: 10,
     borderWidth: 1,
     borderColor: colors.primary,
     elevation: 8,
@@ -90,6 +113,7 @@ const styles = StyleSheet.create({
     shadowRadius: 4.65,
     maxHeight: 250,
     minHeight: 100,
+    overflow: 'hidden',
   },
   // Common List Styles
   optionsList: {
@@ -109,7 +133,7 @@ const styles = StyleSheet.create({
     minHeight: 50,
   },
   optionSelected: {
-    backgroundColor: colors.background,
+    backgroundColor: colors.tertiary,
   },
   optionText: {
     fontSize: 14,

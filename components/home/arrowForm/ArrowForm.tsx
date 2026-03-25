@@ -1,13 +1,14 @@
-import { Keyboard, KeyboardAvoidingView, Platform, Pressable, ScrollView, View } from 'react-native';
+import { Keyboard, KeyboardAvoidingView, Platform, Pressable, ScrollView, Text, TouchableOpacity, View } from 'react-native';
 import { useEffect, useState } from 'react';
-import { Button, Input, ModalHeader, ModalWrapper, Select, Textarea, Toggle } from '@/components/common';
+import { Button, Checkbox, Input, ModalHeader, ModalWrapper, Select, Textarea } from '@/components/common';
 import { handleNumberChange } from '@/utils';
 import { Arrows, Material } from '@/types';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
+import { faChevronDown } from '@fortawesome/free-solid-svg-icons/faChevronDown';
+import { faTrash } from '@fortawesome/free-solid-svg-icons/faTrash';
 import { useArrowForm } from '@/components/home/arrowForm/useArrowForm';
 import { styles } from './ArrowFormStyles';
 import { colors } from '@/styles/colors';
-import { faTrash } from '@fortawesome/free-solid-svg-icons/faTrash';
 import ConfirmModal from '@/components/home/DeleteArrowSetModal/ConfirmModal';
 import { arrowsRepository } from '@/services/repositories';
 import { AppError } from '@/services';
@@ -22,6 +23,7 @@ interface Props {
 export default function ArrowForm({ modalVisible, setArrowModalVisible, arrowSet, existingArrowSets }: Props) {
   const [confirmVisible, setConfirmVisible] = useState(false);
   const [submitting, setSubmitting] = useState(false);
+  const [advancedOpen, setAdvancedOpen] = useState(false);
   const [
     { name, material, weight, spine, length, diameter, arrowsCount, pointType, pointWeight, vanes, nock, notes, isFavorite },
     dispatch,
@@ -33,6 +35,7 @@ export default function ArrowForm({ modalVisible, setArrowModalVisible, arrowSet
 
     if (prevArrowSet !== null && arrowSet === null) {
       clearForm();
+      setAdvancedOpen(false);
     }
 
     if (arrowSet) {
@@ -49,10 +52,24 @@ export default function ArrowForm({ modalVisible, setArrowModalVisible, arrowSet
       dispatch({ type: 'SET_NOCK', payload: arrowSet.nock ?? '' });
       dispatch({ type: 'SET_NOTES', payload: arrowSet.notes ?? '' });
       dispatch({ type: 'SET_FAVORITE', payload: arrowSet.isFavorite ?? false });
+      // Auto-open advanced section if any advanced field is set
+      setAdvancedOpen(
+        !!(
+          arrowSet.length ||
+          arrowSet.weight ||
+          arrowSet.spine ||
+          arrowSet.diameter ||
+          arrowSet.pointType ||
+          arrowSet.pointWeight ||
+          arrowSet.vanes ||
+          arrowSet.nock
+        ),
+      );
     }
 
     setPrevArrowSet(arrowSet);
-  }, [modalVisible, arrowSet, dispatch]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [modalVisible, arrowSet]);
 
   async function handleDeleteArrowSet() {
     if (!arrowSet) return;
@@ -157,19 +174,20 @@ export default function ArrowForm({ modalVisible, setArrowModalVisible, arrowSet
         setArrowModalVisible(false);
       }}>
       <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={styles.modal}>
-        <ScrollView keyboardShouldPersistTaps="handled" contentContainerStyle={{ flexGrow: 1 }}>
-          <Pressable style={{ flex: 1 }} onPress={() => Keyboard.dismiss()}>
-            <ModalHeader onPress={handleCloseModal} title={arrowSet ? 'Rediger pilsett' : 'Nytt pilsett'} />
+        <ModalHeader onPress={handleCloseModal} title={arrowSet ? 'Rediger pilsett' : 'Nytt pilsett'} />
+        <ScrollView keyboardShouldPersistTaps="handled" showsVerticalScrollIndicator={false} contentContainerStyle={styles.scrollContent}>
+          <Pressable onPress={() => Keyboard.dismiss()}>
             <View style={styles.inputs}>
               <Input
                 value={name}
                 onChangeText={(value) => dispatch({ type: 'SET_NAME', payload: value })}
-                placeholderText="F.eks. Carbon X23"
-                label="Navn på pilsett (obligatorisk)"
+                helpText="F.eks. Carbon X23"
+                label="Navn på pilsett"
+                info="(obligatorisk)"
               />
-              <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+              <View style={styles.row}>
                 <Select
-                  containerStyle={{ width: '48%' }}
+                  containerStyle={{ flex: 1 }}
                   label="Materiale"
                   selectedValue={material}
                   options={[
@@ -180,105 +198,136 @@ export default function ArrowForm({ modalVisible, setArrowModalVisible, arrowSet
                   onValueChange={(value) => dispatch({ type: 'SET_MATERIAL', payload: value })}
                 />
                 <Input
-                  containerStyle={{ width: '48%' }}
+                  containerStyle={{ flex: 1 }}
                   label="Antall piler"
                   keyboardType="numeric"
-                  placeholderText="F.eks. 12"
+                  helpText="F.eks. 12"
                   value={arrowsCount}
                   onChangeText={(value) => handleNumberChange(value, 'SET_ARROWS_COUNT', dispatch)}
                 />
               </View>
-              <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-                <Input
-                  containerStyle={{ width: '48%' }}
-                  label="Lengde (tommer)"
-                  keyboardType="numeric"
-                  placeholderText="F.eks. 31"
-                  value={length}
-                  onChangeText={(value) => dispatch({ type: 'SET_LENGTH', payload: value })}
-                />
-                <Input
-                  containerStyle={{ width: '48%' }}
-                  label="Vekt (grain)"
-                  keyboardType="numeric"
-                  placeholderText="F.eks. 400"
-                  value={weight}
-                  onChangeText={(value) => handleNumberChange(value, 'SET_WEIGHT', dispatch)}
-                />
-              </View>
-              <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-                <Input
-                  containerStyle={{ width: '48%' }}
-                  label="Spine"
-                  placeholderText="F.eks. 500"
-                  value={spine}
-                  onChangeText={(value) => dispatch({ type: 'SET_SPINE', payload: value })}
-                />
-                <Input
-                  containerStyle={{ width: '48%' }}
-                  label="Diameter (mm)"
-                  keyboardType="numeric"
-                  placeholderText="F.eks. 5.2"
-                  value={diameter}
-                  onChangeText={(value) => handleNumberChange(value, 'SET_DIAMETER', dispatch)}
-                />
-              </View>
-              <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 8 }}>
-                <Input
-                  containerStyle={{ width: '48%' }}
-                  label="Pilspisstype"
-                  placeholderText="F.eks. Bullet"
-                  value={pointType}
-                  onChangeText={(value) => dispatch({ type: 'SET_POINT_TYPE', payload: value })}
-                />
-                <Input
-                  containerStyle={{ width: '48%' }}
-                  label="Spissvekt (grain)"
-                  keyboardType="numeric"
-                  placeholderText="F.eks. 100"
-                  value={pointWeight}
-                  onChangeText={(value) => handleNumberChange(value, 'SET_POINT_WEIGHT', dispatch)}
-                />
-              </View>
-              <Input
-                label="Vanes"
-                placeholderText="F.eks. Bohning X Vanes"
-                value={vanes}
-                onChangeText={(value) => dispatch({ type: 'SET_VANES', payload: value })}
+
+              <Checkbox
+                value={isFavorite}
+                label="Favoritt"
+                onChange={(newValue) => dispatch({ type: 'SET_FAVORITE', payload: newValue })}
               />
-              <Input
-                label="Nock"
-                placeholderText="F.eks. Easton G Nock"
-                value={nock}
-                onChangeText={(value) => dispatch({ type: 'SET_NOCK', payload: value })}
-              />
+
+              {/* ── Avansert ──────────────────────────────────────────────── */}
+              <TouchableOpacity activeOpacity={0.7} style={styles.advancedToggle} onPress={() => setAdvancedOpen((prev) => !prev)}>
+                <View style={styles.advancedLine} />
+                <View style={styles.advancedLabelWrap}>
+                  <Text style={styles.advancedLabel}>Avansert</Text>
+                  <FontAwesomeIcon
+                    icon={faChevronDown}
+                    size={11}
+                    color={colors.textSecondary}
+                    style={{ transform: [{ rotate: advancedOpen ? '180deg' : '0deg' }] }}
+                  />
+                </View>
+                <View style={styles.advancedLine} />
+              </TouchableOpacity>
+
+              {advancedOpen && (
+                <View style={styles.advancedContent}>
+                  <View style={styles.row}>
+                    <Input
+                      containerStyle={{ flex: 1 }}
+                      label="Lengde"
+                      info="(tommer)"
+                      keyboardType="numeric"
+                      helpText="F.eks. 31"
+                      value={length}
+                      onChangeText={(value) => dispatch({ type: 'SET_LENGTH', payload: value })}
+                    />
+                    <Input
+                      containerStyle={{ flex: 1 }}
+                      label="Vekt"
+                      info="(grain)"
+                      keyboardType="numeric"
+                      helpText="F.eks. 400"
+                      value={weight}
+                      onChangeText={(value) => handleNumberChange(value, 'SET_WEIGHT', dispatch)}
+                    />
+                  </View>
+                  <View style={styles.row}>
+                    <Input
+                      containerStyle={{ flex: 1 }}
+                      label="Spine"
+                      helpText="F.eks. 500"
+                      value={spine}
+                      onChangeText={(value) => dispatch({ type: 'SET_SPINE', payload: value })}
+                    />
+                    <Input
+                      containerStyle={{ flex: 1 }}
+                      label="Diameter"
+                      info="(mm)"
+                      keyboardType="numeric"
+                      helpText="F.eks. 5.2"
+                      value={diameter}
+                      onChangeText={(value) => handleNumberChange(value, 'SET_DIAMETER', dispatch)}
+                    />
+                  </View>
+                  <View style={styles.row}>
+                    <Input
+                      containerStyle={{ flex: 1 }}
+                      label="Pilspisstype"
+                      helpText="F.eks. Bullet"
+                      value={pointType}
+                      onChangeText={(value) => dispatch({ type: 'SET_POINT_TYPE', payload: value })}
+                    />
+                    <Input
+                      containerStyle={{ flex: 1 }}
+                      label="Spissvekt"
+                      info="(grain)"
+                      keyboardType="numeric"
+                      helpText="F.eks. 100"
+                      value={pointWeight}
+                      onChangeText={(value) => handleNumberChange(value, 'SET_POINT_WEIGHT', dispatch)}
+                    />
+                  </View>
+                  <Input
+                    label="Vanes"
+                    helpText="F.eks. Bohning X Vanes"
+                    value={vanes}
+                    onChangeText={(value) => dispatch({ type: 'SET_VANES', payload: value })}
+                  />
+                  <Input
+                    label="Nock"
+                    helpText="F.eks. Easton G Nock"
+                    value={nock}
+                    onChangeText={(value) => dispatch({ type: 'SET_NOCK', payload: value })}
+                  />
+                </View>
+              )}
+
               <Textarea
-                label="Notater (valgfritt)"
+                label="Notater"
+                optional
                 value={notes}
                 onChangeText={(value) => dispatch({ type: 'SET_NOTES', payload: value })}
-                placeholderText="Ekstra informasjon om pilsettet"
-              />
-              <Toggle value={isFavorite} label="Favoritt" onToggle={() => dispatch({ type: 'SET_FAVORITE', payload: !isFavorite })} />
-            </View>
-            <View style={{ marginTop: 'auto' }}>
-              {arrowSet && (
-                <Button variant="warning" label="Slett" onPress={() => setConfirmVisible(true)} type="outline" disabled={submitting}>
-                  <FontAwesomeIcon icon={faTrash} size={16} color={colors.warning} />
-                </Button>
-              )}
-              <Button disabled={!name || submitting} onPress={handleSubmit} label={submitting ? 'Lagrer...' : 'Lagre'} />
-              <Button
-                type="outline"
-                disabled={submitting}
-                onPress={() => {
-                  clearForm();
-                  setArrowModalVisible(false);
-                }}
-                label="Avbryt"
+                placeholder="Ekstra informasjon om pilsettet"
               />
             </View>
           </Pressable>
         </ScrollView>
+        <View style={styles.footer}>
+          <Button disabled={!name || submitting} onPress={handleSubmit} label={submitting ? 'Lagrer...' : 'Lagre'} />
+          {arrowSet && (
+            <Button variant="warning" label="Slett" onPress={() => setConfirmVisible(true)} type="outline" disabled={submitting}>
+              <FontAwesomeIcon icon={faTrash} size={16} color={colors.warning} />
+            </Button>
+          )}
+          <Button
+            type="outline"
+            disabled={submitting}
+            onPress={() => {
+              clearForm();
+              setArrowModalVisible(false);
+            }}
+            label="Avbryt"
+          />
+        </View>
       </KeyboardAvoidingView>
       <ConfirmModal
         title={'Slett pilsett'}

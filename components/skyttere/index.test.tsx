@@ -1,6 +1,6 @@
 import React from 'react';
 import { act, fireEvent, render } from '@testing-library/react-native';
-import SkytterePage from './index';
+import SkytterePage from '../../app/(tabs)/skyttere';
 import { useAuth } from '@/hooks';
 import { publicProfilesApi } from '@/services';
 import type { User } from '@/types';

@@ -98,17 +98,6 @@ const BowForm = ({ modalVisible, setModalVisible, bow, existingBows = [], onSucc
         await bowRepository.create(bowData);
       }
 
-      // Best-effort: unfavourite other bows. Don't let this block the success path.
-      if (isFavorite) {
-        const favoriteBows = bows.filter((b) => b.isFavorite && b.id !== bow?.id);
-        for (const favBow of favoriteBows) {
-          try {
-            await bowRepository.update(favBow.id, { isFavorite: false });
-          } catch (e) {
-            console.error('[BowForm] Could not unfavourite bow:', favBow.id, e);
-          }
-        }
-      }
 
       clearForm();
       setModalVisible(false);
@@ -313,7 +302,8 @@ const BowForm = ({ modalVisible, setModalVisible, bow, existingBows = [], onSucc
               )}
 
               <Textarea
-                label="Notater (valgfritt)"
+                label="Notater"
+                optional
                 value={notes}
                 onChangeText={(value) => dispatch({ type: 'SET_NOTES', payload: value })}
                 placeholderText="F.eks. Spesielle innstillinger eller justeringer"
