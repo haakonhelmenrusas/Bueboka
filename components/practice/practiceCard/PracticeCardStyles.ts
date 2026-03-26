@@ -46,10 +46,22 @@ export const styles = StyleSheet.create({
     borderRadius: 12,
     gap: 4,
   },
+  badgeCompetition: {
+    backgroundColor: colors.warning,
+  },
   badgeText: {
     fontSize: 11,
     fontWeight: '600',
     color: colors.white,
+  },
+  badgeTextCompetition: {
+    color: colors.primaryDark,
+  },
+  competitionName: {
+    fontSize: 14,
+    fontWeight: '700',
+    color: colors.primaryDark,
+    marginBottom: 6,
   },
   detailsRow: {
     flexDirection: 'row',

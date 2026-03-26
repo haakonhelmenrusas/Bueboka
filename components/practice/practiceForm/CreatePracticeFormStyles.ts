@@ -398,17 +398,23 @@ export const styles = StyleSheet.create({
     fontWeight: '600',
   },
 
-  // ─── Delete link ──────────────────────────────────────────────────────────────
+  // ─── Delete section ──────────────────────────────────────────────────────────
+  deleteSection: {
+    marginTop: 24,
+    paddingTop: 16,
+    borderTopWidth: 1,
+    borderTopColor: colors.errorBorder,
+    alignItems: 'center',
+  },
   deleteLink: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: 8,
-    alignSelf: 'center',
-    marginTop: 24,
-    padding: 8,
+    padding: 10,
   },
   deleteLinkText: {
     fontSize: 14,
+    fontWeight: '500',
     color: colors.error,
   },
 

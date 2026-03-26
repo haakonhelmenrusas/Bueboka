@@ -71,6 +71,37 @@ export interface RoundType {
   updatedAt: string;
 }
 
+/** Filter type for combined practice/competition card list */
+export type PracticeFilter = 'all' | 'TRENING' | 'KONKURRANSE';
+
+/**
+ * Unified card item returned by the /practices/cards endpoint.
+ * Represents either a training session (TRENING) or a competition (KONKURRANSE).
+ */
+export interface PracticeCardItem {
+  id: string;
+  date: string;
+  arrowsShot: number;
+  location: string | null;
+  environment: string | null;
+  rating: number | null;
+  practiceType: 'TRENING' | 'KONKURRANSE';
+  totalScore: number | null;
+  roundTypeName: string | null;
+  practiceCategory: string | null;
+  /** Only present when practiceType === 'KONKURRANSE' */
+  competitionName?: string;
+  placement?: number | null;
+}
+
+/** Paginated response from /practices/cards */
+export interface PracticeCardsResponse {
+  practices: PracticeCardItem[];
+  page: number;
+  pageSize: number;
+  total: number;
+}
+
 /**
  * Practice model matching backend Prisma schema
  */

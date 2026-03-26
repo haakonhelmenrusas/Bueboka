@@ -8,8 +8,8 @@ import { useAuth } from '@/hooks';
 import { Message, Button, MobileActionButton } from '@/components/common';
 import { colors } from '@/styles/colors';
 import { statsApi, StatsResponse } from '@/services/api/statsApi';
-import { arrowsRepository, bowRepository, practiceRepository, userRepository } from '@/services/repositories';
-import { Bow, Arrows, Practice } from '@/types';
+import { arrowsRepository, bowRepository, competitionRepository, practiceRepository, userRepository } from '@/services/repositories';
+import { Bow, Arrows, Practice, Competition } from '@/types';
 import BowForm from '@/components/home/bowForm/BowForm';
 import ArrowForm from '@/components/home/arrowForm/ArrowForm';
 import BowDetails from '@/components/home/bowDetails/BowDetails';
@@ -21,6 +21,7 @@ import { faChevronRight } from '@fortawesome/free-solid-svg-icons/faChevronRight
 import { faTrophy } from '@fortawesome/free-solid-svg-icons/faTrophy';
 import ProfileImageManager from '@/components/home/profile/ProfileImageManager';
 import { AppError } from '@/services';
+import CreateCompetitionForm from '@/components/practice/competitionForm/CreateCompetitionForm';
 
 export default function HomeScreen() {
   const { user, refreshUser } = useAuth();
@@ -34,7 +35,8 @@ export default function HomeScreen() {
   });
   const [bows, setBows] = useState<Bow[]>([]);
   const [arrows, setArrows] = useState<Arrows[]>([]);
-  const [practices, setPractices] = useState<Practice[]>([]);
+  // refreshKey increments to trigger PracticesSection reload after save/delete
+  const [practicesRefreshKey, setPracticesRefreshKey] = useState(0);
   const [bowModalVisible, setBowModalVisible] = useState(false);
   const [arrowModalVisible, setArrowModalVisible] = useState(false);
   const [practiceModalVisible, setPracticeModalVisible] = useState(false);
@@ -43,15 +45,16 @@ export default function HomeScreen() {
   const [selectedArrowSet, setSelectedArrowSet] = useState<Arrows | null>(null);
   const [selectedBowForDetails, setSelectedBowForDetails] = useState<Bow | null>(null);
   const [selectedArrowSetForDetails, setSelectedArrowSetForDetails] = useState<Arrows | null>(null);
+  const [competitionModalVisible, setCompetitionModalVisible] = useState(false);
+  const [editingCompetition, setEditingCompetition] = useState<Competition | null>(null);
 
   const loadData = useCallback(async () => {
     if (!user) return;
     try {
-      const [statsResult, bowsResult, arrowsResult, practicesResult] = await Promise.allSettled([
+      const [statsResult, bowsResult, arrowsResult] = await Promise.allSettled([
         statsApi.getStats(),
         bowRepository.getAll(),
         arrowsRepository.getAll(),
-        practiceRepository.getAll({ page: 1, limit: 5 }),
       ]);
 
       if (statsResult.status === 'fulfilled' && statsResult.value) {
@@ -62,9 +65,6 @@ export default function HomeScreen() {
       }
       if (arrowsResult.status === 'fulfilled') {
         setArrows(arrowsResult.value || []);
-      }
-      if (practicesResult.status === 'fulfilled') {
-        setPractices(practicesResult.value?.practices || []);
       }
     } catch (_error) {
       console.error('[HomePage] Error loading data:', _error);
@@ -82,6 +82,12 @@ export default function HomeScreen() {
   const handleRefresh = async () => {
     setRefreshing(true);
     await loadData();
+    // Also refresh the practices/competitions list
+    setPracticesRefreshKey((k) => k + 1);
+  };
+
+  const handlePracticesSaved = () => {
+    setPracticesRefreshKey((k) => k + 1);
   };
 
   async function handleAvatarUpload(uri: string) {
@@ -135,8 +141,7 @@ export default function HomeScreen() {
               <TouchableOpacity
                 style={styles.trophyButton}
                 onPress={() => router.push('/(tabs)/home/achievements')}
-                accessibilityLabel="Mine prestasjoner"
-              >
+                accessibilityLabel="Mine prestasjoner">
                 <FontAwesomeIcon icon={faTrophy} size={20} color={colors.warning} />
               </TouchableOpacity>
             </View>
@@ -163,18 +168,24 @@ export default function HomeScreen() {
             }}
           />
           <PracticesSection
-            practices={practices}
-            loading={false}
+            refreshKey={practicesRefreshKey}
             onSelectPractice={async (id) => {
               try {
                 const fullPractice = await practiceRepository.getById(id);
                 setEditingPractice(fullPractice);
               } catch {
-                // Fallback to list data if fetch fails
-                const found = practices.find((p) => p.id === id);
-                setEditingPractice(found ?? null);
+                setEditingPractice(null);
               }
               setPracticeModalVisible(true);
+            }}
+            onSelectCompetition={async (id) => {
+              try {
+                const fullCompetition = await competitionRepository.getById(id);
+                setEditingCompetition(fullCompetition);
+              } catch {
+                setEditingCompetition(null);
+              }
+              setCompetitionModalVisible(true);
             }}
           />
         </ScrollView>
@@ -228,7 +239,10 @@ export default function HomeScreen() {
           setEditingPractice(null);
           setPracticeModalVisible(true);
         }}
-        onCreateCompetition={() => {}}
+        onCreateCompetition={() => {
+          setEditingCompetition(null);
+          setCompetitionModalVisible(true);
+        }}
         onCreateBow={() => {
           setSelectedBow(null);
           setSelectedBowForDetails(null);
@@ -249,7 +263,18 @@ export default function HomeScreen() {
         bows={bows}
         arrowSets={arrows}
         editingPractice={editingPractice}
-        onPracticeSaved={loadData}
+        onPracticeSaved={handlePracticesSaved}
+      />
+      <CreateCompetitionForm
+        visible={competitionModalVisible}
+        onClose={() => {
+          setCompetitionModalVisible(false);
+          setEditingCompetition(null);
+        }}
+        bows={bows}
+        arrowSets={arrows}
+        editingCompetition={editingCompetition}
+        onSaved={handlePracticesSaved}
       />
     </View>
   );

@@ -186,16 +186,22 @@ export default function CreatePracticeForm({
 
       if (editingPractice.ends && editingPractice.ends.length > 0) {
         setRounds(
-          editingPractice.ends.map((end) => ({
-            distanceMeters: end.distanceMeters ?? undefined,
-            distanceFrom: end.distanceFrom ?? undefined,
-            distanceTo: end.distanceTo ?? undefined,
-            targetType: end.targetType ?? (end.targetSizeCm ? `${end.targetSizeCm}cm` : ''),
-            numberArrows: end.arrows ?? undefined,
-            arrowsWithoutScore: end.arrowsWithoutScore ?? undefined,
-            roundScore: end.roundScore ?? 0,
-            scores: end.scores ?? [],
-          })),
+          editingPractice.ends.map((end) => {
+            const savedScores = end.scores ?? [];
+            // Derive arrow count from end.arrows; fall back to scores.length
+            // for ends that were saved without an explicit arrow count.
+            const derivedArrowCount = end.arrows ?? (savedScores.length > 0 ? savedScores.length : undefined);
+            return {
+              distanceMeters: end.distanceMeters ?? undefined,
+              distanceFrom: end.distanceFrom ?? undefined,
+              distanceTo: end.distanceTo ?? undefined,
+              targetType: end.targetType ?? (end.targetSizeCm ? `${end.targetSizeCm}cm` : ''),
+              numberArrows: derivedArrowCount,
+              arrowsWithoutScore: end.arrowsWithoutScore ?? undefined,
+              roundScore: end.roundScore ?? 0,
+              scores: savedScores,
+            };
+          }),
         );
       } else {
         setRounds([emptyRound(editingPractice.practiceCategory ?? PracticeCategory.SKIVE_INDOOR)]);
@@ -345,9 +351,9 @@ export default function CreatePracticeForm({
 
   // ─── Build ends ──────────────────────────────────────────────────────────────
   // Note: `scores` (per-arrow breakdown) is intentionally excluded from this
-  // payload – the practice create/update endpoint does not accept it.
-  // roundScore is computed from per-arrow scores on the frontend and sent as the
-  // aggregated value the backend stores on the End record.
+  // payload. roundScore is the aggregated sum computed from per-arrow scores.
+  // Per-arrow scores (scores[]) ARE accepted by the backend and are included
+  // so they can be restored when re-opening the practice for editing.
   const buildEnds = (validRounds: RoundInput[]): CreateEndData[] =>
     validRounds.map((r) => {
       const end: CreateEndData = {
@@ -359,6 +365,8 @@ export default function CreatePracticeForm({
       if (r.distanceFrom !== undefined) end.distanceFrom = r.distanceFrom;
       if (r.distanceTo !== undefined) end.distanceTo = r.distanceTo;
       if (r.targetType) end.targetType = r.targetType;
+      // Include per-arrow scores when present so they survive save/reload cycles.
+      if (r.scores && r.scores.length > 0) end.scores = r.scores;
       return end;
     });
 
@@ -539,6 +547,15 @@ export default function CreatePracticeForm({
               />
             )}
           </View>
+        </View>
+      )}
+
+      {isEditing && (
+        <View style={styles.deleteSection}>
+          <TouchableOpacity style={styles.deleteLink} onPress={() => setConfirmVisible(true)} testID="delete-practice-button">
+            <FontAwesomeIcon icon={faTrashCan} size={16} color={colors.error} />
+            <Text style={styles.deleteLinkText}>Slett trening</Text>
+          </TouchableOpacity>
         </View>
       )}
     </View>
@@ -769,13 +786,6 @@ export default function CreatePracticeForm({
       />
 
       {error && <Text style={styles.error}>{error}</Text>}
-
-      {isEditing && (
-        <TouchableOpacity style={styles.deleteLink} onPress={() => setConfirmVisible(true)} testID="delete-practice-button">
-          <FontAwesomeIcon icon={faTrashCan} size={16} color={colors.error} />
-          <Text style={styles.deleteLinkText}>Slett trening</Text>
-        </TouchableOpacity>
-      )}
     </View>
   );
 

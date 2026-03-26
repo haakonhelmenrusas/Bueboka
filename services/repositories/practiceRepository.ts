@@ -1,6 +1,6 @@
 import { authFetchClient as client } from '@/services/api/authFetch';
 import { handleApiError } from '@/services/api/errors';
-import { End, Environment, Practice, PracticeCategory, WeatherCondition } from '@/types';
+import { End, Environment, Practice, PracticeCardsResponse, PracticeCategory, PracticeFilter, WeatherCondition } from '@/types';
 
 /**
  * End creation data structure (for creating practice ends)
@@ -67,6 +67,15 @@ export interface PracticeQueryParams {
 }
 
 /**
+ * Query parameters for the unified practice+competition cards endpoint
+ */
+export interface PracticeCardsQueryParams {
+  page?: number;
+  pageSize?: number;
+  filter?: PracticeFilter;
+}
+
+/**
  * Practice list response structure (actual API response)
  */
 export interface PracticeListResponse {
@@ -77,6 +86,23 @@ export interface PracticeListResponse {
  * Practice repository - handles all practice-related API operations
  */
 export const practiceRepository = {
+  /**
+   * Get paginated combined practice + competition cards for the current user.
+   * Calls the /practices/cards endpoint which returns both TRENING and KONKURRANSE items.
+   */
+  async getCards(params?: PracticeCardsQueryParams): Promise<PracticeCardsResponse> {
+    try {
+      const queryParams = new URLSearchParams();
+      if (params?.page) queryParams.append('page', params.page.toString());
+      if (params?.pageSize) queryParams.append('pageSize', params.pageSize.toString());
+      if (params?.filter) queryParams.append('filter', params.filter);
+      const response = await client.get<PracticeCardsResponse>(`/practices/cards?${queryParams.toString()}`);
+      return response.data;
+    } catch (error) {
+      throw handleApiError(error);
+    }
+  },
+
   /**
    * Get all practices for the current user with optional pagination and filters
    */
