@@ -1,3 +1,13 @@
+// Polyfill TextEncoder / TextDecoder – required by axios (browser platform adapter)
+// and expo's URL polyfill when running in the jsdom test environment.
+if (typeof TextEncoder === 'undefined') {
+  const { TextEncoder: NodeTextEncoder, TextDecoder: NodeTextDecoder } = require('util');
+  // @ts-ignore
+  global.TextEncoder = NodeTextEncoder;
+  // @ts-ignore
+  global.TextDecoder = NodeTextDecoder;
+}
+
 jest.mock('@react-native-async-storage/async-storage', () => require('@react-native-async-storage/async-storage/jest/async-storage-mock'));
 jest.mock('@fortawesome/react-native-fontawesome', () => ({
   FontAwesomeIcon: () => null,
