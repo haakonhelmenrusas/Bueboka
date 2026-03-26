@@ -47,9 +47,7 @@ beforeEach(() => {
     </TouchableOpacity>
   ));
 
-  jest.mocked(ModalWrapper).mockImplementation(({ children, visible }: any) =>
-    visible ? <View testID="modal">{children}</View> : null,
-  );
+  jest.mocked(ModalWrapper).mockImplementation(({ children, visible }: any) => (visible ? <View testID="modal">{children}</View> : <></>));
 });
 
 // ── Fixtures ──────────────────────────────────────────────────────────────────
@@ -75,9 +73,7 @@ const baseUser: User = {
 function renderForm(overrides: Partial<User> = {}, onSave = jest.fn(), setModalVisible = jest.fn()) {
   const user = { ...baseUser, ...overrides };
   return {
-    ...render(
-      <ProfileForm modalVisible={true} setModalVisible={setModalVisible} user={user} onSave={onSave} />,
-    ),
+    ...render(<ProfileForm modalVisible={true} setModalVisible={setModalVisible} user={user} onSave={onSave} />),
     onSave,
     setModalVisible,
   };
@@ -92,9 +88,7 @@ describe('ProfileForm – rendering', () => {
   });
 
   it('does not render when modalVisible is false', () => {
-    const { queryByTestId } = render(
-      <ProfileForm modalVisible={false} setModalVisible={jest.fn()} user={baseUser} onSave={jest.fn()} />,
-    );
+    const { queryByTestId } = render(<ProfileForm modalVisible={false} setModalVisible={jest.fn()} user={baseUser} onSave={jest.fn()} />);
     expect(queryByTestId('modal')).toBeNull();
   });
 
@@ -160,9 +154,7 @@ describe('ProfileForm – saving', () => {
 
     fireEvent.press(getByTestId('btn-Lagre'));
 
-    expect(onSave).toHaveBeenCalledWith(
-      expect.objectContaining({ club: undefined }),
-    );
+    expect(onSave).toHaveBeenCalledWith(expect.objectContaining({ club: undefined }));
   });
 
   it('calls setModalVisible(false) after a successful save', () => {
