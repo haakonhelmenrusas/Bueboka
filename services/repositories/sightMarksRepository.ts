@@ -63,17 +63,13 @@ export const sightMarksRepository = {
     }
   },
 
-  async getResults(sightMarkId?: string): Promise<SightMarkResult[]> {
-    const url = sightMarkId ? `/sight-mark-results?sightMarkId=${sightMarkId}` : '/sight-mark-results';
-    const response = await client.get<SightMarkResult[] | { sightMarkResults: SightMarkResult[] }>(url);
+  async getResults(sightMarkId: string): Promise<SightMarkResult[]> {
+    const response = await client.get<SightMarkResult[] | { sightMarkResults: SightMarkResult[] }>(`/sight-marks/${sightMarkId}/results`);
     const raw = response.data as any;
     return Array.isArray(raw) ? raw : (raw?.sightMarkResults ?? raw?.results ?? []);
   },
   async createResult(sightMarkId: string, data: Partial<SightMarkResult>): Promise<SightMarkResult> {
-    const response = await client.post<{ sightMarkResult: SightMarkResult } | SightMarkResult>('/sight-mark-results', {
-      ...data,
-      sightMarkId,
-    });
+    const response = await client.post<{ sightMarkResult: SightMarkResult } | SightMarkResult>(`/sight-marks/${sightMarkId}/results`, data);
     const raw = response.data as any;
     return raw?.sightMarkResult ?? raw;
   },

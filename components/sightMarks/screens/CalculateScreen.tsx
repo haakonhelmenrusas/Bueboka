@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { Keyboard, Pressable, ScrollView, StyleSheet, View } from 'react-native';
-import { AimDistanceMark, Arrows, Bow, BowSpecification, CalculatedMarks, MarkValue, SightMark } from '@/types';
+import { AimDistanceMark, Arrows, Bow, BowSpecification, MarkValue, SightMark } from '@/types';
 import { useSharedValue, withTiming } from 'react-native-reanimated';
 import { Ballistics } from '@/utils';
 import * as Sentry from '@sentry/react-native';
@@ -37,7 +37,11 @@ export default function CalculateScreen() {
       setSightMarks(all.sort((a, b) => new Date(b.createdAt ?? 0).getTime() - new Date(a.createdAt ?? 0).getTime()));
     } catch (err) {
       Sentry.captureException(err);
-      setError(err instanceof AppError && err.code === 'NETWORK_ERROR' ? 'Nettverksfeil - sjekk internettforbindelsen' : 'Kunne ikke laste siktemerker');
+      setError(
+        err instanceof AppError && err.code === 'NETWORK_ERROR'
+          ? 'Nettverksfeil - sjekk internettforbindelsen'
+          : 'Kunne ikke laste siktemerker',
+      );
     } finally {
       setIsLoading(false);
     }
@@ -79,54 +83,78 @@ export default function CalculateScreen() {
 
   // ─── sendMarks ──────────────────────────────────────────────────────────────
 
-  async function sendMarks(newMark: MarkValue) {
-    try {
-      setStatus('pending');
-      setError(null);
-      const { bow, arrows, spec } = await ensureBowSpec();
-      const givenMarks = [...(activeSightMark?.givenMarks ?? []), newMark.aim];
-      const givenDistances = [...(activeSightMark?.givenDistances ?? []), newMark.distance];
+  const sendMarks = useCallback(
+    async (newMark: MarkValue) => {
+      try {
+        setStatus('pending');
+        setError(null);
+        const { bow, arrows, spec } = await ensureBowSpec();
+        const givenMarks = [...(activeSightMark?.givenMarks ?? []), newMark.aim];
+        const givenDistances = [...(activeSightMark?.givenDistances ?? []), newMark.distance];
 
-      const body: AimDistanceMark = {
-        ...Ballistics,
-        new_given_mark: newMark.aim,
-        new_given_distance: newMark.distance,
-        given_marks: givenMarks,
-        given_distances: givenDistances,
-        bow_category: bow.type,
-        interval_sight_real: bow.aimMeasure ?? 5,
-        interval_sight_measured: bow.aimMeasure ?? 5,
-        arrow_diameter_mm: arrows?.diameter ?? 5,
-        arrow_mass_gram: arrows?.weight ?? 21.2,
-        length_eye_sight_cm: bow.eyeToSight ?? 0,
-        length_nock_eye_cm: bow.eyeToNock ?? 0,
-      };
+        const body: AimDistanceMark = {
+          ...Ballistics,
+          new_given_mark: newMark.aim,
+          new_given_distance: newMark.distance,
+          given_marks: givenMarks,
+          given_distances: givenDistances,
+          bow_category: bow.type,
+          interval_sight_real: bow.aimMeasure ?? 5,
+          interval_sight_measured: bow.aimMeasure ?? 5,
+          arrow_diameter_mm: arrows?.diameter ?? 5,
+          arrow_mass_gram: arrows?.weight ?? 21.2,
+          length_eye_sight_cm: bow.eyeToSight ?? 0,
+          length_nock_eye_cm: bow.eyeToNock ?? 0,
+        };
 
-      const aimMarkResponse = await sightMarksRepository.calculateBallistics(body);
+        const aimMarkResponse = await sightMarksRepository.calculateBallistics(body);
 
-      if (activeSightMark) {
-        await offlineMutation(
-          { type: 'sightMarks/updateMark', payload: { id: activeSightMark.id, givenMarks, givenDistances, ballisticsParameters: aimMarkResponse } },
-          () => sightMarksRepository.patch(activeSightMark.id, { givenMarks, givenDistances, ballisticsParameters: aimMarkResponse }),
-          user?.id,
-        );
-      } else {
-        await offlineMutation(
-          { type: 'sightMarks/createMark', payload: { userId: user?.id, bowSpecificationId: spec.id, name: newMark.name, givenMarks, givenDistances, ballisticsParameters: aimMarkResponse } },
-          () => sightMarksRepository.create({ userId: user?.id, bowSpecificationId: spec.id, name: newMark.name, givenMarks, givenDistances, ballisticsParameters: aimMarkResponse }),
-          user?.id,
-        );
+        if (activeSightMark) {
+          await offlineMutation(
+            {
+              type: 'sightMarks/updateMark',
+              payload: { id: activeSightMark.id, givenMarks, givenDistances, ballisticsParameters: aimMarkResponse },
+            },
+            () => sightMarksRepository.patch(activeSightMark.id, { givenMarks, givenDistances, ballisticsParameters: aimMarkResponse }),
+            user?.id,
+          );
+        } else {
+          await offlineMutation(
+            {
+              type: 'sightMarks/createMark',
+              payload: {
+                userId: user?.id,
+                bowSpecificationId: spec.id,
+                name: newMark.name,
+                givenMarks,
+                givenDistances,
+                ballisticsParameters: aimMarkResponse,
+              },
+            },
+            () =>
+              sightMarksRepository.create({
+                userId: user?.id,
+                bowSpecificationId: spec.id,
+                name: newMark.name,
+                givenMarks,
+                givenDistances,
+                ballisticsParameters: aimMarkResponse,
+              }),
+            user?.id,
+          );
+        }
+
+        await loadData();
+      } catch (err) {
+        Sentry.captureException(err);
+        setError('Kunne ikke beregne siktemerker');
+        setStatus('error');
+        return;
       }
-
-      await loadData();
-    } catch (err) {
-      Sentry.captureException(err);
-      setError('Kunne ikke beregne siktemerker');
-      setStatus('error');
-      return;
-    }
-    setStatus('idle');
-  }
+      setStatus('idle');
+    },
+    [activeSightMark, user, loadData],
+  );
 
   // ─── Delete single mark from a set ─────────────────────────────────────────
 
@@ -206,15 +234,10 @@ export default function CalculateScreen() {
     <GestureHandlerRootView style={styles.page}>
       <Pressable style={{ flex: 1 }} onPress={Keyboard.dismiss}>
         <ScrollView contentContainerStyle={styles.list}>
-          {error && (
-            <Message title="Oisann, noe gikk galt." description={error} onPress={() => setError(null)} buttonLabel="Lukk" />
-          )}
+          {error && <Message title="Oisann, noe gikk galt." description={error} onPress={() => setError(null)} buttonLabel="Lukk" />}
 
           {!isLoading && sightMarks.length === 0 && !error && (
-            <Message
-              title="Ingen innskyting registrert"
-              description="Trykk «Ny innskyting» for å legge inn dine første siktemerker."
-            />
+            <Message title="Ingen innskyting registrert" description="Trykk «Ny innskyting» for å legge inn dine første siktemerker." />
           )}
 
           {sightMarks.map((sm) => (
@@ -251,11 +274,7 @@ export default function CalculateScreen() {
         />
       )}
 
-      <ConfirmRemoveMarks
-        modalVisible={confirmDeleteId !== null}
-        onConfirm={handleDeleteSet}
-        closeModal={() => setConfirmDeleteId(null)}
-      />
+      <ConfirmRemoveMarks modalVisible={confirmDeleteId !== null} onConfirm={handleDeleteSet} closeModal={() => setConfirmDeleteId(null)} />
     </GestureHandlerRootView>
   );
 }

@@ -8,7 +8,8 @@ export const styles = StyleSheet.create({
     borderRadius: 12,
   },
   header: {
-    width: '100%',
+    paddingHorizontal: 16,
+    paddingTop: 16,
     flexDirection: 'row',
     justifyContent: 'space-between',
   },

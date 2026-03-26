@@ -3,7 +3,7 @@ import { colors } from '@/styles/colors';
 
 export const styles = StyleSheet.create({
   trainingCard: {
-    marginVertical: 6,
+    marginVertical: 2,
     marginHorizontal: 1,
     backgroundColor: colors.white,
     borderRadius: 12,

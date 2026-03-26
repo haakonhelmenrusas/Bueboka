@@ -165,12 +165,16 @@ export default function HomeScreen() {
           <PracticesSection
             practices={practices}
             loading={false}
-            onSelectPractice={(id) => {
-              const found = practices.find((p) => p.id === id);
-              if (found) {
-                setEditingPractice(found);
-                setPracticeModalVisible(true);
+            onSelectPractice={async (id) => {
+              try {
+                const fullPractice = await practiceRepository.getById(id);
+                setEditingPractice(fullPractice);
+              } catch {
+                // Fallback to list data if fetch fails
+                const found = practices.find((p) => p.id === id);
+                setEditingPractice(found ?? null);
               }
+              setPracticeModalVisible(true);
             }}
           />
         </ScrollView>

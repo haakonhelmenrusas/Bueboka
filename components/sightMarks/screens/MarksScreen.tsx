@@ -166,7 +166,7 @@ export default function MarksScreen({ setScreen }: MarksScreenProps) {
 
       {calculatedMarks && (
         <View style={styles.actionBar}>
-          {(
+          {
             <Button
               type="outline"
               iconPosition="left"
@@ -175,7 +175,7 @@ export default function MarksScreen({ setScreen }: MarksScreenProps) {
               onPress={() => setShowSpeed(!showSpeed)}
               {...outlineWhite}
             />
-          )}
+          }
           <View style={styles.buttons}>
             <Button
               type="outline"

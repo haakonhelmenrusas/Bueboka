@@ -26,8 +26,19 @@ export default function PracticeCard({ practice, onEdit }: PracticeCardProps) {
     }
   };
 
-  // Calculate total arrows shot from ends
-  const totalArrows = practice.ends?.reduce((sum, end) => sum + (end.arrows || 0), 0) || 0;
+  // Scored arrows only (end.arrows excludes arrowsWithoutScore)
+  const totalScoredArrows = practice.ends?.reduce((sum, end) => sum + (end.arrows ?? 0), 0) ?? 0;
+  const totalScore = practice.totalScore ?? 0;
+
+  // Combined score label: "290 p / 30 piler" when both available, otherwise just one
+  const scoreLabel = (() => {
+    const hasScoredArrows = totalScoredArrows > 0;
+    const hasScore = totalScore > 0;
+    if (hasScore && hasScoredArrows) return `${totalScore} p / ${totalScoredArrows} piler`;
+    if (hasScore) return `${totalScore} p`;
+    if (hasScoredArrows) return `${totalScoredArrows} piler`;
+    return null;
+  })();
 
   // Format date - handle both Date objects and ISO strings from API
   const practiceDate = practice.date as Date | string;
@@ -63,15 +74,10 @@ export default function PracticeCard({ practice, onEdit }: PracticeCardProps) {
         </View>
 
         <View style={styles.detailsRow}>
-          <View style={styles.detailItem}>
-            <FontAwesomeIcon icon={faBullseye} size={14} color={colors.secondary} />
-            <Text style={styles.detailText}>{totalArrows} piler</Text>
-          </View>
-
-          {practice.totalScore > 0 && (
+          {scoreLabel && (
             <View style={styles.detailItem}>
               <FontAwesomeIcon icon={faStar} size={14} color={colors.secondary} />
-              <Text style={styles.detailText}>{practice.totalScore} poeng</Text>
+              <Text style={styles.detailText}>{scoreLabel}</Text>
             </View>
           )}
 

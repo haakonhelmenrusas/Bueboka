@@ -90,7 +90,7 @@ export const styles = StyleSheet.create({
     borderColor: colors.border,
     borderRadius: 10,
     padding: 12,
-    gap: 10,
+    gap: 4,
     marginTop: 4,
   },
   publicSubLabel: {

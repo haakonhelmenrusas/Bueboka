@@ -8,7 +8,8 @@ import { End, Environment, Practice, PracticeCategory, WeatherCondition } from '
 export interface CreateEndData {
   arrows?: number;
   arrowsWithoutScore?: number;
-  scores: number[];
+  /** Per-arrow breakdown – only accepted by the live-shooting endpoint, not by practice create/update. */
+  scores?: number[];
   roundScore?: number;
   distanceMeters?: number;
   distanceFrom?: number;
@@ -172,18 +173,6 @@ export const practiceRepository = {
   async deleteEnd(practiceId: string, endId: string): Promise<void> {
     try {
       await client.delete(`/practices/${practiceId}/ends/${endId}`);
-    } catch (error) {
-      throw handleApiError(error);
-    }
-  },
-
-  /**
-   * Get practices within a date range (convenience method)
-   */
-  async getByDateRange(startDate: Date, endDate: Date): Promise<Practice[]> {
-    try {
-      const response = await this.getAll({ startDate, endDate, limit: 1000 });
-      return response.practices;
     } catch (error) {
       throw handleApiError(error);
     }

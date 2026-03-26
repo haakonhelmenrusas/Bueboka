@@ -66,8 +66,7 @@ export const CalculateMarksModal = ({
       const rawRes = await sightMarksRepository.calculateSightMarks(body);
 
       // Prefer the service's echoed distances; fall back to the locally-built list
-      const fullDistances =
-        Array.isArray(rawRes.distances) && rawRes.distances.length > 1 ? rawRes.distances : allDistances;
+      const fullDistances = Array.isArray(rawRes.distances) && rawRes.distances.length > 1 ? rawRes.distances : allDistances;
 
       const res: MarksResult = {
         distances: fullDistances,
