@@ -82,6 +82,7 @@ export interface PracticeCardItem {
   id: string;
   date: string;
   arrowsShot: number;
+  arrowsWithScore?: number | null;
   location: string | null;
   environment: string | null;
   rating: number | null;

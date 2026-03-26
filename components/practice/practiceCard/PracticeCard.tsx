@@ -1,7 +1,7 @@
 import { Text, TouchableOpacity, View } from 'react-native';
 import { PracticeCardItem } from '@/types';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
-import { faHouse, faMapPin, faStar, faBullseye, faTree, faTrophy, faMedal } from '@fortawesome/free-solid-svg-icons';
+import { faHouse, faMapPin, faStar, faBullseye, faTree, faTrophy, faMedal, faArrowUp } from '@fortawesome/free-solid-svg-icons';
 import { styles } from './PracticeCardStyles';
 import { LinearGradient } from 'expo-linear-gradient';
 import { colors } from '@/styles/colors';
@@ -22,13 +22,12 @@ function formatEnvironment(env?: string | null) {
 export default function PracticeCard({ card, onPress }: PracticeCardProps) {
   const isCompetition = card.practiceType === 'KONKURRANSE';
 
-  // Score label
+  // Score label: "totalScore / arrowsWithScore"
   const scoreLabel = (() => {
     const hasScore = (card.totalScore ?? 0) > 0;
-    const hasArrows = card.arrowsShot > 0;
-    if (hasScore && hasArrows) return `${card.totalScore} p / ${card.arrowsShot} piler`;
-    if (hasScore) return `${card.totalScore} p`;
-    if (hasArrows) return `${card.arrowsShot} piler`;
+    const hasArrowsWithScore = (card.arrowsWithScore ?? 0) > 0;
+    if (hasScore && hasArrowsWithScore) return `${card.totalScore} / ${card.arrowsWithScore}`;
+    if (hasScore) return `${card.totalScore}`;
     return null;
   })();
 
@@ -69,6 +68,13 @@ export default function PracticeCard({ card, onPress }: PracticeCardProps) {
         {isCompetition && card.competitionName && <Text style={styles.competitionName}>{card.competitionName}</Text>}
 
         <View style={styles.detailsRow}>
+          {card.arrowsShot > 0 && (
+            <View style={styles.detailItem}>
+              <FontAwesomeIcon icon={faArrowUp} size={14} color={colors.secondary} />
+              <Text style={styles.detailText}>{card.arrowsShot} piler</Text>
+            </View>
+          )}
+
           {scoreLabel && (
             <View style={styles.detailItem}>
               <FontAwesomeIcon icon={faStar} size={14} color={colors.secondary} />
