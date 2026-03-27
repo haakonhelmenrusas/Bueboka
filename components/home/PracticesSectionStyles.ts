@@ -16,52 +16,19 @@ export const styles = StyleSheet.create({
     fontWeight: '800',
     color: colors.white,
   },
-  // ─── Filter tabs ────────────────────────────────────────────────────────
-  filterRow: {
+  seeAllBtn: {
     flexDirection: 'row',
-    gap: 8,
-    marginBottom: 12,
+    alignItems: 'center',
+    gap: 4,
   },
-  filterTab: {
-    paddingHorizontal: 14,
-    paddingVertical: 7,
-    borderRadius: 20,
-    backgroundColor: colors.white20,
-    borderWidth: 1,
-    borderColor: colors.white30,
-  },
-  filterTabActive: {
-    backgroundColor: colors.white,
-    borderColor: colors.white,
-  },
-  filterTabText: {
-    fontSize: 13,
+  seeAllText: {
+    fontSize: 15,
     fontWeight: '600',
-    color: colors.white80,
-  },
-  filterTabTextActive: {
-    color: colors.primary,
+    color: colors.warning,
   },
   // ─── List ───────────────────────────────────────────────────────────────
   list: {
     gap: 8,
-  },
-  // ─── Load more ──────────────────────────────────────────────────────────
-  loadMoreBtn: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingVertical: 12,
-    borderRadius: 12,
-    backgroundColor: colors.white20,
-    borderWidth: 1,
-    borderColor: colors.white30,
-    marginTop: 4,
-    minHeight: 44,
-  },
-  loadMoreText: {
-    fontSize: 14,
-    fontWeight: '600',
-    color: colors.white,
   },
   // ─── States ─────────────────────────────────────────────────────────────
   placeholder: {

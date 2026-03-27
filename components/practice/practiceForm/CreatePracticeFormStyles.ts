@@ -2,7 +2,7 @@ import { Dimensions, Platform, StyleSheet } from 'react-native';
 import { colors } from '@/styles/colors';
 
 const WINDOW_HEIGHT = Dimensions.get('window').height;
-const MODAL_HEIGHT = WINDOW_HEIGHT * 0.88;
+const MODAL_HEIGHT = WINDOW_HEIGHT * 0.72;
 
 export const styles = StyleSheet.create({
   // ─── Modal container ─────────────────────────────────────────────────────────
@@ -10,7 +10,7 @@ export const styles = StyleSheet.create({
     backgroundColor: colors.white,
     borderRadius: 12,
     height: MODAL_HEIGHT,
-    ...Platform.select({ android: { minHeight: WINDOW_HEIGHT * 0.7 } }),
+    ...Platform.select({ android: { minHeight: WINDOW_HEIGHT * 0.6 } }),
   },
   scrollView: {
     flex: 1,
@@ -430,14 +430,37 @@ export const styles = StyleSheet.create({
   navRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-between',
+  },
+  navCancelBtn: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+    paddingVertical: 8,
+  },
+  navCancelText: {
+    fontSize: 13,
+    fontWeight: '500',
+    color: colors.textSecondary,
+  },
+  navCenter: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+    justifyContent: 'center',
+  },
+  navDeleteBtn: {
+    flex: 1,
+    alignItems: 'flex-end',
+    justifyContent: 'center',
+    paddingVertical: 8,
   },
   navArrow: {
-    width: 44,
-    height: 44,
+    width: 36,
+    height: 36,
     alignItems: 'center',
     justifyContent: 'center',
-    borderRadius: 22,
+    borderRadius: 18,
     borderWidth: 1,
     borderColor: colors.border,
     backgroundColor: colors.bgGray50,

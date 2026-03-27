@@ -428,15 +428,6 @@ export default function CreateCompetitionForm({
           </View>
         </View>
       )}
-
-      {isEditing && (
-        <View style={styles.deleteSection}>
-          <TouchableOpacity style={styles.deleteLink} onPress={() => setConfirmVisible(true)} testID="delete-competition-button">
-            <FontAwesomeIcon icon={faTrashCan} size={16} color={colors.error} />
-            <Text style={styles.deleteLinkText}>Slett konkurranse</Text>
-          </TouchableOpacity>
-        </View>
-      )}
     </View>
   );
 
@@ -542,7 +533,7 @@ export default function CreateCompetitionForm({
                 <Input
                   label="Piler m/score"
                   optional
-                  value={round.numberArrows !== undefined ? String(round.numberArrows) : ''}
+                  value={round.numberArrows !== undefined && round.numberArrows !== null ? String(round.numberArrows) : ''}
                   onChangeText={(t) => updateRound(index, 'numberArrows', parseNum(t))}
                   keyboardType="numeric"
                   containerStyle={styles.roundField}
@@ -550,7 +541,7 @@ export default function CreateCompetitionForm({
                 <Input
                   label="Score"
                   optional
-                  value={round.roundScore !== 0 ? String(round.roundScore) : ''}
+                  value={round.roundScore !== undefined && round.roundScore !== null ? String(round.roundScore) : ''}
                   onChangeText={(t) => updateRound(index, 'roundScore', parseNum(t) ?? 0)}
                   keyboardType="numeric"
                   containerStyle={styles.roundField}
@@ -560,7 +551,7 @@ export default function CreateCompetitionForm({
               <Input
                 label="Piler u/score"
                 optional
-                value={round.arrowsWithoutScore !== undefined ? String(round.arrowsWithoutScore) : ''}
+                value={round.arrowsWithoutScore !== undefined && round.arrowsWithoutScore !== null ? String(round.arrowsWithoutScore) : ''}
                 onChangeText={(t) => updateRound(index, 'arrowsWithoutScore', parseNum(t))}
                 keyboardType="numeric"
                 containerStyle={{ width: '48%' }}
@@ -630,22 +621,40 @@ export default function CreateCompetitionForm({
     return (
       <View style={styles.navFooter}>
         <View style={styles.navRow}>
-          <TouchableOpacity
-            style={[styles.navArrow, isFirstStep && styles.navArrowDisabled]}
-            onPress={goPrev}
-            disabled={isFirstStep}
-            accessibilityLabel="Forrige steg">
-            <FontAwesomeIcon icon={faChevronLeft} size={22} color={isFirstStep ? colors.dimmed : colors.primary} />
+          {/* Left: cancel — always visible */}
+          <TouchableOpacity style={styles.navCancelBtn} onPress={handleClose} accessibilityLabel="Avbryt">
+            <FontAwesomeIcon icon={faXmark} size={14} color={colors.textSecondary} />
+            <Text style={styles.navCancelText}>Avbryt</Text>
           </TouchableOpacity>
 
-          <Text style={styles.navStepName}>{STEP_LABELS[step]}</Text>
-
-          {isLastStep ? (
-            <View style={styles.navArrow} />
-          ) : (
-            <TouchableOpacity style={styles.navArrow} onPress={goNext} accessibilityLabel="Neste steg">
-              <FontAwesomeIcon icon={faChevronRight} size={22} color={colors.primary} />
+          {/* Center: prev / step name / next */}
+          <View style={styles.navCenter}>
+            <TouchableOpacity
+              style={[styles.navArrow, isFirstStep && styles.navArrowDisabled]}
+              onPress={goPrev}
+              disabled={isFirstStep}
+              accessibilityLabel="Forrige steg">
+              <FontAwesomeIcon icon={faChevronLeft} size={18} color={isFirstStep ? colors.dimmed : colors.primary} />
             </TouchableOpacity>
+
+            <Text style={styles.navStepName}>{STEP_LABELS[step]}</Text>
+
+            {isLastStep ? (
+              <View style={styles.navArrow} />
+            ) : (
+              <TouchableOpacity style={styles.navArrow} onPress={goNext} accessibilityLabel="Neste steg">
+                <FontAwesomeIcon icon={faChevronRight} size={18} color={colors.primary} />
+              </TouchableOpacity>
+            )}
+          </View>
+
+          {/* Right: delete when editing, spacer otherwise */}
+          {isEditing ? (
+            <TouchableOpacity style={styles.navDeleteBtn} onPress={() => setConfirmVisible(true)} accessibilityLabel="Slett konkurranse">
+              <FontAwesomeIcon icon={faTrashCan} size={16} color={colors.error} />
+            </TouchableOpacity>
+          ) : (
+            <View style={styles.navDeleteBtn} />
           )}
         </View>
 

@@ -549,15 +549,6 @@ export default function CreatePracticeForm({
           </View>
         </View>
       )}
-
-      {isEditing && (
-        <View style={styles.deleteSection}>
-          <TouchableOpacity style={styles.deleteLink} onPress={() => setConfirmVisible(true)} testID="delete-practice-button">
-            <FontAwesomeIcon icon={faTrashCan} size={16} color={colors.error} />
-            <Text style={styles.deleteLinkText}>Slett trening</Text>
-          </TouchableOpacity>
-        </View>
-      )}
     </View>
   );
 
@@ -824,22 +815,40 @@ export default function CreatePracticeForm({
     return (
       <View style={styles.navFooter}>
         <View style={styles.navRow}>
-          <TouchableOpacity
-            style={[styles.navArrow, isFirstStep && styles.navArrowDisabled]}
-            onPress={goPrev}
-            disabled={isFirstStep}
-            accessibilityLabel="Forrige steg">
-            <FontAwesomeIcon icon={faChevronLeft} size={22} color={isFirstStep ? colors.dimmed : colors.primary} />
+          {/* Left: cancel — always visible */}
+          <TouchableOpacity style={styles.navCancelBtn} onPress={handleClose} accessibilityLabel="Avbryt">
+            <FontAwesomeIcon icon={faXmark} size={14} color={colors.textSecondary} />
+            <Text style={styles.navCancelText}>Avbryt</Text>
           </TouchableOpacity>
 
-          <Text style={styles.navStepName}>{STEP_LABELS[step]}</Text>
-
-          {isLastStep ? (
-            <View style={styles.navArrow} />
-          ) : (
-            <TouchableOpacity style={styles.navArrow} onPress={goNext} accessibilityLabel="Neste steg">
-              <FontAwesomeIcon icon={faChevronRight} size={22} color={colors.primary} />
+          {/* Center: prev / step name / next */}
+          <View style={styles.navCenter}>
+            <TouchableOpacity
+              style={[styles.navArrow, isFirstStep && styles.navArrowDisabled]}
+              onPress={goPrev}
+              disabled={isFirstStep}
+              accessibilityLabel="Forrige steg">
+              <FontAwesomeIcon icon={faChevronLeft} size={18} color={isFirstStep ? colors.dimmed : colors.primary} />
             </TouchableOpacity>
+
+            <Text style={styles.navStepName}>{STEP_LABELS[step]}</Text>
+
+            {isLastStep ? (
+              <View style={styles.navArrow} />
+            ) : (
+              <TouchableOpacity style={styles.navArrow} onPress={goNext} accessibilityLabel="Neste steg">
+                <FontAwesomeIcon icon={faChevronRight} size={18} color={colors.primary} />
+              </TouchableOpacity>
+            )}
+          </View>
+
+          {/* Right: delete when editing, spacer otherwise */}
+          {isEditing ? (
+            <TouchableOpacity style={styles.navDeleteBtn} onPress={() => setConfirmVisible(true)} accessibilityLabel="Slett trening">
+              <FontAwesomeIcon icon={faTrashCan} size={16} color={colors.error} />
+            </TouchableOpacity>
+          ) : (
+            <View style={styles.navDeleteBtn} />
           )}
         </View>
 

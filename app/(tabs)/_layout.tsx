@@ -1,7 +1,7 @@
 import { faGear } from '@fortawesome/free-solid-svg-icons/faGear';
-import { faUsers } from '@fortawesome/free-solid-svg-icons/faUsers';
 import { faChartLine } from '@fortawesome/free-solid-svg-icons/faChartLine';
 import { faHome } from '@fortawesome/free-solid-svg-icons/faHome';
+import { faBullseye } from '@fortawesome/free-solid-svg-icons/faBullseye';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { Tabs } from 'expo-router';
 import { colors } from '@/styles/colors';
@@ -52,22 +52,22 @@ export default function AppLayout() {
           }}
         />
         <Tabs.Screen
+          name="aktivitet"
+          options={{
+            tabBarIcon: ({ focused }) => <FontAwesomeIcon icon={faBullseye} color={focused ? colors.primary : colors.inactive} />,
+            headerShadowVisible: false,
+            headerShown: false,
+            tabBarLabel: 'Aktivitet',
+            tabBarLabelStyle: { fontSize: 14 },
+          }}
+        />
+        <Tabs.Screen
           name="sightMarks"
           options={{
             tabBarIcon: ({ focused }) => <FontAwesomeIcon icon={faChartLine} color={focused ? colors.primary : colors.inactive} />,
             headerShadowVisible: false,
             headerShown: false,
             tabBarLabel: 'Siktemerker',
-            tabBarLabelStyle: { fontSize: 14 },
-          }}
-        />
-        <Tabs.Screen
-          name="skyttere"
-          options={{
-            tabBarIcon: ({ focused }) => <FontAwesomeIcon icon={faUsers} color={focused ? colors.primary : colors.inactive} />,
-            headerShadowVisible: false,
-            headerShown: false,
-            tabBarLabel: 'Skyttere',
             tabBarLabelStyle: { fontSize: 14 },
           }}
         />
@@ -79,6 +79,13 @@ export default function AppLayout() {
             headerShown: false,
             tabBarLabel: 'Innstillinger',
             tabBarLabelStyle: { fontSize: 14 },
+          }}
+        />
+        <Tabs.Screen
+          name="skyttere"
+          options={{
+            href: null,
+            headerShown: false,
           }}
         />
       </Tabs>

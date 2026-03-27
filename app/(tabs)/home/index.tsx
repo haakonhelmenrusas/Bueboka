@@ -22,6 +22,7 @@ import { faTrophy } from '@fortawesome/free-solid-svg-icons/faTrophy';
 import ProfileImageManager from '@/components/home/profile/ProfileImageManager';
 import { AppError } from '@/services';
 import CreateCompetitionForm from '@/components/practice/competitionForm/CreateCompetitionForm';
+import { faUserGroup } from '@fortawesome/free-solid-svg-icons';
 
 export default function HomeScreen() {
   const { user, refreshUser } = useAuth();
@@ -138,12 +139,20 @@ export default function HomeScreen() {
                 <Text style={styles.greeting}>{user.name?.split(' ')[0] || 'Skytter'}</Text>
                 {user.club && <Text style={styles.club}>{user.club}</Text>}
               </View>
-              <TouchableOpacity
-                style={styles.trophyButton}
-                onPress={() => router.push('/(tabs)/home/achievements')}
-                accessibilityLabel="Mine prestasjoner">
-                <FontAwesomeIcon icon={faTrophy} size={20} color={colors.warning} />
-              </TouchableOpacity>
+              <View style={styles.headerButtons}>
+                <TouchableOpacity
+                  style={styles.searchButton}
+                  onPress={() => router.push('/(tabs)/skyttere')}
+                  accessibilityLabel="Søk etter skyttere">
+                  <FontAwesomeIcon icon={faUserGroup} size={18} color={colors.white} />
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={styles.trophyButton}
+                  onPress={() => router.push('/(tabs)/home/achievements')}
+                  accessibilityLabel="Mine prestasjoner">
+                  <FontAwesomeIcon icon={faTrophy} size={20} color={colors.warning} />
+                </TouchableOpacity>
+              </View>
             </View>
           </View>
           <StatsSummary last7Days={stats.last7Days} last30Days={stats.last30Days} overall={stats.overall} />
@@ -154,18 +163,6 @@ export default function HomeScreen() {
             icon={<FontAwesomeIcon icon={faChevronRight} size={16} color={colors.warning} />}
             label="Se detaljert statistikk"
             onPress={() => router.push('/(tabs)/home/statistics')}
-          />
-          <EquipmentSection
-            bows={bows}
-            arrows={arrows}
-            onSelectBow={(bow) => {
-              setSelectedBowForDetails(bow);
-              setSelectedBow(null);
-            }}
-            onSelectArrows={(arrow) => {
-              setSelectedArrowSetForDetails(arrow);
-              setSelectedArrowSet(null);
-            }}
           />
           <PracticesSection
             refreshKey={practicesRefreshKey}
@@ -186,6 +183,18 @@ export default function HomeScreen() {
                 setEditingCompetition(null);
               }
               setCompetitionModalVisible(true);
+            }}
+          />
+          <EquipmentSection
+            bows={bows}
+            arrows={arrows}
+            onSelectBow={(bow) => {
+              setSelectedBowForDetails(bow);
+              setSelectedBow(null);
+            }}
+            onSelectArrows={(arrow) => {
+              setSelectedArrowSetForDetails(arrow);
+              setSelectedArrowSet(null);
             }}
           />
         </ScrollView>
