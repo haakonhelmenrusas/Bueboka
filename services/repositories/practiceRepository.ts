@@ -125,8 +125,10 @@ export const practiceRepository = {
    */
   async getById(id: string): Promise<Practice> {
     try {
-      const response = await client.get<Practice>(`/practices/${id}`);
-      return response.data;
+      const response = await client.get<{ practice: Practice }>(`/practices/${id}/details`);
+      // API returns { practice: {...} }, unwrap it
+      const practice = (response.data as any).practice || response.data;
+      return practice;
     } catch (error) {
       throw handleApiError(error);
     }

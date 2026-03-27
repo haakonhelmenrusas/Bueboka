@@ -23,6 +23,7 @@ import ProfileImageManager from '@/components/home/profile/ProfileImageManager';
 import { AppError } from '@/services';
 import CreateCompetitionForm from '@/components/practice/competitionForm/CreateCompetitionForm';
 import { faUserGroup } from '@fortawesome/free-solid-svg-icons';
+import { PracticeDetailsModal } from '@/components/practice/practiceDetailsModal';
 
 export default function HomeScreen() {
   const { user, refreshUser } = useAuth();
@@ -48,6 +49,8 @@ export default function HomeScreen() {
   const [selectedArrowSetForDetails, setSelectedArrowSetForDetails] = useState<Arrows | null>(null);
   const [competitionModalVisible, setCompetitionModalVisible] = useState(false);
   const [editingCompetition, setEditingCompetition] = useState<Competition | null>(null);
+  const [selectedPracticeForDetails, setSelectedPracticeForDetails] = useState<Practice | null>(null);
+  const [selectedCompetitionForDetails, setSelectedCompetitionForDetails] = useState<Competition | null>(null);
 
   const loadData = useCallback(async () => {
     if (!user) return;
@@ -169,20 +172,22 @@ export default function HomeScreen() {
             onSelectPractice={async (id) => {
               try {
                 const fullPractice = await practiceRepository.getById(id);
-                setEditingPractice(fullPractice);
-              } catch {
-                setEditingPractice(null);
+                setSelectedPracticeForDetails(fullPractice);
+              } catch (error) {
+                console.error('[HomeScreen] Error fetching practice:', error);
+                Alert.alert('Kunne ikke laste trening', 'Treningen kunne ikke lastes. Prøv igjen senere.');
+                setSelectedPracticeForDetails(null);
               }
-              setPracticeModalVisible(true);
             }}
             onSelectCompetition={async (id) => {
               try {
                 const fullCompetition = await competitionRepository.getById(id);
-                setEditingCompetition(fullCompetition);
-              } catch {
-                setEditingCompetition(null);
+                setSelectedCompetitionForDetails(fullCompetition);
+              } catch (error) {
+                console.error('[HomeScreen] Error fetching competition:', error);
+                Alert.alert('Kunne ikke laste konkurranse', 'Konkurransen kunne ikke lastes. Prøv igjen senere.');
+                setSelectedCompetitionForDetails(null);
               }
-              setCompetitionModalVisible(true);
             }}
           />
           <EquipmentSection
@@ -263,6 +268,41 @@ export default function HomeScreen() {
           setArrowModalVisible(true);
         }}
       />
+
+      {/* Detail Modals */}
+      <PracticeDetailsModal
+        visible={!!selectedPracticeForDetails}
+        practice={selectedPracticeForDetails}
+        onClose={() => setSelectedPracticeForDetails(null)}
+        onEdit={() => {
+          const practiceToEdit = selectedPracticeForDetails;
+          setSelectedPracticeForDetails(null);
+          setEditingPractice(practiceToEdit);
+          setPracticeModalVisible(true);
+        }}
+        onDeleted={() => {
+          setSelectedPracticeForDetails(null);
+          handlePracticesSaved();
+        }}
+      />
+
+      <PracticeDetailsModal
+        visible={!!selectedCompetitionForDetails}
+        practice={selectedCompetitionForDetails}
+        onClose={() => setSelectedCompetitionForDetails(null)}
+        onEdit={() => {
+          const competitionToEdit = selectedCompetitionForDetails;
+          setSelectedCompetitionForDetails(null);
+          setEditingCompetition(competitionToEdit);
+          setCompetitionModalVisible(true);
+        }}
+        onDeleted={() => {
+          setSelectedCompetitionForDetails(null);
+          handlePracticesSaved();
+        }}
+      />
+
+      {/* Form Modals */}
       <CreatePracticeForm
         visible={practiceModalVisible}
         onClose={() => {

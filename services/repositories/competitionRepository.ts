@@ -48,8 +48,10 @@ export const competitionRepository = {
 
   async getById(id: string): Promise<Competition> {
     try {
-      const response = await client.get<Competition>(`/competitions/${id}`);
-      return response.data;
+      const response = await client.get<{ competition: Competition } | { practice: Competition }>(`/competitions/${id}/details`);
+      // API returns { competition: {...} } or { practice: {...} }, unwrap it
+      const competition = (response.data as any).competition || (response.data as any).practice || response.data;
+      return competition;
     } catch (error) {
       throw handleApiError(error);
     }

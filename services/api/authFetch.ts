@@ -19,7 +19,21 @@ export async function authFetch<T = any>(endpoint: string, options: RequestInit 
     // Unwrap it so callers receive the actual API response body.
     const isWrapped = raw !== null && typeof raw === 'object' && 'data' in (raw as object) && 'error' in (raw as object);
 
+    // Check if this is an error response from better-auth
+    if (isWrapped && 'error' in (raw as object)) {
+      const wrappedError = (raw as { error: any }).error;
+      if (wrappedError) {
+        throw new Error(wrappedError.message || 'API request failed');
+      }
+    }
+
     const data = isWrapped ? (raw as { data: T }).data : (raw as T);
+
+    // Verify we got actual data back
+    if (data === null || data === undefined) {
+      throw new Error('Ingen data mottatt fra serveren');
+    }
+
     return { data };
   } catch (error: any) {
     console.error('[AuthFetch] Error:', endpoint, error);

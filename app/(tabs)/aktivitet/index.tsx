@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from 'react';
-import { ActivityIndicator, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { ActivityIndicator, Alert, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useFocusEffect } from 'expo-router';
@@ -15,6 +15,7 @@ import CreateCompetitionForm from '@/components/practice/competitionForm/CreateC
 import BowForm from '@/components/home/bowForm/BowForm';
 import ArrowForm from '@/components/home/arrowForm/ArrowForm';
 import { MobileActionButton } from '@/components/common';
+import { PracticeDetailsModal } from '@/components/practice/practiceDetailsModal';
 
 const PAGE_SIZE = 15;
 
@@ -46,6 +47,8 @@ export default function AktivitetScreen() {
   const [selectedBow, setSelectedBow] = useState<Bow | null>(null);
   const [arrowModalVisible, setArrowModalVisible] = useState(false);
   const [selectedArrowSet, setSelectedArrowSet] = useState<Arrows | null>(null);
+  const [selectedPracticeForDetails, setSelectedPracticeForDetails] = useState<Practice | null>(null);
+  const [selectedCompetitionForDetails, setSelectedCompetitionForDetails] = useState<Competition | null>(null);
 
   const fetchCards = useCallback(async (currentFilter: PracticeFilter, currentPage: number, append = false) => {
     if (currentPage === 1) setLoading(true);
@@ -103,19 +106,21 @@ export default function AktivitetScreen() {
     if (card.practiceType === 'KONKURRANSE') {
       try {
         const full = await competitionRepository.getById(card.id);
-        setEditingCompetition(full);
-      } catch {
-        setEditingCompetition(null);
+        setSelectedCompetitionForDetails(full);
+      } catch (error) {
+        console.error('[AktivitetScreen] Error fetching competition:', error);
+        Alert.alert('Kunne ikke laste konkurranse', 'Konkurransen kunne ikke lastes. Prøv igjen senere.');
+        setSelectedCompetitionForDetails(null);
       }
-      setCompetitionModalVisible(true);
     } else {
       try {
         const full = await practiceRepository.getById(card.id);
-        setEditingPractice(full);
-      } catch {
-        setEditingPractice(null);
+        setSelectedPracticeForDetails(full);
+      } catch (error) {
+        console.error('[AktivitetScreen] Error fetching practice:', error);
+        Alert.alert('Kunne ikke laste trening', 'Treningen kunne ikke lastes. Prøv igjen senere.');
+        setSelectedPracticeForDetails(null);
       }
-      setPracticeModalVisible(true);
     }
   };
 
@@ -184,6 +189,40 @@ export default function AktivitetScreen() {
         </ScrollView>
       </LinearGradient>
 
+      {/* Detail Modals */}
+      <PracticeDetailsModal
+        visible={!!selectedPracticeForDetails}
+        practice={selectedPracticeForDetails}
+        onClose={() => setSelectedPracticeForDetails(null)}
+        onEdit={() => {
+          const practiceToEdit = selectedPracticeForDetails;
+          setSelectedPracticeForDetails(null);
+          setEditingPractice(practiceToEdit);
+          setPracticeModalVisible(true);
+        }}
+        onDeleted={() => {
+          setSelectedPracticeForDetails(null);
+          handleSaved();
+        }}
+      />
+
+      <PracticeDetailsModal
+        visible={!!selectedCompetitionForDetails}
+        practice={selectedCompetitionForDetails}
+        onClose={() => setSelectedCompetitionForDetails(null)}
+        onEdit={() => {
+          const competitionToEdit = selectedCompetitionForDetails;
+          setSelectedCompetitionForDetails(null);
+          setEditingCompetition(competitionToEdit);
+          setCompetitionModalVisible(true);
+        }}
+        onDeleted={() => {
+          setSelectedCompetitionForDetails(null);
+          handleSaved();
+        }}
+      />
+
+      {/* Form Modals */}
       <CreatePracticeForm
         visible={practiceModalVisible}
         onClose={() => {
