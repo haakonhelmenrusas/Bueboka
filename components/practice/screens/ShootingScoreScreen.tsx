@@ -50,22 +50,32 @@ export default function ShootingScoreScreen() {
         const currentPractice = await practiceRepository.getById(practiceId);
         const existingEnds = currentPractice.ends || [];
 
-        // Create a new 'End' for this session with coordinates
-        const newEnd = {
-          arrows: hits.length,
+        // Create a new round with coordinates - match API schema
+        const newRound = {
+          numberArrows: hits.length, // API expects 'numberArrows'
           scores: scores,
           roundScore: totalEndScore,
           arrowCoordinates: hits,
-          targetSizeCm: params.targetSize ? parseInt(params.targetSize as string) : 80,
+          targetType: params.targetSize ? `${params.targetSize}cm` : '80cm',
           distanceMeters: params.distance ? parseInt(params.distance as string) : 18,
         };
 
-        const updatedTotalArrows = (parseInt(params.currentCount as string) || 0) + hits.length;
+        // Convert existing ends to rounds format
+        const existingRounds = existingEnds.map((end) => ({
+          numberArrows: end.arrows ?? undefined,
+          arrowsWithoutScore: end.arrowsWithoutScore ?? undefined,
+          scores: end.scores ?? undefined,
+          roundScore: end.roundScore ?? undefined,
+          distanceMeters: end.distanceMeters ?? undefined,
+          distanceFrom: end.distanceFrom ?? undefined,
+          distanceTo: end.distanceTo ?? undefined,
+          targetType: end.targetType ?? undefined,
+          arrowCoordinates: end.arrowCoordinates ?? undefined,
+        }));
 
-        // Use the main practice update endpoint with all ends
+        // Use the main practice update endpoint with all rounds (API expects 'rounds')
         await practiceRepository.update(practiceId, {
-          totalScore: updatedTotalArrows,
-          ends: [...existingEnds, newEnd] as any,
+          rounds: [...existingRounds, newRound] as any,
         });
       }
 

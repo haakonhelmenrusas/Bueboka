@@ -8,7 +8,6 @@ import * as Sentry from '@sentry/react-native';
 import { styles } from '@/components/practice/ShootingStyles';
 import { Button } from '@/components/common';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { practiceRepository } from '@/services/repositories';
 
 export default function ShootingScreen() {
   const params = useLocalSearchParams();
@@ -36,10 +35,8 @@ export default function ShootingScreen() {
 
     setIsSaving(true);
     try {
-      await practiceRepository.update(params.id as string, {
-        totalScore: arrowCount,
-      });
-
+      // Practice data (including totalScore) is updated via ShootingScoreScreen
+      // when actual scores are entered. This screen just tracks arrow count locally.
       router.replace('/(tabs)/practice');
     } catch (error) {
       Sentry.captureException(error);

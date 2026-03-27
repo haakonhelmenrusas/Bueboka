@@ -349,25 +349,22 @@ export default function CreatePracticeForm({
     if (pairs.length > 0) await AsyncStorage.multiSet(pairs).catch(() => {});
   };
 
-  // ─── Build ends ──────────────────────────────────────────────────────────────
-  // Note: `scores` (per-arrow breakdown) is intentionally excluded from this
-  // payload. roundScore is the aggregated sum computed from per-arrow scores.
-  // Per-arrow scores (scores[]) ARE accepted by the backend and are included
-  // so they can be restored when re-opening the practice for editing.
-  const buildEnds = (validRounds: RoundInput[]): CreateEndData[] =>
+  // ─── Build rounds ────────────────────────────────────────────────────────────
+  // Builds round data matching API RoundInputSchema
+  const buildRounds = (validRounds: RoundInput[]): CreateEndData[] =>
     validRounds.map((r) => {
-      const end: CreateEndData = {
+      const round: CreateEndData = {
         roundScore: r.roundScore ?? 0,
       };
-      if (r.numberArrows !== undefined) end.arrows = r.numberArrows;
-      if (r.arrowsWithoutScore !== undefined) end.arrowsWithoutScore = r.arrowsWithoutScore;
-      if (r.distanceMeters !== undefined) end.distanceMeters = r.distanceMeters;
-      if (r.distanceFrom !== undefined) end.distanceFrom = r.distanceFrom;
-      if (r.distanceTo !== undefined) end.distanceTo = r.distanceTo;
-      if (r.targetType) end.targetType = r.targetType;
+      if (r.numberArrows !== undefined) round.numberArrows = r.numberArrows; // API expects 'numberArrows'
+      if (r.arrowsWithoutScore !== undefined) round.arrowsWithoutScore = r.arrowsWithoutScore;
+      if (r.distanceMeters !== undefined) round.distanceMeters = r.distanceMeters;
+      if (r.distanceFrom !== undefined) round.distanceFrom = r.distanceFrom;
+      if (r.distanceTo !== undefined) round.distanceTo = r.distanceTo;
+      if (r.targetType) round.targetType = r.targetType;
       // Include per-arrow scores when present so they survive save/reload cycles.
-      if (r.scores && r.scores.length > 0) end.scores = r.scores;
-      return end;
+      if (r.scores && r.scores.length > 0) round.scores = r.scores;
+      return round;
     });
 
   // ─── Save ────────────────────────────────────────────────────────────────────
@@ -397,7 +394,7 @@ export default function CreatePracticeForm({
         arrowsId: selectedArrowSet || undefined,
         notes: notes || undefined,
         rating: rating ?? undefined,
-        ends: buildEnds(validRounds),
+        rounds: buildRounds(validRounds), // API expects 'rounds', not 'ends'
       };
 
       if (editingId) {
@@ -431,6 +428,7 @@ export default function CreatePracticeForm({
         arrowsId: selectedArrowSet || undefined,
         notes: notes || undefined,
         rating: rating ?? undefined,
+        rounds: [{ roundScore: 0 }], // API requires at least 1 round
       });
 
       onPracticeSaved?.();
