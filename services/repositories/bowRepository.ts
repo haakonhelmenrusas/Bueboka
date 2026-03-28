@@ -2,28 +2,18 @@ import { authFetchClient as client } from '@/services/api/authFetch';
 import { handleApiError } from '@/services/api/errors';
 import { Bow, BowType } from '@/types';
 
-/**
- * Bow creation data structure
- */
-export interface CreateBowData {
+/** Fields for creating or updating a bow. Required fields (name, type) are only enforced on create. */
+export interface BowData {
   name: string;
   type: BowType;
   eyeToNock?: number;
   aimMeasure?: number;
   eyeToSight?: number;
-  notes?: string;
-  isFavorite?: boolean;
-}
-
-/**
- * Bow update data structure
- */
-export interface UpdateBowData {
-  name?: string;
-  type?: BowType;
-  eyeToNock?: number;
-  aimMeasure?: number;
-  eyeToSight?: number;
+  limbs?: string;
+  riser?: string;
+  handOrientation?: 'RH' | 'LH' | null;
+  drawWeight?: number;
+  bowLength?: number;
   notes?: string;
   isFavorite?: boolean;
 }
@@ -38,20 +28,8 @@ export const bowRepository = {
   async getAll(): Promise<Bow[]> {
     try {
       const response = await client.get<{ bows: Bow[] }>('/bows');
-      // Extract the bows array from the response object
-      return Array.isArray(response.data) ? response.data : response.data.bows || [];
-    } catch (error) {
-      throw handleApiError(error);
-    }
-  },
-
-  /**
-   * Get a specific bow by ID
-   */
-  async getById(id: string): Promise<Bow> {
-    try {
-      const response = await client.get<Bow>(`/bows/${id}`);
-      return response.data;
+      if (!response.data) return [];
+      return Array.isArray(response.data) ? response.data : (response.data.bows ?? []);
     } catch (error) {
       throw handleApiError(error);
     }
@@ -60,22 +38,26 @@ export const bowRepository = {
   /**
    * Create a new bow
    */
-  async create(data: CreateBowData): Promise<Bow> {
+  async create(data: BowData): Promise<Bow> {
     try {
-      const response = await client.post<Bow>('/bows', data);
-      return response.data;
+      const response = await client.post<{ bow: Bow }>('/bows', data);
+      return response.data.bow;
     } catch (error) {
       throw handleApiError(error);
     }
   },
 
   /**
-   * Update an existing bow
+   * Update an existing bow.
+   *
+   * When { isFavorite: true } is included the API automatically unfavourites
+   * all other bows for the current user in the same transaction, so the
+   * client never needs to send multiple requests.
    */
-  async update(id: string, data: UpdateBowData): Promise<Bow> {
+  async update(id: string, data: Partial<BowData>): Promise<Bow> {
     try {
-      const response = await client.patch<Bow>(`/bows/${id}`, data);
-      return response.data;
+      const response = await client.patch<{ bow: Bow }>(`/bows/${id}`, data);
+      return response.data.bow;
     } catch (error) {
       throw handleApiError(error);
     }
@@ -87,18 +69,6 @@ export const bowRepository = {
   async delete(id: string): Promise<void> {
     try {
       await client.delete(`/bows/${id}`);
-    } catch (error) {
-      throw handleApiError(error);
-    }
-  },
-
-  /**
-   * Toggle favorite status of a bow
-   */
-  async toggleFavorite(id: string, isFavorite: boolean): Promise<Bow> {
-    try {
-      const response = await client.patch<Bow>(`/bows/${id}`, { isFavorite });
-      return response.data;
     } catch (error) {
       throw handleApiError(error);
     }

@@ -1,14 +1,16 @@
 import { Text, TouchableOpacity, View } from 'react-native';
-import { Practice } from '@/types';
+import { PracticeCardItem, PracticeCategory } from '@/types';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
-import { faEdit, faHouse, faMapPin, faStar, faBullseye, faTree, faTrophy } from '@fortawesome/free-solid-svg-icons';
+import { faHouse, faMapPin, faStar, faBullseye, faTree, faTrophy, faMedal, faArrowUp } from '@fortawesome/free-solid-svg-icons';
 import { styles } from './PracticeCardStyles';
 import { LinearGradient } from 'expo-linear-gradient';
 import { colors } from '@/styles/colors';
+import { getPracticeCategoryIcon } from '@/components/practice/practiceDetailsModal/constants';
+import { getPracticeCategoryLabel } from '@/utils/helpers/labelUtils';
 
 interface PracticeCardProps {
-  practice: Practice;
-  onEdit?: (practice: Practice) => void;
+  card: PracticeCardItem;
+  onPress?: (card: PracticeCardItem) => void;
 }
 
 function formatEnvironment(env?: string | null) {
@@ -19,34 +21,31 @@ function formatEnvironment(env?: string | null) {
   return env;
 }
 
-export default function PracticeCard({ practice, onEdit }: PracticeCardProps) {
-  const handleEdit = () => {
-    if (onEdit) {
-      onEdit(practice);
-    }
-  };
+export default function PracticeCard({ card, onPress }: PracticeCardProps) {
+  const isCompetition = card.practiceType === 'KONKURRANSE';
 
-  // Calculate total arrows shot from ends
-  const totalArrows = practice.ends?.reduce((sum, end) => sum + (end.arrows || 0), 0) || 0;
+  // Score label: "totalScore / arrowsWithScore"
+  const scoreLabel = (() => {
+    const hasScore = (card.totalScore ?? 0) > 0;
+    const hasArrowsWithScore = (card.arrowsWithScore ?? 0) > 0;
+    if (hasScore && hasArrowsWithScore) return `${card.totalScore} / ${card.arrowsWithScore}`;
+    if (hasScore) return `${card.totalScore}`;
+    return null;
+  })();
 
-  // Format date - handle both Date objects and ISO strings from API
-  const practiceDate = practice.date as Date | string;
-  const dateObj = typeof practiceDate === 'string' ? new Date(practiceDate) : practiceDate;
+  // Format date
+  const dateObj = new Date(card.date);
   const formattedDate = dateObj.toLocaleDateString('nb-NO', {
     year: 'numeric',
     month: 'short',
     day: 'numeric',
   });
 
-  // Format environment
-  const envText = formatEnvironment(practice.environment);
-  const envIcon = practice.environment === 'INDOOR' ? faHouse : faTree;
-
-  // Determine if competition (when we add competition support)
-  const isCompetition = false; // TODO: Add competition type field
+  const envText = formatEnvironment(card.environment);
+  const envIcon = card.environment === 'INDOOR' ? faHouse : faTree;
 
   return (
-    <TouchableOpacity style={styles.trainingCard} onPress={handleEdit} activeOpacity={0.7}>
+    <TouchableOpacity style={styles.trainingCard} onPress={() => onPress?.(card)} activeOpacity={0.7}>
       <LinearGradient
         colors={[colors.primary, colors.secondary, colors.tertiary]}
         start={{ x: 0, y: 0 }}
@@ -56,42 +55,65 @@ export default function PracticeCard({ practice, onEdit }: PracticeCardProps) {
       <View style={styles.content}>
         <View style={styles.header}>
           <Text style={styles.date}>{formattedDate}</Text>
-          <View style={styles.badge}>
-            <FontAwesomeIcon icon={isCompetition ? faTrophy : faBullseye} size={12} color={colors.white} />
-            <Text style={styles.badgeText}>{isCompetition ? 'Konkurranse' : 'Trening'}</Text>
+          <View style={[styles.badge, isCompetition && styles.badgeCompetition]}>
+            <FontAwesomeIcon
+              icon={isCompetition ? faTrophy : faBullseye}
+              size={12}
+              color={isCompetition ? colors.primaryDark : colors.white}
+            />
+            <Text style={[styles.badgeText, isCompetition && styles.badgeTextCompetition]}>
+              {isCompetition ? 'Konkurranse' : 'Trening'}
+            </Text>
           </View>
         </View>
+
+        {isCompetition && card.competitionName && <Text style={styles.competitionName}>{card.competitionName}</Text>}
 
         <View style={styles.detailsRow}>
-          <View style={styles.detailItem}>
-            <FontAwesomeIcon icon={faBullseye} size={14} color={colors.secondary} />
-            <Text style={styles.detailText}>{totalArrows} piler</Text>
-          </View>
-
-          {practice.totalScore > 0 && (
+          {card.practiceCategory && (
             <View style={styles.detailItem}>
-              <FontAwesomeIcon icon={faStar} size={14} color={colors.secondary} />
-              <Text style={styles.detailText}>{practice.totalScore} poeng</Text>
+              {getPracticeCategoryIcon(card.practiceCategory as PracticeCategory, 14, colors.secondary)}
+              <Text style={styles.detailText}>{getPracticeCategoryLabel(card.practiceCategory as PracticeCategory)}</Text>
             </View>
           )}
 
-          {practice.roundType?.name && (
+          {card.arrowsShot > 0 && (
+            <View style={styles.detailItem}>
+              <FontAwesomeIcon icon={faArrowUp} size={14} color={colors.secondary} />
+              <Text style={styles.detailText}>{card.arrowsShot} piler</Text>
+            </View>
+          )}
+
+          {scoreLabel && (
+            <View style={styles.detailItem}>
+              <FontAwesomeIcon icon={faStar} size={14} color={colors.secondary} />
+              <Text style={styles.detailText}>{scoreLabel}</Text>
+            </View>
+          )}
+
+          {card.roundTypeName && (
             <View style={styles.detailItem}>
               <FontAwesomeIcon icon={faBullseye} size={14} color={colors.secondary} />
-              <Text style={styles.detailText}>{practice.roundType.name}</Text>
+              <Text style={styles.detailText}>{card.roundTypeName}</Text>
+            </View>
+          )}
+
+          {isCompetition && card.placement != null && (
+            <View style={styles.detailItem}>
+              <FontAwesomeIcon icon={faMedal} size={14} color={colors.secondary} />
+              <Text style={styles.detailText}>Plass: {card.placement}</Text>
             </View>
           )}
         </View>
 
-        {(practice.location || envText) && (
+        {(card.location || envText) && (
           <View style={styles.detailsRow}>
-            {practice.location && (
+            {card.location && (
               <View style={styles.detailItem}>
                 <FontAwesomeIcon icon={faMapPin} size={14} color={colors.secondary} />
-                <Text style={styles.detailText}>{practice.location}</Text>
+                <Text style={styles.detailText}>{card.location}</Text>
               </View>
             )}
-
             {envText && (
               <View style={styles.detailItem}>
                 <FontAwesomeIcon icon={envIcon} size={14} color={colors.secondary} />
@@ -100,10 +122,6 @@ export default function PracticeCard({ practice, onEdit }: PracticeCardProps) {
             )}
           </View>
         )}
-
-        <TouchableOpacity onPress={handleEdit} style={styles.editButton}>
-          <FontAwesomeIcon icon={faEdit} size={16} color={colors.white} />
-        </TouchableOpacity>
       </View>
     </TouchableOpacity>
   );

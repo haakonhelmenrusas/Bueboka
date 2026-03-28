@@ -9,17 +9,19 @@ interface CheckboxProps {
   value: boolean;
   onChange: (newValue: boolean) => void;
   label?: string;
+  disabled?: boolean;
 }
 
-export default function Checkbox({ value, onChange, label }: CheckboxProps) {
+export default function Checkbox({ value, onChange, label, disabled }: CheckboxProps) {
   const accessibilityState: AccessibilityState = {
     checked: value,
+    disabled,
   };
 
   return (
     <Pressable
-      style={styles.wrapper}
-      onPress={() => onChange(!value)}
+      style={[styles.wrapper, disabled && { opacity: 0.5 }]}
+      onPress={() => !disabled && onChange(!value)}
       accessibilityRole={'checkbox' as AccessibilityRole}
       accessibilityState={accessibilityState}
       accessibilityLabel={label || 'Checkbox'}>

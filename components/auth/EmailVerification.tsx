@@ -128,7 +128,7 @@ const styles = StyleSheet.create({
   },
   description: {
     fontSize: 16,
-    color: colors.dark_primary || '#333',
+    color: colors.primaryDark || '#333',
     textAlign: 'center',
     marginBottom: 12,
   },

@@ -9,17 +9,20 @@ The repository layer provides a clean abstraction over API calls, handling all d
 ### 1. User Repository
 
 **Import:**
+
 ```typescript
 import { userRepository } from '@/services/repositories';
 ```
 
 **Methods:**
+
 - `getCurrentUser()` - Get current user profile
 - `updateProfile(data)` - Update user profile (name, club)
 - `updateAvatar(imageUri)` - Upload and update user avatar
 - `deleteAccount()` - Delete user account
 
 **Example:**
+
 ```typescript
 // Get current user
 const user = await userRepository.getCurrentUser();
@@ -27,7 +30,7 @@ const user = await userRepository.getCurrentUser();
 // Update profile
 const updatedUser = await userRepository.updateProfile({
   name: 'New Name',
-  club: 'My Archery Club'
+  club: 'My Archery Club',
 });
 ```
 
@@ -36,11 +39,13 @@ const updatedUser = await userRepository.updateProfile({
 ### 2. Bow Repository
 
 **Import:**
+
 ```typescript
 import { bowRepository } from '@/services/repositories';
 ```
 
 **Methods:**
+
 - `getAll()` - Get all bows for current user
 - `getById(id)` - Get specific bow
 - `create(data)` - Create new bow
@@ -49,6 +54,7 @@ import { bowRepository } from '@/services/repositories';
 - `toggleFavorite(id, isFavorite)` - Toggle favorite status
 
 **Example:**
+
 ```typescript
 import { BowType } from '@/types';
 
@@ -62,12 +68,12 @@ const newBow = await bowRepository.create({
   eyeToNock: 80,
   aimMeasure: 85,
   notes: 'Competition setup',
-  isFavorite: true
+  isFavorite: true,
 });
 
 // Update bow
 const updated = await bowRepository.update(newBow.id, {
-  name: 'Updated Name'
+  name: 'Updated Name',
 });
 
 // Delete bow
@@ -79,11 +85,13 @@ await bowRepository.delete(bowId);
 ### 3. Arrows Repository
 
 **Import:**
+
 ```typescript
 import { arrowsRepository } from '@/services/repositories';
 ```
 
 **Methods:**
+
 - `getAll()` - Get all arrow sets
 - `getById(id)` - Get specific arrow set
 - `create(data)` - Create new arrow set
@@ -92,6 +100,7 @@ import { arrowsRepository } from '@/services/repositories';
 - `toggleFavorite(id, isFavorite)` - Toggle favorite status
 
 **Example:**
+
 ```typescript
 import { Material } from '@/types';
 
@@ -108,7 +117,7 @@ const arrows = await arrowsRepository.create({
   pointWeight: 100,
   vanes: 'Bohning X Vanes',
   nock: 'Easton G Nock',
-  isFavorite: true
+  isFavorite: true,
 });
 
 // Get all arrows
@@ -120,11 +129,13 @@ const allArrows = await arrowsRepository.getAll();
 ### 4. Practice Repository
 
 **Import:**
+
 ```typescript
 import { practiceRepository } from '@/services/repositories';
 ```
 
 **Methods:**
+
 - `getAll(params?)` - Get all practices with optional pagination/filters
 - `getById(id)` - Get specific practice with ends
 - `create(data)` - Create new practice session
@@ -136,6 +147,7 @@ import { practiceRepository } from '@/services/repositories';
 - `getByDateRange(startDate, endDate)` - Get practices in date range
 
 **Example:**
+
 ```typescript
 import { Environment, WeatherCondition } from '@/types';
 
@@ -154,9 +166,9 @@ const practice = await practiceRepository.create({
       scores: [10, 10, 9, 9, 8, 7],
       distanceMeters: 18,
       targetSizeCm: 40,
-      arrowsPerEnd: 6
-    }
-  ]
+      arrowsPerEnd: 6,
+    },
+  ],
 });
 
 // Get paginated practices
@@ -164,7 +176,7 @@ const { data, total, page } = await practiceRepository.getAll({
   page: 1,
   limit: 20,
   startDate: new Date('2024-01-01'),
-  endDate: new Date()
+  endDate: new Date(),
 });
 
 // Add another end to practice
@@ -172,7 +184,7 @@ const newEnd = await practiceRepository.addEnd(practice.id, {
   arrows: 6,
   scores: [10, 9, 9, 8, 8, 7],
   distanceMeters: 18,
-  targetSizeCm: 40
+  targetSizeCm: 40,
 });
 ```
 
@@ -181,15 +193,18 @@ const newEnd = await practiceRepository.addEnd(practice.id, {
 ### 5. Round Type Repository
 
 **Import:**
+
 ```typescript
 import { roundTypeRepository } from '@/services/repositories';
 ```
 
 **Methods:**
+
 - `getAll()` - Get all available round types
 - `getById(id)` - Get specific round type
 
 **Example:**
+
 ```typescript
 // Get all round types
 const roundTypes = await roundTypeRepository.getAll();
@@ -218,6 +233,7 @@ try {
 ```
 
 Common error codes:
+
 - `UNAUTHORIZED` - Session expired, need to login
 - `BAD_REQUEST` - Invalid data sent to API
 - `NOT_FOUND` - Resource not found
@@ -285,14 +301,16 @@ function ProfileScreen() {
 When migrating components from AsyncStorage:
 
 **Before:**
+
 ```typescript
 import { getLocalStorage, storeLocalStorage } from '@/utils';
 
-const bows = await getLocalStorage<Bow[]>('bows') || [];
+const bows = (await getLocalStorage<Bow[]>('bows')) || [];
 await storeLocalStorage('bows', [...bows, newBow]);
 ```
 
 **After:**
+
 ```typescript
 import { bowRepository } from '@/services/repositories';
 
@@ -301,6 +319,7 @@ const newBow = await bowRepository.create(bowData);
 ```
 
 Benefits:
+
 - ✅ Data synced across devices
 - ✅ No manual ID generation
 - ✅ Automatic timestamps

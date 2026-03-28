@@ -1,7 +1,6 @@
 import { authFetchClient as client } from '@/services/api/authFetch';
 import { handleApiError } from '@/services/api/errors';
-import { End, Environment, Practice, PracticeCategory, WeatherCondition } from '@/types';
-import { PaginatedResponse } from '@/services/api/types';
+import { End, Environment, Practice, PracticeCardsResponse, PracticeCategory, PracticeFilter, WeatherCondition } from '@/types';
 
 /**
  * End creation data structure (for creating practice ends)
@@ -9,13 +8,16 @@ import { PaginatedResponse } from '@/services/api/types';
 export interface CreateEndData {
   arrows?: number;
   arrowsWithoutScore?: number;
-  scores: number[];
+  /** Per-arrow breakdown – only accepted by the live-shooting endpoint, not by practice create/update. */
+  scores?: number[];
   roundScore?: number;
   distanceMeters?: number;
   distanceFrom?: number;
   distanceTo?: number;
   targetSizeCm?: number;
+  targetType?: string;
   arrowsPerEnd?: number;
+  arrowCoordinates?: { x: number; y: number }[];
 }
 
 /**
@@ -24,7 +26,7 @@ export interface CreateEndData {
 export interface CreatePracticeData {
   date: Date;
   environment: Environment;
-  totalScore?: number;
+  totalScore: number;
   rating?: number;
   location?: string;
   weather?: WeatherCondition[];
@@ -37,20 +39,19 @@ export interface CreatePracticeData {
 }
 
 /**
- * Practice update data structure
+ * Practice update data structure (matches API updatePracticeSchema)
  */
 export interface UpdatePracticeData {
-  date?: Date;
+  date?: Date | string;
   environment?: Environment;
-  totalScore?: number;
   rating?: number;
   location?: string;
   weather?: WeatherCondition[];
   practiceCategory?: PracticeCategory;
   bowId?: string;
   arrowsId?: string;
-  roundTypeId?: string;
   notes?: string;
+  rounds?: CreateEndData[];
 }
 
 /**
@@ -64,6 +65,15 @@ export interface PracticeQueryParams {
 }
 
 /**
+ * Query parameters for the unified practice+competition cards endpoint
+ */
+export interface PracticeCardsQueryParams {
+  page?: number;
+  pageSize?: number;
+  filter?: PracticeFilter;
+}
+
+/**
  * Practice list response structure (actual API response)
  */
 export interface PracticeListResponse {
@@ -74,6 +84,23 @@ export interface PracticeListResponse {
  * Practice repository - handles all practice-related API operations
  */
 export const practiceRepository = {
+  /**
+   * Get paginated combined practice + competition cards for the current user.
+   * Calls the /practices/cards endpoint which returns both TRENING and KONKURRANSE items.
+   */
+  async getCards(params?: PracticeCardsQueryParams): Promise<PracticeCardsResponse> {
+    try {
+      const queryParams = new URLSearchParams();
+      if (params?.page) queryParams.append('page', params.page.toString());
+      if (params?.pageSize) queryParams.append('pageSize', params.pageSize.toString());
+      if (params?.filter) queryParams.append('filter', params.filter);
+      const response = await client.get<PracticeCardsResponse>(`/practices/cards?${queryParams.toString()}`);
+      return response.data;
+    } catch (error) {
+      throw handleApiError(error);
+    }
+  },
+
   /**
    * Get all practices for the current user with optional pagination and filters
    */
@@ -98,8 +125,9 @@ export const practiceRepository = {
    */
   async getById(id: string): Promise<Practice> {
     try {
-      const response = await client.get<Practice>(`/practices/${id}`);
-      return response.data;
+      const response = await client.get<{ practice: Practice }>(`/practices/${id}/details`);
+      // API returns { practice: {...} }, unwrap it
+      return (response.data as any).practice || response.data;
     } catch (error) {
       throw handleApiError(error);
     }
@@ -122,7 +150,7 @@ export const practiceRepository = {
    */
   async update(id: string, data: UpdatePracticeData): Promise<Practice> {
     try {
-      const response = await client.put<Practice>(`/practices/${id}`, data);
+      const response = await client.patch<Practice>(`/practices/${id}`, data);
       return response.data;
     } catch (error) {
       throw handleApiError(error);
@@ -170,18 +198,6 @@ export const practiceRepository = {
   async deleteEnd(practiceId: string, endId: string): Promise<void> {
     try {
       await client.delete(`/practices/${practiceId}/ends/${endId}`);
-    } catch (error) {
-      throw handleApiError(error);
-    }
-  },
-
-  /**
-   * Get practices within a date range (convenience method)
-   */
-  async getByDateRange(startDate: Date, endDate: Date): Promise<Practice[]> {
-    try {
-      const response = await this.getAll({ startDate, endDate, limit: 1000 });
-      return response.data;
     } catch (error) {
       throw handleApiError(error);
     }

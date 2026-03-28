@@ -17,6 +17,9 @@
     "android": {
       "package": "com.aaronshade.bueboka"
     },
+    "androidStatusBar": {
+      "barStyle": "light-content"
+    },
     "ios": {
       "bundleIdentifier": "com.aaronshade.bueboka",
       "infoPlist": {
@@ -36,6 +39,7 @@
       "url": "https://u.expo.dev/a740b024-fdf9-420d-9998-a6ae076ebc43"
     },
     "plugins": [
+      "./plugins/withSoftInputMode",
       "expo-font",
       "expo-router",
       [

@@ -1,14 +1,48 @@
 import React, { useEffect, useState } from 'react';
-import { Keyboard, KeyboardAvoidingView, Platform, Pressable, ScrollView, TouchableOpacity, View } from 'react-native';
-import { Button, DatePicker, Input, ModalHeader, ModalWrapper, Select, Textarea } from '@/components/common';
-import { styles } from './CreatePracticeFormStyles';
-import { Arrows, Bow, Environment, Practice } from '@/types';
-import { Link } from 'expo-router';
+import { Keyboard, KeyboardAvoidingView, Platform, Pressable, ScrollView, Text, TouchableOpacity, View } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as Sentry from '@sentry/react-native';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
-import { faTrashCan } from '@fortawesome/free-regular-svg-icons/faTrashCan';
-import ConfirmModal from '@/components/profile/DeleteArrowSetModal/ConfirmModal';
-import { practiceRepository } from '@/services/repositories';
+import { faPlus } from '@fortawesome/free-solid-svg-icons/faPlus';
+import { faXmark } from '@fortawesome/free-solid-svg-icons/faXmark';
+import { faDeleteLeft } from '@fortawesome/free-solid-svg-icons/faDeleteLeft';
+
+import { Button, DatePicker, Input, ModalHeader, ModalWrapper, Select, Textarea } from '@/components/common';
+import ConfirmModal from '@/components/home/DeleteArrowSetModal/ConfirmModal';
+import { practiceRepository, type CreateEndData } from '@/services/repositories';
+import { Arrows, Bow, Environment, Practice, PracticeCategory } from '@/types';
+import { TARGET_TYPE_OPTIONS } from '@/utils/Constants';
+import { colors } from '@/styles/colors';
+import { styles } from './CreatePracticeFormStyles';
+import { PRACTICE_CATEGORY_OPTIONS, ENVIRONMENT_OPTIONS, ARROW_SCORE_OPTIONS } from '@/components/practice/shared/formConstants';
+import { isRangeCategory, parseNum } from '@/components/practice/shared/formHelpers';
+import { useStepNavigation } from '@/components/practice/shared/useStepNavigation';
+import { useWeatherSelection } from '@/components/practice/shared/useWeatherSelection';
+import { useEquipmentSelection } from '@/components/practice/shared/useEquipmentSelection';
+import { StepIndicator } from '@/components/practice/shared/StepIndicator';
+import { WeatherSelector } from '@/components/practice/shared/WeatherSelector';
+import { EquipmentSelector } from '@/components/practice/shared/EquipmentSelector';
+import { NavigationFooter } from '@/components/practice/shared/NavigationFooter';
+
+// ─── Storage keys ────────────────────────────────────────────────────────────
+const STORAGE_KEY_DISTANCE = 'bueboka_last_distance';
+const STORAGE_KEY_TARGET = 'bueboka_last_target';
+
+// ─── Step definitions ─────────────────────────────────────────────────────────
+const TOTAL_STEPS = 4;
+const STEP_LABELS = ['Info', 'Runder', 'Poeng', 'Refleksjon'];
+
+// ─── Types ────────────────────────────────────────────────────────────────────
+export interface RoundInput {
+  distanceMeters?: number;
+  distanceFrom?: number;
+  distanceTo?: number;
+  targetType: string;
+  numberArrows?: number;
+  arrowsWithoutScore?: number;
+  roundScore: number;
+  scores?: number[];
+}
 
 interface CreatePracticeFormProps {
   visible: boolean;
@@ -19,6 +53,31 @@ interface CreatePracticeFormProps {
   editingPractice?: Practice | null;
 }
 
+// ─── Helpers ──────────────────────────────────────────────────────────────────
+
+function emptyRound(cat: PracticeCategory): RoundInput {
+  return isRangeCategory(cat)
+    ? {
+        distanceFrom: undefined,
+        distanceTo: undefined,
+        targetType: '',
+        numberArrows: undefined,
+        arrowsWithoutScore: undefined,
+        roundScore: 0,
+        scores: [],
+      }
+    : { distanceMeters: undefined, targetType: '', numberArrows: undefined, arrowsWithoutScore: undefined, roundScore: 0, scores: [] };
+}
+
+function getRoundSummary(round: RoundInput): string {
+  const parts: string[] = [];
+  if (round.distanceMeters) parts.push(`${round.distanceMeters}m`);
+  if (round.distanceFrom || round.distanceTo) parts.push(`${round.distanceFrom ?? '?'}–${round.distanceTo ?? '?'}m`);
+  if (round.targetType) parts.push(round.targetType);
+  return parts.length > 0 ? parts.join(' · ') : 'Ingen detaljer';
+}
+
+// ─── Component ────────────────────────────────────────────────────────────────
 export default function CreatePracticeForm({
   visible,
   onClose,
@@ -27,141 +86,137 @@ export default function CreatePracticeForm({
   onPracticeSaved,
   editingPractice = null,
 }: CreatePracticeFormProps) {
-  const [date, setDate] = useState(new Date());
-  const [selectedBow, setSelectedBow] = useState('');
-  const [selectedArrowSet, setSelectedArrowSet] = useState('');
-  const [totalScore, setTotalScore] = useState('0');
-  const [notes, setNotes] = useState('');
-  const [location, setLocation] = useState('');
-  const [environment, setEnvironment] = useState<Environment>(Environment.INDOOR);
-  const [confirmVisible, setConfirmVisible] = useState(false);
+  // Step navigation
+  const { step, setStep, goNext, goPrev, resetStep } = useStepNavigation(TOTAL_STEPS);
 
-  // Safely handle undefined or null props - ensure always arrays
-  const validBows = Array.isArray(bows) ? bows : [];
-  const validArrowSets = Array.isArray(arrowSets) ? arrowSets : [];
-  const bowOptions = validBows.map((bow) => ({ label: bow.name, value: bow.id }));
-  const arrowSetOptions = validArrowSets.map((arrowSet) => ({ label: arrowSet.name, value: arrowSet.id }));
+  // Form state
+  const [date, setDate] = useState(new Date());
+  const [practiceCategory, setPracticeCategory] = useState<PracticeCategory>(PracticeCategory.SKIVE_INDOOR);
+  const [environment, setEnvironment] = useState<Environment>(Environment.INDOOR);
+  const [location, setLocation] = useState('');
+  const [rounds, setRounds] = useState<RoundInput[]>([emptyRound(PracticeCategory.SKIVE_INDOOR)]);
+  const [rating, setRating] = useState<number | null>(null);
+  const [notes, setNotes] = useState('');
+  const [scoringMethod, setScoringMethod] = useState<'buttons' | 'target'>('buttons');
+
+  // Weather selection hook
+  const { weather, setWeather, toggleWeather } = useWeatherSelection(environment);
+
+  // Equipment selection hook
+  const { selectedBow, setSelectedBow, selectedArrowSet, setSelectedArrowSet, bowOptions, arrowSetOptions, selectFavorites } =
+    useEquipmentSelection(bows, arrowSets);
+
+  // UI state
+  const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [confirmVisible, setConfirmVisible] = useState(false);
+  // Tracks the ID of the practice being edited – set once at init time.
+  // Using local state (not derived from prop) prevents create-vs-update
+  // mismatches caused by prop timing / re-render race conditions.
+  const [editingId, setEditingId] = useState<string | null>(null);
+
+  // Derived
+  const isEditing = !!editingId;
+
+  // ─── Init form ───────────────────────────────────────────────────────────────
+  useEffect(() => {
+    if (!visible) {
+      setEditingId(null);
+      return;
+    }
+
+    resetStep();
+    setError(null);
+
+    if (editingPractice) {
+      // ── Edit mode ──────────────────────────────────────────────────────────
+      // Lock in the ID immediately so handleSaveAndFinish always calls update,
+      // regardless of any prop changes that happen during the session.
+      setEditingId(editingPractice.id);
+
+      setDate(new Date(editingPractice.date));
+      setPracticeCategory(editingPractice.practiceCategory ?? PracticeCategory.SKIVE_INDOOR);
+      setEnvironment(editingPractice.environment ?? Environment.INDOOR);
+      setWeather(editingPractice.weather ?? []);
+      setLocation(editingPractice.location ?? '');
+      setSelectedBow(editingPractice.bowId ?? '');
+      setSelectedArrowSet(editingPractice.arrowsId ?? '');
+      setRating(editingPractice.rating ?? null);
+      setNotes(editingPractice.notes ?? '');
+
+      if (editingPractice.ends && editingPractice.ends.length > 0) {
+        setRounds(
+          editingPractice.ends.map((end) => {
+            const savedScores = end.scores ?? [];
+            // Derive arrow count from end.arrows; fall back to scores.length
+            // for ends that were saved without an explicit arrow count.
+            const derivedArrowCount = end.arrows ?? (savedScores.length > 0 ? savedScores.length : undefined);
+            return {
+              distanceMeters: end.distanceMeters ?? undefined,
+              distanceFrom: end.distanceFrom ?? undefined,
+              distanceTo: end.distanceTo ?? undefined,
+              targetType: end.targetType ?? (end.targetSizeCm ? `${end.targetSizeCm}cm` : ''),
+              numberArrows: derivedArrowCount,
+              arrowsWithoutScore: end.arrowsWithoutScore ?? undefined,
+              roundScore: end.roundScore ?? 0,
+              scores: savedScores,
+            };
+          }),
+        );
+      } else {
+        setRounds([emptyRound(editingPractice.practiceCategory ?? PracticeCategory.SKIVE_INDOOR)]);
+      }
+    } else {
+      // ── Create mode ────────────────────────────────────────────────────────
+      setEditingId(null);
+      resetForm();
+
+      // `cancelled` prevents this async callback from overwriting rounds if
+      // the effect re-runs (e.g. editingPractice arrives after visible=true).
+      let cancelled = false;
+      AsyncStorage.multiGet([STORAGE_KEY_DISTANCE, STORAGE_KEY_TARGET])
+        .then(([distEntry, targetEntry]) => {
+          if (cancelled) return;
+          const lastDist = distEntry[1] ? parseFloat(distEntry[1]) : undefined;
+          const lastTarget = targetEntry[1] ?? '';
+          setRounds([
+            {
+              distanceMeters: lastDist,
+              targetType: lastTarget,
+              numberArrows: undefined,
+              arrowsWithoutScore: undefined,
+              roundScore: 0,
+              scores: [],
+            },
+          ]);
+        })
+        .catch(() => {});
+
+      selectFavorites();
+
+      return () => {
+        cancelled = true;
+      };
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [visible, editingPractice?.id]);
 
   useEffect(() => {
-    if (editingPractice) {
-      setDate(new Date(editingPractice.date));
-      setSelectedBow(editingPractice.bowId || '');
-      setSelectedArrowSet(editingPractice.arrowsId || '');
-      setTotalScore(editingPractice.totalScore?.toString() || '0');
-      setNotes(editingPractice.notes || '');
-      setLocation(editingPractice.location || '');
-      setEnvironment(editingPractice.environment || Environment.INDOOR);
-    } else {
-      resetForm();
-    }
-  }, [editingPractice, visible]);
+    if (environment !== Environment.OUTDOOR) setWeather([]);
+  }, [environment, setWeather]);
 
-  const createPracticeObject = (): Practice => {
-    const selectedBowObject = validBows.find((bow) => bow.id === selectedBow);
-    const selectedArrowSetObject = validArrowSets.find((arrowSet) => arrowSet.id === selectedArrowSet);
-
-    return {
-      id: editingPractice?.id || new Date().getTime().toString() + Math.random().toString(36).substring(2, 9),
-      date: new Date(date),
-      totalScore: totalScore ? parseInt(totalScore) : 0,
-      environment: environment,
-      location: location || undefined,
-      bowId: selectedBowObject?.id,
-      arrowsId: selectedArrowSetObject?.id,
-      notes: notes || undefined,
-    };
-  };
-
-  const savePracticeToApi = async (practice: Practice) => {
-    try {
-      if (editingPractice) {
-        // For updates, send only the fields that can be updated
-        const updateData = {
-          date: practice.date,
-          environment: practice.environment,
-          totalScore: practice.totalScore,
-          location: practice.location,
-          weather: practice.weather,
-          bowId: practice.bowId,
-          arrowsId: practice.arrowsId,
-          notes: practice.notes,
-        };
-        await practiceRepository.update(editingPractice.id, updateData);
-      } else {
-        // For creates, don't send the client-generated ID
-        const createData = {
-          date: practice.date,
-          environment: practice.environment,
-          totalScore: practice.totalScore,
-          location: practice.location,
-          weather: practice.weather,
-          bowId: practice.bowId,
-          arrowsId: practice.arrowsId,
-          notes: practice.notes,
-          ends: practice.ends,
-        };
-        await practiceRepository.create(createData);
-      }
-      if (onPracticeSaved) onPracticeSaved();
-    } catch (error) {
-      console.error('Error saving practice:', error);
-      Sentry.captureException('Error saving practice to API', error);
-      // Re-throw to show user feedback
-      throw error;
-    }
-  };
-
-  const deletePracticeFromApi = async () => {
-    try {
-      if (editingPractice) {
-        await practiceRepository.delete(editingPractice.id);
-        if (onPracticeSaved) onPracticeSaved();
-      }
-    } catch (error) {
-      Sentry.captureException('Error deleting practice from API', error);
-    }
-  };
-
-  const handleStartShooting = async () => {
-    try {
-      await savePracticeToApi(practiceData);
-      onClose();
-    } catch (error) {
-      console.error('Error starting shooting session:', error);
-      Sentry.captureException('Error starting shooting session', error);
-      alert('Kunne ikke starte skyteøkten. Vennligst prøv igjen.');
-    }
-  };
-
-  const handleSaveAndFinish = async () => {
-    try {
-      const practiceData = createPracticeObject();
-      await savePracticeToApi(practiceData);
-      onClose();
-    } catch (error) {
-      console.error('Error saving practice:', error);
-      Sentry.captureException('Error saving and finishing practice', error);
-      alert('Kunne ikke lagre treningen. Vennligst prøv igjen.');
-    }
-  };
-
-  const handleDeletePractice = async () => {
-    try {
-      await deletePracticeFromApi();
-      onClose();
-    } catch (error) {
-      Sentry.captureException('Error deleting practice', error);
-    }
-  };
-
+  // ─── Reset ───────────────────────────────────────────────────────────────────
   const resetForm = () => {
     setDate(new Date());
+    setPracticeCategory(PracticeCategory.SKIVE_INDOOR);
+    setEnvironment(Environment.INDOOR);
+    setWeather([]);
+    setLocation('');
     setSelectedBow('');
     setSelectedArrowSet('');
-    setTotalScore('0');
+    setRounds([emptyRound(PracticeCategory.SKIVE_INDOOR)]);
+    setRating(null);
     setNotes('');
-    setLocation('');
-    setEnvironment(Environment.INDOOR);
   };
 
   const handleClose = () => {
@@ -169,123 +224,578 @@ export default function CreatePracticeForm({
     onClose();
   };
 
-  const practiceData = createPracticeObject();
-  const shootingParams = {
-    id: practiceData.id,
-    date: practiceData.date.toISOString().split('T')[0],
-    bowId: selectedBow,
-    arrowSet: selectedArrowSet,
-    totalScore: totalScore,
-    notes: practiceData.notes,
-    environment: environment,
-    location: location || undefined,
+  // ─── Category ────────────────────────────────────────────────────────────────
+  const handleCategoryChange = (cat: PracticeCategory) => {
+    setPracticeCategory(cat);
+    setRounds([emptyRound(cat)]);
   };
 
-  const isEditing = !!editingPractice;
+  // ─── Rounds ──────────────────────────────────────────────────────────────────
+  const addRound = () => {
+    if (rounds.length < 20) setRounds((prev) => [...prev, emptyRound(practiceCategory)]);
+  };
+
+  const removeRound = (index: number) => {
+    if (rounds.length > 1) setRounds((prev) => prev.filter((_, i) => i !== index));
+  };
+
+  const updateRound = <K extends keyof RoundInput>(index: number, field: K, value: RoundInput[K]) => {
+    setRounds((prev) => {
+      const next = [...prev];
+      const updated: RoundInput = { ...next[index], [field]: value };
+      if (field === 'numberArrows' && typeof value === 'number') {
+        const max = value as number;
+        if (updated.scores && updated.scores.length > max) {
+          updated.scores = updated.scores.slice(0, max);
+          updated.roundScore = updated.scores.reduce((a, b) => a + b, 0);
+        }
+      }
+      next[index] = updated;
+      return next;
+    });
+  };
+
+  // ─── Arrow scoring ───────────────────────────────────────────────────────────
+  const addArrowScore = (roundIndex: number, score: number) => {
+    const round = rounds[roundIndex];
+    const maxArrows = round.numberArrows ?? 0;
+    const current = round.scores ?? [];
+    if (maxArrows > 0 && current.length >= maxArrows) return;
+    const newScores = [...current, score];
+    const newTotal = newScores.reduce((a, b) => a + b, 0);
+    setRounds((prev) => {
+      const next = [...prev];
+      next[roundIndex] = { ...next[roundIndex], scores: newScores, roundScore: newTotal };
+      return next;
+    });
+  };
+
+  const removeLastArrowScore = (roundIndex: number) => {
+    const current = rounds[roundIndex].scores ?? [];
+    if (current.length === 0) return;
+    const newScores = current.slice(0, -1);
+    const newTotal = newScores.reduce((a, b) => a + b, 0);
+    setRounds((prev) => {
+      const next = [...prev];
+      next[roundIndex] = { ...next[roundIndex], scores: newScores, roundScore: newTotal };
+      return next;
+    });
+  };
+
+  // ─── Persist last used ───────────────────────────────────────────────────────
+  const persistLastUsed = async (validRounds: RoundInput[]) => {
+    if (validRounds.length === 0) return;
+    const first = validRounds[0];
+    const pairs: [string, string][] = [];
+    if (first.distanceMeters && first.distanceMeters > 0) pairs.push([STORAGE_KEY_DISTANCE, first.distanceMeters.toString()]);
+    if (first.targetType) pairs.push([STORAGE_KEY_TARGET, first.targetType]);
+    if (pairs.length > 0) await AsyncStorage.multiSet(pairs).catch(() => {});
+  };
+
+  // ─── Build rounds ────────────────────────────────────────────────────────────
+  // Builds round data matching API RoundInputSchema
+  const buildRounds = (validRounds: RoundInput[]): CreateEndData[] =>
+    validRounds.map((r) => {
+      const round: CreateEndData = {
+        roundScore: r.roundScore ?? 0,
+      };
+      if (r.numberArrows !== undefined) round.arrows = r.numberArrows; // API expects 'arrows'
+      if (r.arrowsWithoutScore !== undefined) round.arrowsWithoutScore = r.arrowsWithoutScore;
+      if (r.distanceMeters !== undefined) round.distanceMeters = r.distanceMeters;
+      if (r.distanceFrom !== undefined) round.distanceFrom = r.distanceFrom;
+      if (r.distanceTo !== undefined) round.distanceTo = r.distanceTo;
+      if (r.targetType) round.targetType = r.targetType;
+      // Include per-arrow scores when present so they survive save/reload cycles.
+      if (r.scores && r.scores.length > 0) round.scores = r.scores;
+      return round;
+    });
+
+  // ─── Save ────────────────────────────────────────────────────────────────────
+  const handleSaveAndFinish = async () => {
+    setSubmitting(true);
+    setError(null);
+    try {
+      const validRounds = rounds.filter(
+        (r) =>
+          (r.distanceMeters && r.distanceMeters > 0) ||
+          (r.distanceFrom && r.distanceFrom > 0) ||
+          (r.distanceTo && r.distanceTo > 0) ||
+          r.targetType ||
+          (r.numberArrows ?? 0) > 0 ||
+          r.roundScore > 0,
+      );
+
+      await persistLastUsed(validRounds);
+
+      // Calculate total score from all rounds
+      const totalScore = validRounds.reduce((sum, r) => sum + (r.roundScore ?? 0), 0);
+
+      if (editingId) {
+        // Update uses 'rounds'
+        const updatePayload = {
+          date,
+          environment,
+          practiceCategory,
+          weather,
+          location: location || undefined,
+          bowId: selectedBow || undefined,
+          arrowsId: selectedArrowSet || undefined,
+          notes: notes || undefined,
+          rating: rating ?? undefined,
+          rounds: buildRounds(validRounds),
+        };
+        await practiceRepository.update(editingId, updatePayload);
+      } else {
+        // Create uses 'ends' and requires 'totalScore'
+        const createPayload = {
+          date,
+          environment,
+          practiceCategory,
+          weather,
+          location: location || undefined,
+          bowId: selectedBow || undefined,
+          arrowsId: selectedArrowSet || undefined,
+          notes: notes || undefined,
+          rating: rating ?? undefined,
+          totalScore,
+          ends: buildRounds(validRounds),
+        };
+        await practiceRepository.create(createPayload);
+      }
+
+      onPracticeSaved?.();
+      onClose();
+    } catch (err) {
+      Sentry.captureException(err);
+      setError(err instanceof Error ? err.message : 'Kunne ikke lagre trening.');
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  // ─── Start shooting ───────────────────────────────────────────────────────────
+  const handleStartShooting = async () => {
+    setSubmitting(true);
+    setError(null);
+    try {
+      await practiceRepository.create({
+        date,
+        environment,
+        practiceCategory,
+        weather,
+        location: location || undefined,
+        bowId: selectedBow || undefined,
+        arrowsId: selectedArrowSet || undefined,
+        notes: notes || undefined,
+        rating: rating ?? undefined,
+        totalScore: 0, // Required field
+        ends: [{ roundScore: 0 }], // API requires at least 1 end
+      });
+
+      onPracticeSaved?.();
+
+      // TODO: Implement shooting screen route
+      // For now, just close the modal after creating the practice
+      // The shooting screen components exist but are not integrated into the app routing
+      /*
+      router.push({
+        pathname: '/practice/shooting',
+        params: {
+          id: savedPractice.id,
+          date: date.toISOString().split('T')[0],
+          bowId: selectedBow || '',
+          arrowSet: selectedArrowSet || '',
+          notes: notes || '',
+          environment,
+          location: location || '',
+        },
+      });
+      */
+      onClose();
+    } catch (err) {
+      Sentry.captureException(err);
+      setError(err instanceof Error ? err.message : 'Kunne ikke starte skyteøkten.');
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  // ─── Delete ───────────────────────────────────────────────────────────────────
+  const handleDelete = async () => {
+    if (!editingId) return;
+    try {
+      await practiceRepository.delete(editingId);
+      onPracticeSaved?.();
+      onClose();
+    } catch (err) {
+      Sentry.captureException(err);
+    }
+  };
+
+  // ═══════════════════════════════════════════════════════════════════════════════
+  // Step renderers
+  // ═══════════════════════════════════════════════════════════════════════════════
+
+  const renderInfoStep = () => (
+    <View style={styles.stepContent}>
+      <View style={styles.row}>
+        <DatePicker label="Dato" value={date} onDateChange={setDate} containerStyle={styles.field} />
+        <Select
+          label="Kategori"
+          options={PRACTICE_CATEGORY_OPTIONS}
+          selectedValue={practiceCategory}
+          onValueChange={(v) => handleCategoryChange(v as PracticeCategory)}
+          containerStyle={styles.field}
+        />
+      </View>
+
+      <View style={styles.row}>
+        <Select
+          label="Miljø"
+          options={ENVIRONMENT_OPTIONS}
+          selectedValue={environment}
+          onValueChange={(v) => setEnvironment(v as Environment)}
+          containerStyle={styles.field}
+        />
+        <Input
+          label="Sted"
+          value={location}
+          onChangeText={setLocation}
+          placeholder="F.eks. Oslo"
+          maxLength={64}
+          containerStyle={styles.field}
+        />
+      </View>
+
+      {environment === Environment.OUTDOOR && <WeatherSelector selectedWeather={weather} onToggleWeather={toggleWeather} />}
+
+      <EquipmentSelector
+        bowOptions={bowOptions}
+        arrowSetOptions={arrowSetOptions}
+        selectedBow={selectedBow}
+        selectedArrowSet={selectedArrowSet}
+        onBowChange={setSelectedBow}
+        onArrowSetChange={setSelectedArrowSet}
+      />
+    </View>
+  );
+
+  const renderRoundsStep = () => (
+    <View style={styles.stepContent}>
+      <View style={styles.roundsSection}>
+        {rounds.map((round, index) => {
+          const rangeMode = isRangeCategory(practiceCategory);
+          return (
+            <View key={index} style={styles.roundCard}>
+              <View style={styles.roundHeader}>
+                <Text style={styles.roundNumber}>Runde {index + 1}</Text>
+                {rounds.length > 1 && (
+                  <TouchableOpacity style={styles.removeRoundBtn} onPress={() => removeRound(index)} accessibilityLabel="Fjern runde">
+                    <FontAwesomeIcon icon={faXmark} size={16} color={colors.textSecondary} />
+                  </TouchableOpacity>
+                )}
+              </View>
+
+              <View style={styles.roundFields}>
+                {rangeMode ? (
+                  <>
+                    <Input
+                      label="Fra (m)"
+                      value={round.distanceFrom !== undefined ? String(round.distanceFrom) : ''}
+                      onChangeText={(t) => updateRound(index, 'distanceFrom', parseNum(t))}
+                      keyboardType="numeric"
+                      containerStyle={styles.roundField}
+                    />
+                    <Input
+                      label="Til (m)"
+                      value={round.distanceTo !== undefined ? String(round.distanceTo) : ''}
+                      onChangeText={(t) => updateRound(index, 'distanceTo', parseNum(t))}
+                      keyboardType="numeric"
+                      containerStyle={styles.roundField}
+                    />
+                  </>
+                ) : (
+                  <>
+                    <Input
+                      label="Avstand (m)"
+                      value={round.distanceMeters !== undefined ? String(round.distanceMeters) : ''}
+                      onChangeText={(t) => updateRound(index, 'distanceMeters', parseNum(t))}
+                      keyboardType="numeric"
+                      containerStyle={styles.roundField}
+                    />
+                    <Select
+                      label="Skive"
+                      options={TARGET_TYPE_OPTIONS}
+                      selectedValue={round.targetType}
+                      onValueChange={(v) => updateRound(index, 'targetType', v as string)}
+                      placeholder="Velg"
+                      searchable
+                      containerStyle={styles.roundField}
+                    />
+                  </>
+                )}
+              </View>
+
+              <View style={styles.roundFields}>
+                <Input
+                  label="Piler m/score"
+                  optional
+                  value={round.numberArrows !== undefined ? String(round.numberArrows) : ''}
+                  onChangeText={(t) => updateRound(index, 'numberArrows', parseNum(t))}
+                  keyboardType="numeric"
+                  containerStyle={styles.roundField}
+                />
+                <Input
+                  label="Score"
+                  optional
+                  value={round.roundScore !== 0 ? String(round.roundScore) : ''}
+                  onChangeText={(t) => updateRound(index, 'roundScore', parseNum(t) ?? 0)}
+                  keyboardType="numeric"
+                  containerStyle={styles.roundField}
+                />
+              </View>
+
+              <Input
+                label="Piler u/score"
+                optional
+                value={round.arrowsWithoutScore !== undefined ? String(round.arrowsWithoutScore) : ''}
+                onChangeText={(t) => updateRound(index, 'arrowsWithoutScore', parseNum(t))}
+                keyboardType="numeric"
+                containerStyle={{ width: '48%' }}
+              />
+            </View>
+          );
+        })}
+
+        <TouchableOpacity
+          style={[styles.addRoundBtn, rounds.length >= 20 && { opacity: 0.4 }]}
+          onPress={addRound}
+          disabled={rounds.length >= 20}>
+          <FontAwesomeIcon icon={faPlus} size={14} color={colors.primary} />
+          <Text style={styles.addRoundBtnText}>Legg til runde</Text>
+        </TouchableOpacity>
+        {rounds.length >= 20 && <Text style={styles.limitMessage}>Maksimalt 20 runder er tillatt</Text>}
+      </View>
+    </View>
+  );
+
+  const renderScoringStep = () => {
+    const roundsWithArrows = rounds.filter((r) => (r.numberArrows ?? 0) > 0);
+
+    return (
+      <View style={styles.stepContent}>
+        <Text style={styles.stepDescription}>Velg hvordan du vil registrere poeng, eller hopp over dette steget.</Text>
+
+        {/* Scoring method selection */}
+        <View style={styles.scoringMethodSection}>
+          <Text style={styles.sectionTitle}>Registreringsmetode</Text>
+          <View style={styles.scoringMethodButtons}>
+            <Pressable
+              style={[styles.scoringMethodButton, scoringMethod === 'buttons' && styles.scoringMethodButtonActive]}
+              onPress={() => setScoringMethod('buttons')}>
+              <Text style={[styles.scoringMethodButtonText, scoringMethod === 'buttons' && styles.scoringMethodButtonTextActive]}>
+                Tall-knapper
+              </Text>
+            </Pressable>
+            <Pressable
+              style={[styles.scoringMethodButton, scoringMethod === 'target' && styles.scoringMethodButtonActive]}
+              onPress={() => setScoringMethod('target')}>
+              <Text style={[styles.scoringMethodButtonText, scoringMethod === 'target' && styles.scoringMethodButtonTextActive]}>
+                Plasser på skive
+              </Text>
+            </Pressable>
+          </View>
+        </View>
+
+        {/* Start shooting button */}
+        {!isEditing && scoringMethod === 'target' && (
+          <View style={styles.startShootingSection}>
+            <Button label="Start skyting" onPress={handleStartShooting} disabled={submitting} loading={submitting} />
+          </View>
+        )}
+
+        {scoringMethod === 'buttons' && (
+          <>
+            {roundsWithArrows.length === 0 && (
+              <View style={styles.emptyScoring}>
+                <Text style={styles.emptyScoringText}>
+                  Ingen runder med definert antall piler.{'\n'}Gå tilbake til «Runder» og fyll inn «Piler m/score».
+                </Text>
+              </View>
+            )}
+
+            {rounds.map((round, roundIndex) => {
+              const maxArrows = round.numberArrows ?? 0;
+              if (maxArrows === 0) return null;
+
+              const currentScores = round.scores ?? [];
+              const filledCount = currentScores.length;
+              const total = currentScores.reduce((a, b) => a + b, 0);
+              const isFull = filledCount >= maxArrows;
+
+              return (
+                <View key={roundIndex} style={styles.scoringCard}>
+                  <View style={styles.scoringCardHeader}>
+                    <Text style={styles.scoringRoundTitle}>Runde {roundIndex + 1}</Text>
+                    <Text style={styles.scoringRoundMeta}>{getRoundSummary(round)}</Text>
+                  </View>
+
+                  {/* Arrow score chips */}
+                  <View style={styles.arrowChipsRow}>
+                    {Array.from({ length: maxArrows }).map((_, i) => {
+                      const scored = currentScores[i] !== undefined;
+                      return (
+                        <View key={i} style={[styles.arrowChip, scored ? styles.arrowChipFilled : styles.arrowChipEmpty]}>
+                          <Text style={[styles.arrowChipText, scored ? styles.arrowChipTextFilled : styles.arrowChipTextEmpty]}>
+                            {scored ? String(currentScores[i]) : '–'}
+                          </Text>
+                        </View>
+                      );
+                    })}
+                  </View>
+
+                  <View style={styles.scoringProgress}>
+                    <Text style={styles.scoringProgressText}>
+                      {filledCount} av {maxArrows} piler registrert
+                    </Text>
+                    {filledCount > 0 && <Text style={styles.scoringTotal}>Sum: {total}</Text>}
+                  </View>
+
+                  {/* Score buttons */}
+                  {!isFull ? (
+                    <View style={styles.scoreButtonsGrid}>
+                      {ARROW_SCORE_OPTIONS.map((opt) => (
+                        <Pressable
+                          key={opt.label}
+                          style={[
+                            styles.scoreButton,
+                            opt.label === 'X' && styles.scoreButtonX,
+                            opt.label === 'M' && styles.scoreButtonMiss,
+                          ]}
+                          onPress={() => addArrowScore(roundIndex, opt.value)}>
+                          <Text
+                            style={[
+                              styles.scoreButtonText,
+                              opt.label === 'X' && styles.scoreButtonTextX,
+                              opt.label === 'M' && styles.scoreButtonTextMiss,
+                            ]}>
+                            {opt.label}
+                          </Text>
+                        </Pressable>
+                      ))}
+                    </View>
+                  ) : (
+                    <View style={styles.scoringComplete}>
+                      <Text style={styles.scoringCompleteText}>✓ Alle piler registrert – score: {total}</Text>
+                    </View>
+                  )}
+
+                  {filledCount > 0 && (
+                    <TouchableOpacity style={styles.backspaceBtn} onPress={() => removeLastArrowScore(roundIndex)}>
+                      <FontAwesomeIcon icon={faDeleteLeft} size={16} color={colors.textSecondary} />
+                      <Text style={styles.backspaceBtnText}>Fjern siste</Text>
+                    </TouchableOpacity>
+                  )}
+                </View>
+              );
+            })}
+          </>
+        )}
+      </View>
+    );
+  };
+
+  const renderReflectionStep = () => (
+    <View style={styles.stepContent}>
+      <View style={styles.ratingSection}>
+        <Text style={styles.ratingLabel}>Vurdering (valgfritt)</Text>
+        <Text style={styles.ratingHelpText}>Hvordan vil du vurdere treningen?</Text>
+        <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+          <View style={styles.ratingButtons}>
+            {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((num) => {
+              const active = rating === num;
+              return (
+                <Pressable
+                  key={num}
+                  style={[styles.ratingButton, active && styles.ratingButtonActive]}
+                  onPress={() => setRating(active ? null : num)}
+                  accessibilityLabel={`Vurdering ${num} av 10`}>
+                  <Text style={[styles.ratingButtonText, active && styles.ratingButtonTextActive]}>{num}</Text>
+                </Pressable>
+              );
+            })}
+          </View>
+        </ScrollView>
+      </View>
+
+      <Textarea
+        label="Notater"
+        optional
+        value={notes}
+        onChangeText={setNotes}
+        placeholderText="Hvordan gikk treningen?&#10;&#10;Hva gikk bra? Hva kan forbedres?"
+        maxLength={500}
+        containerStyle={styles.inputContainer}
+      />
+
+      {error && <Text style={styles.error}>{error}</Text>}
+    </View>
+  );
+
+  // ═══════════════════════════════════════════════════════════════════════════════
+  // Render
+  // ═══════════════════════════════════════════════════════════════════════════════
 
   return (
     <ModalWrapper visible={visible} onClose={handleClose}>
-      <KeyboardAvoidingView
-        style={styles.container}
-        behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-        keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 0}>
-        <ScrollView contentContainerStyle={styles.scrollContainer} keyboardShouldPersistTaps="handled" showsVerticalScrollIndicator={false}>
-          <Pressable style={{ flex: 1 }} onPress={() => Keyboard.dismiss()}>
-            <ModalHeader title={isEditing ? 'Rediger trening' : 'Ny trening'} onPress={handleClose} />
-            <View style={styles.content}>
-              <DatePicker label="Dato" value={date} onDateChange={setDate} containerStyle={styles.inputContainer} testID="date-picker" />
-              <Select
-                label="🌍 Miljø"
-                options={[
-                  { label: 'Innendørs', value: Environment.INDOOR },
-                  { label: 'Utendørs', value: Environment.OUTDOOR },
-                ]}
-                selectedValue={environment}
-                onValueChange={(value) => setEnvironment(value as Environment)}
-                containerStyle={styles.inputContainer}
-              />
-              <Input
-                label="📍 Sted (valgfritt)"
-                value={location}
-                onChangeText={setLocation}
-                placeholderText="F.eks. Oslo Bueskytterhall"
-                containerStyle={styles.inputContainer}
-              />
-              {bowOptions.length > 0 && (
-                <Select
-                  label="🏹 Bue (valgfritt)"
-                  options={bowOptions}
-                  selectedValue={selectedBow}
-                  onValueChange={setSelectedBow}
-                  containerStyle={styles.inputContainer}
-                />
-              )}
-              {arrowSetOptions.length > 0 && (
-                <Select
-                  label="🎯 Pilsett (valgfritt)"
-                  options={arrowSetOptions}
-                  selectedValue={selectedArrowSet}
-                  onValueChange={setSelectedArrowSet}
-                  containerStyle={styles.inputContainer}
-                />
-              )}
-              <Input
-                label="Total score (valgfritt)"
-                inputStyle={{ width: '30%' }}
-                value={totalScore}
-                onChangeText={setTotalScore}
-                keyboardType="numeric"
-                containerStyle={styles.inputContainer}
-              />
-              <Textarea
-                label="Notater (valgfritt)"
-                value={notes}
-                onChangeText={setNotes}
-                placeholderText="Legg til notater om treningsøkten..."
-                containerStyle={styles.inputContainer}
-              />
-              {!isEditing && (
-                <Link
-                  href={{
-                    pathname: '/practice/shooting',
-                    params: shootingParams,
-                  }}
-                  onPress={handleStartShooting}
-                  asChild
-                  style={styles.startButton}>
-                  <Button label="Start skyting" />
-                </Link>
-              )}
-            </View>
-            {isEditing && (
-              <TouchableOpacity testID="delete-practice-button" onPress={() => setConfirmVisible(true)}>
-                <FontAwesomeIcon
-                  icon={faTrashCan}
-                  style={{ padding: 8, marginBottom: 12, alignSelf: 'flex-end' }}
-                  color={'#FF0000'}
-                  size={20}
-                />
-              </TouchableOpacity>
-            )}
-            <View style={styles.footer}>
-              <Button
-                label={isEditing ? 'Oppdater trening' : 'Lagre og avslutt'}
-                onPress={handleSaveAndFinish}
-                buttonStyle={styles.saveButton}
-              />
-            </View>
+      <KeyboardAvoidingView style={styles.container} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
+        {/* Fixed header */}
+        <Pressable onPress={Keyboard.dismiss}>
+          <ModalHeader title={isEditing ? 'Rediger trening' : 'Ny trening'} onPress={handleClose} />
+        </Pressable>
+
+        <StepIndicator steps={STEP_LABELS} currentStep={step} onStepPress={setStep} />
+
+        {/* Scrollable content */}
+        <ScrollView
+          style={styles.scrollView}
+          contentContainerStyle={styles.scrollContainer}
+          keyboardShouldPersistTaps="handled"
+          showsVerticalScrollIndicator={false}>
+          <Pressable onPress={Keyboard.dismiss}>
+            {step === 0 && renderInfoStep()}
+            {step === 1 && renderRoundsStep()}
+            {step === 2 && renderScoringStep()}
+            {step === 3 && renderReflectionStep()}
           </Pressable>
         </ScrollView>
+
+        {/* Fixed navigation footer */}
+        <NavigationFooter
+          currentStep={step}
+          totalSteps={TOTAL_STEPS}
+          stepLabels={STEP_LABELS}
+          isEditing={isEditing}
+          submitting={submitting}
+          saveLabel={isEditing ? 'Lagre' : 'Lagre'}
+          onCancel={handleClose}
+          onPrev={goPrev}
+          onNext={goNext}
+          onSave={handleSaveAndFinish}
+          onDelete={() => setConfirmVisible(true)}
+          showSaveOnAllSteps={true}
+        />
       </KeyboardAvoidingView>
+
       <ConfirmModal
         visible={confirmVisible}
         title="Slett trening"
-        message={'Vil du slette treningen?'}
+        message="Vil du slette treningen?"
         confirmLabel="Slett"
         cancelLabel="Avbryt"
         onCancel={() => setConfirmVisible(false)}
         onConfirm={() => {
-          handleDeletePractice();
+          handleDelete();
           setConfirmVisible(false);
         }}
       />

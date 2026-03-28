@@ -3,5 +3,7 @@ export * from './userRepository';
 export * from './bowRepository';
 export * from './arrowsRepository';
 export * from './practiceRepository';
+export * from './competitionRepository';
 export * from './roundTypeRepository';
 export * from './sightMarksRepository';
+export * from './achievementRepository';

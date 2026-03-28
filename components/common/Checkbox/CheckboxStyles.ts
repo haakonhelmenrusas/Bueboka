@@ -9,7 +9,7 @@ export const styles = StyleSheet.create({
     paddingHorizontal: 8,
     paddingVertical: 12,
     borderRadius: 4,
-    backgroundColor: colors.tertiary,
+    backgroundColor: colors.white,
   },
   label: {
     fontSize: 16,

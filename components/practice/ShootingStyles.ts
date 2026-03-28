@@ -42,7 +42,7 @@ export const styles = StyleSheet.create({
     borderRadius: 12,
     justifyContent: 'center',
     alignItems: 'center',
-    shadowColor: colors.dark_primary,
+    shadowColor: colors.primaryDark,
     shadowOffset: {
       width: 0,
       height: 2,
@@ -58,7 +58,7 @@ export const styles = StyleSheet.create({
     borderRadius: 12,
     justifyContent: 'center',
     alignItems: 'center',
-    shadowColor: colors.dark_primary,
+    shadowColor: colors.primaryDark,
     shadowOffset: {
       width: 0,
       height: 2,
@@ -76,6 +76,20 @@ export const styles = StyleSheet.create({
   infoText: {
     fontSize: 16,
     color: colors.secondary,
+  },
+  scoreButton: {
+    backgroundColor: colors.secondary,
+    marginTop: 20,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: 15,
+    borderRadius: 8,
+  },
+  scoreButtonText: {
+    color: colors.white,
+    fontWeight: 'bold',
+    marginLeft: 10,
   },
   saveButton: {
     backgroundColor: colors.primary,

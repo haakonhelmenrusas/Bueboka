@@ -7,4 +7,7 @@ export interface MarkValue {
 
   /** The distance corresponding to the mark. */
   distance: number;
+
+  /** Optional name for the sight mark set (used when creating a new set). */
+  name?: string;
 }

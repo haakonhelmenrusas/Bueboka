@@ -8,7 +8,17 @@ import { User } from '@/types';
 export interface UpdateUserData {
   name?: string;
   club?: string;
+  skytternr?: string;
   image?: string | null;
+}
+
+export interface UpdatePublicSettingsData {
+  isPublic?: boolean;
+  publicName?: boolean;
+  publicClub?: boolean;
+  publicStats?: boolean;
+  publicSkytternr?: boolean;
+  publicAchievements?: boolean;
 }
 
 /**
@@ -21,8 +31,10 @@ export const userRepository = {
    */
   async getCurrentUser(): Promise<User> {
     try {
-      const response = await client.get<User>('/profile');
-      return response.data;
+      const response = await client.get<{ profile: User } | User>('/profile');
+      // The API returns { profile: {...} } — unwrap it if present
+      const data = response.data as any;
+      return data?.profile ?? data;
     } catch (error) {
       throw handleApiError(error);
     }
@@ -72,6 +84,19 @@ export const userRepository = {
   async removeAvatar(): Promise<User> {
     try {
       const response = await client.patch<User>('/users', { image: null });
+      return response.data;
+    } catch (error) {
+      throw handleApiError(error);
+    }
+  },
+
+  /**
+   * Update public profile visibility settings
+   * PATCH /api/users
+   */
+  async updatePublicSettings(data: UpdatePublicSettingsData): Promise<User> {
+    try {
+      const response = await client.patch<User>('/users', data);
       return response.data;
     } catch (error) {
       throw handleApiError(error);

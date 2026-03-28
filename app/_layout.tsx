@@ -1,4 +1,4 @@
-import { StatusBar } from 'react-native';
+import { StatusBar } from 'expo-status-bar';
 import { Stack, useNavigationContainerRef } from 'expo-router';
 import * as Sentry from '@sentry/react-native';
 import * as Clarity from '@microsoft/react-native-clarity';
@@ -6,6 +6,7 @@ import { isRunningInExpoGo } from 'expo';
 import React, { useEffect } from 'react';
 import { AuthProvider } from '@/contexts';
 import { useAuth } from '@/hooks';
+import { colors } from '@/styles/colors';
 
 let navigationIntegration: any = null;
 
@@ -32,7 +33,7 @@ if (process.env.NODE_ENV !== 'development' && !isRunningInExpoGo()) {
 
 function RootLayoutContent() {
   const ref = useNavigationContainerRef();
-  const { isAuthenticated, isLoading } = useAuth();
+  const { isAuthenticated } = useAuth();
 
   useEffect(() => {
     if (ref?.current && navigationIntegration) {
@@ -40,16 +41,16 @@ function RootLayoutContent() {
     }
   }, [ref]);
 
-  // Show nothing while loading auth state
-  if (isLoading) {
-    return null;
-  }
-
   return (
     <>
-      <StatusBar barStyle="dark-content" />
+      <StatusBar style="light" />
       <Stack screenOptions={{ headerShown: false }}>
-        {isAuthenticated ? <Stack.Screen name="(tabs)" /> : <Stack.Screen name="auth" />}
+        <Stack.Screen name="index" />
+        {isAuthenticated ? (
+          <Stack.Screen name="(tabs)" options={{ contentStyle: { backgroundColor: colors.primary } }} />
+        ) : (
+          <Stack.Screen name="auth" />
+        )}
       </Stack>
     </>
   );

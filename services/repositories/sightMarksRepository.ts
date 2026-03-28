@@ -8,17 +8,20 @@ export const sightMarksRepository = {
     return Array.isArray(response.data) ? response.data : response.data?.sightMarks || [];
   },
 
-  async getById(id: string): Promise<SightMark> {
-    const response = await client.get<SightMark>(`/sight-marks/${id}`);
-    return response.data;
-  },
   async create(data: Partial<SightMark>): Promise<SightMark> {
-    const response = await client.post<SightMark>('/sight-marks', data);
-    return response.data;
+    const response = await client.post<{ sightMark: SightMark } | SightMark>('/sight-marks', data);
+    const raw = response.data as any;
+    return raw?.sightMark ?? raw;
   },
   async update(id: string, data: Partial<SightMark>): Promise<SightMark> {
-    const response = await client.put<SightMark>(`/sight-marks/${id}`, data);
-    return response.data;
+    const response = await client.put<{ sightMark: SightMark } | SightMark>(`/sight-marks/${id}`, data);
+    const raw = response.data as any;
+    return raw?.sightMark ?? raw;
+  },
+  async patch(id: string, data: Partial<SightMark>): Promise<SightMark> {
+    const response = await client.patch<{ sightMark: SightMark } | SightMark>(`/sight-marks/${id}`, data);
+    const raw = response.data as any;
+    return raw?.sightMark ?? raw;
   },
   async delete(id: string): Promise<void> {
     await client.delete(`/sight-marks/${id}`);
@@ -60,17 +63,15 @@ export const sightMarksRepository = {
     }
   },
 
-  async getResults(sightMarkId?: string): Promise<SightMarkResult[]> {
-    const url = sightMarkId ? `/sight-mark-results?sightMarkId=${sightMarkId}` : '/sight-mark-results';
-    const response = await client.get<SightMarkResult[]>(url);
-    return response.data;
+  async getResults(sightMarkId: string): Promise<SightMarkResult[]> {
+    const response = await client.get<SightMarkResult[] | { sightMarkResults: SightMarkResult[] }>(`/sight-marks/${sightMarkId}/results`);
+    const raw = response.data as any;
+    return Array.isArray(raw) ? raw : (raw?.sightMarkResults ?? raw?.results ?? []);
   },
   async createResult(sightMarkId: string, data: Partial<SightMarkResult>): Promise<SightMarkResult> {
-    const response = await client.post<SightMarkResult>('/sight-mark-results', {
-      ...data,
-      sightMarkId,
-    });
-    return response.data;
+    const response = await client.post<{ sightMarkResult: SightMarkResult } | SightMarkResult>(`/sight-marks/${sightMarkId}/results`, data);
+    const raw = response.data as any;
+    return raw?.sightMarkResult ?? raw;
   },
   async deleteResult(id: string): Promise<void> {
     await client.delete(`/sight-mark-results/${id}`);

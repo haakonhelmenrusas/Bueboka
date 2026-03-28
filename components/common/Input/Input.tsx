@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
-import { Platform, StyleProp, Text, TextInput, TextInputProps, TextStyle, View, ViewStyle } from 'react-native';
+import { StyleProp, Text, TextInput, TextInputProps, TextStyle, View, ViewStyle } from 'react-native';
 import { defaultStyles } from './InputStyles';
 import { colors } from '@/styles/colors';
 
 interface InputProps extends TextInputProps {
   label: string;
+  info?: string;
   error?: boolean;
   errorMessage?: string;
   helpText?: string;
@@ -25,6 +26,7 @@ const Input = React.forwardRef<TextInput, InputProps>(
   (
     {
       label,
+      info,
       error,
       errorMessage,
       helpText,
@@ -41,10 +43,10 @@ const Input = React.forwardRef<TextInput, InputProps>(
       editable = true,
       ...props
     },
-    ref
+    ref,
   ) => {
     const [isFocused, setIsFocused] = useState(false);
-    const showError = Boolean(errorMessage) || Boolean(error);
+    const showError = Boolean(error);
 
     const handleFocus = (e: any) => {
       setIsFocused(true);
@@ -63,6 +65,7 @@ const Input = React.forwardRef<TextInput, InputProps>(
             {label}
             {optional && <Text style={defaultStyles.optional}> (valgfritt)</Text>}
           </Text>
+          {info ? <Text style={defaultStyles.infoText}>{info}</Text> : null}
         </View>
 
         {helpText ? <Text style={defaultStyles.help}>{helpText}</Text> : null}
@@ -94,7 +97,7 @@ const Input = React.forwardRef<TextInput, InputProps>(
         {showError && errorMessage ? <Text style={defaultStyles.errorMessage}>{errorMessage}</Text> : null}
       </View>
     );
-  }
+  },
 );
 
 Input.displayName = 'Input';

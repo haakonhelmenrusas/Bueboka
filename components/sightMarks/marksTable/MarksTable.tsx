@@ -35,9 +35,9 @@ export default function MarksTable({ ballistics, removeMark, status }: Calculati
             onPress={() => removeMark(index)}
             disabled={status === 'pending'}>
             {status === 'pending' ? (
-              <ActivityIndicator size="small" color={colors.secondary} />
+              <ActivityIndicator size="small" color={colors.white} />
             ) : (
-              <FontAwesomeIcon icon={faTrash} color={colors.secondary} />
+              <FontAwesomeIcon icon={faTrash} color="rgba(255,255,255,0.7)" />
             )}
           </Pressable>
         </View>

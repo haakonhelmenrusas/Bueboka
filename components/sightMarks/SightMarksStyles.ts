@@ -5,16 +5,21 @@ export const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
+  gradient: {
+    flex: 1,
+  },
   title: {
     fontSize: 24,
     fontWeight: 'bold',
     textAlign: 'center',
-    marginBottom: 24,
-    marginTop: 24,
+    marginBottom: 20,
+    color: colors.white,
   },
   header: {
     flexDirection: 'row',
     justifyContent: 'space-around',
+    borderBottomWidth: 1,
+    borderBottomColor: 'rgba(255,255,255,0.8)',
   },
   headerItem: {
     flexDirection: 'column',
@@ -25,14 +30,15 @@ export const styles = StyleSheet.create({
     fontSize: 16,
     paddingBottom: 8,
     fontWeight: '500',
-    color: colors.dark_primary,
+    color: 'rgba(255,255,255,0.6)',
   },
   activeText: {
-    color: colors.secondary,
+    color: colors.white,
+    fontWeight: '700',
   },
   activeLine: {
     height: 2,
     width: '100%',
-    backgroundColor: colors.secondary,
+    backgroundColor: colors.white,
   },
 });

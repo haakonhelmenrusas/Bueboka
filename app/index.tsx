@@ -7,5 +7,5 @@ export default function Index() {
 
   if (isLoading) return null;
 
-  return <Redirect href={isAuthenticated ? '/practice' : '/auth'} />;
+  return <Redirect href={isAuthenticated ? '/(tabs)/home' : '/auth'} />;
 }

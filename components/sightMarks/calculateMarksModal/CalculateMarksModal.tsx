@@ -40,7 +40,7 @@ export const CalculateMarksModal = ({
 
   async function calculateMarksFunc(distanceFrom: number, distanceTo: number, interval: number) {
     if (!ballistics) {
-      setError('Data mangler');
+      setError('Ballistikkdata mangler. Legg inn et siktemerke først.');
       return;
     }
 
@@ -48,16 +48,31 @@ export const CalculateMarksModal = ({
       setStatus('pending');
       setError(null);
 
-      // Filter out empty/invalid angles
       const validAngles = angles.filter((a) => !isNaN(a) && a !== null && a !== undefined);
+
+      // Build explicit distances so the service computes a mark for every step
+      const allDistances: number[] = [];
+      for (let d = distanceFrom; d <= distanceTo + 1e-9; d += interval) {
+        allDistances.push(Math.round(d * 1000) / 1000);
+      }
 
       const body = {
         ballistics_pars: ballistics.ballistics_pars,
         distances_def: [distanceFrom, distanceTo, interval],
+        distances: allDistances,
         angles: validAngles.length > 0 ? validAngles : [0],
       };
 
-      const res = await sightMarksRepository.calculateSightMarks(body);
+      const rawRes = await sightMarksRepository.calculateSightMarks(body);
+
+      // Prefer the service's echoed distances; fall back to the locally-built list
+      const fullDistances = Array.isArray(rawRes.distances) && rawRes.distances.length > 1 ? rawRes.distances : allDistances;
+
+      const res: MarksResult = {
+        distances: fullDistances,
+        sight_marks_by_hill_angle: rawRes.sight_marks_by_hill_angle ?? {},
+        arrow_speed_by_angle: rawRes.arrow_speed_by_angle ?? {},
+      };
 
       // Persist result if we have a sightMarkId with offline queue support
       if (sightMarkId) {
@@ -147,7 +162,7 @@ export const CalculateMarksModal = ({
         <ModalHeader onPress={handleCloseModal} title="Beregn siktemerker" />
         <View style={styles.inputs}>
           <Input
-            inputStyle={{ width: 90 }}
+            containerStyle={{ flex: 1 }}
             label="Fra avstand"
             onBlur={() => dispatch({ type: 'SET_DISTANCE_FROM_ERROR', payload: false })}
             keyboardType="numeric"
@@ -157,7 +172,7 @@ export const CalculateMarksModal = ({
             onChangeText={(value) => handleNumberChange(value, 'SET_DISTANCE_FROM', dispatch)}
           />
           <Input
-            inputStyle={{ width: 90 }}
+            containerStyle={{ flex: 1 }}
             onBlur={() => dispatch({ type: 'SET_DISTANCE_TO_ERROR', payload: false })}
             label="Til avstand"
             keyboardType="numeric"
@@ -167,8 +182,8 @@ export const CalculateMarksModal = ({
             errorMessage="Verdi mangler"
           />
           <Input
-            inputStyle={{ width: 90 }}
-            label="Intevall"
+            containerStyle={{ flex: 1 }}
+            label="Intervall"
             onBlur={() => dispatch({ type: 'SET_INTERVAL_ERROR', payload: false })}
             keyboardType="numeric"
             value={interval}
@@ -180,7 +195,7 @@ export const CalculateMarksModal = ({
         <View style={styles.angles}>
           <Input
             textAlign="center"
-            inputStyle={{ width: 90 }}
+            containerStyle={{ flex: 1 }}
             label="Vinkel"
             keyboardType="numbers-and-punctuation"
             value={angles[0]?.toString() || ''}
@@ -188,7 +203,7 @@ export const CalculateMarksModal = ({
           />
           <Input
             textAlign="center"
-            inputStyle={{ width: 90 }}
+            containerStyle={{ flex: 1 }}
             label="Vinkel"
             keyboardType="numbers-and-punctuation"
             value={angles[1]?.toString() || ''}
@@ -196,7 +211,7 @@ export const CalculateMarksModal = ({
           />
           <Input
             textAlign="center"
-            inputStyle={{ width: 90 }}
+            containerStyle={{ flex: 1 }}
             label="Vinkel"
             keyboardType="numbers-and-punctuation"
             value={angles[2]?.toString() || ''}

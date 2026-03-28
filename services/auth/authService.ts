@@ -42,11 +42,8 @@ export const authService = {
    */
   async register(data: RegisterData): Promise<{ user: User }> {
     try {
-      const response = await client.post<{ data: any }>('/auth/sign-up/email', data);
-      const authData = response.data.data;
-      const user = authData.user;
-      const token = authData.token;
-      const expiresAt = authData.expiresAt;
+      const response = await client.post<{ user: User; token?: string; expiresAt?: string }>('/auth/sign-up/email', data);
+      const { user, token, expiresAt } = response.data;
 
       if (token) {
         const normalized = ensureExpiryString(expiresAt);
@@ -64,11 +61,8 @@ export const authService = {
    */
   async login(data: LoginData): Promise<{ user: User }> {
     try {
-      const response = await client.post<{ data: any }>('/auth/sign-in/email', data);
-      const authData = response.data.data;
-      const user = authData.user;
-      const token = authData.token;
-      const expiresAt = authData.expiresAt;
+      const response = await client.post<{ user: User; token?: string; expiresAt?: string }>('/auth/sign-in/email', data);
+      const { user, token, expiresAt } = response.data;
 
       if (token) {
         const normalized = ensureExpiryString(expiresAt);
@@ -137,10 +131,8 @@ export const authService = {
    */
   async validateSession(): Promise<{ user: User } | null> {
     try {
-      const response = await client.get<{ data: any }>('/auth/get-session');
-      const sessionData = response.data.data;
-      const user = sessionData.user;
-
+      const response = await client.get<{ user: User; session?: unknown }>('/auth/get-session');
+      const user = response.data.user;
       return { user };
     } catch {
       return null;

@@ -1,6 +1,6 @@
 import { createAuthClient } from 'better-auth/react';
 import { expoClient } from '@better-auth/expo/client';
-import * as SecureStore from 'expo-secure-store';
+import { authStorage } from './authStorage';
 
 // Get the base API URL and construct the auth base URL
 // better-auth expects the baseURL to point to the auth handler
@@ -47,7 +47,7 @@ export const authClient = createAuthClient({
     expoClient({
       scheme: 'bueboka', // App scheme from app.json - used for OAuth redirects
       storagePrefix: 'bueboka',
-      storage: SecureStore,
+      storage: authStorage,
     }),
   ],
 });

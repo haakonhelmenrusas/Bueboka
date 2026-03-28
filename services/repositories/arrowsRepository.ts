@@ -2,31 +2,10 @@ import { authFetchClient as client } from '@/services/api/authFetch';
 import { handleApiError } from '@/services/api/errors';
 import { Arrows, Material } from '@/types';
 
-/**
- * Arrows creation data structure
- */
-export interface CreateArrowsData {
+/** Fields for creating or updating an arrow set. Required fields (name, material) are only enforced on create. */
+export interface ArrowsData {
   name: string;
   material: Material;
-  arrowsCount?: number;
-  diameter?: number;
-  weight?: number;
-  length?: number;
-  spine?: string;
-  pointType?: string;
-  pointWeight?: number;
-  vanes?: string;
-  nock?: string;
-  notes?: string;
-  isFavorite?: boolean;
-}
-
-/**
- * Arrows update data structure
- */
-export interface UpdateArrowsData {
-  name?: string;
-  material?: Material;
   arrowsCount?: number;
   diameter?: number;
   weight?: number;
@@ -44,26 +23,12 @@ export interface UpdateArrowsData {
  * Arrows repository - handles all arrows-related API operations
  */
 export const arrowsRepository = {
-  /**
-   * Get all arrow sets for the current user
-   */
   async getAll(): Promise<Arrows[]> {
     try {
       const response = await client.get<{ arrows: Arrows[] } | Arrows[]>('/arrows');
+      if (!response.data) return [];
       // Handle both wrapped {arrows: [...]} and direct array responses
-      return Array.isArray(response.data) ? response.data : (response.data as any).arrows || [];
-    } catch (error) {
-      throw handleApiError(error);
-    }
-  },
-
-  /**
-   * Get a specific arrow set by ID
-   */
-  async getById(id: string): Promise<Arrows> {
-    try {
-      const response = await client.get<Arrows>(`/arrows/${id}`);
-      return response.data;
+      return Array.isArray(response.data) ? response.data : ((response.data as { arrows: Arrows[] }).arrows ?? []);
     } catch (error) {
       throw handleApiError(error);
     }
@@ -72,7 +37,7 @@ export const arrowsRepository = {
   /**
    * Create a new arrow set
    */
-  async create(data: CreateArrowsData): Promise<Arrows> {
+  async create(data: ArrowsData): Promise<Arrows> {
     try {
       const response = await client.post<Arrows>('/arrows', data);
       return response.data;
@@ -84,7 +49,7 @@ export const arrowsRepository = {
   /**
    * Update an existing arrow set
    */
-  async update(id: string, data: UpdateArrowsData): Promise<Arrows> {
+  async update(id: string, data: Partial<ArrowsData>): Promise<Arrows> {
     try {
       const response = await client.patch<Arrows>(`/arrows/${id}`, data);
       return response.data;

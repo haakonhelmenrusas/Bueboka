@@ -1,10 +1,11 @@
 import React, { createContext, ReactNode, useCallback, useContext, useEffect, useState } from 'react';
 import { User } from '@/types';
 import { authService } from '@/services/auth/authService';
-import { clearTokens, getAccessToken, saveTokens } from '@/services/auth/tokenStorage';
+import { getAccessToken, saveTokens } from '@/services/auth/tokenStorage';
 import { registerOfflineHandlers } from '@/services/offline/handlers';
 import * as Sentry from '@sentry/react-native';
 import { authClient } from '@/services/auth/authClient';
+import { authStorage } from '@/services/auth/authStorage';
 import * as Linking from 'expo-linking';
 import * as WebBrowser from 'expo-web-browser';
 import * as SecureStore from 'expo-secure-store';
@@ -70,21 +71,27 @@ export function AuthProvider({ children }: AuthProviderProps) {
     try {
       // Use profile endpoint to get full user data instead of minimal session data
       const { userRepository } = await import('@/services/repositories/userRepository');
-      const fullUser = await userRepository.getCurrentUser();
-      console.log('[Auth] checkSession full profile result:', JSON.stringify(fullUser, null, 2));
+      const [fullUser, session] = await Promise.all([userRepository.getCurrentUser(), authClient.getSession()]);
 
       if (fullUser) {
+        // /api/profile doesn't include emailVerified (it's in the auth table),
+        // so merge it from the Better Auth session
+        const userWithVerification: User = {
+          ...fullUser,
+          emailVerified: session?.data?.user?.emailVerified ?? fullUser.emailVerified,
+        };
+
         setState({
-          user: fullUser,
+          user: userWithVerification,
           isAuthenticated: true,
           isLoading: false,
           error: null,
         });
 
         Sentry.setUser({
-          id: fullUser.id,
-          email: fullUser.email,
-          username: fullUser.name || undefined,
+          id: userWithVerification.id,
+          email: userWithVerification.email,
+          username: userWithVerification.name || undefined,
         });
       } else {
         setState((prev) => ({ ...prev, isLoading: false }));
@@ -151,7 +158,6 @@ export function AuthProvider({ children }: AuthProviderProps) {
    * Set authenticated user state
    */
   function setAuthenticatedUser(user: User) {
-    console.log('[Auth] setAuthenticatedUser called with:', JSON.stringify(user, null, 2));
     if (!user || typeof user !== 'object') {
       console.error('[Auth] Invalid user object received!');
       return;
@@ -235,12 +241,16 @@ export function AuthProvider({ children }: AuthProviderProps) {
       // Use userRepository.getCurrentUser() to get the full profile data from /api/profile
       // as the default auth session endpoint returns a limited user object
       const { userRepository } = await import('@/services/repositories/userRepository');
-      const response = (await userRepository.getCurrentUser()) as any;
+      const [profileUser, session] = await Promise.all([userRepository.getCurrentUser(), authClient.getSession()]);
 
-      // Handle the nested data structure if present
-      const fullUser = response.data?.profile || response;
+      if (profileUser?.id) {
+        // /api/profile doesn't include emailVerified (it's in the auth table),
+        // so merge it from the Better Auth session
+        const fullUser: User = {
+          ...profileUser,
+          emailVerified: session?.data?.user?.emailVerified ?? profileUser.emailVerified,
+        };
 
-      if (fullUser && fullUser.id) {
         setState((prev) => ({
           ...prev,
           user: fullUser,
@@ -253,7 +263,6 @@ export function AuthProvider({ children }: AuthProviderProps) {
           username: fullUser.name || undefined,
         });
       } else {
-        console.warn('[Auth] refreshUser: No valid user returned from profile API', response);
         setState((prev) => ({ ...prev, isLoading: false }));
       }
     } catch (error) {
@@ -288,6 +297,9 @@ export function AuthProvider({ children }: AuthProviderProps) {
    * Initialize authentication state from stored token
    */
   async function initializeAuth() {
+    // Warm the sync cookie cache before any API calls fire so that
+    // expoClient can attach the session cookie to the very first request.
+    await authStorage.initialize();
     try {
       const token = await getAccessToken();
 
@@ -298,14 +310,19 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
       // Use profile endpoint instead of session endpoint to get full user data on init
       const { userRepository } = await import('@/services/repositories/userRepository');
-      const response = (await userRepository.getCurrentUser()) as any;
+      const [response, session] = await Promise.all([userRepository.getCurrentUser() as any, authClient.getSession()]);
 
       // Handle the nested data structure if present
-      const fullUser = response.data?.profile || response;
+      const profileUser = response.data?.profile || response;
 
-      console.log('[Auth] initializeAuth full profile result:', JSON.stringify(fullUser, null, 2));
+      if (profileUser && profileUser.id) {
+        // /api/profile doesn't include emailVerified (it's in the auth table),
+        // so merge it from the Better Auth session
+        const fullUser: User = {
+          ...profileUser,
+          emailVerified: session?.data?.user?.emailVerified ?? profileUser.emailVerified,
+        };
 
-      if (fullUser && fullUser.id) {
         setState({
           user: fullUser,
           isAuthenticated: true,
@@ -319,23 +336,11 @@ export function AuthProvider({ children }: AuthProviderProps) {
           username: fullUser.name || undefined,
         });
       } else {
-        await clearTokens();
-        setState({
-          user: null,
-          isAuthenticated: false,
-          isLoading: false,
-          error: null,
-        });
+        setState((prev) => ({ ...prev, isLoading: false }));
       }
     } catch (error) {
       console.warn('[Auth] Failed to initialize auth:', error);
-      await clearTokens();
-      setState({
-        user: null,
-        isAuthenticated: false,
-        isLoading: false,
-        error: null,
-      });
+      setState((prev) => ({ ...prev, isLoading: false }));
     }
   }
 

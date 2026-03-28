@@ -3,7 +3,7 @@ import { colors } from '@/styles/colors';
 
 export const styles = StyleSheet.create({
   trainingCard: {
-    marginVertical: 6,
+    marginVertical: 2,
     marginHorizontal: 1,
     backgroundColor: colors.white,
     borderRadius: 12,
@@ -46,10 +46,22 @@ export const styles = StyleSheet.create({
     borderRadius: 12,
     gap: 4,
   },
+  badgeCompetition: {
+    backgroundColor: colors.warning,
+  },
   badgeText: {
     fontSize: 11,
     fontWeight: '600',
     color: colors.white,
+  },
+  badgeTextCompetition: {
+    color: colors.primaryDark,
+  },
+  competitionName: {
+    fontSize: 14,
+    fontWeight: '700',
+    color: colors.primaryDark,
+    marginBottom: 6,
   },
   detailsRow: {
     flexDirection: 'row',
@@ -65,7 +77,7 @@ export const styles = StyleSheet.create({
   detailText: {
     fontSize: 13,
     fontWeight: '500',
-    color: colors.dark_primary,
+    color: colors.primaryDark,
   },
   editButton: {
     position: 'absolute',
