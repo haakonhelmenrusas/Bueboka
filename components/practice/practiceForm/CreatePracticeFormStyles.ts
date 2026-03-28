@@ -2,15 +2,17 @@ import { Dimensions, Platform, StyleSheet } from 'react-native';
 import { colors } from '@/styles/colors';
 
 const WINDOW_HEIGHT = Dimensions.get('window').height;
-const MODAL_HEIGHT = WINDOW_HEIGHT * 0.85;
 
 export const styles = StyleSheet.create({
   // ─── Modal container ─────────────────────────────────────────────────────────
   container: {
     backgroundColor: colors.white,
     borderRadius: 12,
-    height: MODAL_HEIGHT,
-    ...Platform.select({ android: { minHeight: WINDOW_HEIGHT * 0.6 } }),
+    height: WINDOW_HEIGHT * 0.85,
+    ...Platform.select({
+      android: { height: Math.max(WINDOW_HEIGHT * 0.85, WINDOW_HEIGHT * 0.6) },
+      ios: { height: Math.max(WINDOW_HEIGHT * 0.85, WINDOW_HEIGHT * 0.7) },
+    }),
   },
   scrollView: {
     flex: 1,

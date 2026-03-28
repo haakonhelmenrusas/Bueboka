@@ -44,10 +44,10 @@ const styles = StyleSheet.create({
   badge: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 6,
-    paddingVertical: 6,
-    paddingHorizontal: 12,
-    borderRadius: 16,
+    gap: 4,
+    paddingVertical: 4,
+    paddingHorizontal: 10,
+    borderRadius: 12,
   },
   badgePractice: {
     backgroundColor: colors.primary,
@@ -61,7 +61,7 @@ const styles = StyleSheet.create({
     borderColor: colors.secondary,
   },
   badgeText: {
-    fontSize: 12,
+    fontSize: 11,
     fontWeight: '600',
     color: colors.white,
   },
@@ -69,7 +69,7 @@ const styles = StyleSheet.create({
     color: colors.primary,
   },
   badgeTextEnvironment: {
-    fontSize: 12,
+    fontSize: 11,
     fontWeight: '600',
     color: colors.secondary,
   },

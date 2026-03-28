@@ -1,15 +1,18 @@
 import { colors } from '@/styles/colors';
-import { StyleSheet } from 'react-native';
+import { Dimensions, StyleSheet } from 'react-native';
+
+const WINDOW_HEIGHT = Dimensions.get('window').height;
 
 export const styles = StyleSheet.create({
   modal: {
     backgroundColor: colors.white,
     borderRadius: 12,
-    maxHeight: '95%',
     width: '100%',
+    height: WINDOW_HEIGHT * 0.85,
+    flexDirection: 'column',
   },
   scrollView: {
-    maxHeight: 750,
+    flex: 1,
   },
   content: {
     padding: 20,
@@ -108,8 +111,8 @@ export const styles = StyleSheet.create({
     lineHeight: 20,
   },
   actions: {
-    padding: 16,
-    gap: 12,
+    padding: 12,
+    gap: 8,
     borderTopWidth: 1,
     borderTopColor: colors.dimmed,
   },
@@ -118,7 +121,7 @@ export const styles = StyleSheet.create({
   },
   actionRow: {
     flexDirection: 'row',
-    gap: 12,
+    gap: 8,
   },
   smallActionButton: {
     flex: 1,
