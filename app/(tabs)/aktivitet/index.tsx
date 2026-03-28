@@ -188,8 +188,6 @@ export default function AktivitetScreen() {
           )}
         </ScrollView>
       </LinearGradient>
-
-      {/* Detail Modals */}
       <PracticeDetailsModal
         visible={!!selectedPracticeForDetails}
         practice={selectedPracticeForDetails}
@@ -205,7 +203,6 @@ export default function AktivitetScreen() {
           handleSaved();
         }}
       />
-
       <PracticeDetailsModal
         visible={!!selectedCompetitionForDetails}
         practice={selectedCompetitionForDetails}
@@ -221,8 +218,6 @@ export default function AktivitetScreen() {
           handleSaved();
         }}
       />
-
-      {/* Form Modals */}
       <CreatePracticeForm
         visible={practiceModalVisible}
         onClose={() => {

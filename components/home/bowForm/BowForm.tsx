@@ -98,7 +98,6 @@ const BowForm = ({ modalVisible, setModalVisible, bow, existingBows = [], onSucc
         await bowRepository.create(bowData);
       }
 
-
       clearForm();
       setModalVisible(false);
       onSuccess?.();

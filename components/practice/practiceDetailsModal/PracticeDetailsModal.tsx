@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, ScrollView, Alert, StyleSheet } from 'react-native';
+import { View, Text, ScrollView, Alert } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faMapPin } from '@fortawesome/free-solid-svg-icons/faMapPin';
@@ -14,6 +14,7 @@ import { colors } from '@/styles/colors';
 import { PracticeTypeBadge, EnvironmentBadge } from './Badges';
 import { StatCard } from './StatCard';
 import { RoundCard } from './RoundCard';
+import { styles } from './PracticeDetailsModalStyles';
 import { PRACTICE_CATEGORY_ICONS } from './constants';
 import { calculateTotalArrows, calculateTotalScore } from './helpers';
 import { getBowTypeLabel, getArrowMaterialLabel, getPracticeCategoryLabel, formatWeatherConditions } from '@/utils/helpers/labelUtils';
@@ -87,16 +88,12 @@ export function PracticeDetailsModal({ visible, practice, onClose, onEdit, onDel
     <ModalWrapper visible={visible} onClose={onClose}>
       <View style={styles.modal}>
         <ModalHeader title={title} onPress={onClose} />
-
         <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
           <View style={styles.content}>
-            {/* Badges */}
             <View style={styles.badges}>
               <PracticeTypeBadge practiceType={practiceType} />
               <EnvironmentBadge environment={practice.environment} />
             </View>
-
-            {/* Score Card */}
             {totalScore > 0 && (
               <LinearGradient
                 colors={[colors.primary, colors.primaryDark]}
@@ -108,8 +105,6 @@ export function PracticeDetailsModal({ visible, practice, onClose, onEdit, onDel
                 <Text style={styles.scoreSubtext}>{totalArrows} piler skutt</Text>
               </LinearGradient>
             )}
-
-            {/* Stats Grid */}
             <View style={styles.statsGrid}>
               {practice.practiceCategory && (
                 <StatCard
@@ -147,8 +142,6 @@ export function PracticeDetailsModal({ visible, practice, onClose, onEdit, onDel
                 />
               )}
             </View>
-
-            {/* Competition-specific fields */}
             {isCompetition &&
               (() => {
                 const competitionData = practice as Competition;
@@ -163,22 +156,18 @@ export function PracticeDetailsModal({ visible, practice, onClose, onEdit, onDel
                   </View>
                 ) : null;
               })()}
-
-            {/* Arrows without score */}
             {isPractice &&
               (() => {
                 const practiceData = practice as Practice;
                 const arrowsWithoutScore = practiceData.ends?.reduce((sum, end) => sum + (end.arrowsWithoutScore || 0), 0) || 0;
                 return arrowsWithoutScore > 0 ? (
                   <View style={styles.statCardFull}>
-                    <Text style={styles.customIcon}>💔</Text>
+                    <Text style={styles.customIcon}>➳</Text>
                     <Text style={styles.statLabel}>Piler uten scoring</Text>
                     <Text style={styles.statValue}>{arrowsWithoutScore} piler</Text>
                   </View>
                 ) : null;
               })()}
-
-            {/* Rounds Section (for competitions) */}
             {isCompetition &&
               (() => {
                 const competitionData = practice as Competition;
@@ -196,8 +185,6 @@ export function PracticeDetailsModal({ visible, practice, onClose, onEdit, onDel
                   </View>
                 ) : null;
               })()}
-
-            {/* Ends Section (for practice) */}
             {isPractice &&
               (() => {
                 const practiceData = practice as Practice;
@@ -215,8 +202,6 @@ export function PracticeDetailsModal({ visible, practice, onClose, onEdit, onDel
                   </View>
                 ) : null;
               })()}
-
-            {/* Notes Section */}
             {practice.notes && (
               <View style={styles.notesSection}>
                 <View style={styles.sectionTitle}>
@@ -230,22 +215,25 @@ export function PracticeDetailsModal({ visible, practice, onClose, onEdit, onDel
             )}
           </View>
         </ScrollView>
-
-        {/* Actions */}
         <View style={styles.actions}>
           {onEdit && <Button label="Rediger" onPress={onEdit} disabled={deleting} buttonStyle={styles.actionButton} />}
-          <Button
-            label="Del"
-            onPress={handleShare}
-            type="outline"
-            disabled={deleting}
-            icon={<FontAwesomeIcon icon={faShare} size={16} color={colors.primary} />}
-            buttonStyle={styles.actionButton}
-          />
+          <View style={styles.actionRow}>
+            <Button
+              size="small"
+              label="Del"
+              onPress={handleShare}
+              type="outline"
+              disabled={deleting}
+              icon={<FontAwesomeIcon icon={faShare} size={14} color={colors.primary} />}
+              buttonStyle={styles.smallActionButton}
+            />
+            <Button size="small" label="Lukk" onPress={onClose} type="outline" disabled={deleting} buttonStyle={styles.smallActionButton} />
+          </View>
           <Button
             label={deleting ? 'Sletter...' : 'Slett'}
             onPress={handleDelete}
             type="outline"
+            size="small"
             variant="warning"
             disabled={deleting}
             icon={<FontAwesomeIcon icon={faTrash} size={16} color={colors.error} />}
@@ -256,118 +244,3 @@ export function PracticeDetailsModal({ visible, practice, onClose, onEdit, onDel
     </ModalWrapper>
   );
 }
-
-const styles = StyleSheet.create({
-  modal: {
-    backgroundColor: colors.white,
-    borderRadius: 12,
-    maxHeight: '90%',
-    width: '100%',
-  },
-  scrollView: {
-    maxHeight: 600,
-  },
-  content: {
-    padding: 20,
-    gap: 20,
-  },
-  badges: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: 8,
-  },
-  scoreCard: {
-    borderRadius: 16,
-    padding: 24,
-    alignItems: 'center',
-  },
-  scoreLabel: {
-    fontSize: 12,
-    fontWeight: '600',
-    textTransform: 'uppercase',
-    letterSpacing: 0.5,
-    color: colors.white,
-    opacity: 0.9,
-    marginBottom: 8,
-  },
-  scoreValue: {
-    fontSize: 40,
-    fontWeight: '600',
-    color: colors.white,
-    marginBottom: 8,
-  },
-  scoreSubtext: {
-    fontSize: 14,
-    fontWeight: '500',
-    color: colors.white,
-    opacity: 0.85,
-  },
-  statsGrid: {
-    gap: 12,
-  },
-  statCardFull: {
-    backgroundColor: colors.white,
-    borderWidth: 1,
-    borderColor: colors.dimmed,
-    borderRadius: 12,
-    padding: 16,
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 12,
-  },
-  statLabel: {
-    fontSize: 11,
-    fontWeight: '600',
-    textTransform: 'uppercase',
-    letterSpacing: 0.5,
-    color: colors.textSecondary,
-    flex: 1,
-  },
-  statValue: {
-    fontSize: 14,
-    fontWeight: '700',
-    color: colors.text,
-  },
-  customIcon: {
-    fontSize: 20,
-  },
-  roundsSection: {
-    gap: 12,
-  },
-  sectionTitle: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
-  },
-  sectionTitleText: {
-    fontSize: 18,
-    fontWeight: '800',
-    color: colors.primary,
-  },
-  roundsList: {
-    gap: 12,
-  },
-  notesSection: {
-    gap: 12,
-  },
-  notesContent: {
-    backgroundColor: colors.white,
-    borderWidth: 1,
-    borderColor: colors.dimmed,
-    borderRadius: 12,
-    padding: 16,
-  },
-  notesText: {
-    color: colors.textGray700,
-    lineHeight: 20,
-  },
-  actions: {
-    padding: 16,
-    gap: 12,
-    borderTopWidth: 1,
-    borderTopColor: colors.dimmed,
-  },
-  actionButton: {
-    width: '100%',
-  },
-});

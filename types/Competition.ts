@@ -40,4 +40,3 @@ export interface Competition {
   createdAt: string;
   updatedAt: string;
 }
-

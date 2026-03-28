@@ -127,8 +127,7 @@ export const practiceRepository = {
     try {
       const response = await client.get<{ practice: Practice }>(`/practices/${id}/details`);
       // API returns { practice: {...} }, unwrap it
-      const practice = (response.data as any).practice || response.data;
-      return practice;
+      return (response.data as any).practice || response.data;
     } catch (error) {
       throw handleApiError(error);
     }

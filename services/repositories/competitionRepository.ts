@@ -1,6 +1,6 @@
 import { authFetchClient as client } from '@/services/api/authFetch';
 import { handleApiError } from '@/services/api/errors';
-import type { Competition, Environment, WeatherCondition, PracticeCategory } from '@/types';
+import type { Competition, Environment, PracticeCategory, WeatherCondition } from '@/types';
 
 export interface CreateCompetitionRoundData {
   roundNumber: number;
@@ -49,9 +49,7 @@ export const competitionRepository = {
   async getById(id: string): Promise<Competition> {
     try {
       const response = await client.get<{ competition: Competition } | { practice: Competition }>(`/competitions/${id}/details`);
-      // API returns { competition: {...} } or { practice: {...} }, unwrap it
-      const competition = (response.data as any).competition || (response.data as any).practice || response.data;
-      return competition;
+      return (response.data as any).competition || (response.data as any).practice || response.data;
     } catch (error) {
       throw handleApiError(error);
     }

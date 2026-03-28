@@ -1,10 +1,12 @@
 import { Text, TouchableOpacity, View } from 'react-native';
-import { PracticeCardItem } from '@/types';
+import { PracticeCardItem, PracticeCategory } from '@/types';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faHouse, faMapPin, faStar, faBullseye, faTree, faTrophy, faMedal, faArrowUp } from '@fortawesome/free-solid-svg-icons';
 import { styles } from './PracticeCardStyles';
 import { LinearGradient } from 'expo-linear-gradient';
 import { colors } from '@/styles/colors';
+import { getPracticeCategoryIcon } from '@/components/practice/practiceDetailsModal/constants';
+import { getPracticeCategoryLabel } from '@/utils/helpers/labelUtils';
 
 interface PracticeCardProps {
   card: PracticeCardItem;
@@ -68,6 +70,13 @@ export default function PracticeCard({ card, onPress }: PracticeCardProps) {
         {isCompetition && card.competitionName && <Text style={styles.competitionName}>{card.competitionName}</Text>}
 
         <View style={styles.detailsRow}>
+          {card.practiceCategory && (
+            <View style={styles.detailItem}>
+              {getPracticeCategoryIcon(card.practiceCategory as PracticeCategory, 14, colors.secondary)}
+              <Text style={styles.detailText}>{getPracticeCategoryLabel(card.practiceCategory as PracticeCategory)}</Text>
+            </View>
+          )}
+
           {card.arrowsShot > 0 && (
             <View style={styles.detailItem}>
               <FontAwesomeIcon icon={faArrowUp} size={14} color={colors.secondary} />

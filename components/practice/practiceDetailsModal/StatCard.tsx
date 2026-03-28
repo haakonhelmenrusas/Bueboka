@@ -32,6 +32,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: 12,
+    flex: 1,
+    minWidth: '45%',
   },
   statContent: {
     flex: 1,
