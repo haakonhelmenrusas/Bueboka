@@ -25,3 +25,19 @@ jest.mock('react-native-safe-area-context', () => {
     initialWindowMetrics: { insets, frame },
   };
 });
+
+// Mock better-auth packages
+jest.mock('better-auth/react', () => ({
+  createAuthClient: jest.fn(() => ({
+    $fetch: jest.fn(),
+    signIn: { email: jest.fn() },
+    signUp: { email: jest.fn() },
+    signOut: jest.fn(),
+    useSession: jest.fn(() => ({ data: null, isPending: false })),
+  })),
+}));
+
+jest.mock('@better-auth/expo/client', () => ({
+  expoClient: jest.fn(),
+}));
+
