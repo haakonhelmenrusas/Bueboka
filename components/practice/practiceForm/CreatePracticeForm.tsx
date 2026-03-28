@@ -1,23 +1,28 @@
 import React, { useEffect, useState } from 'react';
 import { Keyboard, KeyboardAvoidingView, Platform, Pressable, ScrollView, Text, TouchableOpacity, View } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { useRouter } from 'expo-router';
 import * as Sentry from '@sentry/react-native';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
-import { faTrashCan } from '@fortawesome/free-regular-svg-icons/faTrashCan';
 import { faPlus } from '@fortawesome/free-solid-svg-icons/faPlus';
 import { faXmark } from '@fortawesome/free-solid-svg-icons/faXmark';
-import { faChevronLeft } from '@fortawesome/free-solid-svg-icons/faChevronLeft';
-import { faChevronRight } from '@fortawesome/free-solid-svg-icons/faChevronRight';
 import { faDeleteLeft } from '@fortawesome/free-solid-svg-icons/faDeleteLeft';
 
 import { Button, DatePicker, Input, ModalHeader, ModalWrapper, Select, Textarea } from '@/components/common';
 import ConfirmModal from '@/components/home/DeleteArrowSetModal/ConfirmModal';
 import { practiceRepository, type CreateEndData } from '@/services/repositories';
-import { Arrows, Bow, Environment, Practice, PracticeCategory, WeatherCondition } from '@/types';
+import { Arrows, Bow, Environment, Practice, PracticeCategory } from '@/types';
 import { TARGET_TYPE_OPTIONS } from '@/utils/Constants';
 import { colors } from '@/styles/colors';
 import { styles } from './CreatePracticeFormStyles';
+import { PRACTICE_CATEGORY_OPTIONS, ENVIRONMENT_OPTIONS, ARROW_SCORE_OPTIONS } from '@/components/practice/shared/formConstants';
+import { isRangeCategory, parseNum } from '@/components/practice/shared/formHelpers';
+import { useStepNavigation } from '@/components/practice/shared/useStepNavigation';
+import { useWeatherSelection } from '@/components/practice/shared/useWeatherSelection';
+import { useEquipmentSelection } from '@/components/practice/shared/useEquipmentSelection';
+import { StepIndicator } from '@/components/practice/shared/StepIndicator';
+import { WeatherSelector } from '@/components/practice/shared/WeatherSelector';
+import { EquipmentSelector } from '@/components/practice/shared/EquipmentSelector';
+import { NavigationFooter } from '@/components/practice/shared/NavigationFooter';
 
 // ─── Storage keys ────────────────────────────────────────────────────────────
 const STORAGE_KEY_DISTANCE = 'bueboka_last_distance';
@@ -26,47 +31,6 @@ const STORAGE_KEY_TARGET = 'bueboka_last_target';
 // ─── Step definitions ─────────────────────────────────────────────────────────
 const TOTAL_STEPS = 4;
 const STEP_LABELS = ['Info', 'Runder', 'Poeng', 'Refleksjon'];
-
-// ─── Option lists ─────────────────────────────────────────────────────────────
-const PRACTICE_CATEGORY_OPTIONS = [
-  { label: 'Skive innendørs', value: PracticeCategory.SKIVE_INDOOR },
-  { label: 'Skive utendørs', value: PracticeCategory.SKIVE_OUTDOOR },
-  { label: 'Jakt 3D', value: PracticeCategory.JAKT_3D },
-  { label: 'Felt', value: PracticeCategory.FELT },
-];
-
-const ENVIRONMENT_OPTIONS = [
-  { label: 'Innendørs', value: Environment.INDOOR },
-  { label: 'Utendørs', value: Environment.OUTDOOR },
-];
-
-const WEATHER_OPTIONS: { value: WeatherCondition; label: string }[] = [
-  { value: WeatherCondition.SUN, label: '☀️ Sol' },
-  { value: WeatherCondition.CLOUDED, label: '⛅ Skyet' },
-  { value: WeatherCondition.CLEAR, label: '🌤 Klart' },
-  { value: WeatherCondition.RAIN, label: '🌧 Regn' },
-  { value: WeatherCondition.WIND, label: '💨 Vind' },
-  { value: WeatherCondition.SNOW, label: '❄️ Snø' },
-  { value: WeatherCondition.FOG, label: '🌫 Tåke' },
-  { value: WeatherCondition.THUNDER, label: '⛈ Torden' },
-  { value: WeatherCondition.CHANGING_CONDITIONS, label: '🔄 Skiftende' },
-  { value: WeatherCondition.OTHER, label: '🌡 Annet' },
-];
-
-const ARROW_SCORE_OPTIONS = [
-  { label: 'X', value: 10 },
-  { label: '10', value: 10 },
-  { label: '9', value: 9 },
-  { label: '8', value: 8 },
-  { label: '7', value: 7 },
-  { label: '6', value: 6 },
-  { label: '5', value: 5 },
-  { label: '4', value: 4 },
-  { label: '3', value: 3 },
-  { label: '2', value: 2 },
-  { label: '1', value: 1 },
-  { label: 'M', value: 0 },
-];
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 export interface RoundInput {
@@ -90,9 +54,6 @@ interface CreatePracticeFormProps {
 }
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
-function isRangeCategory(cat: PracticeCategory): boolean {
-  return cat === PracticeCategory.JAKT_3D || cat === PracticeCategory.FELT;
-}
 
 function emptyRound(cat: PracticeCategory): RoundInput {
   return isRangeCategory(cat)
@@ -125,22 +86,25 @@ export default function CreatePracticeForm({
   onPracticeSaved,
   editingPractice = null,
 }: CreatePracticeFormProps) {
-  const router = useRouter();
-
-  // Step state
-  const [step, setStep] = useState(0);
+  // Step navigation
+  const { step, setStep, goNext, goPrev, resetStep } = useStepNavigation(TOTAL_STEPS);
 
   // Form state
   const [date, setDate] = useState(new Date());
   const [practiceCategory, setPracticeCategory] = useState<PracticeCategory>(PracticeCategory.SKIVE_INDOOR);
   const [environment, setEnvironment] = useState<Environment>(Environment.INDOOR);
-  const [weather, setWeather] = useState<WeatherCondition[]>([]);
   const [location, setLocation] = useState('');
-  const [selectedBow, setSelectedBow] = useState('');
-  const [selectedArrowSet, setSelectedArrowSet] = useState('');
   const [rounds, setRounds] = useState<RoundInput[]>([emptyRound(PracticeCategory.SKIVE_INDOOR)]);
   const [rating, setRating] = useState<number | null>(null);
   const [notes, setNotes] = useState('');
+  const [scoringMethod, setScoringMethod] = useState<'buttons' | 'target'>('buttons');
+
+  // Weather selection hook
+  const { weather, setWeather, toggleWeather } = useWeatherSelection(environment);
+
+  // Equipment selection hook
+  const { selectedBow, setSelectedBow, selectedArrowSet, setSelectedArrowSet, bowOptions, arrowSetOptions, selectFavorites } =
+    useEquipmentSelection(bows, arrowSets);
 
   // UI state
   const [submitting, setSubmitting] = useState(false);
@@ -152,10 +116,6 @@ export default function CreatePracticeForm({
   const [editingId, setEditingId] = useState<string | null>(null);
 
   // Derived
-  const validBows = Array.isArray(bows) ? bows : [];
-  const validArrowSets = Array.isArray(arrowSets) ? arrowSets : [];
-  const bowOptions = validBows.map((b) => ({ label: b.name, value: b.id }));
-  const arrowSetOptions = validArrowSets.map((a) => ({ label: a.name, value: a.id }));
   const isEditing = !!editingId;
 
   // ─── Init form ───────────────────────────────────────────────────────────────
@@ -165,7 +125,7 @@ export default function CreatePracticeForm({
       return;
     }
 
-    setStep(0);
+    resetStep();
     setError(null);
 
     if (editingPractice) {
@@ -232,10 +192,7 @@ export default function CreatePracticeForm({
         })
         .catch(() => {});
 
-      const favBow = validBows.find((b) => b.isFavorite);
-      setSelectedBow(favBow ? favBow.id : '');
-      const favArrows = validArrowSets.find((a) => a.isFavorite);
-      setSelectedArrowSet(favArrows ? favArrows.id : '');
+      selectFavorites();
 
       return () => {
         cancelled = true;
@@ -246,7 +203,7 @@ export default function CreatePracticeForm({
 
   useEffect(() => {
     if (environment !== Environment.OUTDOOR) setWeather([]);
-  }, [environment]);
+  }, [environment, setWeather]);
 
   // ─── Reset ───────────────────────────────────────────────────────────────────
   const resetForm = () => {
@@ -266,10 +223,6 @@ export default function CreatePracticeForm({
     resetForm();
     onClose();
   };
-
-  // ─── Navigation ──────────────────────────────────────────────────────────────
-  const goNext = () => setStep((s) => Math.min(s + 1, TOTAL_STEPS - 1));
-  const goPrev = () => setStep((s) => Math.max(s - 1, 0));
 
   // ─── Category ────────────────────────────────────────────────────────────────
   const handleCategoryChange = (cat: PracticeCategory) => {
@@ -302,11 +255,6 @@ export default function CreatePracticeForm({
     });
   };
 
-  const parseNum = (text: string): number | undefined => {
-    const n = parseFloat(text);
-    return isNaN(n) ? undefined : n;
-  };
-
   // ─── Arrow scoring ───────────────────────────────────────────────────────────
   const addArrowScore = (roundIndex: number, score: number) => {
     const round = rounds[roundIndex];
@@ -334,11 +282,6 @@ export default function CreatePracticeForm({
     });
   };
 
-  // ─── Weather ─────────────────────────────────────────────────────────────────
-  const toggleWeather = (condition: WeatherCondition) => {
-    setWeather((prev) => (prev.includes(condition) ? prev.filter((w) => w !== condition) : [...prev, condition]));
-  };
-
   // ─── Persist last used ───────────────────────────────────────────────────────
   const persistLastUsed = async (validRounds: RoundInput[]) => {
     if (validRounds.length === 0) return;
@@ -356,7 +299,7 @@ export default function CreatePracticeForm({
       const round: CreateEndData = {
         roundScore: r.roundScore ?? 0,
       };
-      if (r.numberArrows !== undefined) round.numberArrows = r.numberArrows; // API expects 'numberArrows'
+      if (r.numberArrows !== undefined) round.arrows = r.numberArrows; // API expects 'arrows'
       if (r.arrowsWithoutScore !== undefined) round.arrowsWithoutScore = r.arrowsWithoutScore;
       if (r.distanceMeters !== undefined) round.distanceMeters = r.distanceMeters;
       if (r.distanceFrom !== undefined) round.distanceFrom = r.distanceFrom;
@@ -384,23 +327,40 @@ export default function CreatePracticeForm({
 
       await persistLastUsed(validRounds);
 
-      const payload = {
-        date,
-        environment,
-        practiceCategory,
-        weather,
-        location: location || undefined,
-        bowId: selectedBow || undefined,
-        arrowsId: selectedArrowSet || undefined,
-        notes: notes || undefined,
-        rating: rating ?? undefined,
-        rounds: buildRounds(validRounds), // API expects 'rounds', not 'ends'
-      };
+      // Calculate total score from all rounds
+      const totalScore = validRounds.reduce((sum, r) => sum + (r.roundScore ?? 0), 0);
 
       if (editingId) {
-        await practiceRepository.update(editingId, payload);
+        // Update uses 'rounds'
+        const updatePayload = {
+          date,
+          environment,
+          practiceCategory,
+          weather,
+          location: location || undefined,
+          bowId: selectedBow || undefined,
+          arrowsId: selectedArrowSet || undefined,
+          notes: notes || undefined,
+          rating: rating ?? undefined,
+          rounds: buildRounds(validRounds),
+        };
+        await practiceRepository.update(editingId, updatePayload);
       } else {
-        await practiceRepository.create(payload);
+        // Create uses 'ends' and requires 'totalScore'
+        const createPayload = {
+          date,
+          environment,
+          practiceCategory,
+          weather,
+          location: location || undefined,
+          bowId: selectedBow || undefined,
+          arrowsId: selectedArrowSet || undefined,
+          notes: notes || undefined,
+          rating: rating ?? undefined,
+          totalScore,
+          ends: buildRounds(validRounds),
+        };
+        await practiceRepository.create(createPayload);
       }
 
       onPracticeSaved?.();
@@ -418,7 +378,7 @@ export default function CreatePracticeForm({
     setSubmitting(true);
     setError(null);
     try {
-      const savedPractice = await practiceRepository.create({
+      await practiceRepository.create({
         date,
         environment,
         practiceCategory,
@@ -428,11 +388,16 @@ export default function CreatePracticeForm({
         arrowsId: selectedArrowSet || undefined,
         notes: notes || undefined,
         rating: rating ?? undefined,
-        rounds: [{ roundScore: 0 }], // API requires at least 1 round
+        totalScore: 0, // Required field
+        ends: [{ roundScore: 0 }], // API requires at least 1 end
       });
 
       onPracticeSaved?.();
 
+      // TODO: Implement shooting screen route
+      // For now, just close the modal after creating the practice
+      // The shooting screen components exist but are not integrated into the app routing
+      /*
       router.push({
         pathname: '/practice/shooting',
         params: {
@@ -445,6 +410,7 @@ export default function CreatePracticeForm({
           location: location || '',
         },
       });
+      */
       onClose();
     } catch (err) {
       Sentry.captureException(err);
@@ -501,52 +467,16 @@ export default function CreatePracticeForm({
         />
       </View>
 
-      {environment === Environment.OUTDOOR && (
-        <View style={styles.weatherSection}>
-          <Text style={styles.weatherLabel}>Vær (valgfritt)</Text>
-          <View style={styles.weatherChips}>
-            {WEATHER_OPTIONS.map((opt) => {
-              const active = weather.includes(opt.value);
-              return (
-                <Pressable
-                  key={opt.value}
-                  style={[styles.weatherChip, active && styles.weatherChipActive]}
-                  onPress={() => toggleWeather(opt.value)}>
-                  <Text style={[styles.weatherChipText, active && styles.weatherChipTextActive]}>{opt.label}</Text>
-                </Pressable>
-              );
-            })}
-          </View>
-        </View>
-      )}
+      {environment === Environment.OUTDOOR && <WeatherSelector selectedWeather={weather} onToggleWeather={toggleWeather} />}
 
-      {(bowOptions.length > 0 || arrowSetOptions.length > 0) && (
-        <View>
-          <Text style={styles.sectionTitle}>Utstyr</Text>
-          <View style={styles.row}>
-            {bowOptions.length > 0 && (
-              <Select
-                label="🏹 Bue"
-                options={bowOptions}
-                selectedValue={selectedBow}
-                onValueChange={setSelectedBow}
-                placeholder="Velg bue (valgfritt)"
-                containerStyle={styles.field}
-              />
-            )}
-            {arrowSetOptions.length > 0 && (
-              <Select
-                label="🎯 Piler"
-                options={arrowSetOptions}
-                selectedValue={selectedArrowSet}
-                onValueChange={setSelectedArrowSet}
-                placeholder="Velg piler (valgfritt)"
-                containerStyle={styles.field}
-              />
-            )}
-          </View>
-        </View>
-      )}
+      <EquipmentSelector
+        bowOptions={bowOptions}
+        arrowSetOptions={arrowSetOptions}
+        selectedBow={selectedBow}
+        selectedArrowSet={selectedArrowSet}
+        onBowChange={setSelectedBow}
+        onArrowSetChange={setSelectedArrowSet}
+      />
     </View>
   );
 
@@ -654,89 +584,123 @@ export default function CreatePracticeForm({
 
     return (
       <View style={styles.stepContent}>
-        <Text style={styles.stepDescription}>
-          Legg inn poengsetting per pil (valgfritt). Poengsummen beregnes automatisk og oppdaterer rundescore.
-        </Text>
+        <Text style={styles.stepDescription}>Velg hvordan du vil registrere poeng, eller hopp over dette steget.</Text>
 
-        {roundsWithArrows.length === 0 && (
-          <View style={styles.emptyScoring}>
-            <Text style={styles.emptyScoringText}>
-              Ingen runder med definert antall piler.{'\n'}Gå tilbake til «Runder» og fyll inn «Piler m/score».
-            </Text>
+        {/* Scoring method selection */}
+        <View style={styles.scoringMethodSection}>
+          <Text style={styles.sectionTitle}>Registreringsmetode</Text>
+          <View style={styles.scoringMethodButtons}>
+            <Pressable
+              style={[styles.scoringMethodButton, scoringMethod === 'buttons' && styles.scoringMethodButtonActive]}
+              onPress={() => setScoringMethod('buttons')}>
+              <Text style={[styles.scoringMethodButtonText, scoringMethod === 'buttons' && styles.scoringMethodButtonTextActive]}>
+                Tall-knapper
+              </Text>
+            </Pressable>
+            <Pressable
+              style={[styles.scoringMethodButton, scoringMethod === 'target' && styles.scoringMethodButtonActive]}
+              onPress={() => setScoringMethod('target')}>
+              <Text style={[styles.scoringMethodButtonText, scoringMethod === 'target' && styles.scoringMethodButtonTextActive]}>
+                Plasser på skive
+              </Text>
+            </Pressable>
+          </View>
+        </View>
+
+        {/* Start shooting button */}
+        {!isEditing && scoringMethod === 'target' && (
+          <View style={styles.startShootingSection}>
+            <Button label="Start skyting" onPress={handleStartShooting} disabled={submitting} loading={submitting} />
           </View>
         )}
 
-        {rounds.map((round, roundIndex) => {
-          const maxArrows = round.numberArrows ?? 0;
-          if (maxArrows === 0) return null;
-
-          const currentScores = round.scores ?? [];
-          const filledCount = currentScores.length;
-          const total = currentScores.reduce((a, b) => a + b, 0);
-          const isFull = filledCount >= maxArrows;
-
-          return (
-            <View key={roundIndex} style={styles.scoringCard}>
-              <View style={styles.scoringCardHeader}>
-                <Text style={styles.scoringRoundTitle}>Runde {roundIndex + 1}</Text>
-                <Text style={styles.scoringRoundMeta}>{getRoundSummary(round)}</Text>
-              </View>
-
-              {/* Arrow score chips */}
-              <View style={styles.arrowChipsRow}>
-                {Array.from({ length: maxArrows }).map((_, i) => {
-                  const scored = currentScores[i] !== undefined;
-                  return (
-                    <View key={i} style={[styles.arrowChip, scored ? styles.arrowChipFilled : styles.arrowChipEmpty]}>
-                      <Text style={[styles.arrowChipText, scored ? styles.arrowChipTextFilled : styles.arrowChipTextEmpty]}>
-                        {scored ? String(currentScores[i]) : '–'}
-                      </Text>
-                    </View>
-                  );
-                })}
-              </View>
-
-              <View style={styles.scoringProgress}>
-                <Text style={styles.scoringProgressText}>
-                  {filledCount} av {maxArrows} piler registrert
+        {scoringMethod === 'buttons' && (
+          <>
+            {roundsWithArrows.length === 0 && (
+              <View style={styles.emptyScoring}>
+                <Text style={styles.emptyScoringText}>
+                  Ingen runder med definert antall piler.{'\n'}Gå tilbake til «Runder» og fyll inn «Piler m/score».
                 </Text>
-                {filledCount > 0 && <Text style={styles.scoringTotal}>Sum: {total}</Text>}
               </View>
+            )}
 
-              {/* Score buttons */}
-              {!isFull ? (
-                <View style={styles.scoreButtonsGrid}>
-                  {ARROW_SCORE_OPTIONS.map((opt) => (
-                    <Pressable
-                      key={opt.label}
-                      style={[styles.scoreButton, opt.label === 'X' && styles.scoreButtonX, opt.label === 'M' && styles.scoreButtonMiss]}
-                      onPress={() => addArrowScore(roundIndex, opt.value)}>
-                      <Text
-                        style={[
-                          styles.scoreButtonText,
-                          opt.label === 'X' && styles.scoreButtonTextX,
-                          opt.label === 'M' && styles.scoreButtonTextMiss,
-                        ]}>
-                        {opt.label}
-                      </Text>
-                    </Pressable>
-                  ))}
-                </View>
-              ) : (
-                <View style={styles.scoringComplete}>
-                  <Text style={styles.scoringCompleteText}>✓ Alle piler registrert – score: {total}</Text>
-                </View>
-              )}
+            {rounds.map((round, roundIndex) => {
+              const maxArrows = round.numberArrows ?? 0;
+              if (maxArrows === 0) return null;
 
-              {filledCount > 0 && (
-                <TouchableOpacity style={styles.backspaceBtn} onPress={() => removeLastArrowScore(roundIndex)}>
-                  <FontAwesomeIcon icon={faDeleteLeft} size={16} color={colors.textSecondary} />
-                  <Text style={styles.backspaceBtnText}>Fjern siste</Text>
-                </TouchableOpacity>
-              )}
-            </View>
-          );
-        })}
+              const currentScores = round.scores ?? [];
+              const filledCount = currentScores.length;
+              const total = currentScores.reduce((a, b) => a + b, 0);
+              const isFull = filledCount >= maxArrows;
+
+              return (
+                <View key={roundIndex} style={styles.scoringCard}>
+                  <View style={styles.scoringCardHeader}>
+                    <Text style={styles.scoringRoundTitle}>Runde {roundIndex + 1}</Text>
+                    <Text style={styles.scoringRoundMeta}>{getRoundSummary(round)}</Text>
+                  </View>
+
+                  {/* Arrow score chips */}
+                  <View style={styles.arrowChipsRow}>
+                    {Array.from({ length: maxArrows }).map((_, i) => {
+                      const scored = currentScores[i] !== undefined;
+                      return (
+                        <View key={i} style={[styles.arrowChip, scored ? styles.arrowChipFilled : styles.arrowChipEmpty]}>
+                          <Text style={[styles.arrowChipText, scored ? styles.arrowChipTextFilled : styles.arrowChipTextEmpty]}>
+                            {scored ? String(currentScores[i]) : '–'}
+                          </Text>
+                        </View>
+                      );
+                    })}
+                  </View>
+
+                  <View style={styles.scoringProgress}>
+                    <Text style={styles.scoringProgressText}>
+                      {filledCount} av {maxArrows} piler registrert
+                    </Text>
+                    {filledCount > 0 && <Text style={styles.scoringTotal}>Sum: {total}</Text>}
+                  </View>
+
+                  {/* Score buttons */}
+                  {!isFull ? (
+                    <View style={styles.scoreButtonsGrid}>
+                      {ARROW_SCORE_OPTIONS.map((opt) => (
+                        <Pressable
+                          key={opt.label}
+                          style={[
+                            styles.scoreButton,
+                            opt.label === 'X' && styles.scoreButtonX,
+                            opt.label === 'M' && styles.scoreButtonMiss,
+                          ]}
+                          onPress={() => addArrowScore(roundIndex, opt.value)}>
+                          <Text
+                            style={[
+                              styles.scoreButtonText,
+                              opt.label === 'X' && styles.scoreButtonTextX,
+                              opt.label === 'M' && styles.scoreButtonTextMiss,
+                            ]}>
+                            {opt.label}
+                          </Text>
+                        </Pressable>
+                      ))}
+                    </View>
+                  ) : (
+                    <View style={styles.scoringComplete}>
+                      <Text style={styles.scoringCompleteText}>✓ Alle piler registrert – score: {total}</Text>
+                    </View>
+                  )}
+
+                  {filledCount > 0 && (
+                    <TouchableOpacity style={styles.backspaceBtn} onPress={() => removeLastArrowScore(roundIndex)}>
+                      <FontAwesomeIcon icon={faDeleteLeft} size={16} color={colors.textSecondary} />
+                      <Text style={styles.backspaceBtnText}>Fjern siste</Text>
+                    </TouchableOpacity>
+                  )}
+                </View>
+              );
+            })}
+          </>
+        )}
       </View>
     );
   };
@@ -779,96 +743,9 @@ export default function CreatePracticeForm({
   );
 
   // ═══════════════════════════════════════════════════════════════════════════════
-  // Step indicator
+  // Render
   // ═══════════════════════════════════════════════════════════════════════════════
 
-  const renderStepIndicator = () => (
-    <View style={styles.stepIndicator}>
-      {STEP_LABELS.map((label, i) => {
-        const isActive = i === step;
-        const isCompleted = i < step;
-        return (
-          <React.Fragment key={i}>
-            <TouchableOpacity style={styles.stepItem} onPress={() => setStep(i)} accessibilityLabel={`Gå til ${label}`}>
-              <View style={[styles.stepDot, isActive && styles.stepDotActive, isCompleted && styles.stepDotCompleted]}>
-                <Text style={[styles.stepDotText, (isActive || isCompleted) && styles.stepDotTextActive]}>{i + 1}</Text>
-              </View>
-              <Text style={[styles.stepLabel, isActive && styles.stepLabelActive, isCompleted && styles.stepLabelCompleted]}>{label}</Text>
-            </TouchableOpacity>
-            {i < TOTAL_STEPS - 1 && <View style={[styles.stepConnector, isCompleted && styles.stepConnectorCompleted]} />}
-          </React.Fragment>
-        );
-      })}
-    </View>
-  );
-
-  // ═══════════════════════════════════════════════════════════════════════════════
-  // Navigation footer
-  // ═══════════════════════════════════════════════════════════════════════════════
-
-  const renderNavigation = () => {
-    const isFirstStep = step === 0;
-    const isLastStep = step === TOTAL_STEPS - 1;
-
-    return (
-      <View style={styles.navFooter}>
-        <View style={styles.navRow}>
-          {/* Left: cancel — always visible */}
-          <TouchableOpacity style={styles.navCancelBtn} onPress={handleClose} accessibilityLabel="Avbryt">
-            <FontAwesomeIcon icon={faXmark} size={14} color={colors.textSecondary} />
-            <Text style={styles.navCancelText}>Avbryt</Text>
-          </TouchableOpacity>
-
-          {/* Center: prev / step name / next */}
-          <View style={styles.navCenter}>
-            <TouchableOpacity
-              style={[styles.navArrow, isFirstStep && styles.navArrowDisabled]}
-              onPress={goPrev}
-              disabled={isFirstStep}
-              accessibilityLabel="Forrige steg">
-              <FontAwesomeIcon icon={faChevronLeft} size={18} color={isFirstStep ? colors.dimmed : colors.primary} />
-            </TouchableOpacity>
-
-            <Text style={styles.navStepName}>{STEP_LABELS[step]}</Text>
-
-            {isLastStep ? (
-              <View style={styles.navArrow} />
-            ) : (
-              <TouchableOpacity style={styles.navArrow} onPress={goNext} accessibilityLabel="Neste steg">
-                <FontAwesomeIcon icon={faChevronRight} size={18} color={colors.primary} />
-              </TouchableOpacity>
-            )}
-          </View>
-
-          {/* Right: delete when editing, spacer otherwise */}
-          {isEditing ? (
-            <TouchableOpacity style={styles.navDeleteBtn} onPress={() => setConfirmVisible(true)} accessibilityLabel="Slett trening">
-              <FontAwesomeIcon icon={faTrashCan} size={16} color={colors.error} />
-            </TouchableOpacity>
-          ) : (
-            <View style={styles.navDeleteBtn} />
-          )}
-        </View>
-
-        {isLastStep && (
-          <View style={styles.navActions}>
-            {!isEditing && (
-              <Button label="Start skyting" onPress={handleStartShooting} disabled={submitting} loading={submitting} type="outline" />
-            )}
-            <Button
-              label={submitting ? 'Lagrer...' : isEditing ? 'Lagre endringer' : 'Lagre trening'}
-              onPress={handleSaveAndFinish}
-              disabled={submitting}
-              loading={submitting}
-              buttonStyle={!isEditing ? styles.saveButton : undefined}
-            />
-          </View>
-        )}
-      </View>
-    );
-  };
-
-  // ─── Render ───────────────────────────────────────────────────────────────────
   return (
     <ModalWrapper visible={visible} onClose={handleClose}>
       <KeyboardAvoidingView style={styles.container} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
@@ -877,7 +754,7 @@ export default function CreatePracticeForm({
           <ModalHeader title={isEditing ? 'Rediger trening' : 'Ny trening'} onPress={handleClose} />
         </Pressable>
 
-        {renderStepIndicator()}
+        <StepIndicator steps={STEP_LABELS} currentStep={step} onStepPress={setStep} />
 
         {/* Scrollable content */}
         <ScrollView
@@ -894,7 +771,20 @@ export default function CreatePracticeForm({
         </ScrollView>
 
         {/* Fixed navigation footer */}
-        {renderNavigation()}
+        <NavigationFooter
+          currentStep={step}
+          totalSteps={TOTAL_STEPS}
+          stepLabels={STEP_LABELS}
+          isEditing={isEditing}
+          submitting={submitting}
+          saveLabel={isEditing ? 'Lagre' : 'Lagre'}
+          onCancel={handleClose}
+          onPrev={goPrev}
+          onNext={goNext}
+          onSave={handleSaveAndFinish}
+          onDelete={() => setConfirmVisible(true)}
+          showSaveOnAllSteps={true}
+        />
       </KeyboardAvoidingView>
 
       <ConfirmModal

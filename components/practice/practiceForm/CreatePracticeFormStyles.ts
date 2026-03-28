@@ -2,7 +2,7 @@ import { Dimensions, Platform, StyleSheet } from 'react-native';
 import { colors } from '@/styles/colors';
 
 const WINDOW_HEIGHT = Dimensions.get('window').height;
-const MODAL_HEIGHT = WINDOW_HEIGHT * 0.72;
+const MODAL_HEIGHT = WINDOW_HEIGHT * 0.85;
 
 export const styles = StyleSheet.create({
   // ─── Modal container ─────────────────────────────────────────────────────────
@@ -213,6 +213,39 @@ export const styles = StyleSheet.create({
   },
 
   // ─── Arrow scoring step ───────────────────────────────────────────────────────
+  scoringMethodSection: {
+    marginBottom: 16,
+  },
+  scoringMethodButtons: {
+    flexDirection: 'row',
+    gap: 12,
+  },
+  scoringMethodButton: {
+    flex: 1,
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+    borderRadius: 8,
+    borderWidth: 1.5,
+    borderColor: colors.border,
+    backgroundColor: colors.white,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  scoringMethodButtonActive: {
+    borderColor: colors.primary,
+    backgroundColor: colors.primary,
+  },
+  scoringMethodButtonText: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: colors.text,
+  },
+  scoringMethodButtonTextActive: {
+    color: colors.white,
+  },
+  startShootingSection: {
+    marginBottom: 16,
+  },
   emptyScoring: {
     padding: 24,
     alignItems: 'center',
@@ -424,7 +457,7 @@ export const styles = StyleSheet.create({
     borderTopColor: colors.border,
     paddingHorizontal: 16,
     paddingVertical: 12,
-    gap: 10,
+    gap: 4,
     backgroundColor: colors.white,
   },
   navRow: {
@@ -446,7 +479,7 @@ export const styles = StyleSheet.create({
   navCenter: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 8,
+    gap: 4,
     justifyContent: 'center',
   },
   navDeleteBtn: {

@@ -2,7 +2,7 @@ import { Dimensions, Platform, StyleSheet } from 'react-native';
 import { colors } from '@/styles/colors';
 
 const WINDOW_HEIGHT = Dimensions.get('window').height;
-const MODAL_HEIGHT = WINDOW_HEIGHT * 0.72;
+const MODAL_HEIGHT = WINDOW_HEIGHT * 0.8;
 
 export const styles = StyleSheet.create({
   // ─── Modal container ──────────────────────────────────────────────────────────

@@ -2,51 +2,31 @@ import React, { useEffect, useState } from 'react';
 import { Keyboard, KeyboardAvoidingView, Platform, Pressable, ScrollView, Text, TouchableOpacity, View } from 'react-native';
 import * as Sentry from '@sentry/react-native';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
-import { faTrashCan } from '@fortawesome/free-regular-svg-icons/faTrashCan';
 import { faPlus } from '@fortawesome/free-solid-svg-icons/faPlus';
 import { faXmark } from '@fortawesome/free-solid-svg-icons/faXmark';
-import { faChevronLeft } from '@fortawesome/free-solid-svg-icons/faChevronLeft';
-import { faChevronRight } from '@fortawesome/free-solid-svg-icons/faChevronRight';
 import { faStar } from '@fortawesome/free-solid-svg-icons/faStar';
 
-import { Button, Checkbox, DatePicker, Input, ModalHeader, ModalWrapper, Select, Textarea } from '@/components/common';
+import { Checkbox, DatePicker, Input, ModalHeader, ModalWrapper, Select, Textarea } from '@/components/common';
 import ConfirmModal from '@/components/home/DeleteArrowSetModal/ConfirmModal';
 import { competitionRepository, type CreateCompetitionRoundData } from '@/services/repositories';
 import type { Arrows, Bow, Competition } from '@/types';
-import { Environment, PracticeCategory, WeatherCondition } from '@/types';
+import { Environment, PracticeCategory } from '@/types';
 import { TARGET_TYPE_OPTIONS } from '@/utils/Constants';
 import { colors } from '@/styles/colors';
 import { styles } from './CreateCompetitionFormStyles';
+import { PRACTICE_CATEGORY_OPTIONS, ENVIRONMENT_OPTIONS } from '@/components/practice/shared/formConstants';
+import { isRangeCategory, parseNum, parseDate } from '@/components/practice/shared/formHelpers';
+import { useStepNavigation } from '@/components/practice/shared/useStepNavigation';
+import { useWeatherSelection } from '@/components/practice/shared/useWeatherSelection';
+import { useEquipmentSelection } from '@/components/practice/shared/useEquipmentSelection';
+import { StepIndicator } from '@/components/practice/shared/StepIndicator';
+import { WeatherSelector } from '@/components/practice/shared/WeatherSelector';
+import { EquipmentSelector } from '@/components/practice/shared/EquipmentSelector';
+import { NavigationFooter } from '@/components/practice/shared/NavigationFooter';
 
 // ─── Step definitions ─────────────────────────────────────────────────────────
 const TOTAL_STEPS = 4;
 const STEP_LABELS = ['Info', 'Detaljer', 'Runder', 'Refleksjon'];
-
-// ─── Option lists ─────────────────────────────────────────────────────────────
-const PRACTICE_CATEGORY_OPTIONS = [
-  { label: 'Skive innendørs', value: PracticeCategory.SKIVE_INDOOR },
-  { label: 'Skive utendørs', value: PracticeCategory.SKIVE_OUTDOOR },
-  { label: 'Jakt 3D', value: PracticeCategory.JAKT_3D },
-  { label: 'Felt', value: PracticeCategory.FELT },
-];
-
-const ENVIRONMENT_OPTIONS = [
-  { label: 'Innendørs', value: Environment.INDOOR },
-  { label: 'Utendørs', value: Environment.OUTDOOR },
-];
-
-const WEATHER_OPTIONS: { value: WeatherCondition; label: string }[] = [
-  { value: WeatherCondition.SUN, label: '☀️ Sol' },
-  { value: WeatherCondition.CLOUDED, label: '⛅ Skyet' },
-  { value: WeatherCondition.CLEAR, label: '🌤 Klart' },
-  { value: WeatherCondition.RAIN, label: '🌧 Regn' },
-  { value: WeatherCondition.WIND, label: '💨 Vind' },
-  { value: WeatherCondition.SNOW, label: '❄️ Snø' },
-  { value: WeatherCondition.FOG, label: '🌫 Tåke' },
-  { value: WeatherCondition.THUNDER, label: '⛈ Torden' },
-  { value: WeatherCondition.CHANGING_CONDITIONS, label: '🔄 Skiftende' },
-  { value: WeatherCondition.OTHER, label: '🌡 Annet' },
-];
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 export interface CompetitionRoundInput {
@@ -70,10 +50,6 @@ interface CreateCompetitionFormProps {
 }
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
-function isRangeCategory(cat: PracticeCategory): boolean {
-  return cat === PracticeCategory.JAKT_3D || cat === PracticeCategory.FELT;
-}
-
 function emptyRound(roundNumber: number, cat: PracticeCategory): CompetitionRoundInput {
   return isRangeCategory(cat)
     ? {
@@ -88,21 +64,6 @@ function emptyRound(roundNumber: number, cat: PracticeCategory): CompetitionRoun
     : { roundNumber, distanceMeters: undefined, targetType: '', numberArrows: undefined, arrowsWithoutScore: undefined, roundScore: 0 };
 }
 
-/** Safely parse a date string from the API, falling back to today if invalid. */
-function parseDate(value: string | Date | null | undefined): Date {
-  if (!value) return new Date();
-  if (value instanceof Date) return isNaN(value.getTime()) ? new Date() : value;
-  // Date-only strings like "2025-12-01" are parsed as UTC midnight by JS,
-  // which can shift the displayed date by ±1 day depending on timezone.
-  // Treat them as local midnight instead.
-  if (/^\d{4}-\d{2}-\d{2}$/.test(value)) {
-    const [y, m, d] = value.split('-').map(Number);
-    return new Date(y, m - 1, d);
-  }
-  const parsed = new Date(value);
-  return isNaN(parsed.getTime()) ? new Date() : parsed;
-}
-
 // ─── Component ────────────────────────────────────────────────────────────────
 export default function CreateCompetitionForm({
   visible,
@@ -112,8 +73,8 @@ export default function CreateCompetitionForm({
   onSaved,
   editingCompetition = null,
 }: CreateCompetitionFormProps) {
-  // Step
-  const [step, setStep] = useState(0);
+  // Step navigation
+  const { step, setStep, goNext, goPrev, resetStep } = useStepNavigation(TOTAL_STEPS);
 
   // Form state — Step 1: Info
   const [name, setName] = useState('');
@@ -121,15 +82,19 @@ export default function CreateCompetitionForm({
   const [practiceCategory, setPracticeCategory] = useState<PracticeCategory>(PracticeCategory.SKIVE_INDOOR);
   const [environment, setEnvironment] = useState<Environment>(Environment.INDOOR);
   const [location, setLocation] = useState('');
-  const [selectedBow, setSelectedBow] = useState('');
-  const [selectedArrowSet, setSelectedArrowSet] = useState('');
+
+  // Weather selection hook
+  const { weather, setWeather, toggleWeather } = useWeatherSelection(environment);
+
+  // Equipment selection hook
+  const { selectedBow, setSelectedBow, selectedArrowSet, setSelectedArrowSet, bowOptions, arrowSetOptions, selectFavorites } =
+    useEquipmentSelection(bows, arrowSets);
 
   // Form state — Step 2: Details
   const [organizerName, setOrganizerName] = useState('');
   const [placement, setPlacement] = useState('');
   const [numberOfParticipants, setNumberOfParticipants] = useState('');
   const [personalBest, setPersonalBest] = useState(false);
-  const [weather, setWeather] = useState<WeatherCondition[]>([]);
 
   // Form state — Step 3: Rounds
   const [rounds, setRounds] = useState<CompetitionRoundInput[]>([emptyRound(1, PracticeCategory.SKIVE_INDOOR)]);
@@ -144,10 +109,6 @@ export default function CreateCompetitionForm({
   const [editingId, setEditingId] = useState<string | null>(null);
 
   // Derived
-  const validBows = Array.isArray(bows) ? bows : [];
-  const validArrowSets = Array.isArray(arrowSets) ? arrowSets : [];
-  const bowOptions = validBows.map((b) => ({ label: b.name, value: b.id }));
-  const arrowSetOptions = validArrowSets.map((a) => ({ label: a.name, value: a.id }));
   const isEditing = !!editingId;
 
   // ─── Init ──────────────────────────────────────────────────────────────────
@@ -157,7 +118,7 @@ export default function CreateCompetitionForm({
       return;
     }
 
-    setStep(0);
+    resetStep();
     setError(null);
 
     if (editingCompetition) {
@@ -195,17 +156,14 @@ export default function CreateCompetitionForm({
     } else {
       setEditingId(null);
       resetForm();
-      const favBow = validBows.find((b) => b.isFavorite);
-      setSelectedBow(favBow?.id ?? '');
-      const favArrows = validArrowSets.find((a) => a.isFavorite);
-      setSelectedArrowSet(favArrows?.id ?? '');
+      selectFavorites();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [visible, editingCompetition?.id]);
 
   useEffect(() => {
     if (environment !== Environment.OUTDOOR) setWeather([]);
-  }, [environment]);
+  }, [environment, setWeather]);
 
   // ─── Reset ─────────────────────────────────────────────────────────────────
   const resetForm = () => {
@@ -230,10 +188,6 @@ export default function CreateCompetitionForm({
     onClose();
   };
 
-  // ─── Navigation ────────────────────────────────────────────────────────────
-  const goNext = () => setStep((s) => Math.min(s + 1, TOTAL_STEPS - 1));
-  const goPrev = () => setStep((s) => Math.max(s - 1, 0));
-
   // ─── Category ──────────────────────────────────────────────────────────────
   const handleCategoryChange = (cat: PracticeCategory) => {
     setPracticeCategory(cat);
@@ -255,16 +209,6 @@ export default function CreateCompetitionForm({
       next[index] = { ...next[index], [field]: value };
       return next;
     });
-  };
-
-  const parseNum = (text: string): number | undefined => {
-    const n = parseFloat(text);
-    return isNaN(n) ? undefined : n;
-  };
-
-  // ─── Weather ───────────────────────────────────────────────────────────────
-  const toggleWeather = (condition: WeatherCondition) => {
-    setWeather((prev) => (prev.includes(condition) ? prev.filter((w) => w !== condition) : [...prev, condition]));
   };
 
   // ─── Build rounds payload ──────────────────────────────────────────────────
@@ -382,52 +326,16 @@ export default function CreateCompetitionForm({
         />
       </View>
 
-      {(bowOptions.length > 0 || arrowSetOptions.length > 0) && (
-        <View>
-          <Text style={styles.sectionTitle}>Utstyr</Text>
-          <View style={styles.row}>
-            {bowOptions.length > 0 && (
-              <Select
-                label="🏹 Bue"
-                options={bowOptions}
-                selectedValue={selectedBow}
-                onValueChange={setSelectedBow}
-                placeholder="Velg bue (valgfritt)"
-                containerStyle={styles.field}
-              />
-            )}
-            {arrowSetOptions.length > 0 && (
-              <Select
-                label="🎯 Piler"
-                options={arrowSetOptions}
-                selectedValue={selectedArrowSet}
-                onValueChange={setSelectedArrowSet}
-                placeholder="Velg piler (valgfritt)"
-                containerStyle={styles.field}
-              />
-            )}
-          </View>
-        </View>
-      )}
+      <EquipmentSelector
+        bowOptions={bowOptions}
+        arrowSetOptions={arrowSetOptions}
+        selectedBow={selectedBow}
+        selectedArrowSet={selectedArrowSet}
+        onBowChange={setSelectedBow}
+        onArrowSetChange={setSelectedArrowSet}
+      />
 
-      {environment === Environment.OUTDOOR && (
-        <View style={styles.weatherSection}>
-          <Text style={styles.weatherLabel}>Vær (valgfritt)</Text>
-          <View style={styles.weatherChips}>
-            {WEATHER_OPTIONS.map((opt) => {
-              const active = weather.includes(opt.value);
-              return (
-                <Pressable
-                  key={opt.value}
-                  style={[styles.weatherChip, active && styles.weatherChipActive]}
-                  onPress={() => toggleWeather(opt.value)}>
-                  <Text style={[styles.weatherChipText, active && styles.weatherChipTextActive]}>{opt.label}</Text>
-                </Pressable>
-              );
-            })}
-          </View>
-        </View>
-      )}
+      {environment === Environment.OUTDOOR && <WeatherSelector selectedWeather={weather} onToggleWeather={toggleWeather} />}
     </View>
   );
 
@@ -588,91 +496,6 @@ export default function CreateCompetitionForm({
     </View>
   );
 
-  // ═══════════════════════════════════════════════════════════════════════════
-  // Step indicator
-  // ═══════════════════════════════════════════════════════════════════════════
-  const renderStepIndicator = () => (
-    <View style={styles.stepIndicator}>
-      {STEP_LABELS.map((label, i) => {
-        const isActive = i === step;
-        const isCompleted = i < step;
-        return (
-          <React.Fragment key={i}>
-            <TouchableOpacity style={styles.stepItem} onPress={() => setStep(i)} accessibilityLabel={`Gå til ${label}`}>
-              <View style={[styles.stepDot, isActive && styles.stepDotActive, isCompleted && styles.stepDotCompleted]}>
-                <Text style={[styles.stepDotText, (isActive || isCompleted) && styles.stepDotTextActive]}>{i + 1}</Text>
-              </View>
-              <Text style={[styles.stepLabel, isActive && styles.stepLabelActive, isCompleted && styles.stepLabelCompleted]}>{label}</Text>
-            </TouchableOpacity>
-            {i < TOTAL_STEPS - 1 && <View style={[styles.stepConnector, isCompleted && styles.stepConnectorCompleted]} />}
-          </React.Fragment>
-        );
-      })}
-    </View>
-  );
-
-  // ═══════════════════════════════════════════════════════════════════════════
-  // Navigation footer
-  // ═══════════════════════════════════════════════════════════════════════════
-  const renderNavigation = () => {
-    const isFirstStep = step === 0;
-    const isLastStep = step === TOTAL_STEPS - 1;
-
-    return (
-      <View style={styles.navFooter}>
-        <View style={styles.navRow}>
-          {/* Left: cancel — always visible */}
-          <TouchableOpacity style={styles.navCancelBtn} onPress={handleClose} accessibilityLabel="Avbryt">
-            <FontAwesomeIcon icon={faXmark} size={14} color={colors.textSecondary} />
-            <Text style={styles.navCancelText}>Avbryt</Text>
-          </TouchableOpacity>
-
-          {/* Center: prev / step name / next */}
-          <View style={styles.navCenter}>
-            <TouchableOpacity
-              style={[styles.navArrow, isFirstStep && styles.navArrowDisabled]}
-              onPress={goPrev}
-              disabled={isFirstStep}
-              accessibilityLabel="Forrige steg">
-              <FontAwesomeIcon icon={faChevronLeft} size={18} color={isFirstStep ? colors.dimmed : colors.primary} />
-            </TouchableOpacity>
-
-            <Text style={styles.navStepName}>{STEP_LABELS[step]}</Text>
-
-            {isLastStep ? (
-              <View style={styles.navArrow} />
-            ) : (
-              <TouchableOpacity style={styles.navArrow} onPress={goNext} accessibilityLabel="Neste steg">
-                <FontAwesomeIcon icon={faChevronRight} size={18} color={colors.primary} />
-              </TouchableOpacity>
-            )}
-          </View>
-
-          {/* Right: delete when editing, spacer otherwise */}
-          {isEditing ? (
-            <TouchableOpacity style={styles.navDeleteBtn} onPress={() => setConfirmVisible(true)} accessibilityLabel="Slett konkurranse">
-              <FontAwesomeIcon icon={faTrashCan} size={16} color={colors.error} />
-            </TouchableOpacity>
-          ) : (
-            <View style={styles.navDeleteBtn} />
-          )}
-        </View>
-
-        {isLastStep && (
-          <View style={styles.navActions}>
-            <Button
-              label={submitting ? 'Lagrer...' : isEditing ? 'Lagre endringer' : 'Lagre konkurranse'}
-              onPress={handleSave}
-              disabled={submitting}
-              loading={submitting}
-              buttonStyle={!isEditing ? styles.saveButton : undefined}
-            />
-          </View>
-        )}
-      </View>
-    );
-  };
-
   // ─── Render ────────────────────────────────────────────────────────────────
   return (
     <ModalWrapper visible={visible} onClose={handleClose}>
@@ -681,7 +504,7 @@ export default function CreateCompetitionForm({
           <ModalHeader title={isEditing ? 'Rediger konkurranse' : 'Ny konkurranse'} onPress={handleClose} />
         </Pressable>
 
-        {renderStepIndicator()}
+        <StepIndicator steps={STEP_LABELS} currentStep={step} onStepPress={setStep} />
 
         <ScrollView
           style={styles.scrollView}
@@ -696,7 +519,20 @@ export default function CreateCompetitionForm({
           </Pressable>
         </ScrollView>
 
-        {renderNavigation()}
+        <NavigationFooter
+          currentStep={step}
+          totalSteps={TOTAL_STEPS}
+          stepLabels={STEP_LABELS}
+          isEditing={isEditing}
+          submitting={submitting}
+          saveLabel={isEditing ? 'Lagre endringer' : 'Lagre konkurranse'}
+          onCancel={handleClose}
+          onPrev={goPrev}
+          onNext={goNext}
+          onSave={handleSave}
+          onDelete={() => setConfirmVisible(true)}
+          showSaveOnAllSteps={false}
+        />
       </KeyboardAvoidingView>
 
       <ConfirmModal
