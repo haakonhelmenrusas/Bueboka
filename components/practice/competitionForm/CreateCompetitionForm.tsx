@@ -106,10 +106,30 @@ export default function CreateCompetitionForm({
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [confirmVisible, setConfirmVisible] = useState(false);
+  const [closeConfirmVisible, setCloseConfirmVisible] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
 
   // Derived
   const isEditing = !!editingId;
+
+  // Track if user has made any changes to show confirmation on close
+  const hasChanges = () => {
+    if (isEditing) return true; // Always confirm when editing
+    // Check if any field has been modified from defaults
+    return (
+      name !== '' ||
+      location !== '' ||
+      notes !== '' ||
+      organizerName !== '' ||
+      placement !== '' ||
+      numberOfParticipants !== '' ||
+      personalBest ||
+      selectedBow !== '' ||
+      selectedArrowSet !== '' ||
+      weather.length > 0 ||
+      rounds.some((r) => r.distanceMeters || r.distanceFrom || r.distanceTo || r.targetType || r.numberArrows || r.roundScore)
+    );
+  };
 
   // ─── Init ──────────────────────────────────────────────────────────────────
   useEffect(() => {
@@ -184,6 +204,16 @@ export default function CreateCompetitionForm({
   };
 
   const handleClose = () => {
+    if (hasChanges()) {
+      setCloseConfirmVisible(true);
+    } else {
+      resetForm();
+      onClose();
+    }
+  };
+
+  const handleConfirmClose = () => {
+    setCloseConfirmVisible(false);
     resetForm();
     onClose();
   };
@@ -498,7 +528,7 @@ export default function CreateCompetitionForm({
 
   // ─── Render ────────────────────────────────────────────────────────────────
   return (
-    <ModalWrapper visible={visible} onClose={handleClose}>
+    <ModalWrapper visible={visible} onClose={handleClose} fullScreen>
       <KeyboardAvoidingView style={styles.container} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
         <Pressable onPress={Keyboard.dismiss}>
           <ModalHeader title={isEditing ? 'Rediger konkurranse' : 'Ny konkurranse'} onPress={handleClose} />
@@ -531,7 +561,6 @@ export default function CreateCompetitionForm({
           onNext={goNext}
           onSave={handleSave}
           onDelete={() => setConfirmVisible(true)}
-          showSaveOnAllSteps={false}
         />
       </KeyboardAvoidingView>
 
@@ -546,6 +575,16 @@ export default function CreateCompetitionForm({
           handleDelete();
           setConfirmVisible(false);
         }}
+      />
+
+      <ConfirmModal
+        visible={closeConfirmVisible}
+        title="Forkast endringer?"
+        message="Du har ulagrede endringer. Er du sikker på at du vil lukke uten å lagre?"
+        confirmLabel="Forkast"
+        cancelLabel="Fortsett redigering"
+        onCancel={() => setCloseConfirmVisible(false)}
+        onConfirm={handleConfirmClose}
       />
     </ModalWrapper>
   );

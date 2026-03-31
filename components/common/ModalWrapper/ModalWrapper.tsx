@@ -5,13 +5,14 @@ interface ModalWrapperProps {
   visible: boolean;
   onClose: () => void;
   children: React.ReactNode;
+  fullScreen?: boolean;
 }
 
-export default function ModalWrapper({ visible, onClose, children }: ModalWrapperProps) {
+export default function ModalWrapper({ visible, onClose, children, fullScreen = false }: ModalWrapperProps) {
   return (
     <Modal presentationStyle="overFullScreen" animationType="fade" transparent={true} visible={visible} onRequestClose={onClose}>
       <Pressable style={styles.overlay} onPress={onClose}>
-        <Pressable style={styles.content} onPress={() => {}}>
+        <Pressable style={fullScreen ? styles.contentFullScreen : styles.content} onPress={() => {}}>
           {children}
         </Pressable>
       </Pressable>
@@ -31,5 +32,11 @@ const styles = StyleSheet.create({
     maxWidth: 500,
     maxHeight: '90%',
     alignSelf: 'center',
+  },
+  contentFullScreen: {
+    width: '100%',
+    height: '100%',
+    maxWidth: '100%',
+    maxHeight: '100%',
   },
 });

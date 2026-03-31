@@ -17,7 +17,7 @@ interface Props {
 export default function BowDetails({ bow, visible, onClose, onEdit }: Props) {
   return (
     <ModalWrapper visible={visible} onClose={onClose}>
-      <View style={styles.modalView}>
+      <ScrollView style={styles.modalView} showsVerticalScrollIndicator={false} bounces={false}>
         <View style={styles.header}>
           <Text style={styles.title}>{bow.name}</Text>
           <View style={styles.actions}>
@@ -30,59 +30,57 @@ export default function BowDetails({ bow, visible, onClose, onEdit }: Props) {
           </View>
         </View>
 
-        <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
-          <View style={styles.content}>
-            <View style={styles.row}>
-              <Text style={styles.label}>Type</Text>
-              <Text style={styles.value}>{capitalizeFirstLetter(bow.type)}</Text>
-            </View>
-            <View style={styles.row}>
-              <Text style={styles.label}>Fra øye til nock</Text>
-              <DataValue textStyle={styles.value} value={bow.eyeToNock} suffix=" cm" />
-            </View>
-            <View style={styles.row}>
-              <Text style={styles.label}>Fra øye til sikte</Text>
-              <DataValue textStyle={styles.value} value={bow.eyeToSight} suffix=" cm" />
-            </View>
-            <View style={styles.row}>
-              <Text style={styles.label}>Målt sikte</Text>
-              <DataValue textStyle={styles.value} value={bow.aimMeasure} suffix=" cm" />
-            </View>
-            {bow.limbs && (
-              <View style={styles.row}>
-                <Text style={styles.label}>Lemmer</Text>
-                <Text style={styles.value}>{bow.limbs}</Text>
-              </View>
-            )}
-            {bow.riser && (
-              <View style={styles.row}>
-                <Text style={styles.label}>Midtstykke</Text>
-                <Text style={styles.value}>{bow.riser}</Text>
-              </View>
-            )}
-            {bow.handOrientation && (
-              <View style={styles.row}>
-                <Text style={styles.label}>Hånd</Text>
-                <Text style={styles.value}>{bow.handOrientation === 'RH' ? 'Høyre (RH)' : 'Venstre (LH)'}</Text>
-              </View>
-            )}
-            <View style={styles.row}>
-              <Text style={styles.label}>Styrke</Text>
-              <DataValue textStyle={styles.value} value={bow.drawWeight} suffix=" pund" />
-            </View>
-            <View style={styles.row}>
-              <Text style={styles.label}>Lengde</Text>
-              <DataValue textStyle={styles.value} value={bow.bowLength} suffix={'"'} />
-            </View>
-            {bow.notes && (
-              <View style={styles.row}>
-                <Text style={styles.label}>Notater</Text>
-                <Text style={styles.value}>{bow.notes}</Text>
-              </View>
-            )}
+        <View style={styles.content}>
+          <View style={styles.row}>
+            <Text style={styles.label}>Type</Text>
+            <Text style={styles.value}>{capitalizeFirstLetter(bow.type)}</Text>
           </View>
-        </ScrollView>
-      </View>
+          <View style={styles.row}>
+            <Text style={styles.label}>Fra øye til nock</Text>
+            <DataValue textStyle={styles.value} value={bow.eyeToNock} suffix=" cm" />
+          </View>
+          <View style={styles.row}>
+            <Text style={styles.label}>Fra øye til sikte</Text>
+            <DataValue textStyle={styles.value} value={bow.eyeToSight} suffix=" cm" />
+          </View>
+          <View style={styles.row}>
+            <Text style={styles.label}>Målt sikte</Text>
+            <DataValue textStyle={styles.value} value={bow.aimMeasure} suffix=" cm" />
+          </View>
+          {bow.limbs && (
+            <View style={styles.row}>
+              <Text style={styles.label}>Lemmer</Text>
+              <Text style={styles.value}>{bow.limbs}</Text>
+            </View>
+          )}
+          {bow.riser && (
+            <View style={styles.row}>
+              <Text style={styles.label}>Midtstykke</Text>
+              <Text style={styles.value}>{bow.riser}</Text>
+            </View>
+          )}
+          {bow.handOrientation && (
+            <View style={styles.row}>
+              <Text style={styles.label}>Hånd</Text>
+              <Text style={styles.value}>{bow.handOrientation === 'RH' ? 'Høyre (RH)' : 'Venstre (LH)'}</Text>
+            </View>
+          )}
+          <View style={styles.row}>
+            <Text style={styles.label}>Styrke</Text>
+            <DataValue textStyle={styles.value} value={bow.drawWeight} suffix=" pund" />
+          </View>
+          <View style={styles.row}>
+            <Text style={styles.label}>Lengde</Text>
+            <DataValue textStyle={styles.value} value={bow.bowLength} suffix={'"'} />
+          </View>
+          {bow.notes && (
+            <View style={styles.row}>
+              <Text style={styles.label}>Notater</Text>
+              <Text style={styles.value}>{bow.notes}</Text>
+            </View>
+          )}
+        </View>
+      </ScrollView>
     </ModalWrapper>
   );
 }

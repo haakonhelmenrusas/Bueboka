@@ -214,32 +214,40 @@ export function PracticeDetailsModal({ visible, practice, onClose, onEdit, onDel
               </View>
             )}
           </View>
-        </ScrollView>
-        <View style={styles.actions}>
-          {onEdit && <Button label="Rediger" onPress={onEdit} disabled={deleting} buttonStyle={styles.actionButton} />}
-          <View style={styles.actionRow}>
+
+          <View style={styles.actions}>
+            {onEdit && <Button label="Rediger" onPress={onEdit} disabled={deleting} buttonStyle={styles.actionButton} />}
+            <View style={styles.actionRow}>
+              <Button
+                size="small"
+                label="Del"
+                onPress={handleShare}
+                type="outline"
+                disabled={deleting}
+                icon={<FontAwesomeIcon icon={faShare} size={14} color={colors.primary} />}
+                buttonStyle={styles.smallActionButton}
+              />
+              <Button
+                size="small"
+                label="Lukk"
+                onPress={onClose}
+                type="outline"
+                disabled={deleting}
+                buttonStyle={styles.smallActionButton}
+              />
+            </View>
             <Button
-              size="small"
-              label="Del"
-              onPress={handleShare}
+              label={deleting ? 'Sletter...' : 'Slett'}
+              onPress={handleDelete}
               type="outline"
+              size="small"
+              variant="warning"
               disabled={deleting}
-              icon={<FontAwesomeIcon icon={faShare} size={14} color={colors.primary} />}
-              buttonStyle={styles.smallActionButton}
+              icon={<FontAwesomeIcon icon={faTrash} size={16} color={colors.error} />}
+              buttonStyle={styles.actionButton}
             />
-            <Button size="small" label="Lukk" onPress={onClose} type="outline" disabled={deleting} buttonStyle={styles.smallActionButton} />
           </View>
-          <Button
-            label={deleting ? 'Sletter...' : 'Slett'}
-            onPress={handleDelete}
-            type="outline"
-            size="small"
-            variant="warning"
-            disabled={deleting}
-            icon={<FontAwesomeIcon icon={faTrash} size={16} color={colors.error} />}
-            buttonStyle={styles.actionButton}
-          />
-        </View>
+        </ScrollView>
       </View>
     </ModalWrapper>
   );

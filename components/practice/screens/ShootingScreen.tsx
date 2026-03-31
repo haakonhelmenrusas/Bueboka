@@ -37,7 +37,7 @@ export default function ShootingScreen() {
     try {
       // Practice data (including totalScore) is updated via ShootingScoreScreen
       // when actual scores are entered. This screen just tracks arrow count locally.
-      router.replace('/(tabs)/practice');
+      router.replace('/(tabs)/home');
     } catch (error) {
       Sentry.captureException(error);
       Alert.alert('Feil', 'Kunne ikke lagre treningen. Vennligst prøv igjen.');
@@ -48,7 +48,7 @@ export default function ShootingScreen() {
 
   const openScoring = () => {
     router.push({
-      pathname: '/(tabs)/practice/shooting/score',
+      pathname: '/(tabs)/home/shooting-score',
       params: { ...params, currentCount: arrowCount },
     });
   };

@@ -16,7 +16,7 @@ interface Props {
 export default function ArrowSetDetails({ arrowSet, visible, onClose, onEdit }: Props) {
   return (
     <ModalWrapper visible={visible} onClose={onClose}>
-      <View style={styles.modalView}>
+      <ScrollView style={styles.modalView} showsVerticalScrollIndicator={false} bounces={false}>
         <View style={styles.header}>
           <Text style={styles.title}>{arrowSet.name}</Text>
           <View style={styles.actions}>
@@ -29,75 +29,73 @@ export default function ArrowSetDetails({ arrowSet, visible, onClose, onEdit }: 
           </View>
         </View>
 
-        <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
-          <View style={styles.content}>
-            <View style={styles.row}>
-              <Text style={styles.label}>Material</Text>
-              <DataValue value={arrowSet.material} capitalize textStyle={styles.value} />
-            </View>
-
-            <View style={styles.row}>
-              <Text style={styles.label}>Antall piler</Text>
-              <DataValue value={arrowSet.arrowsCount} textStyle={styles.value} />
-            </View>
-
-            <View style={styles.row}>
-              <Text style={styles.label}>Spine</Text>
-              <DataValue value={arrowSet.spine} textStyle={styles.value} />
-            </View>
-
-            <View style={styles.row}>
-              <Text style={styles.label}>Vekt</Text>
-              <DataValue value={arrowSet.weight} suffix=" grain" textStyle={styles.value} />
-            </View>
-
-            <View style={styles.row}>
-              <Text style={styles.label}>Lengde</Text>
-              <DataValue value={arrowSet.length} suffix=" tommer" textStyle={styles.value} />
-            </View>
-
-            <View style={styles.row}>
-              <Text style={styles.label}>Diameter</Text>
-              <DataValue value={arrowSet.diameter} suffix=" mm" textStyle={styles.value} />
-            </View>
-
-            {arrowSet.pointType && (
-              <View style={styles.row}>
-                <Text style={styles.label}>Pilspisstype</Text>
-                <Text style={styles.value}>{arrowSet.pointType}</Text>
-              </View>
-            )}
-
-            {arrowSet.pointWeight && (
-              <View style={styles.row}>
-                <Text style={styles.label}>Spissvekt</Text>
-                <DataValue value={arrowSet.pointWeight} suffix=" grain" textStyle={styles.value} />
-              </View>
-            )}
-
-            {arrowSet.vanes && (
-              <View style={styles.row}>
-                <Text style={styles.label}>Vanes</Text>
-                <Text style={styles.value}>{arrowSet.vanes}</Text>
-              </View>
-            )}
-
-            {arrowSet.nock && (
-              <View style={styles.row}>
-                <Text style={styles.label}>Nock</Text>
-                <Text style={styles.value}>{arrowSet.nock}</Text>
-              </View>
-            )}
-
-            {arrowSet.notes && (
-              <View style={styles.row}>
-                <Text style={styles.label}>Notater</Text>
-                <Text style={styles.value}>{arrowSet.notes}</Text>
-              </View>
-            )}
+        <View style={styles.content}>
+          <View style={styles.row}>
+            <Text style={styles.label}>Material</Text>
+            <DataValue value={arrowSet.material} capitalize textStyle={styles.value} />
           </View>
-        </ScrollView>
-      </View>
+
+          <View style={styles.row}>
+            <Text style={styles.label}>Antall piler</Text>
+            <DataValue value={arrowSet.arrowsCount} textStyle={styles.value} />
+          </View>
+
+          <View style={styles.row}>
+            <Text style={styles.label}>Spine</Text>
+            <DataValue value={arrowSet.spine} textStyle={styles.value} />
+          </View>
+
+          <View style={styles.row}>
+            <Text style={styles.label}>Vekt</Text>
+            <DataValue value={arrowSet.weight} suffix=" grain" textStyle={styles.value} />
+          </View>
+
+          <View style={styles.row}>
+            <Text style={styles.label}>Lengde</Text>
+            <DataValue value={arrowSet.length} suffix=" tommer" textStyle={styles.value} />
+          </View>
+
+          <View style={styles.row}>
+            <Text style={styles.label}>Diameter</Text>
+            <DataValue value={arrowSet.diameter} suffix=" mm" textStyle={styles.value} />
+          </View>
+
+          {arrowSet.pointType && (
+            <View style={styles.row}>
+              <Text style={styles.label}>Pilspisstype</Text>
+              <Text style={styles.value}>{arrowSet.pointType}</Text>
+            </View>
+          )}
+
+          {arrowSet.pointWeight && (
+            <View style={styles.row}>
+              <Text style={styles.label}>Spissvekt</Text>
+              <DataValue value={arrowSet.pointWeight} suffix=" grain" textStyle={styles.value} />
+            </View>
+          )}
+
+          {arrowSet.vanes && (
+            <View style={styles.row}>
+              <Text style={styles.label}>Vanes</Text>
+              <Text style={styles.value}>{arrowSet.vanes}</Text>
+            </View>
+          )}
+
+          {arrowSet.nock && (
+            <View style={styles.row}>
+              <Text style={styles.label}>Nock</Text>
+              <Text style={styles.value}>{arrowSet.nock}</Text>
+            </View>
+          )}
+
+          {arrowSet.notes && (
+            <View style={styles.row}>
+              <Text style={styles.label}>Notater</Text>
+              <Text style={styles.value}>{arrowSet.notes}</Text>
+            </View>
+          )}
+        </View>
+      </ScrollView>
     </ModalWrapper>
   );
 }

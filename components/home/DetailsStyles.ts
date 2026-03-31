@@ -8,8 +8,7 @@ export const styles = StyleSheet.create({
     backgroundColor: colors.white,
     borderRadius: 12,
     width: '100%',
-    height: WINDOW_HEIGHT * 0.85,
-    flexDirection: 'column',
+    maxHeight: WINDOW_HEIGHT * 0.85,
     shadowColor: colors.primaryDark,
     shadowOffset: {
       width: 0,
@@ -18,9 +17,6 @@ export const styles = StyleSheet.create({
     shadowOpacity: 0.25,
     shadowRadius: 4,
     elevation: 5,
-  },
-  scrollView: {
-    flex: 1,
   },
   header: {
     flexDirection: 'row',

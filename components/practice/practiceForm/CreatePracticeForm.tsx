@@ -2,10 +2,15 @@ import React, { useEffect, useState } from 'react';
 import { Keyboard, KeyboardAvoidingView, Platform, Pressable, ScrollView, Text, TouchableOpacity, View } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as Sentry from '@sentry/react-native';
+import { useRouter } from 'expo-router';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faPlus } from '@fortawesome/free-solid-svg-icons/faPlus';
 import { faXmark } from '@fortawesome/free-solid-svg-icons/faXmark';
 import { faDeleteLeft } from '@fortawesome/free-solid-svg-icons/faDeleteLeft';
+import { faChevronLeft } from '@fortawesome/free-solid-svg-icons/faChevronLeft';
+import { faChevronRight } from '@fortawesome/free-solid-svg-icons/faChevronRight';
+import { faInfo } from '@fortawesome/free-solid-svg-icons/faInfo';
 
 import { Button, DatePicker, Input, ModalHeader, ModalWrapper, Select, Textarea } from '@/components/common';
 import ConfirmModal from '@/components/home/DeleteArrowSetModal/ConfirmModal';
@@ -28,6 +33,9 @@ import { NavigationFooter } from '@/components/practice/shared/NavigationFooter'
 const STORAGE_KEY_DISTANCE = 'bueboka_last_distance';
 const STORAGE_KEY_TARGET = 'bueboka_last_target';
 
+// ─── Constants ────────────────────────────────────────────────────────────────
+const DEFAULT_ARROWS_PER_END = 3;
+
 // ─── Step definitions ─────────────────────────────────────────────────────────
 const TOTAL_STEPS = 4;
 const STEP_LABELS = ['Info', 'Runder', 'Poeng', 'Refleksjon'];
@@ -39,6 +47,7 @@ export interface RoundInput {
   distanceTo?: number;
   targetType: string;
   numberArrows?: number;
+  arrowsPerEnd?: number;
   arrowsWithoutScore?: number;
   roundScore: number;
   scores?: number[];
@@ -62,11 +71,20 @@ function emptyRound(cat: PracticeCategory): RoundInput {
         distanceTo: undefined,
         targetType: '',
         numberArrows: undefined,
+        arrowsPerEnd: undefined,
         arrowsWithoutScore: undefined,
         roundScore: 0,
         scores: [],
       }
-    : { distanceMeters: undefined, targetType: '', numberArrows: undefined, arrowsWithoutScore: undefined, roundScore: 0, scores: [] };
+    : {
+        distanceMeters: undefined,
+        targetType: '',
+        numberArrows: undefined,
+        arrowsPerEnd: undefined,
+        arrowsWithoutScore: undefined,
+        roundScore: 0,
+        scores: [],
+      };
 }
 
 function getRoundSummary(round: RoundInput): string {
@@ -75,6 +93,49 @@ function getRoundSummary(round: RoundInput): string {
   if (round.distanceFrom || round.distanceTo) parts.push(`${round.distanceFrom ?? '?'}–${round.distanceTo ?? '?'}m`);
   if (round.targetType) parts.push(round.targetType);
   return parts.length > 0 ? parts.join(' · ') : 'Ingen detaljer';
+}
+
+function getChipColorStyle(score: number): any {
+  if (score >= 9) return styles.arrowChipGold;
+  if (score >= 7) return styles.arrowChipRed;
+  if (score >= 5) return styles.arrowChipBlue;
+  if (score >= 3) return styles.arrowChipBlack;
+  if (score >= 1) return styles.arrowChipWhite;
+  return styles.arrowChipMiss; // 0 = M
+}
+
+function getChipTextColor(score: number): any {
+  // Yellow/gold and white backgrounds need dark text
+  // Red, blue, black, and miss backgrounds need white text
+  if (score >= 9 || (score >= 1 && score <= 2)) {
+    return { color: colors.text };
+  }
+  return { color: colors.white };
+}
+
+function getScoreButtonColorStyle(label: string): any {
+  switch (label) {
+    case 'X':
+    case '10':
+    case '9':
+      return { button: styles.scoreButtonGold, text: { color: colors.text } };
+    case '8':
+    case '7':
+      return { button: styles.scoreButtonRed, text: { color: colors.white } };
+    case '6':
+    case '5':
+      return { button: styles.scoreButtonBlue, text: { color: colors.white } };
+    case '4':
+    case '3':
+      return { button: styles.scoreButtonBlack, text: { color: colors.white } };
+    case '2':
+    case '1':
+      return { button: styles.scoreButtonWhite, text: { color: colors.text } };
+    case 'M':
+      return { button: styles.scoreButtonMiss, text: { color: colors.textSecondary } };
+    default:
+      return { button: null, text: { color: colors.text } };
+  }
 }
 
 // ─── Component ────────────────────────────────────────────────────────────────
@@ -86,6 +147,8 @@ export default function CreatePracticeForm({
   onPracticeSaved,
   editingPractice = null,
 }: CreatePracticeFormProps) {
+  const router = useRouter();
+
   // Step navigation
   const { step, setStep, goNext, goPrev, resetStep } = useStepNavigation(TOTAL_STEPS);
 
@@ -110,6 +173,11 @@ export default function CreatePracticeForm({
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [confirmVisible, setConfirmVisible] = useState(false);
+  const [closeConfirmVisible, setCloseConfirmVisible] = useState(false);
+  // Track which end page is visible per round (for scoring step pagination)
+  const [endPages, setEndPages] = useState<Record<number, number>>({});
+  // Track which absolute arrow index is being edited per round (null = append mode)
+  const [editingIndices, setEditingIndices] = useState<Record<number, number | null>>({});
   // Tracks the ID of the practice being edited – set once at init time.
   // Using local state (not derived from prop) prevents create-vs-update
   // mismatches caused by prop timing / re-render race conditions.
@@ -117,6 +185,20 @@ export default function CreatePracticeForm({
 
   // Derived
   const isEditing = !!editingId;
+
+  // Track if user has made any changes to show confirmation on close
+  const hasChanges = () => {
+    if (isEditing) return true; // Always confirm when editing
+    // Check if any field has been modified from defaults
+    return (
+      location !== '' ||
+      notes !== '' ||
+      selectedBow !== '' ||
+      selectedArrowSet !== '' ||
+      weather.length > 0 ||
+      rounds.some((r) => r.distanceMeters || r.distanceFrom || r.distanceTo || r.targetType || r.numberArrows || r.roundScore)
+    );
+  };
 
   // ─── Init form ───────────────────────────────────────────────────────────────
   useEffect(() => {
@@ -157,6 +239,7 @@ export default function CreatePracticeForm({
               distanceTo: end.distanceTo ?? undefined,
               targetType: end.targetType ?? (end.targetSizeCm ? `${end.targetSizeCm}cm` : ''),
               numberArrows: derivedArrowCount,
+              arrowsPerEnd: end.arrowsPerEnd ?? undefined,
               arrowsWithoutScore: end.arrowsWithoutScore ?? undefined,
               roundScore: end.roundScore ?? 0,
               scores: savedScores,
@@ -205,6 +288,35 @@ export default function CreatePracticeForm({
     if (environment !== Environment.OUTDOOR) setWeather([]);
   }, [environment, setWeather]);
 
+  // Clamp endPages whenever scores change (e.g. after backspace)
+  useEffect(() => {
+    setEndPages((prev) => {
+      const next: Record<number, number> = {};
+      rounds.forEach((round, idx) => {
+        const maxArrows = round.numberArrows ?? 0;
+        if (maxArrows === 0) return;
+        const arrowsPerEnd = round.arrowsPerEnd ?? DEFAULT_ARROWS_PER_END;
+        const filledCount = (round.scores ?? []).length;
+        const totalEnds = Math.ceil(maxArrows / arrowsPerEnd);
+        const activeEndPage = filledCount >= maxArrows ? totalEnds - 1 : Math.floor(filledCount / arrowsPerEnd);
+        const currentPage = prev[idx] ?? activeEndPage;
+        next[idx] = Math.max(0, Math.min(currentPage, activeEndPage));
+      });
+      return next;
+    });
+  }, [rounds]);
+
+  // ─── End page navigation ─────────────────────────────────────────────────────
+  const setEndPage = (roundIndex: number, page: number) => {
+    // Clear editing when navigating between ends
+    setEditingIndices((prev) => ({ ...prev, [roundIndex]: null }));
+    setEndPages((prev) => ({ ...prev, [roundIndex]: page }));
+  };
+
+  const setEditingIndex = (roundIndex: number, idx: number | null) => {
+    setEditingIndices((prev) => ({ ...prev, [roundIndex]: idx }));
+  };
+
   // ─── Reset ───────────────────────────────────────────────────────────────────
   const resetForm = () => {
     setDate(new Date());
@@ -220,6 +332,16 @@ export default function CreatePracticeForm({
   };
 
   const handleClose = () => {
+    if (hasChanges()) {
+      setCloseConfirmVisible(true);
+    } else {
+      resetForm();
+      onClose();
+    }
+  };
+
+  const handleConfirmClose = () => {
+    setCloseConfirmVisible(false);
     resetForm();
     onClose();
   };
@@ -282,6 +404,18 @@ export default function CreatePracticeForm({
     });
   };
 
+  const updateArrowScore = (roundIndex: number, arrowIndex: number, score: number) => {
+    const current = rounds[roundIndex].scores ?? [];
+    const newScores = [...current];
+    newScores[arrowIndex] = score;
+    const newTotal = newScores.reduce((a, b) => a + b, 0);
+    setRounds((prev) => {
+      const next = [...prev];
+      next[roundIndex] = { ...next[roundIndex], scores: newScores, roundScore: newTotal };
+      return next;
+    });
+  };
+
   // ─── Persist last used ───────────────────────────────────────────────────────
   const persistLastUsed = async (validRounds: RoundInput[]) => {
     if (validRounds.length === 0) return;
@@ -300,6 +434,7 @@ export default function CreatePracticeForm({
         roundScore: r.roundScore ?? 0,
       };
       if (r.numberArrows !== undefined) round.arrows = r.numberArrows; // API expects 'arrows'
+      if (r.arrowsPerEnd !== undefined) round.arrowsPerEnd = r.arrowsPerEnd;
       if (r.arrowsWithoutScore !== undefined) round.arrowsWithoutScore = r.arrowsWithoutScore;
       if (r.distanceMeters !== undefined) round.distanceMeters = r.distanceMeters;
       if (r.distanceFrom !== undefined) round.distanceFrom = r.distanceFrom;
@@ -378,7 +513,23 @@ export default function CreatePracticeForm({
     setSubmitting(true);
     setError(null);
     try {
-      await practiceRepository.create({
+      const validRounds = rounds.filter(
+        (r) =>
+          (r.distanceMeters && r.distanceMeters > 0) ||
+          (r.distanceFrom && r.distanceFrom > 0) ||
+          (r.distanceTo && r.distanceTo > 0) ||
+          r.targetType ||
+          (r.numberArrows ?? 0) > 0 ||
+          r.roundScore > 0,
+      );
+
+      await persistLastUsed(validRounds);
+
+      // Build ends array - if no valid rounds, send one minimal end
+      const endsToSend = validRounds.length > 0 ? buildRounds(validRounds) : [{ roundScore: 0 }];
+
+      // Create the practice first to get an ID
+      const createPayload = {
         date,
         environment,
         practiceCategory,
@@ -388,30 +539,30 @@ export default function CreatePracticeForm({
         arrowsId: selectedArrowSet || undefined,
         notes: notes || undefined,
         rating: rating ?? undefined,
-        totalScore: 0, // Required field
-        ends: [{ roundScore: 0 }], // API requires at least 1 end
-      });
+        totalScore: 0,
+        ends: endsToSend,
+      };
+
+      const savedPractice = await practiceRepository.create(createPayload);
 
       onPracticeSaved?.();
+      onClose();
 
-      // TODO: Implement shooting screen route
-      // For now, just close the modal after creating the practice
-      // The shooting screen components exist but are not integrated into the app routing
-      /*
+      // Navigate to shooting screen with practice details
       router.push({
-        pathname: '/practice/shooting',
+        pathname: '/(tabs)/home/shooting',
         params: {
           id: savedPractice.id,
           date: date.toISOString().split('T')[0],
           bowId: selectedBow || '',
-          arrowSet: selectedArrowSet || '',
+          arrowsId: selectedArrowSet || '',
           notes: notes || '',
           environment,
           location: location || '',
+          distance: validRounds[0]?.distanceMeters?.toString() || '18',
+          targetSize: validRounds[0]?.targetType?.replace('cm', '') || '80',
         },
       });
-      */
-      onClose();
     } catch (err) {
       Sentry.captureException(err);
       setError(err instanceof Error ? err.message : 'Kunne ikke starte skyteøkten.');
@@ -546,6 +697,17 @@ export default function CreatePracticeForm({
                   containerStyle={styles.roundField}
                 />
                 <Input
+                  label="Piler / serie"
+                  optional
+                  value={round.arrowsPerEnd !== undefined ? String(round.arrowsPerEnd) : ''}
+                  onChangeText={(t) => updateRound(index, 'arrowsPerEnd', parseNum(t))}
+                  keyboardType="numeric"
+                  containerStyle={styles.roundField}
+                />
+              </View>
+
+              <View style={styles.roundFields}>
+                <Input
                   label="Score"
                   optional
                   value={round.roundScore !== 0 ? String(round.roundScore) : ''}
@@ -553,16 +715,15 @@ export default function CreatePracticeForm({
                   keyboardType="numeric"
                   containerStyle={styles.roundField}
                 />
+                <Input
+                  label="Piler u/score"
+                  optional
+                  value={round.arrowsWithoutScore !== undefined ? String(round.arrowsWithoutScore) : ''}
+                  onChangeText={(t) => updateRound(index, 'arrowsWithoutScore', parseNum(t))}
+                  keyboardType="numeric"
+                  containerStyle={styles.roundField}
+                />
               </View>
-
-              <Input
-                label="Piler u/score"
-                optional
-                value={round.arrowsWithoutScore !== undefined ? String(round.arrowsWithoutScore) : ''}
-                onChangeText={(t) => updateRound(index, 'arrowsWithoutScore', parseNum(t))}
-                keyboardType="numeric"
-                containerStyle={{ width: '48%' }}
-              />
             </View>
           );
         })}
@@ -584,8 +745,6 @@ export default function CreatePracticeForm({
 
     return (
       <View style={styles.stepContent}>
-        <Text style={styles.stepDescription}>Velg hvordan du vil registrere poeng, eller hopp over dette steget.</Text>
-
         {/* Scoring method selection */}
         <View style={styles.scoringMethodSection}>
           <Text style={styles.sectionTitle}>Registreringsmetode</Text>
@@ -626,12 +785,58 @@ export default function CreatePracticeForm({
 
             {rounds.map((round, roundIndex) => {
               const maxArrows = round.numberArrows ?? 0;
-              if (maxArrows === 0) return null;
+              const hasManualScore = round.roundScore > 0 && (round.scores ?? []).length === 0;
+
+              // Nothing to show for this round
+              if (maxArrows === 0 && !hasManualScore) return null;
+
+              // Round has a manually entered total score – show informational notice
+              if (hasManualScore) {
+                return (
+                  <View key={roundIndex} style={styles.scoringCard}>
+                    <View style={styles.scoringCardHeader}>
+                      <Text style={styles.scoringRoundTitle}>Runde {roundIndex + 1}</Text>
+                      <Text style={styles.scoringRoundMeta}>{getRoundSummary(round)}</Text>
+                    </View>
+                    <View style={styles.manualScoreNotice}>
+                      <FontAwesomeIcon icon={faInfo} size={16} color={colors.info} style={styles.manualScoreNoticeIcon} />
+                      <View style={styles.manualScoreNoticeBody}>
+                        <Text style={styles.manualScoreNoticeMain}>Totalscore: {round.roundScore} poeng</Text>
+                        <Text style={styles.manualScoreNoticeHint}>
+                          Du har registrert en totalscore for denne runden. Vil du score enkeltpiler i stedet, fjern totalscoren under
+                          «Runder»-steget.
+                        </Text>
+                      </View>
+                    </View>
+                  </View>
+                );
+              }
 
               const currentScores = round.scores ?? [];
               const filledCount = currentScores.length;
               const total = currentScores.reduce((a, b) => a + b, 0);
               const isFull = filledCount >= maxArrows;
+
+              const arrowsPerEnd = round.arrowsPerEnd ?? DEFAULT_ARROWS_PER_END;
+              const totalEnds = Math.ceil(maxArrows / arrowsPerEnd);
+              const activeEndPage = isFull ? totalEnds - 1 : Math.floor(filledCount / arrowsPerEnd);
+              const currentEndPage = Math.min(endPages[roundIndex] ?? activeEndPage, activeEndPage);
+
+              const startIdx = currentEndPage * arrowsPerEnd;
+              const endIdx = Math.min(startIdx + arrowsPerEnd, maxArrows);
+              const arrowsInThisEnd = endIdx - startIdx;
+              const endScores = currentScores.slice(startIdx, endIdx);
+              const endTotal = endScores.reduce((a, b) => a + b, 0);
+
+              const isActiveEnd = !isFull && currentEndPage === activeEndPage;
+              const isEndFilled = endScores.length >= arrowsInThisEnd;
+
+              const canGoPrev = currentEndPage > 0;
+              const canGoNext = currentEndPage < activeEndPage;
+
+              const editingIdx = editingIndices[roundIndex] ?? null;
+              const isEditing = editingIdx !== null;
+              const showScoreButtons = (isActiveEnd && !isEndFilled) || isEditing;
 
               return (
                 <View key={roundIndex} style={styles.scoringCard}>
@@ -640,16 +845,56 @@ export default function CreatePracticeForm({
                     <Text style={styles.scoringRoundMeta}>{getRoundSummary(round)}</Text>
                   </View>
 
+                  {/* End navigation */}
+                  {totalEnds > 1 && (
+                    <View style={styles.endNav}>
+                      <TouchableOpacity
+                        style={[styles.endNavBtn, !canGoPrev && styles.endNavBtnDisabled]}
+                        onPress={() => setEndPage(roundIndex, currentEndPage - 1)}
+                        disabled={!canGoPrev}
+                        accessibilityLabel="Forrige serie">
+                        <FontAwesomeIcon icon={faChevronLeft} size={18} color={canGoPrev ? colors.primary : colors.textSecondary} />
+                      </TouchableOpacity>
+                      <Text style={styles.endNavLabel}>
+                        Serie {currentEndPage + 1} / {totalEnds}
+                      </Text>
+                      <TouchableOpacity
+                        style={[styles.endNavBtn, !canGoNext && styles.endNavBtnDisabled]}
+                        onPress={() => setEndPage(roundIndex, currentEndPage + 1)}
+                        disabled={!canGoNext}
+                        accessibilityLabel="Neste serie">
+                        <FontAwesomeIcon icon={faChevronRight} size={18} color={canGoNext ? colors.primary : colors.textSecondary} />
+                      </TouchableOpacity>
+                    </View>
+                  )}
+
                   {/* Arrow score chips */}
-                  <View style={styles.arrowChipsRow}>
-                    {Array.from({ length: maxArrows }).map((_, i) => {
-                      const scored = currentScores[i] !== undefined;
+                  <View style={[styles.arrowChipsRow, arrowsInThisEnd <= 6 && { flexWrap: 'nowrap' }]}>
+                    {Array.from({ length: arrowsInThisEnd }).map((_, i) => {
+                      const absIdx = startIdx + i;
+                      const scored = endScores[i] !== undefined;
+                      const isThisChipEditing = editingIdx === absIdx;
+
                       return (
-                        <View key={i} style={[styles.arrowChip, scored ? styles.arrowChipFilled : styles.arrowChipEmpty]}>
-                          <Text style={[styles.arrowChipText, scored ? styles.arrowChipTextFilled : styles.arrowChipTextEmpty]}>
-                            {scored ? String(currentScores[i]) : '–'}
+                        <Pressable
+                          key={i}
+                          style={[
+                            styles.arrowChip,
+                            styles.arrowChipLarge,
+                            isThisChipEditing && styles.arrowChipEditing,
+                            scored ? [styles.arrowChipFilled, getChipColorStyle(endScores[i])] : styles.arrowChipEmpty,
+                          ]}
+                          onPress={scored ? () => setEditingIndex(roundIndex, isThisChipEditing ? null : absIdx) : undefined}
+                          accessibilityLabel={scored ? `Endre pil ${i + 1}: ${endScores[i]} poeng` : undefined}>
+                          <Text
+                            style={[
+                              styles.arrowChipText,
+                              styles.arrowChipTextLarge,
+                              scored ? getChipTextColor(endScores[i]) : styles.arrowChipTextEmpty,
+                            ]}>
+                            {scored ? String(endScores[i]) : '–'}
                           </Text>
-                        </View>
+                        </Pressable>
                       );
                     })}
                   </View>
@@ -662,35 +907,52 @@ export default function CreatePracticeForm({
                   </View>
 
                   {/* Score buttons */}
-                  {!isFull ? (
-                    <View style={styles.scoreButtonsGrid}>
-                      {ARROW_SCORE_OPTIONS.map((opt) => (
-                        <Pressable
-                          key={opt.label}
-                          style={[
-                            styles.scoreButton,
-                            opt.label === 'X' && styles.scoreButtonX,
-                            opt.label === 'M' && styles.scoreButtonMiss,
-                          ]}
-                          onPress={() => addArrowScore(roundIndex, opt.value)}>
-                          <Text
-                            style={[
-                              styles.scoreButtonText,
-                              opt.label === 'X' && styles.scoreButtonTextX,
-                              opt.label === 'M' && styles.scoreButtonTextMiss,
-                            ]}>
-                            {opt.label}
-                          </Text>
-                        </Pressable>
-                      ))}
-                    </View>
-                  ) : (
+                  {showScoreButtons && (
+                    <>
+                      {isEditing && <Text style={styles.editingHint}>Velg ny verdi for pil {(editingIdx! % arrowsPerEnd) + 1}</Text>}
+                      <View style={styles.scoreButtonsGrid}>
+                        {ARROW_SCORE_OPTIONS.filter((opt) => opt.label !== 'X' || environment === Environment.OUTDOOR).map((opt) => {
+                          const { button: buttonStyle, text: textStyle } = getScoreButtonColorStyle(opt.label);
+                          return (
+                            <Pressable
+                              key={opt.label}
+                              style={[styles.scoreButton, buttonStyle]}
+                              onPress={() => {
+                                if (isEditing) {
+                                  updateArrowScore(roundIndex, editingIdx!, opt.value);
+                                  setEditingIndex(roundIndex, null);
+                                } else {
+                                  addArrowScore(roundIndex, opt.value);
+                                }
+                              }}>
+                              <Text style={[styles.scoreButtonText, textStyle]}>{opt.label}</Text>
+                            </Pressable>
+                          );
+                        })}
+                      </View>
+                    </>
+                  )}
+
+                  {/* Complete banners */}
+                  {isFull && !isEditing && currentEndPage === totalEnds - 1 && (
                     <View style={styles.scoringComplete}>
                       <Text style={styles.scoringCompleteText}>✓ Alle piler registrert – score: {total}</Text>
                     </View>
                   )}
+                  {!isFull && isEndFilled && !isActiveEnd && !isEditing && (
+                    <View style={styles.endComplete}>
+                      <Text style={styles.endCompleteText}>
+                        Serie {currentEndPage + 1} ferdig – {endTotal} poeng
+                      </Text>
+                      {canGoNext && (
+                        <TouchableOpacity style={styles.endNextBtn} onPress={() => setEndPage(roundIndex, currentEndPage + 1)}>
+                          <Text style={styles.endNextBtnText}>Neste serie →</Text>
+                        </TouchableOpacity>
+                      )}
+                    </View>
+                  )}
 
-                  {filledCount > 0 && (
+                  {filledCount > 0 && isActiveEnd && !isEditing && (
                     <TouchableOpacity style={styles.backspaceBtn} onPress={() => removeLastArrowScore(roundIndex)}>
                       <FontAwesomeIcon icon={faDeleteLeft} size={16} color={colors.textSecondary} />
                       <Text style={styles.backspaceBtnText}>Fjern siste</Text>
@@ -710,22 +972,20 @@ export default function CreatePracticeForm({
       <View style={styles.ratingSection}>
         <Text style={styles.ratingLabel}>Vurdering (valgfritt)</Text>
         <Text style={styles.ratingHelpText}>Hvordan vil du vurdere treningen?</Text>
-        <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-          <View style={styles.ratingButtons}>
-            {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((num) => {
-              const active = rating === num;
-              return (
-                <Pressable
-                  key={num}
-                  style={[styles.ratingButton, active && styles.ratingButtonActive]}
-                  onPress={() => setRating(active ? null : num)}
-                  accessibilityLabel={`Vurdering ${num} av 10`}>
-                  <Text style={[styles.ratingButtonText, active && styles.ratingButtonTextActive]}>{num}</Text>
-                </Pressable>
-              );
-            })}
-          </View>
-        </ScrollView>
+        <View style={styles.ratingButtons}>
+          {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((num) => {
+            const active = rating === num;
+            return (
+              <Pressable
+                key={num}
+                style={[styles.ratingButton, active && styles.ratingButtonActive]}
+                onPress={() => setRating(active ? null : num)}
+                accessibilityLabel={`Vurdering ${num} av 10`}>
+                <Text style={[styles.ratingButtonText, active && styles.ratingButtonTextActive]}>{num}</Text>
+              </Pressable>
+            );
+          })}
+        </View>
       </View>
 
       <Textarea
@@ -747,45 +1007,45 @@ export default function CreatePracticeForm({
   // ═══════════════════════════════════════════════════════════════════════════════
 
   return (
-    <ModalWrapper visible={visible} onClose={handleClose}>
-      <KeyboardAvoidingView style={styles.container} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
-        {/* Fixed header */}
-        <Pressable onPress={Keyboard.dismiss}>
-          <ModalHeader title={isEditing ? 'Rediger trening' : 'Ny trening'} onPress={handleClose} />
-        </Pressable>
-
-        <StepIndicator steps={STEP_LABELS} currentStep={step} onStepPress={setStep} />
-
-        {/* Scrollable content */}
-        <ScrollView
-          style={styles.scrollView}
-          contentContainerStyle={styles.scrollContainer}
-          keyboardShouldPersistTaps="handled"
-          showsVerticalScrollIndicator={false}>
+    <ModalWrapper visible={visible} onClose={handleClose} fullScreen>
+      <SafeAreaView style={styles.safeArea} edges={['bottom']}>
+        <KeyboardAvoidingView style={styles.container} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
+          {/* Fixed header */}
           <Pressable onPress={Keyboard.dismiss}>
-            {step === 0 && renderInfoStep()}
-            {step === 1 && renderRoundsStep()}
-            {step === 2 && renderScoringStep()}
-            {step === 3 && renderReflectionStep()}
+            <ModalHeader title={isEditing ? 'Rediger trening' : 'Ny trening'} onPress={handleClose} />
           </Pressable>
-        </ScrollView>
 
-        {/* Fixed navigation footer */}
-        <NavigationFooter
-          currentStep={step}
-          totalSteps={TOTAL_STEPS}
-          stepLabels={STEP_LABELS}
-          isEditing={isEditing}
-          submitting={submitting}
-          saveLabel={isEditing ? 'Lagre' : 'Lagre'}
-          onCancel={handleClose}
-          onPrev={goPrev}
-          onNext={goNext}
-          onSave={handleSaveAndFinish}
-          onDelete={() => setConfirmVisible(true)}
-          showSaveOnAllSteps={true}
-        />
-      </KeyboardAvoidingView>
+          <StepIndicator steps={STEP_LABELS} currentStep={step} onStepPress={setStep} />
+
+          {/* Scrollable content */}
+          <ScrollView
+            style={styles.scrollView}
+            contentContainerStyle={styles.scrollContainer}
+            keyboardShouldPersistTaps="handled"
+            showsVerticalScrollIndicator={false}>
+            <Pressable onPress={Keyboard.dismiss}>
+              {step === 0 && renderInfoStep()}
+              {step === 1 && renderRoundsStep()}
+              {step === 2 && renderScoringStep()}
+              {step === 3 && renderReflectionStep()}
+            </Pressable>
+          </ScrollView>
+
+          {/* Fixed navigation footer */}
+          <NavigationFooter
+            currentStep={step}
+            totalSteps={TOTAL_STEPS}
+            stepLabels={STEP_LABELS}
+            isEditing={isEditing}
+            submitting={submitting}
+            saveLabel={isEditing ? 'Lagre' : 'Lagre'}
+            onPrev={goPrev}
+            onNext={goNext}
+            onSave={handleSaveAndFinish}
+            onDelete={() => setConfirmVisible(true)}
+          />
+        </KeyboardAvoidingView>
+      </SafeAreaView>
 
       <ConfirmModal
         visible={confirmVisible}
@@ -798,6 +1058,16 @@ export default function CreatePracticeForm({
           handleDelete();
           setConfirmVisible(false);
         }}
+      />
+
+      <ConfirmModal
+        visible={closeConfirmVisible}
+        title="Forkast endringer?"
+        message="Du har ulagrede endringer. Er du sikker på at du vil lukke uten å lagre?"
+        confirmLabel="Forkast"
+        cancelLabel="Fortsett redigering"
+        onCancel={() => setCloseConfirmVisible(false)}
+        onConfirm={handleConfirmClose}
       />
     </ModalWrapper>
   );

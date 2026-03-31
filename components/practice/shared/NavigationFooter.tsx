@@ -1,7 +1,6 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
-import { faXmark } from '@fortawesome/free-solid-svg-icons/faXmark';
 import { faChevronLeft } from '@fortawesome/free-solid-svg-icons/faChevronLeft';
 import { faChevronRight } from '@fortawesome/free-solid-svg-icons/faChevronRight';
 import { faTrashCan } from '@fortawesome/free-regular-svg-icons/faTrashCan';
@@ -15,12 +14,10 @@ interface NavigationFooterProps {
   isEditing: boolean;
   submitting: boolean;
   saveLabel?: string;
-  onCancel: () => void;
   onPrev: () => void;
   onNext: () => void;
   onSave: () => void;
   onDelete: () => void;
-  showSaveOnAllSteps?: boolean;
 }
 
 export function NavigationFooter({
@@ -30,12 +27,10 @@ export function NavigationFooter({
   isEditing,
   submitting,
   saveLabel,
-  onCancel,
   onPrev,
   onNext,
   onSave,
   onDelete,
-  showSaveOnAllSteps = false,
 }: NavigationFooterProps) {
   const isFirstStep = currentStep === 0;
   const isLastStep = currentStep === totalSteps - 1;
@@ -43,13 +38,6 @@ export function NavigationFooter({
   return (
     <View style={styles.navFooter}>
       <View style={styles.navRow}>
-        {/* Left: cancel — always visible */}
-        <TouchableOpacity style={styles.navCancelBtn} onPress={onCancel} accessibilityLabel="Avbryt">
-          <FontAwesomeIcon icon={faXmark} size={14} color={colors.textSecondary} />
-          <Text style={styles.navCancelText}>Avbryt</Text>
-        </TouchableOpacity>
-
-        {/* Center: prev / step name / next */}
         <View style={styles.navCenter}>
           <TouchableOpacity
             style={[styles.navArrow, isFirstStep && styles.navArrowDisabled]}
@@ -70,8 +58,8 @@ export function NavigationFooter({
           )}
         </View>
 
-        {/* Right: delete when editing, spacer otherwise */}
-        {isEditing ? (
+        {/* Right: delete when editing on last step, spacer otherwise */}
+        {isEditing && isLastStep ? (
           <TouchableOpacity style={styles.navDeleteBtn} onPress={onDelete} accessibilityLabel="Slett">
             <FontAwesomeIcon icon={faTrashCan} size={16} color={colors.error} />
           </TouchableOpacity>
@@ -80,7 +68,8 @@ export function NavigationFooter({
         )}
       </View>
 
-      {(showSaveOnAllSteps || isLastStep) && (
+      {/* Save button only on last step */}
+      {isLastStep && (
         <View style={styles.navActions}>
           <Button
             label={submitting ? 'Lagrer...' : saveLabel || 'Lagre'}
@@ -107,25 +96,17 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     paddingHorizontal: 16,
     paddingVertical: 12,
-  },
-  navCancelBtn: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 4,
-    paddingVertical: 8,
-    paddingHorizontal: 4,
-    minWidth: 70,
-  },
-  navCancelText: {
-    fontSize: 14,
-    color: colors.textSecondary,
+    position: 'relative',
   },
   navCenter: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: 12,
-    flex: 1,
+    position: 'absolute',
+    left: 0,
+    right: 0,
     justifyContent: 'center',
+    zIndex: 0,
   },
   navArrow: {
     width: 36,
@@ -151,6 +132,7 @@ const styles = StyleSheet.create({
     borderRadius: 18,
     alignItems: 'center',
     justifyContent: 'center',
+    zIndex: 1,
   },
   navActions: {
     padding: 16,

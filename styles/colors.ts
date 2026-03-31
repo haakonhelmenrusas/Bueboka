@@ -36,6 +36,9 @@ export const colors = {
   errorBorder: 'rgba(239, 68, 68, 0.2)',
   warning: '#FFA500',
   success: '#008000',
+  info: '#0c82ac',
+  infoBg: 'rgba(12, 130, 172, 0.08)',
+  infoBorder: 'rgba(12, 130, 172, 0.2)',
 
   // ─── Accent ───────────────────────────────────────────────────────────────
   accentYellow: '#ffbf00',

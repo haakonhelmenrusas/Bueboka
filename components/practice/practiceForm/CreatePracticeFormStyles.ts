@@ -1,18 +1,16 @@
-import { Dimensions, Platform, StyleSheet } from 'react-native';
+import { StyleSheet } from 'react-native';
 import { colors } from '@/styles/colors';
-
-const WINDOW_HEIGHT = Dimensions.get('window').height;
 
 export const styles = StyleSheet.create({
   // ─── Modal container ─────────────────────────────────────────────────────────
-  container: {
+  safeArea: {
+    flex: 1,
     backgroundColor: colors.white,
-    borderRadius: 12,
-    height: WINDOW_HEIGHT * 0.85,
-    ...Platform.select({
-      android: { height: Math.max(WINDOW_HEIGHT * 0.85, WINDOW_HEIGHT * 0.6) },
-      ios: { height: Math.max(WINDOW_HEIGHT * 0.85, WINDOW_HEIGHT * 0.7) },
-    }),
+  },
+  container: {
+    flex: 1,
+    backgroundColor: colors.white,
+    width: '100%',
   },
   scrollView: {
     flex: 1,
@@ -286,10 +284,63 @@ export const styles = StyleSheet.create({
     fontSize: 12,
     color: colors.textSecondary,
   },
+
+  // ─── End navigation ───────────────────────────────────────────────────────────
+  endNav: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingVertical: 8,
+  },
+  endNavBtn: {
+    padding: 6,
+    borderRadius: 6,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  endNavBtnDisabled: {
+    opacity: 0.3,
+  },
+  endNavLabel: {
+    fontSize: 13,
+    fontWeight: '600',
+    color: colors.text,
+  },
+
+  // ─── Manual score notice ──────────────────────────────────────────────────────
+  manualScoreNotice: {
+    flexDirection: 'row',
+    gap: 8,
+    padding: 10,
+    backgroundColor: colors.infoBg,
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: colors.infoBorder,
+  },
+  manualScoreNoticeIcon: {
+    marginTop: 2,
+  },
+  manualScoreNoticeBody: {
+    flex: 1,
+    gap: 4,
+  },
+  manualScoreNoticeMain: {
+    fontSize: 13,
+    fontWeight: '600',
+    color: colors.info,
+  },
+  manualScoreNoticeHint: {
+    fontSize: 12,
+    color: colors.textSecondary,
+    lineHeight: 16,
+  },
+
+  // ─── Arrow chips ──────────────────────────────────────────────────────────────
   arrowChipsRow: {
     flexDirection: 'row',
     flexWrap: 'wrap',
     gap: 6,
+    justifyContent: 'center',
   },
   arrowChip: {
     width: 34,
@@ -298,6 +349,11 @@ export const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     borderWidth: 1.5,
+  },
+  arrowChipLarge: {
+    width: 50,
+    height: 50,
+    borderRadius: 25,
   },
   arrowChipFilled: {
     backgroundColor: colors.primary,
@@ -308,9 +364,17 @@ export const styles = StyleSheet.create({
     borderColor: colors.border,
     borderStyle: 'dashed',
   },
+  arrowChipEditing: {
+    borderColor: colors.warning,
+    borderWidth: 2.5,
+  },
   arrowChipText: {
     fontSize: 12,
     fontWeight: '600',
+  },
+  arrowChipTextLarge: {
+    fontSize: 18,
+    fontWeight: '700',
   },
   arrowChipTextFilled: {
     color: colors.white,
@@ -318,6 +382,70 @@ export const styles = StyleSheet.create({
   arrowChipTextEmpty: {
     color: colors.dimmed,
   },
+
+  // ─── Arrow chip color variants ────────────────────────────────────────────────
+  arrowChipGold: {
+    backgroundColor: colors.accentYellow,
+    borderColor: colors.accentYellow,
+  },
+  arrowChipRed: {
+    backgroundColor: colors.errorLight,
+    borderColor: colors.errorLight,
+  },
+  arrowChipBlue: {
+    backgroundColor: colors.info,
+    borderColor: colors.info,
+  },
+  arrowChipBlack: {
+    backgroundColor: colors.text,
+    borderColor: colors.text,
+  },
+  arrowChipWhite: {
+    backgroundColor: colors.bgGray100,
+    borderColor: colors.border,
+  },
+  arrowChipMiss: {
+    backgroundColor: colors.dimmed,
+    borderColor: colors.dimmed,
+  },
+
+  // ─── Editing hint ─────────────────────────────────────────────────────────────
+  editingHint: {
+    fontSize: 12,
+    color: colors.warning,
+    fontWeight: '500',
+    textAlign: 'center',
+    paddingVertical: 4,
+  },
+
+  // ─── End completion banner ────────────────────────────────────────────────────
+  endComplete: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingVertical: 8,
+    paddingHorizontal: 12,
+    backgroundColor: colors.infoBg,
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: colors.infoBorder,
+  },
+  endCompleteText: {
+    fontSize: 13,
+    color: colors.info,
+    fontWeight: '600',
+  },
+  endNextBtn: {
+    paddingVertical: 6,
+    paddingHorizontal: 10,
+  },
+  endNextBtnText: {
+    fontSize: 13,
+    color: colors.primary,
+    fontWeight: '600',
+  },
+
+  // ─── Scoring progress and buttons ─────────────────────────────────────────────
   scoringProgress: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -335,30 +463,50 @@ export const styles = StyleSheet.create({
   scoreButtonsGrid: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    gap: 6,
+    gap: 12,
+    justifyContent: 'center',
   },
   scoreButton: {
-    width: 44,
-    height: 44,
-    borderRadius: 8,
-    borderWidth: 1.5,
+    width: 64,
+    height: 64,
+    borderRadius: 16,
+    borderWidth: 3,
     borderColor: colors.border,
     backgroundColor: colors.white,
     alignItems: 'center',
     justifyContent: 'center',
   },
+  scoreButtonGold: {
+    borderColor: colors.accentYellow,
+    backgroundColor: colors.accentYellow,
+  },
+  scoreButtonRed: {
+    borderColor: colors.errorLight,
+    backgroundColor: colors.errorLight,
+  },
+  scoreButtonBlue: {
+    borderColor: colors.info,
+    backgroundColor: colors.info,
+  },
+  scoreButtonBlack: {
+    borderColor: colors.text,
+    backgroundColor: colors.text,
+  },
+  scoreButtonWhite: {
+    borderColor: colors.border,
+    backgroundColor: colors.white,
+  },
+  scoreButtonMiss: {
+    borderColor: colors.dimmed,
+    backgroundColor: colors.bgGray200,
+  },
   scoreButtonX: {
     borderColor: colors.accentYellow,
     backgroundColor: colors.starBg,
   },
-  scoreButtonMiss: {
-    borderColor: colors.errorBorder,
-    backgroundColor: colors.errorBg,
-  },
   scoreButtonText: {
-    fontSize: 14,
-    fontWeight: '600',
-    color: colors.text,
+    fontSize: 32,
+    fontWeight: '700',
   },
   scoreButtonTextX: {
     color: colors.starColor,
@@ -408,13 +556,15 @@ export const styles = StyleSheet.create({
   },
   ratingButtons: {
     flexDirection: 'row',
-    gap: 6,
+    flexWrap: 'wrap',
+    gap: 10,
+    justifyContent: 'center',
   },
   ratingButton: {
-    width: 36,
-    height: 36,
-    borderRadius: 18,
-    borderWidth: 1,
+    width: 48,
+    height: 48,
+    borderRadius: 36,
+    borderWidth: 2,
     borderColor: colors.border,
     backgroundColor: colors.bgGray100,
     alignItems: 'center',
@@ -425,12 +575,13 @@ export const styles = StyleSheet.create({
     borderColor: colors.primary,
   },
   ratingButtonText: {
-    fontSize: 13,
+    fontSize: 24,
+    fontWeight: '600',
     color: colors.textSecondary,
   },
   ratingButtonTextActive: {
     color: colors.white,
-    fontWeight: '600',
+    fontWeight: '700',
   },
 
   // ─── Delete section ──────────────────────────────────────────────────────────
