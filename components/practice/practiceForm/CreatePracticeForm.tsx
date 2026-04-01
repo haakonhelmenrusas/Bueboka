@@ -525,40 +525,22 @@ export default function CreatePracticeForm({
 
       await persistLastUsed(validRounds);
 
-      // Build ends array - if no valid rounds, send one minimal end
-      const endsToSend = validRounds.length > 0 ? buildRounds(validRounds) : [{ roundScore: 0 }];
-
-      // Create the practice first to get an ID
-      const createPayload = {
-        date,
-        environment,
-        practiceCategory,
-        weather,
-        location: location || undefined,
-        bowId: selectedBow || undefined,
-        arrowsId: selectedArrowSet || undefined,
-        notes: notes || undefined,
-        rating: rating ?? undefined,
-        totalScore: 0,
-        ends: endsToSend,
-      };
-
-      const savedPractice = await practiceRepository.create(createPayload);
-
-      onPracticeSaved?.();
       onClose();
 
-      // Navigate to shooting screen with practice details
+      // Navigate to shooting screen with form data - practice will be created when scores are saved
       router.push({
         pathname: '/(tabs)/home/shooting',
         params: {
-          id: savedPractice.id,
+          // Don't pass ID - practice doesn't exist yet
           date: date.toISOString().split('T')[0],
           bowId: selectedBow || '',
           arrowsId: selectedArrowSet || '',
           notes: notes || '',
           environment,
+          practiceCategory,
+          weather: JSON.stringify(weather),
           location: location || '',
+          rating: rating?.toString() || '',
           distance: validRounds[0]?.distanceMeters?.toString() || '18',
           targetSize: validRounds[0]?.targetType?.replace('cm', '') || '80',
         },

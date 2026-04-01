@@ -46,13 +46,13 @@ export default function ShootingScoreScreen() {
       const practiceId = params.id as string;
 
       if (practiceId) {
-        // Fetch current practice to get existing ends
+        // Update existing practice - fetch current practice to get existing ends
         const currentPractice = await practiceRepository.getById(practiceId);
         const existingEnds = currentPractice.ends || [];
 
         // Create a new round with coordinates - match API schema
         const newRound = {
-          numberArrows: hits.length, // API expects 'numberArrows'
+          numberArrows: hits.length,
           scores: scores,
           roundScore: totalEndScore,
           arrowCoordinates: hits,
@@ -77,6 +77,32 @@ export default function ShootingScoreScreen() {
         await practiceRepository.update(practiceId, {
           rounds: [...existingRounds, newRound] as any,
         });
+      } else {
+        // Create new practice with the scored end
+        const createPayload = {
+          date: new Date(params.date as string),
+          environment: params.environment as any,
+          practiceCategory: params.practiceCategory as any,
+          weather: params.weather ? JSON.parse(params.weather as string) : [],
+          location: (params.location as string) || undefined,
+          bowId: (params.bowId as string) || undefined,
+          arrowsId: (params.arrowsId as string) || undefined,
+          notes: (params.notes as string) || undefined,
+          rating: params.rating ? parseInt(params.rating as string) : undefined,
+          totalScore: totalEndScore,
+          ends: [
+            {
+              arrows: hits.length,
+              scores: scores,
+              roundScore: totalEndScore,
+              arrowCoordinates: hits,
+              targetType: params.targetSize ? `${params.targetSize}cm` : '80cm',
+              distanceMeters: params.distance ? parseInt(params.distance as string) : 18,
+            },
+          ],
+        };
+
+        await practiceRepository.create(createPayload);
       }
 
       router.replace('/(tabs)/home');
