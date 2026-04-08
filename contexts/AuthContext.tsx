@@ -96,8 +96,14 @@ export function AuthProvider({ children }: AuthProviderProps) {
       } else {
         setState((prev) => ({ ...prev, isLoading: false }));
       }
-    } catch (error) {
-      console.warn('[Auth] Session validation failed:', error);
+    } catch (error: any) {
+      // Only log as a warning if it's not a 401/authentication error
+      const isAuthError = error?.code === 'UNAUTHORIZED' || error?.status === 401 || error?.response?.status === 401;
+
+      if (!isAuthError) {
+        console.warn('[Auth] Session validation failed:', error);
+      }
+
       setState((prev) => ({ ...prev, isLoading: false }));
     }
   }, []);
@@ -338,8 +344,17 @@ export function AuthProvider({ children }: AuthProviderProps) {
       } else {
         setState((prev) => ({ ...prev, isLoading: false }));
       }
-    } catch (error) {
-      console.warn('[Auth] Failed to initialize auth:', error);
+    } catch (error: any) {
+      // Only log as a warning if it's not a 401/authentication error
+      // 401 errors are expected when the user is not logged in
+      const isAuthError = error?.code === 'UNAUTHORIZED' || error?.status === 401 || error?.response?.status === 401;
+
+      if (!isAuthError) {
+        console.warn('[Auth] Failed to initialize auth:', error);
+      } else {
+        console.log('[Auth] No valid session found, proceeding to auth screen');
+      }
+
       setState((prev) => ({ ...prev, isLoading: false }));
     }
   }

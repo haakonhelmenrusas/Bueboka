@@ -26,7 +26,7 @@ export const styles = StyleSheet.create({
     textAlign: 'center',
   },
   listContent: {
-    paddingVertical: 16,
+    paddingVertical: 8,
   },
   separator: {
     height: 12,
@@ -37,11 +37,10 @@ export const styles = StyleSheet.create({
     backgroundColor: 'rgba(255, 255, 255, 0.95)',
     borderRadius: 16,
     padding: 16,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.15,
-    shadowRadius: 8,
-    elevation: 3,
+  },
+  cardPressed: {
+    backgroundColor: 'rgba(255, 255, 255, 0.85)',
+    transform: [{ scale: 0.98 }],
   },
   avatarContainer: {
     marginRight: 16,

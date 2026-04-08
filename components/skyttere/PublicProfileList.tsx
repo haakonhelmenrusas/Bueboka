@@ -1,4 +1,5 @@
-import { ActivityIndicator, Image, Text, View } from 'react-native';
+import { ActivityIndicator, Image, Pressable, Text, View } from 'react-native';
+import { useRouter } from 'expo-router';
 import { PublicProfile } from '@/types';
 import { styles } from './PublicProfileListStyles';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
@@ -54,8 +55,22 @@ interface ProfileCardProps {
 }
 
 function ProfileCard({ profile }: ProfileCardProps) {
+  const router = useRouter();
+
+  const handlePress = () => {
+    router.push(`/skyttere/${profile.id}`);
+  };
+
+  const displayName = profile.name ?? 'Anonym bueskytter';
+
   return (
-    <View style={styles.card}>
+    <Pressable
+      onPress={handlePress}
+      style={({ pressed }) => [
+        styles.card,
+        pressed && styles.cardPressed,
+      ]}
+      android_ripple={{ color: hexToRgba(colors.primary, 0.1) }}>
       <View style={styles.avatarContainer}>
         {profile.image ? (
           <Image source={{ uri: profile.image }} style={styles.avatar} />
@@ -66,9 +81,9 @@ function ProfileCard({ profile }: ProfileCardProps) {
         )}
       </View>
       <View style={styles.cardContent}>
-        <Text style={styles.cardName}>{profile.name}</Text>
+        <Text style={styles.cardName}>{displayName}</Text>
         {profile.club && <Text style={styles.cardClub}>{profile.club}</Text>}
       </View>
-    </View>
+    </Pressable>
   );
 }
