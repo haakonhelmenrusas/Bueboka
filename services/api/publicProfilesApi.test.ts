@@ -1,11 +1,11 @@
 import { publicProfilesApi } from './publicProfilesApi';
-import { authFetchClient } from '@/services/api/authFetch';
+import { authFetchClient } from './authFetch';
 
-jest.mock('@/services/api/authFetch', () => ({
+jest.mock('./authFetch', () => ({
   authFetchClient: { get: jest.fn() },
 }));
 
-jest.mock('@/services/api/errors', () => ({
+jest.mock('./errors', () => ({
   handleApiError: (error: unknown) => error,
 }));
 
@@ -13,7 +13,7 @@ const mockGet = authFetchClient.get as jest.Mock;
 
 /** Wraps profiles in the server envelope the API actually returns. */
 const envelope = (profiles: object[]) => ({
-  data: { data: { profiles }, error: null },
+  data: { profiles },
 });
 
 describe('publicProfilesApi.search', () => {
@@ -61,7 +61,7 @@ describe('publicProfilesApi.search', () => {
   });
 
   it('returns empty array when the profiles key is absent', async () => {
-    mockGet.mockResolvedValueOnce({ data: { data: {}, error: null } });
+    mockGet.mockResolvedValueOnce({ data: {} });
     expect(await publicProfilesApi.search('test')).toEqual([]);
   });
 
