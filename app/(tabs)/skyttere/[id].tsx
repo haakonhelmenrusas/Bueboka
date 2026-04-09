@@ -1,6 +1,6 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useLayoutEffect } from 'react';
 import { View, Text, ScrollView, Image, ActivityIndicator, Pressable } from 'react-native';
-import { useLocalSearchParams, useRouter } from 'expo-router';
+import { useLocalSearchParams, useRouter, useNavigation } from 'expo-router';
 import { LinearGradient } from 'expo-linear-gradient';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faArrowDown, faArrowLeft, faBuilding, faChartBar, faHashtag, faTrophy } from '@fortawesome/free-solid-svg-icons';
@@ -13,16 +13,28 @@ import { colors } from '@/styles/colors';
 import { Message } from '@/components/common';
 import { hexToRgba } from '@/utils';
 
-const ANONYMOUS_ARCHER_LABEL = 'Anonym bueskytter';
-
 export default function PublicProfileDetailPage() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const router = useRouter();
+  const navigation = useNavigation();
   const insets = useSafeAreaInsets();
 
   const [profile, setProfile] = useState<PublicProfile | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+
+  // Hide tab bar when this screen is focused
+  useLayoutEffect(() => {
+    navigation.getParent()?.setOptions({
+      tabBarStyle: { display: 'none' },
+    });
+
+    return () => {
+      navigation.getParent()?.setOptions({
+        tabBarStyle: undefined,
+      });
+    };
+  }, [navigation]);
 
   useEffect(() => {
     if (!id) return;
@@ -73,8 +85,6 @@ export default function PublicProfileDetailPage() {
     );
   }
 
-  const displayName = profile.name ?? ANONYMOUS_ARCHER_LABEL;
-
   return (
     <View style={styles.container}>
       <LinearGradient colors={[colors.primary, colors.secondary, '#1a4f66']} style={styles.gradient}>
@@ -95,7 +105,7 @@ export default function PublicProfileDetailPage() {
               )}
             </View>
 
-            <Text style={styles.name}>{displayName}</Text>
+            <Text style={styles.name}>{profile.name || 'Ukjent navn'}</Text>
 
             {(profile.club || profile.skytternr) && (
               <View style={styles.badges}>

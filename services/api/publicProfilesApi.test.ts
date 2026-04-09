@@ -1,4 +1,4 @@
-import { publicProfilesApi } from './publicProfilesApi';
+import { publicProfilesApi } from '@/services';
 import { authFetchClient } from './authFetch';
 
 jest.mock('./authFetch', () => ({

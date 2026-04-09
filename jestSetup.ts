@@ -40,4 +40,3 @@ jest.mock('better-auth/react', () => ({
 jest.mock('@better-auth/expo/client', () => ({
   expoClient: jest.fn(),
 }));
-

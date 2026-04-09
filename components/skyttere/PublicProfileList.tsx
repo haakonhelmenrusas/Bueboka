@@ -66,10 +66,7 @@ function ProfileCard({ profile }: ProfileCardProps) {
   return (
     <Pressable
       onPress={handlePress}
-      style={({ pressed }) => [
-        styles.card,
-        pressed && styles.cardPressed,
-      ]}
+      style={({ pressed }) => [styles.card, pressed && styles.cardPressed]}
       android_ripple={{ color: hexToRgba(colors.primary, 0.1) }}>
       <View style={styles.avatarContainer}>
         {profile.image ? (

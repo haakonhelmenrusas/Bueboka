@@ -4,7 +4,7 @@ import { colors } from '@/styles/colors';
 export const styles = StyleSheet.create({
   wrapper: {
     position: 'absolute',
-    bottom: 24,
+    bottom: 120, // Position above the floating tab bar (60px height + 16px bottom margin + extra space)
     right: 24,
     alignItems: 'flex-end',
     zIndex: 100,

@@ -32,53 +32,67 @@ export default function AppLayout() {
       <OfflineBanner />
       <Tabs
         screenOptions={{
-          tabBarActiveTintColor: colors.primary,
-          tabBarInactiveTintColor: colors.inactive,
+          tabBarActiveTintColor: colors.white,
+          tabBarInactiveTintColor: 'rgba(255, 255, 255, 0.5)',
           tabBarHideOnKeyboard: true,
+          tabBarShowLabel: false,
           tabBarStyle: {
-            height: Platform.OS === 'ios' ? 70 + insets.bottom : 56 + insets.bottom,
-            paddingBottom: Platform.OS === 'ios' ? Math.max(insets.bottom, 12) : Math.max(insets.bottom, 8),
-            paddingTop: Platform.OS === 'ios' ? 8 : 0,
+            position: 'absolute',
+            bottom: insets.bottom + 16,
+            height: 60,
+            marginHorizontal: 16,
+            backgroundColor: colors.primary,
+            borderRadius: 30,
+            borderTopWidth: 0,
+            elevation: 0,
+          },
+          tabBarItemStyle: {
+            paddingVertical: 10,
+          },
+          tabBarIconStyle: {
+            alignItems: 'center',
+            height: 24,
+            width: 24,
           },
         }}>
         <Tabs.Screen
           name="home"
           options={{
-            tabBarIcon: ({ focused }) => <FontAwesomeIcon icon={faHome} color={focused ? colors.primary : colors.inactive} />,
+            tabBarIcon: ({ focused }) => (
+              <FontAwesomeIcon icon={faHome} size={24} color={focused ? colors.white : 'rgba(255, 255, 255, 0.5)'} />
+            ),
             headerShadowVisible: false,
             headerShown: false,
-            tabBarLabel: 'Hjem',
-            tabBarLabelStyle: { fontSize: 14 },
           }}
         />
         <Tabs.Screen
           name="aktivitet"
           options={{
-            tabBarIcon: ({ focused }) => <FontAwesomeIcon icon={faBullseye} color={focused ? colors.primary : colors.inactive} />,
+            tabBarIcon: ({ focused }) => (
+              <FontAwesomeIcon icon={faBullseye} size={24} color={focused ? colors.white : 'rgba(255, 255, 255, 0.5)'} />
+            ),
             headerShadowVisible: false,
             headerShown: false,
-            tabBarLabel: 'Aktivitet',
-            tabBarLabelStyle: { fontSize: 14 },
           }}
         />
         <Tabs.Screen
           name="sightMarks"
           options={{
-            tabBarIcon: ({ focused }) => <FontAwesomeIcon icon={faChartLine} color={focused ? colors.primary : colors.inactive} />,
+            tabBarIcon: ({ focused }) => (
+              <FontAwesomeIcon icon={faChartLine} size={24} color={focused ? colors.white : 'rgba(255, 255, 255, 0.5)'} />
+            ),
             headerShadowVisible: false,
             headerShown: false,
-            tabBarLabel: 'Siktemerker',
-            tabBarLabelStyle: { fontSize: 14 },
           }}
         />
         <Tabs.Screen
           name="settings"
           options={{
-            tabBarIcon: ({ focused }) => <FontAwesomeIcon icon={faGear} color={focused ? colors.primary : colors.inactive} />,
+            tabBarIcon: ({ focused }) => (
+              <FontAwesomeIcon icon={faGear} size={24} color={focused ? colors.white : 'rgba(255, 255, 255, 0.5)'} />
+            ),
             headerShadowVisible: false,
             headerShown: false,
-            tabBarLabel: 'Innstillinger',
-            tabBarLabelStyle: { fontSize: 14 },
           }}
         />
         <Tabs.Screen
