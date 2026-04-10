@@ -15,13 +15,23 @@
       }
     },
     "android": {
-      "package": "com.aaronshade.bueboka"
+      "package": "com.aaronshade.bueboka",
+      "splash": {
+        "image": "./assets/images/splash.png",
+        "resizeMode": "contain",
+        "backgroundColor": "#29B6F6"
+      }
     },
     "androidStatusBar": {
       "barStyle": "light-content"
     },
     "ios": {
       "bundleIdentifier": "com.aaronshade.bueboka",
+      "splash": {
+        "image": "./assets/images/splash.png",
+        "resizeMode": "contain",
+        "backgroundColor": "#29B6F6"
+      },
       "infoPlist": {
         "CFBundleShortVersionString": "1.6.4",
         "CFBundleIconName": "./assets/images/ipad.png",
@@ -59,8 +69,8 @@
         "expo-splash-screen",
         {
           "image": "./assets/images/splash.png",
-          "backgroundColor": "#d8f5ff",
-          "imageWidth": 1024
+          "backgroundColor": "#29B6F6",
+          "resizeMode": "contain"
         }
       ],
       [
@@ -80,7 +90,8 @@
         }
       ],
       "expo-image",
-      "expo-web-browser"
+      "expo-web-browser",
+      "expo-secure-store"
     ]
   }
 }
