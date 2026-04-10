@@ -40,3 +40,25 @@ jest.mock('better-auth/react', () => ({
 jest.mock('@better-auth/expo/client', () => ({
   expoClient: jest.fn(),
 }));
+
+// Mock expo-router
+jest.mock('expo-router', () => ({
+  ...jest.requireActual('expo-router'),
+  useRouter: jest.fn(() => ({
+    push: jest.fn(),
+    replace: jest.fn(),
+    back: jest.fn(),
+    canGoBack: jest.fn(() => false),
+  })),
+  usePathname: jest.fn(() => '/'),
+  useSegments: jest.fn(() => []),
+  useLocalSearchParams: jest.fn(() => ({})),
+  useFocusEffect: jest.fn((callback) => {
+    // Call the callback immediately in tests
+    callback();
+  }),
+  Redirect: ({ href }: { href: string }) => null,
+  Tabs: ({ children }: { children: React.ReactNode }) => children,
+  Stack: ({ children }: { children: React.ReactNode }) => children,
+}));
+
