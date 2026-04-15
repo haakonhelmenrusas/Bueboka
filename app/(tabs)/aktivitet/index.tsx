@@ -1,29 +1,21 @@
 import { useCallback, useEffect, useState } from 'react';
-import { ActivityIndicator, Alert, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Alert, ScrollView, View } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useFocusEffect } from 'expo-router';
-import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
-import { faBullseye } from '@fortawesome/free-solid-svg-icons/faBullseye';
 import { colors } from '@/styles/colors';
 import { arrowsRepository, bowRepository, competitionRepository, practiceRepository } from '@/services/repositories';
 import { Arrows, Bow, Competition, Practice, PracticeCardItem, PracticeFilter } from '@/types';
-import PracticeCard from '@/components/practice/practiceCard/PracticeCard';
-import SkeletonTrainingCard from '@/components/practice/practiceCard/SkeletonTrainingCard';
 import CreatePracticeForm from '@/components/practice/practiceForm/CreatePracticeForm';
 import CreateCompetitionForm from '@/components/practice/competitionForm/CreateCompetitionForm';
 import BowForm from '@/components/home/bowForm/BowForm';
 import ArrowForm from '@/components/home/arrowForm/ArrowForm';
 import { MobileActionButton } from '@/components/common';
 import { PracticeDetailsModal } from '@/components/practice/practiceDetailsModal';
+import { AktivitetHeader, PracticeList } from '@/components/aktivitet';
+import { styles } from '@/components/aktivitet/AktivitetStyles';
 
 const PAGE_SIZE = 15;
-
-const FILTERS: { label: string; value: PracticeFilter }[] = [
-  { label: 'Alle', value: 'all' },
-  { label: 'Treninger', value: 'TRENING' },
-  { label: 'Konkurranser', value: 'KONKURRANSE' },
-];
 
 export default function AktivitetScreen() {
   const insets = useSafeAreaInsets();
@@ -133,59 +125,19 @@ export default function AktivitetScreen() {
   return (
     <View style={styles.container}>
       <LinearGradient colors={[colors.primary, colors.secondary, '#1a4f66']} style={styles.gradient}>
-        <View style={[styles.header, { paddingTop: insets.top + 16 }]}>
-          <View style={styles.headerRow}>
-            <View style={styles.headerIcon}>
-              <FontAwesomeIcon icon={faBullseye} size={20} color={colors.white} />
-            </View>
-            <Text style={styles.headerTitle}>Aktivitet</Text>
-          </View>
-          <View style={styles.filterRow}>
-            {FILTERS.map((f) => (
-              <TouchableOpacity
-                key={f.value}
-                style={[styles.filterTab, filter === f.value && styles.filterTabActive]}
-                onPress={() => handleFilterChange(f.value)}
-                accessibilityLabel={f.label}>
-                <Text style={[styles.filterTabText, filter === f.value && styles.filterTabTextActive]}>{f.label}</Text>
-              </TouchableOpacity>
-            ))}
-          </View>
-        </View>
+        <AktivitetHeader paddingTop={insets.top + 16} filter={filter} onFilterChange={handleFilterChange} />
 
         <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.scrollContent}>
-          {loading ? (
-            <View style={styles.list}>
-              {[0, 1, 2, 3].map((i) => (
-                <SkeletonTrainingCard key={i} />
-              ))}
-            </View>
-          ) : cards.length === 0 ? (
-            <View style={styles.placeholder}>
-              <Text style={styles.placeholderText}>
-                {filter === 'TRENING'
-                  ? 'Ingen treninger lagt til ennå'
-                  : filter === 'KONKURRANSE'
-                    ? 'Ingen konkurranser lagt til ennå'
-                    : 'Ingen treninger eller konkurranser ennå'}
-              </Text>
-            </View>
-          ) : (
-            <View style={styles.list}>
-              {cards.map((card) => (
-                <PracticeCard key={`${card.practiceType}-${card.id}`} card={card} onPress={handleCardPress} />
-              ))}
-              {hasMore && (
-                <TouchableOpacity style={styles.loadMoreBtn} onPress={handleLoadMore} disabled={loadingMore} accessibilityLabel="Last mer">
-                  {loadingMore ? (
-                    <ActivityIndicator size="small" color={colors.primary} />
-                  ) : (
-                    <Text style={styles.loadMoreText}>Last mer ({total - cards.length} gjenstår)</Text>
-                  )}
-                </TouchableOpacity>
-              )}
-            </View>
-          )}
+          <PracticeList
+            cards={cards}
+            loading={loading}
+            loadingMore={loadingMore}
+            filter={filter}
+            hasMore={hasMore}
+            total={total}
+            onCardPress={handleCardPress}
+            onLoadMore={handleLoadMore}
+          />
         </ScrollView>
       </LinearGradient>
       <PracticeDetailsModal
@@ -278,92 +230,3 @@ export default function AktivitetScreen() {
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: { flex: 1 },
-  gradient: { flex: 1 },
-  header: {
-    paddingHorizontal: 20,
-    paddingBottom: 12,
-  },
-  headerRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 10,
-    marginBottom: 16,
-  },
-  headerIcon: {
-    width: 36,
-    height: 36,
-    borderRadius: 18,
-    backgroundColor: 'rgba(255,255,255,0.15)',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  headerTitle: {
-    fontSize: 24,
-    fontWeight: '800',
-    color: colors.white,
-  },
-  filterRow: {
-    flexDirection: 'row',
-    gap: 8,
-  },
-  filterTab: {
-    paddingHorizontal: 14,
-    paddingVertical: 7,
-    borderRadius: 20,
-    backgroundColor: 'rgba(255,255,255,0.12)',
-    borderWidth: 1,
-    borderColor: 'rgba(255,255,255,0.25)',
-  },
-  filterTabActive: {
-    backgroundColor: colors.white,
-    borderColor: colors.white,
-  },
-  filterTabText: {
-    fontSize: 13,
-    fontWeight: '600',
-    color: 'rgba(255,255,255,0.8)',
-  },
-  filterTabTextActive: {
-    color: colors.primary,
-  },
-  scrollContent: {
-    paddingHorizontal: 20,
-    paddingTop: 8,
-    paddingBottom: 40,
-    gap: 8,
-  },
-  list: { gap: 8 },
-  loadMoreBtn: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingVertical: 12,
-    borderRadius: 12,
-    backgroundColor: 'rgba(255,255,255,0.12)',
-    borderWidth: 1,
-    borderColor: 'rgba(255,255,255,0.25)',
-    marginTop: 4,
-    minHeight: 44,
-  },
-  loadMoreText: {
-    fontSize: 14,
-    fontWeight: '600',
-    color: colors.white,
-  },
-  placeholder: {
-    backgroundColor: 'rgba(12,130,172,0.05)',
-    borderWidth: 1,
-    borderStyle: 'dashed',
-    borderColor: 'rgba(12,130,172,0.26)',
-    borderRadius: 12,
-    padding: 20,
-    alignItems: 'center',
-  },
-  placeholderText: {
-    fontSize: 14,
-    fontWeight: '600',
-    color: 'rgba(255,255,255,0.6)',
-  },
-});
