@@ -14,7 +14,7 @@ interface Props {
   query: string;
 }
 
-export function PublicProfileList({ profiles, loading, searched, query }: Props) {
+export default function PublicProfileList({ profiles, loading, searched, query }: Props) {
   if (loading) {
     return (
       <View style={styles.centerContainer}>
