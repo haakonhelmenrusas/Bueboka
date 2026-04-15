@@ -88,3 +88,76 @@ Sentry and Microsoft Clarity are initialized only when `NODE_ENV !== 'developmen
 ## Testing
 
 Jest + `jest-expo` preset. Setup file: `jestSetup.ts`. Mocks for native modules are handled by jest-expo. Run `npm test` for CI mode.
+
+## Commit Message Conventions
+
+Follow these guidelines when creating commit messages:
+
+### Format
+
+```
+<type>: <short summary (50 chars max)>
+
+<detailed description>
+
+- List specific changes made
+- Explain why changes were necessary
+- Mention any breaking changes or important notes
+- Reference related issues if applicable
+
+Co-authored-by: AI Assistant <ai@assistant.dev>
+```
+
+### Commit Types
+
+- `feat:` New feature
+- `fix:` Bug fix
+- `refactor:` Code restructuring without changing functionality
+- `style:` Formatting, missing semicolons, etc.
+- `docs:` Documentation changes
+- `test:` Adding or updating tests
+- `chore:` Maintenance tasks, dependency updates
+
+### Description Guidelines
+
+- **Always include a detailed description** explaining what was changed and why
+- Be specific about which files or components were modified
+- Explain the reasoning behind architectural decisions
+- List any trade-offs or considerations made
+- Mention impact on other parts of the codebase
+
+### AI Attribution
+
+When AI has assisted in generating code or making changes, **always include** the co-authorship line:
+
+```
+Co-authored-by: AI Assistant <ai@assistant.dev>
+```
+
+This ensures transparency about AI contributions and proper attribution.
+
+### Example
+
+```
+refactor: Extract Aktivitet screen components into separate files
+
+Refactored the Aktivitet screen to follow project architecture patterns
+by extracting UI components into a dedicated aktivitet folder.
+
+Changes made:
+- Created AktivitetHeader component with icon, title, and filter tabs
+- Extracted FilterTabs as reusable component (Alle, Treninger, Konkurranser)
+- Created PracticeList component handling loading, empty, and populated states
+- Added EmptyState component with contextual messages
+- Extracted LoadMoreButton with loading state
+- Moved all styles to AktivitetStyles.ts following project conventions
+- Updated main screen to use new components, reducing from 370 to 233 lines
+
+Benefits:
+- Better separation of concerns
+- Improved maintainability and testability
+- Consistent with Settings screen architecture
+- Components are now reusable across the app
+
+Co-authored-by: AI Assistant <ai@assistant.dev>
+```
