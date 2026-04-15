@@ -33,7 +33,6 @@ function AuthScreen({ onAuthSuccess }: AuthScreenProps) {
   const [showVerification, setShowVerification] = useState(false);
   const [registeredEmail, setRegisteredEmail] = useState<string>('');
 
-  // Redirect to home as soon as authentication state is confirmed
   useEffect(() => {
     if (isAuthenticated) {
       router.replace('/(tabs)/home');

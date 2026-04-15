@@ -5,7 +5,7 @@ import { faBullseye } from '@fortawesome/free-solid-svg-icons/faBullseye';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { Tabs } from 'expo-router';
 import { colors } from '@/styles/colors';
-import { Platform, View, ActivityIndicator } from 'react-native';
+import { View, ActivityIndicator } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { OfflineBanner } from '@/components/common';
 import { useAuth } from '@/hooks';

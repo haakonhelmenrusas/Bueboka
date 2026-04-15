@@ -2,7 +2,6 @@ import { StatusBar } from 'expo-status-bar';
 import { Stack, useNavigationContainerRef } from 'expo-router';
 import * as Sentry from '@sentry/react-native';
 import * as Clarity from '@microsoft/react-native-clarity';
-import { isRunningInExpoGo } from 'expo';
 import React, { useEffect } from 'react';
 import { AuthProvider } from '@/contexts';
 import { useAuth } from '@/hooks';
@@ -10,8 +9,7 @@ import { colors } from '@/styles/colors';
 
 let navigationIntegration: any = null;
 
-// Only initialize Sentry in production and not in Expo Go
-if (process.env.NODE_ENV !== 'development' && !isRunningInExpoGo()) {
+if (process.env.NODE_ENV !== 'development') {
   navigationIntegration = Sentry.reactNavigationIntegration({
     enableTimeToInitialDisplay: true,
   });
@@ -64,4 +62,4 @@ function RootLayout() {
   );
 }
 
-export default process.env.NODE_ENV !== 'development' && !isRunningInExpoGo() ? Sentry.wrap(RootLayout) : RootLayout;
+export default process.env.NODE_ENV !== 'development' ? Sentry.wrap(RootLayout) : RootLayout;
