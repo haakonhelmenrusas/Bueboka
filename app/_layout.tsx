@@ -2,10 +2,12 @@ import { StatusBar } from 'expo-status-bar';
 import { Stack, useNavigationContainerRef } from 'expo-router';
 import * as Sentry from '@sentry/react-native';
 import * as Clarity from '@microsoft/react-native-clarity';
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { AuthProvider } from '@/contexts';
 import { useAuth } from '@/hooks';
 import { colors } from '@/styles/colors';
+import { VersionService } from '@/services';
+import { UpdateRequired } from '@/components/common';
 
 let navigationIntegration: any = null;
 
@@ -32,12 +34,57 @@ if (process.env.NODE_ENV !== 'development') {
 function RootLayoutContent() {
   const ref = useNavigationContainerRef();
   const { isAuthenticated } = useAuth();
+  const [updateCheck, setUpdateCheck] = useState<{
+    checked: boolean;
+    updateRequired: boolean;
+    message: string;
+    storeUrl: string;
+  }>({
+    checked: false,
+    updateRequired: false,
+    message: '',
+    storeUrl: '',
+  });
+
+  // Check version on app launch
+  useEffect(() => {
+    async function checkAppVersion() {
+      const result = await VersionService.checkVersion();
+      setUpdateCheck({
+        checked: true,
+        updateRequired: result.updateRequired,
+        message: result.message,
+        storeUrl: result.storeUrl,
+      });
+
+      // Log version info to Sentry for debugging
+      if (process.env.NODE_ENV !== 'development') {
+        Sentry.addBreadcrumb({
+          category: 'version',
+          message: 'Version check completed',
+          level: 'info',
+          data: {
+            currentVersion: VersionService.getCurrentVersion(),
+            buildNumber: VersionService.getCurrentBuildNumber(),
+            updateRequired: result.updateRequired,
+            updateAvailable: result.updateAvailable,
+          },
+        });
+      }
+    }
+    checkAppVersion();
+  }, []);
 
   useEffect(() => {
     if (ref?.current && navigationIntegration) {
       navigationIntegration.registerNavigationContainer(ref);
     }
   }, [ref]);
+
+  // Show update screen if update is required
+  if (updateCheck.checked && updateCheck.updateRequired) {
+    return <UpdateRequired message={updateCheck.message} storeUrl={updateCheck.storeUrl} />;
+  }
 
   return (
     <>
