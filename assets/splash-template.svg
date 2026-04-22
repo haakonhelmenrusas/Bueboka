@@ -1,0 +1,67 @@
+<!--
+  Splash Screen Template for Bueboka
+
+  This SVG can be:
+  1. Converted to PNG using an online tool like CloudConvert or SVG2PNG
+  2. Opened in Figma/Sketch and exported as PNG
+  3. Used with sharp if you install it: npm install --save-dev sharp && node scripts/generate-splash.js
+
+  Export dimensions: 1284x2778 pixels
+  Save as: assets/images/splash.png
+-->
+<svg width="1284" height="2778" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+  <!-- Gradient Background -->
+  <defs>
+    <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#4FC3F7;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#29B6F6;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#0288D1;stop-opacity:1" />
+    </linearGradient>
+
+    <!-- Text Shadow -->
+    <filter id="shadow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="4"/>
+      <feOffset dx="0" dy="3" result="offsetblur"/>
+      <feComponentTransfer>
+        <feFuncA type="linear" slope="0.4"/>
+      </feComponentTransfer>
+      <feMerge>
+        <feMergeNode/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1284" height="2778" fill="url(#gradient)" />
+
+  <!-- App Name "Bueboka" -->
+  <text
+    x="642"
+    y="1000"
+    font-family="Arial, Helvetica, sans-serif"
+    font-size="110"
+    font-weight="bold"
+    fill="#FFFFFF"
+    text-anchor="middle"
+    dominant-baseline="middle"
+    filter="url(#shadow)"
+    letter-spacing="5">Bueboka</text>
+
+  <!-- Logo placeholder - replace with actual logo -->
+  <!-- Using icon.png embedded as image -->
+  <g transform="translate(642, 1450)">
+    <circle cx="0" cy="0" r="280" fill="rgba(255,255,255,0.15)" />
+    <text
+      x="0"
+      y="0"
+      font-family="Arial, Helvetica, sans-serif"
+      font-size="40"
+      fill="#FFFFFF"
+      text-anchor="middle"
+      dominant-baseline="middle"
+      opacity="0.7">(Add logo here)</text>
+    <!-- To add actual logo, use: <image href="icon.png" x="-240" y="-240" width="480" height="480"/> -->
+  </g>
+</svg>
+
