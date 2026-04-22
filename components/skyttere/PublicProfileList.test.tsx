@@ -1,6 +1,6 @@
 import React from 'react';
 import { render } from '@testing-library/react-native';
-import { PublicProfileList } from './PublicProfileList';
+import PublicProfileList from './PublicProfileList';
 
 const alice = { id: '1', name: 'Alice Archer', club: 'Sarpsborg Bueskyttere' };
 const bob = { id: '2', name: 'Bob Bowman', club: 'Oslo Bueskyttere' };
