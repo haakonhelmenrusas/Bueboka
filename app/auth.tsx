@@ -1,22 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import {
-  ActivityIndicator,
-  Image,
-  KeyboardAvoidingView,
-  Platform,
-  ScrollView,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-} from 'react-native';
+import { KeyboardAvoidingView, Platform, ScrollView } from 'react-native';
 import { useRouter } from 'expo-router';
-import { colors } from '@/styles/colors';
-import { Button, Input, Message } from '@/components/common';
-import { GoogleLogo } from '@/components/common/GoogleLogo/GoogleLogo';
+import { Button, Message } from '@/components/common';
 import { useAuth } from '@/hooks';
 import { AppError } from '@/services';
-import EmailVerification from '@/components/auth/EmailVerification';
+import { AuthLogo, AuthForm, SocialLogin, AuthToggle, LoadingOverlay, EmailVerification } from '@/components/auth';
+import { styles } from '@/components/auth/AuthStyles';
 
 interface AuthScreenProps {
   onAuthSuccess?: () => void;
@@ -132,50 +121,26 @@ function AuthScreen({ onAuthSuccess }: AuthScreenProps) {
   return (
     <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={styles.container}>
       <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
-        <View style={styles.logoContainer}>
-          <Text style={styles.appTitle}>Bueboka</Text>
-          <Image source={require('../assets/images/logo-main-dark.png')} style={styles.logo} resizeMode="contain" />
-        </View>
-        <View style={styles.form}>
-          {!isLogin && (
-            <Input
-              label="Navn"
-              value={name}
-              onChangeText={(text) => {
-                setName(text);
-                if (localError || error) clearAuthErrors();
-              }}
-              editable={!isLoading}
-              placeholder="Navn"
-              labelStyle={styles.whiteLabel}
-              autoCapitalize="words"
-            />
-          )}
-          <Input
-            label="E-post"
-            value={email}
-            onChangeText={(text) => {
-              setEmail(text);
-              if (localError || error) clearAuthErrors();
-            }}
-            keyboardType="email-address"
-            autoCapitalize="none"
-            editable={!isLoading}
-            labelStyle={styles.whiteLabel}
-          />
-          <Input
-            label="Passord"
-            value={password}
-            onChangeText={(text) => {
-              setPassword(text);
-              if (localError || error) clearAuthErrors();
-            }}
-            secureTextEntry
-            autoCapitalize={'none'}
-            editable={!isLoading}
-            labelStyle={styles.whiteLabel}
-          />
-        </View>
+        <AuthLogo />
+        <AuthForm
+          isLogin={isLogin}
+          email={email}
+          password={password}
+          name={name}
+          isLoading={isLoading}
+          onEmailChange={(text) => {
+            setEmail(text);
+            if (localError || error) clearAuthErrors();
+          }}
+          onPasswordChange={(text) => {
+            setPassword(text);
+            if (localError || error) clearAuthErrors();
+          }}
+          onNameChange={(text) => {
+            setName(text);
+            if (localError || error) clearAuthErrors();
+          }}
+        />
         <Button
           buttonStyle={{ marginTop: 8 }}
           label={isLoading ? 'Venter...' : isLogin ? 'Logg inn' : 'Opprett konto'}
@@ -193,132 +158,20 @@ function AuthScreen({ onAuthSuccess }: AuthScreenProps) {
             }}
           />
         )}
-        <View style={styles.dividerContainer}>
-          <View style={styles.divider} />
-          <Text style={styles.dividerText}>eller</Text>
-          <View style={styles.divider} />
-        </View>
-        <View style={styles.socialButtonsContainer}>
-          <Button
-            label="Fortsett med Google"
-            onPress={handleGoogleLogin}
-            disabled={isLoading}
-            variant="tertiary"
-            icon={<GoogleLogo size={20} />}
-            iconPosition="left"
-          />
-        </View>
-        <View style={styles.toggleContainer}>
-          <TouchableOpacity
-            onPress={() => {
-              setIsLogin(!isLogin);
-              setLocalError(null);
-              clearError();
-            }}
-            disabled={isLoading}>
-            <Text style={styles.toggleLink}>{isLogin ? 'Registrer deg' : 'Logg inn'}</Text>
-          </TouchableOpacity>
-        </View>
-        {isLoading && (
-          <View style={styles.loadingOverlay}>
-            <ActivityIndicator size="large" color={colors.primary} />
-          </View>
-        )}
+        <SocialLogin isLoading={isLoading} onGoogleLogin={handleGoogleLogin} />
+        <AuthToggle
+          isLogin={isLogin}
+          isLoading={isLoading}
+          onToggle={() => {
+            setIsLogin(!isLogin);
+            setLocalError(null);
+            clearError();
+          }}
+        />
+        {isLoading && <LoadingOverlay />}
       </ScrollView>
     </KeyboardAvoidingView>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: colors.primary,
-  },
-  scrollContent: {
-    flexGrow: 1,
-    padding: 20,
-    justifyContent: 'center',
-  },
-  logoContainer: {
-    alignItems: 'center',
-    marginBottom: 60,
-  },
-  appTitle: {
-    fontSize: 32,
-    fontWeight: 'bold',
-    color: '#fff',
-    marginBottom: 20,
-  },
-  logo: {
-    width: 100,
-    height: 100,
-  },
-  header: {
-    marginBottom: 32,
-    alignItems: 'center',
-  },
-  title: {
-    fontSize: 28,
-    fontWeight: 'bold',
-    color: colors.primary,
-    marginBottom: 8,
-  },
-  subtitle: {
-    fontSize: 14,
-    color: colors.inactive || '#999',
-    textAlign: 'center',
-  },
-  form: {
-    marginBottom: 20,
-    gap: 4,
-  },
-  whiteLabel: {
-    color: colors.white,
-  },
-  toggleContainer: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginTop: 30,
-  },
-  toggleText: {
-    color: colors.primary,
-    fontSize: 14,
-  },
-  toggleLink: {
-    color: colors.tertiary,
-    fontSize: 14,
-    fontWeight: '400',
-  },
-  dividerContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginVertical: 20,
-  },
-  divider: {
-    flex: 1,
-    height: 1,
-    backgroundColor: colors.inactive || '#ccc',
-  },
-  dividerText: {
-    marginHorizontal: 12,
-    color: colors.inactive || '#999',
-    fontSize: 14,
-  },
-  socialButtonsContainer: {
-    gap: 12,
-    marginBottom: 12,
-  },
-  loadingOverlay: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: 'rgba(0, 0, 0, 0.3)',
-  },
-});
 
 export default AuthScreen;
