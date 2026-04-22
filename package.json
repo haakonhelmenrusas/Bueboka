@@ -80,8 +80,10 @@
     "husky": "^9.1.7",
     "prettier": "^3.6.2",
     "react-test-renderer": "19.2.0",
-    "sharp": "^0.34.5",
     "typescript": "~5.9.2"
+  },
+  "optionalDependencies": {
+    "sharp": "^0.34.5"
   },
   "name": "bueboka",
   "version": "1.0.0",
