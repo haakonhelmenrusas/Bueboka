@@ -30,6 +30,14 @@
       },
       "channel": "development"
     },
+    "preview": {
+      "extends": "base",
+      "distribution": "store",
+      "ios": {
+        "resourceClass": "m-medium"
+      },
+      "channel": "preview"
+    },
     "production": {
       "extends": "base",
       "ios": {
@@ -40,6 +48,16 @@
     }
   },
   "submit": {
+    "preview": {
+      "android": {
+        "track": "internal",
+        "releaseStatus": "completed",
+        "serviceAccountKeyPath": "${process.env.GOOGLE_SERVICE_ACCOUNT_PATH}"
+      },
+      "ios": {
+        "ascAppId": "6448108838"
+      }
+    },
     "production": {
       "android": {
         "track": "production",
