@@ -8,11 +8,11 @@ import { faRightFromBracket } from '@fortawesome/free-solid-svg-icons/faRightFro
 import { colors } from '@/styles/colors';
 import { useAuth } from '@/hooks';
 import { useEffect, useState } from 'react';
-import EmailVerificationBanner from '@/components/auth/EmailVerificationBanner';
 import ConfirmModal from '@/components/home/DeleteArrowSetModal/ConfirmModal';
 import { userRepository } from '@/services/repositories';
 import { AppError } from '@/services';
 import { AccountSection, PublicProfileSection, PrivacySection, SponsorCard } from '@/components/settings';
+import { EmailVerificationBanner } from '@/components/auth';
 
 export default function Settings() {
   const { logout, deleteAccount, user, refreshUser } = useAuth();
