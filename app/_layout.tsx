@@ -11,13 +11,17 @@ import { UpdateRequired } from '@/components/common';
 
 let navigationIntegration: any = null;
 
-if (process.env.NODE_ENV !== 'development') {
+const appEnv = process.env.EXPO_PUBLIC_APP_ENV || 'development';
+const isNonDev = appEnv !== 'development';
+
+if (isNonDev) {
   navigationIntegration = Sentry.reactNavigationIntegration({
     enableTimeToInitialDisplay: true,
   });
 
   Sentry.init({
     dsn: 'https://310ad5a856229859c003cf549b110334@o4505578901929984.ingest.us.sentry.io/4508262003048448',
+    environment: appEnv, // 'preview' | 'production'
     tracesSampler: () => 1.0,
     integrations: [navigationIntegration],
     enableNativeFramesTracking: true,
@@ -58,7 +62,7 @@ function RootLayoutContent() {
       });
 
       // Log version info to Sentry for debugging
-      if (process.env.NODE_ENV !== 'development') {
+      if (isNonDev) {
         Sentry.addBreadcrumb({
           category: 'version',
           message: 'Version check completed',
@@ -109,4 +113,4 @@ function RootLayout() {
   );
 }
 
-export default process.env.NODE_ENV !== 'development' ? Sentry.wrap(RootLayout) : RootLayout;
+export default isNonDev ? Sentry.wrap(RootLayout) : RootLayout;
