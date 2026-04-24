@@ -1,7 +1,7 @@
 import React, { createContext, ReactNode, useCallback, useContext, useEffect, useState } from 'react';
 import { User } from '@/types';
 import { authService } from '@/services/auth/authService';
-import { getAccessToken, saveTokens } from '@/services/auth/tokenStorage';
+import { clearTokens, getAccessToken, isTokenExpired, saveTokens } from '@/services/auth/tokenStorage';
 import { registerOfflineHandlers } from '@/services/offline/handlers';
 import * as Sentry from '@sentry/react-native';
 import { authClient } from '@/services/auth/authClient';
@@ -69,6 +69,15 @@ export function AuthProvider({ children }: AuthProviderProps) {
    */
   const checkSession = useCallback(async () => {
     try {
+      // Guard: only call /profile if we actually have a stored token.
+      // checkSession is triggered during OAuth flows; the token should have
+      // been saved to SecureStore before this is called.
+      const token = await getAccessToken();
+      if (!token) {
+        setState((prev) => ({ ...prev, isLoading: false }));
+        return;
+      }
+
       // Use profile endpoint to get full user data instead of minimal session data
       const { userRepository } = await import('@/services/repositories/userRepository');
       const [fullUser, session] = await Promise.all([userRepository.getCurrentUser(), authClient.getSession()]);
@@ -101,7 +110,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
       const isAuthError = error?.code === 'UNAUTHORIZED' || error?.status === 401 || error?.response?.status === 401;
 
       if (!isAuthError) {
-        console.warn('[Auth] Session validation failed:', error);
+        Sentry.captureException(error, { tags: { context: 'checkSession' } });
       }
 
       setState((prev) => ({ ...prev, isLoading: false }));
@@ -110,10 +119,15 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
   /**
    * Handle OAuth callback from deep link
-   * Extracts session token from URL and stores it
+   * Extracts session token from URL and stores it.
+   * Only processes URLs that use our app scheme (bueboka://).
    */
   const handleOAuthCallback = useCallback(
     async (url: string) => {
+      // Ignore any URL that isn't our own deep-link scheme.
+      // System URLs, Expo dev-client links, etc. must not trigger auth logic.
+      if (!url.startsWith('bueboka://')) return;
+
       try {
         const parsedUrl = new URL(url);
         const cookieParam = parsedUrl.searchParams.get('cookie');
@@ -132,20 +146,22 @@ export function AuthProvider({ children }: AuthProviderProps) {
             setState((prev) => ({ ...prev, isLoading: false }));
           }
         } else {
-          // No cookie parameter, check if expoClient has stored the token
+          // No cookie parameter — check if expoClient has stored the token.
+          // Only call checkSession if a token was actually found.
           setTimeout(async () => {
             const token = await SecureStore.getItemAsync('bueboka.session_token');
 
             if (token) {
               const expiresAt = new Date(Date.now() + 604800 * 1000).toISOString();
               await saveTokens({ accessToken: token, expiresAt });
+              checkSession();
+            } else {
+              setState((prev) => ({ ...prev, isLoading: false }));
             }
-
-            checkSession();
           }, 1000);
         }
       } catch (error) {
-        console.error('[Auth] Error handling OAuth callback:', error);
+        Sentry.captureException(error, { tags: { context: 'handleOAuthCallback' } });
         setState((prev) => ({ ...prev, isLoading: false }));
       }
     },
@@ -165,7 +181,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
    */
   function setAuthenticatedUser(user: User) {
     if (!user || typeof user !== 'object') {
-      console.error('[Auth] Invalid user object received!');
+      Sentry.captureMessage('[Auth] setAuthenticatedUser called with invalid user object', 'error');
       return;
     }
 
@@ -227,7 +243,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
       setState((prev) => ({ ...prev, isLoading: true }));
       await authService.logout();
     } catch (error: any) {
-      console.warn('[Auth] Logout error:', error);
+      Sentry.captureException(error, { tags: { context: 'logout' } });
     } finally {
       Sentry.setUser(null);
       setState({
@@ -272,7 +288,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
         setState((prev) => ({ ...prev, isLoading: false }));
       }
     } catch (error) {
-      console.error('[Auth] refreshUser failed:', error);
+      Sentry.captureException(error, { tags: { context: 'refreshUser' } });
       setState((prev) => ({ ...prev, isLoading: false }));
     }
   }, []);
@@ -283,7 +299,8 @@ export function AuthProvider({ children }: AuthProviderProps) {
   useEffect(() => {
     const handleInitialURL = async () => {
       const url = await Linking.getInitialURL();
-      if (url) {
+      // Only handle our own app scheme — ignore Expo dev-client, system links, etc.
+      if (url && url.startsWith('bueboka://')) {
         await handleOAuthCallback(url);
       }
     };
@@ -310,6 +327,16 @@ export function AuthProvider({ children }: AuthProviderProps) {
       const token = await getAccessToken();
 
       if (!token) {
+        setState((prev) => ({ ...prev, isLoading: false }));
+        return;
+      }
+
+      // Don't call /profile with a token we already know is expired.
+      // This prevents a guaranteed 401 on startup when a stale token
+      // lingers in SecureStore (e.g. after reinstalling a dev build).
+      const expired = await isTokenExpired();
+      if (expired) {
+        await clearTokens();
         setState((prev) => ({ ...prev, isLoading: false }));
         return;
       }
@@ -345,15 +372,20 @@ export function AuthProvider({ children }: AuthProviderProps) {
         setState((prev) => ({ ...prev, isLoading: false }));
       }
     } catch (error: any) {
-      // Only log as a warning if it's not a 401/authentication error
-      // 401 errors are expected when the user is not logged in
+      // Only log as a warning if it's an unexpected error.
+      // 401 = session expired, NETWORK_ERROR = offline/backend down — both are
+      // normal conditions that should resolve silently.
       const isAuthError = error?.code === 'UNAUTHORIZED' || error?.status === 401 || error?.response?.status === 401;
+      const isNetworkError = error?.code === 'NETWORK_ERROR' || error?.message?.includes('Network');
 
-      if (!isAuthError) {
-        console.warn('[Auth] Failed to initialize auth:', error);
-      } else {
-        console.log('[Auth] No valid session found, proceeding to auth screen');
+      if (!isAuthError && !isNetworkError) {
+        Sentry.captureException(error, { tags: { context: 'initializeAuth' } });
+      } else if (isAuthError) {
+        Sentry.addBreadcrumb({ category: 'auth', message: 'No valid session on startup, clearing token', level: 'info' });
+        // Clear the stale token so the next startup doesn't hit /profile again
+        await clearTokens();
       }
+      // Network errors: silently proceed to auth screen (backend offline / no connectivity)
 
       setState((prev) => ({ ...prev, isLoading: false }));
     }
@@ -452,7 +484,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
         }));
       }
     } catch (error: any) {
-      console.error('[Auth] Google login error:', error);
+      Sentry.captureException(error, { tags: { context: 'loginWithGoogle' } });
       setState((prev) => ({
         ...prev,
         isLoading: false,
@@ -479,8 +511,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
         if (session?.data?.user) {
           clearInterval(pollInterval);
 
-          // Log full session data to diagnose missing profile info
-          console.log('[Auth] Full session data from OAuth:', JSON.stringify(session.data, null, 2));
+          Sentry.addBreadcrumb({ category: 'auth', message: 'OAuth session confirmed via polling', level: 'info' });
 
           // Get token from session object first (most reliable)
           const sessionToken = (session.data as any).session?.token || (session.data as any).token;
@@ -500,7 +531,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
               // Small delay to ensure storage is persisted
               await new Promise((resolve) => setTimeout(resolve, 100));
             } catch (error) {
-              console.error('[Auth] Error syncing token:', error);
+              Sentry.captureException(error, { tags: { context: 'pollForOAuthSession.syncToken' } });
             }
           }
 
@@ -529,7 +560,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
         // Stop polling after max attempts
         if (attempts >= maxAttempts) {
           clearInterval(pollInterval);
-          console.warn('[Auth] OAuth polling timeout');
+          Sentry.captureMessage('OAuth polling timed out after 30 seconds', 'warning');
           setState((prev) => ({
             ...prev,
             isLoading: false,
@@ -537,7 +568,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
           }));
         }
       } catch (error) {
-        console.error('[Auth] Error during OAuth polling:', error);
+        Sentry.captureException(error, { tags: { context: 'pollForOAuthSession' } });
       }
     }, 1000); // Poll every 1 second
   }
@@ -577,7 +608,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
       setState((prev) => ({ ...prev, isLoading: false }));
     } catch (error: any) {
-      console.error('Resend verification email failed:', error);
+      Sentry.captureException(error, { tags: { context: 'resendVerificationEmail' } });
       setState((prev) => ({
         ...prev,
         isLoading: false,

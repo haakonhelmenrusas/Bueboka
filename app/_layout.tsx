@@ -22,9 +22,10 @@ if (isNonDev) {
   Sentry.init({
     dsn: 'https://310ad5a856229859c003cf549b110334@o4505578901929984.ingest.us.sentry.io/4508262003048448',
     environment: appEnv, // 'preview' | 'production'
-    tracesSampler: () => 1.0,
+    tracesSampleRate: 0.2,
     integrations: [navigationIntegration],
-    enableNativeFramesTracking: true,
+    // enableNativeFramesTracking is disabled — it requires a native module call
+    // at startup and can cause a hard native crash on iOS with RN New Architecture.
   });
 
   // Initialize Clarity

@@ -1,8 +1,9 @@
 import { Platform } from 'react-native';
 import * as Application from 'expo-application';
 import * as Linking from 'expo-linking';
-import { authFetchClient } from './api/authFetch';
 import * as Sentry from '@sentry/react-native';
+
+const API_BASE_URL = process.env.EXPO_PUBLIC_API_URL || 'http://localhost:3000/api';
 
 interface VersionResponse {
   minVersion: string;
@@ -48,7 +49,30 @@ export class VersionService {
     storeUrl: string;
   }> {
     try {
-      const { data: response } = await authFetchClient.get<VersionResponse>('/app/version');
+      // Use plain fetch — this is a public endpoint, no auth needed.
+      // Avoid authFetchClient here: the auth client may not be initialised yet
+      // at startup and any failure in its internals would crash the app before
+      // the catch block can run.
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 5000); // 5 s timeout
+
+      const res = await fetch(`${API_BASE_URL}/app/version`, {
+        method: 'GET',
+        signal: controller.signal,
+      });
+      clearTimeout(timeoutId);
+
+      if (!res.ok) {
+        // Endpoint not available — fail silently, don't block the app
+        return {
+          updateRequired: false,
+          updateAvailable: false,
+          message: '',
+          storeUrl: Platform.OS === 'ios' ? this.APP_STORE_URL : this.PLAY_STORE_URL,
+        };
+      }
+
+      const response: VersionResponse = await res.json();
       const currentVersion = this.getCurrentVersion();
 
       const platformConfig = Platform.OS === 'ios' ? response.ios : response.android;
