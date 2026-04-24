@@ -39,7 +39,11 @@ styles/colors.ts  ← Single source of truth for all colors
 | Lint       | `npm run lint`    |
 | Format     | `npm run format`  |
 
-Set `EXPO_PUBLIC_API_URL` (e.g., `http://192.168.x.x:3000/api`) to point at a local backend. Auth base URL is derived automatically as `$EXPO_PUBLIC_API_URL/auth`.
+## Environment Configuration
+
+**Local Development**: Set `EXPO_PUBLIC_API_URL` in `.env` (e.g., `http://192.168.x.x:3000/api`) to point at a local backend. Auth base URL is derived automatically as `$EXPO_PUBLIC_API_URL/auth`.
+
+**Preview/Production Builds**: Use EAS Secrets to inject the production API URL at build time. See `docs/BUILD_ENVIRONMENT.md` for complete setup instructions. The `.env` file is used for local dev only - preview/production builds override it with the EAS secret value.
 
 ## HTTP & Auth
 

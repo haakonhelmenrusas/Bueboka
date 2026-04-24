@@ -33,6 +33,9 @@
     "preview": {
       "extends": "base",
       "distribution": "store",
+      "env": {
+        "EXPO_PUBLIC_API_URL": "${EXPO_PUBLIC_API_URL}"
+      },
       "ios": {
         "resourceClass": "m-medium"
       },
@@ -40,6 +43,9 @@
     },
     "production": {
       "extends": "base",
+      "env": {
+        "EXPO_PUBLIC_API_URL": "${EXPO_PUBLIC_API_URL}"
+      },
       "ios": {
         "resourceClass": "m-medium"
       },
