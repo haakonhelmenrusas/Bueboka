@@ -40,15 +40,17 @@ eas env:list
 
 ### 3. Build with the Correct Environment
 
-Now when you build, EAS will automatically inject the production API URL:
+Now when you build, EAS will automatically inject the production API URL **and auto-increment the build number** for you:
 
 ```bash
-# For preview builds
+# For preview builds (TestFlight)
 eas build --profile preview --platform ios
 
-# For production builds
+# For production builds (App Store)
 eas build --profile production --platform ios
 ```
+
+**Note**: Both preview and production profiles have `"autoIncrement": true` enabled, so you'll never get duplicate build number errors from Apple. EAS automatically increments the build number each time you build.
 
 ## How It Works
 
@@ -73,6 +75,19 @@ Make sure your Google OAuth app is configured with the correct redirect URIs:
    - `bueboka://` (for deep linking back to the app)
 
 ## Troubleshooting
+
+### "Build number has already been used" Error
+
+If you see: `Build number X.X.X for app version X.X.X has already been used`
+
+**Cause**: You tried to submit a build with a duplicate build number to App Store Connect.
+
+**Fix**: This should not happen anymore! The `eas.json` is now configured with `"autoIncrement": true` for both preview and production profiles. EAS will automatically increment the build number for each new build.
+
+Just rebuild:
+```bash
+eas build --profile preview --platform ios
+```
 
 ### Warning: "Secret EXPO_PUBLIC variable"
 
