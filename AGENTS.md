@@ -93,6 +93,77 @@ Sentry and Microsoft Clarity are initialized only when `NODE_ENV !== 'developmen
 
 Jest + `jest-expo` preset. Setup file: `jestSetup.ts`. Mocks for native modules are handled by jest-expo. Run `npm test` for CI mode.
 
+Test files live next to their source in `__tests__/` sub-folders:
+
+| Source location                      | Test location                                      |
+| ------------------------------------ | -------------------------------------------------- |
+| `services/repositories/*.ts`         | `services/repositories/__tests__/*.test.ts`        |
+| `hooks/*.ts`                         | `hooks/__tests__/*.test.ts`                        |
+| `components/<folder>/*.tsx`          | `components/<folder>/__tests__/*.test.tsx`         |
+| `utils/*.ts`                         | `utils/__tests__/*.test.ts`                        |
+| `app/(tabs)/<screen>/index.tsx`      | `app/(tabs)/<screen>/__tests__/*.test.tsx`         |
+
+---
+
+## Skill 1 – Domain Discovery: Questions Before Code
+
+> Full specification: [`docs/skills/domain-discovery.md`](docs/skills/domain-discovery.md)
+
+Before writing any implementation code, build a shared understanding of the domain and requirements. Do **not** start coding immediately when a request is ambiguous.
+
+### Rules
+
+1. **Ask 2–5 focused questions** covering the biggest unknowns for every non-trivial task. Prioritise: business purpose, acceptance criteria, data ownership, offline behaviour, and architecture fit.
+
+2. Use the **domain glossary** to confirm terminology. If a concept has no existing name in the codebase, propose a Norwegian-aligned name and confirm it before creating files.
+
+3. After receiving answers, **restate your understanding in one paragraph** before writing code.
+
+4. If the developer says "just go ahead", code the most reasonable interpretation and list all assumptions explicitly.
+
+5. **Never invent domain concepts.** If a type or entity for the concept doesn't exist yet, raise it as a question rather than silently creating a new one.
+
+---
+
+## Skill 2 – TDD + DDD: Tests First, Domain Always
+
+> Full specification: [`docs/skills/tdd-ddd.md`](docs/skills/tdd-ddd.md)
+
+Apply TDD and DDD on every coding task. Code is written in this strict order: **domain types → repository tests → repository implementation → hook tests → hook implementation → component/acceptance tests → component → refactor**.
+
+### Cycle
+
+```
+RED   → Write a failing test for one behaviour
+GREEN → Write the minimum code to pass it
+REFACTOR → Clean up; all tests stay green
+REPEAT
+```
+
+### Rules
+
+1. **Write the test file before the implementation file.** No exceptions.
+2. **One `it()` block = one behaviour.** Name it in plain language.
+3. **Mock at the boundary only** – `authFetchClient` for repo tests; repositories for hook/screen tests.
+4. **Domain types in `types/` first**, before any repository or component code.
+5. **Invariants are named functions with their own tests.**
+6. **Never skip to implementation.** Use `it.todo()` if tests must be deferred.
+
+### Combined Workflow
+
+```
+DISCOVER  → ask questions (Skill 1)
+MODEL     → extend/create types/
+TEST RED  → repository test
+IMPLEMENT → repository method
+TEST RED  → hook test
+IMPLEMENT → hook
+TEST RED  → component/acceptance test
+IMPLEMENT → screen/component
+REFACTOR  → all tests green
+COMMIT    → follow commit conventions below
+```
+
 ## Commit Message Conventions
 
 Follow these guidelines when creating commit messages:
