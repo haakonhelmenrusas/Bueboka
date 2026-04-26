@@ -24,6 +24,7 @@ requirements. Do **not** start coding immediately when a request is ambiguous.
 
 3. After receiving answers, **restate your understanding in one paragraph** before writing
    code. Example:
+
    > "So I'll add a `skytterId` field to `Practice`, expose a `getBySkytter(id)` method in
    > `practiceRepository`, and display the results in a new tab inside the Skyttere screen.
    > Offline support is not required for this view. Is that correct?"
@@ -55,6 +56,7 @@ implementation → component/acceptance tests → component implementation → r
    implementation than is needed to make the current failing test pass.
 
 3. **Name tests as behaviours** in plain English:
+
    ```ts
    it('queues the create mutation when offline', async () => { … });
    it('returns an AppError with code VALIDATION_ERROR for an empty bow name', () => { … });
@@ -63,7 +65,7 @@ implementation → component/acceptance tests → component implementation → r
 4. **Mock at the boundary only** – mock `authFetchClient` for repository tests; mock
    repositories for hook/screen tests. Never mock internal functions.
 
-5. **Domain types live in `types/`.** Extend or create types *before* writing any
+5. **Domain types live in `types/`.** Extend or create types _before_ writing any
    repository or component code. Confirm new type names align with the ubiquitous language
    (see `docs/skills/domain-discovery.md` glossary).
 
@@ -102,4 +104,3 @@ COMMIT    → follow AGENTS.md commit conventions
 - **Colours**: `@/styles/colors` – never hardcode hex values
 - **Icons**: import per-icon from `@fortawesome/free-solid-svg-icons/<iconName>`
 - **Tests**: Jest + jest-expo; run with `npm test`
-

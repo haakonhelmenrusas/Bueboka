@@ -4,8 +4,8 @@
 
 Build a shared understanding of the domain and requirements **before writing a single line
 of code**. Rushing into implementation without clarity wastes effort and produces solutions
-that solve the wrong problem. This skill ensures the AI and developer are aligned on *what*
-to build and *why* before moving to *how*.
+that solve the wrong problem. This skill ensures the AI and developer are aligned on _what_
+to build and _why_ before moving to _how_.
 
 ---
 
@@ -90,18 +90,17 @@ When a request is received, **do not start coding immediately**. Instead:
 
 Keep these terms consistent across types, variable names, UI labels, and error messages:
 
-| Norwegian (domain) | English (code variable) | Entity / Type        |
-| ------------------ | ----------------------- | -------------------- |
-| Økt / Trening      | practice                | `Practice`           |
-| Konkurranse        | competition             | `Competition`        |
-| Bue                | bow                     | `Bow`                |
-| Pil / Pilsett      | arrow / arrowSet        | `ArrowSet`           |
-| Siktmerke          | sightMark               | `SightMark`          |
+| Norwegian (domain) | English (code variable) | Entity / Type            |
+| ------------------ | ----------------------- | ------------------------ |
+| Økt / Trening      | practice                | `Practice`               |
+| Konkurranse        | competition             | `Competition`            |
+| Bue                | bow                     | `Bow`                    |
+| Pil / Pilsett      | arrow / arrowSet        | `ArrowSet`               |
+| Siktmerke          | sightMark               | `SightMark`              |
 | Skytter            | archer / user           | `User` / `PublicProfile` |
-| Avstand            | distance                | `number` (metres)    |
-| Målskive           | target                  | string (face type)   |
-| Poeng              | score / points          | `number`             |
-| Bane               | range / lane            | `string`             |
+| Avstand            | distance                | `number` (metres)        |
+| Målskive           | target                  | string (face type)       |
+| Poeng              | score / points          | `number`                 |
+| Bane               | range / lane            | `string`                 |
 
 Add new terms here whenever a new concept is introduced to preserve the ubiquitous language.
-

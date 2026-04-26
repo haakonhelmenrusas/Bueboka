@@ -110,4 +110,3 @@ describe('statsApi.getDetailedStats', () => {
     await expect(statsApi.getDetailedStats()).rejects.toBeInstanceOf(AppError);
   });
 });
-

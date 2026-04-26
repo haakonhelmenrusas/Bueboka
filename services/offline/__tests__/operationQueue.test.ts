@@ -50,10 +50,7 @@ describe('enqueueOperation', () => {
     expect(op.payload).toEqual({ name: 'Test' });
     expect(op.attempts).toBe(0);
     expect(op.id).toBeTruthy();
-    expect(mockStorage.setItem).toHaveBeenCalledWith(
-      'offline_queue:user-1',
-      expect.stringContaining('bows/create'),
-    );
+    expect(mockStorage.setItem).toHaveBeenCalledWith('offline_queue:user-1', expect.stringContaining('bows/create'));
   });
 
   it('assigns each operation a unique id', async () => {
@@ -69,7 +66,7 @@ describe('enqueueOperation', () => {
 
     await enqueueOperation({ type: 'bows/create', payload: {} }, 'user-1');
 
-    const saved = JSON.parse((mockStorage.setItem.mock.calls[0][1] as string));
+    const saved = JSON.parse(mockStorage.setItem.mock.calls[0][1] as string);
     expect(saved).toHaveLength(2);
   });
 
@@ -90,7 +87,7 @@ describe('enqueueOperation', () => {
 
     const newOp = await enqueueOperation({ type: 'bows/create', payload: { name: 'New' } }, 'user-1');
 
-    const saved = JSON.parse((mockStorage.setItem.mock.calls[0][1] as string));
+    const saved = JSON.parse(mockStorage.setItem.mock.calls[0][1] as string);
     expect(saved).toHaveLength(100);
     expect(saved[saved.length - 1].id).toBe(newOp.id);
     // First entry was shifted out
@@ -147,7 +144,7 @@ describe('removeOperation', () => {
 
     await removeOperation('op-1', 'user-1');
 
-    const saved = JSON.parse((mockStorage.setItem.mock.calls[0][1] as string));
+    const saved = JSON.parse(mockStorage.setItem.mock.calls[0][1] as string);
     expect(saved).toHaveLength(1);
     expect(saved[0].id).toBe('op-2');
   });
@@ -158,7 +155,7 @@ describe('removeOperation', () => {
 
     await removeOperation('ghost', 'user-1');
 
-    const saved = JSON.parse((mockStorage.setItem.mock.calls[0][1] as string));
+    const saved = JSON.parse(mockStorage.setItem.mock.calls[0][1] as string);
     expect(saved).toHaveLength(1);
   });
 });
@@ -172,7 +169,7 @@ describe('updateOperation', () => {
 
     await updateOperation({ id: 'op-1', type: 'bows/create', payload: {}, createdAt: '', attempts: 2, lastError: 'Failed' }, 'user-1');
 
-    const saved = JSON.parse((mockStorage.setItem.mock.calls[0][1] as string));
+    const saved = JSON.parse(mockStorage.setItem.mock.calls[0][1] as string);
     expect(saved[0].attempts).toBe(2);
     expect(saved[0].lastError).toBe('Failed');
   });
@@ -219,4 +216,3 @@ describe('loadQueue', () => {
     expect(result).toEqual([]);
   });
 });
-

@@ -70,5 +70,3 @@ describe('achievementRepository.getAll', () => {
     expect(caught.code).toBe('SERVER_ERROR');
   });
 });
-
-

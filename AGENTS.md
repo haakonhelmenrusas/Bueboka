@@ -95,13 +95,13 @@ Jest + `jest-expo` preset. Setup file: `jestSetup.ts`. Mocks for native modules 
 
 Test files live next to their source in `__tests__/` sub-folders:
 
-| Source location                      | Test location                                      |
-| ------------------------------------ | -------------------------------------------------- |
-| `services/repositories/*.ts`         | `services/repositories/__tests__/*.test.ts`        |
-| `hooks/*.ts`                         | `hooks/__tests__/*.test.ts`                        |
-| `components/<folder>/*.tsx`          | `components/<folder>/__tests__/*.test.tsx`         |
-| `utils/*.ts`                         | `utils/__tests__/*.test.ts`                        |
-| `app/(tabs)/<screen>/index.tsx`      | `app/(tabs)/<screen>/__tests__/*.test.tsx`         |
+| Source location                 | Test location                               |
+| ------------------------------- | ------------------------------------------- |
+| `services/repositories/*.ts`    | `services/repositories/__tests__/*.test.ts` |
+| `hooks/*.ts`                    | `hooks/__tests__/*.test.ts`                 |
+| `components/<folder>/*.tsx`     | `components/<folder>/__tests__/*.test.tsx`  |
+| `utils/*.ts`                    | `utils/__tests__/*.test.ts`                 |
+| `app/(tabs)/<screen>/index.tsx` | `app/(tabs)/<screen>/__tests__/*.test.tsx`  |
 
 ---
 

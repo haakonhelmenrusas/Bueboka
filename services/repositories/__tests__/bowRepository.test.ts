@@ -180,4 +180,3 @@ describe('bowRepository.delete', () => {
     await expect(bowRepository.delete('bow-1')).rejects.toBeInstanceOf(AppError);
   });
 });
-

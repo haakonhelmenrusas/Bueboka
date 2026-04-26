@@ -281,4 +281,3 @@ describe('sightMarksRepository.calculateSightMarks', () => {
     expect(mockClient.post).toHaveBeenCalledWith('/sight-marks/calculate', input);
   });
 });
-

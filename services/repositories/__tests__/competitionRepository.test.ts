@@ -138,25 +138,20 @@ describe('competitionRepository.create', () => {
       personalBest: true,
       rounds: [{ roundNumber: 1, roundScore: 290 }],
     });
-    expect(mockClient.post).toHaveBeenCalledWith(
-      '/competitions',
-      expect.objectContaining({ placement: 1, personalBest: true }),
-    );
+    expect(mockClient.post).toHaveBeenCalledWith('/competitions', expect.objectContaining({ placement: 1, personalBest: true }));
   });
 
   it('throws AppError with BAD_REQUEST on 400', async () => {
     mockClient.post.mockRejectedValueOnce(makeAxiosError(400, { message: 'Navn er påkrevd' }));
-    const caught = await competitionRepository
-      .create({ date: new Date(), name: '', environment: Environment.INDOOR })
-      .catch((e) => e);
+    const caught = await competitionRepository.create({ date: new Date(), name: '', environment: Environment.INDOOR }).catch((e) => e);
     expect(caught.code).toBe('BAD_REQUEST');
   });
 
   it('throws AppError on network failure', async () => {
     mockClient.post.mockRejectedValueOnce(new AxiosError('Network Error', 'ERR_NETWORK'));
-    await expect(
-      competitionRepository.create({ date: new Date(), name: 'X', environment: Environment.OUTDOOR }),
-    ).rejects.toBeInstanceOf(AppError);
+    await expect(competitionRepository.create({ date: new Date(), name: 'X', environment: Environment.OUTDOOR })).rejects.toBeInstanceOf(
+      AppError,
+    );
   });
 });
 
@@ -200,4 +195,3 @@ describe('competitionRepository.delete', () => {
     await expect(competitionRepository.delete('comp-1')).rejects.toBeInstanceOf(AppError);
   });
 });
-

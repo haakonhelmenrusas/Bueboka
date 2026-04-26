@@ -41,9 +41,7 @@ describe('offlineMutation', () => {
     const networkError = new AppError('NETWORK_ERROR', 'Ingen nettverksforbindelse');
     const onlineFn = jest.fn().mockRejectedValue(networkError);
 
-    await expect(
-      offlineMutation({ type: 'bows/create', payload: { name: 'X' } }, onlineFn, 'user-1'),
-    ).rejects.toBe(networkError);
+    await expect(offlineMutation({ type: 'bows/create', payload: { name: 'X' } }, onlineFn, 'user-1')).rejects.toBe(networkError);
 
     expect(mockEnqueue).toHaveBeenCalledWith({ type: 'bows/create', payload: { name: 'X' } }, 'user-1');
   });
@@ -60,9 +58,7 @@ describe('offlineMutation', () => {
     const serverError = new AppError('SERVER_ERROR', 'Intern serverfeil');
     const onlineFn = jest.fn().mockRejectedValue(serverError);
 
-    await expect(
-      offlineMutation({ type: 'bows/create', payload: {} }, onlineFn, 'user-1'),
-    ).rejects.toBe(serverError);
+    await expect(offlineMutation({ type: 'bows/create', payload: {} }, onlineFn, 'user-1')).rejects.toBe(serverError);
 
     expect(mockEnqueue).not.toHaveBeenCalled();
   });
@@ -71,9 +67,7 @@ describe('offlineMutation', () => {
     const rawError = new Error('Something went wrong');
     const onlineFn = jest.fn().mockRejectedValue(rawError);
 
-    await expect(
-      offlineMutation({ type: 'bows/create', payload: {} }, onlineFn, 'user-1'),
-    ).rejects.toBe(rawError);
+    await expect(offlineMutation({ type: 'bows/create', payload: {} }, onlineFn, 'user-1')).rejects.toBe(rawError);
 
     expect(mockEnqueue).not.toHaveBeenCalled();
   });
@@ -96,4 +90,3 @@ describe('offlineMutation', () => {
     expect(mockEnqueue).toHaveBeenCalledWith(expect.any(Object), undefined);
   });
 });
-

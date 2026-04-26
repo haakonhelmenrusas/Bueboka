@@ -3,6 +3,7 @@
 ## Overview
 
 The app uses different API URLs for different environments:
+
 - **Local Development**: Local network IP (e.g., `http://192.168.0.90:3000/api`)
 - **Preview Builds**: Production API URL
 - **Production Builds**: Production API URL
@@ -85,6 +86,7 @@ If you see: `Build number X.X.X for app version X.X.X has already been used`
 **Fix**: This should not happen anymore! The `eas.json` is now configured with `"autoIncrement": true` for both preview and production profiles. EAS will automatically increment the build number for each new build.
 
 Just rebuild:
+
 ```bash
 eas build --profile preview --platform ios
 ```
@@ -96,6 +98,7 @@ If you see this warning in the Expo dashboard:
 **Cause**: You created the variable with "secret" visibility, but `EXPO_PUBLIC_` variables are compiled into your app and can't be truly secret.
 
 **Fix**:
+
 ```bash
 # Delete the incorrectly created variable
 eas env:delete EXPO_PUBLIC_API_URL --scope project
@@ -108,7 +111,8 @@ eas env:create EXPO_PUBLIC_API_URL --scope project --value https://your-producti
 
 **Cause**: The app is trying to reach a local IP address that's not accessible.
 
-**Fix**: 
+**Fix**:
+
 1. Make sure you've set the `EXPO_PUBLIC_API_URL` EAS secret (see step 1 above)
 2. Rebuild your preview/production app with `eas build`
 3. Install the new build on your device
@@ -157,4 +161,3 @@ Then update `eas.json`:
 - [EAS Build Environment Variables](https://docs.expo.dev/build-reference/variables/)
 - [EAS Environment Variables (eas env)](https://docs.expo.dev/eas/environment-variables/)
 - [Expo Environment Variables](https://docs.expo.dev/guides/environment-variables/)
-

@@ -89,4 +89,3 @@ describe('roundTypeRepository.getById', () => {
     expect(caught.code).toBe('NOT_FOUND');
   });
 });
-

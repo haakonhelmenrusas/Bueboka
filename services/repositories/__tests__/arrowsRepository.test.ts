@@ -170,4 +170,3 @@ describe('arrowsRepository.toggleFavorite', () => {
     await expect(arrowsRepository.toggleFavorite('arrows-1', true)).rejects.toBeInstanceOf(AppError);
   });
 });
-

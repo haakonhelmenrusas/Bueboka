@@ -120,13 +120,13 @@ Screen (app/)
 
 ### Entities, Value Objects & Aggregates
 
-| DDD Concept     | Example in Bueboka                              |
-| --------------- | ----------------------------------------------- |
-| Entity          | `Bow`, `ArrowSet`, `Practice`, `Competition`    |
-| Value Object    | `MarkValue`, `CalculatedMarks`, score number    |
-| Aggregate Root  | `Practice` (owns its arrow scores)              |
-| Repository      | `practiceRepository`, `bowRepository`           |
-| Domain Service  | `Ballistics.ts` (stateless domain calculations) |
+| DDD Concept    | Example in Bueboka                              |
+| -------------- | ----------------------------------------------- |
+| Entity         | `Bow`, `ArrowSet`, `Practice`, `Competition`    |
+| Value Object   | `MarkValue`, `CalculatedMarks`, score number    |
+| Aggregate Root | `Practice` (owns its arrow scores)              |
+| Repository     | `practiceRepository`, `bowRepository`           |
+| Domain Service | `Ballistics.ts` (stateless domain calculations) |
 
 - Entities have identity (an `id`). Value objects are equal by value, not reference.
 - Aggregates enforce their own invariants – validation sits in the repository layer or a
@@ -171,13 +171,13 @@ Never move to the next step until the current tests pass.
 
 ## File Naming
 
-| Type                  | Location                                        |
-| --------------------- | ----------------------------------------------- |
-| Repository test       | `services/repositories/__tests__/*.test.ts`     |
-| Hook test             | `hooks/__tests__/*.test.ts`                     |
-| Component test        | `components/<folder>/__tests__/*.test.tsx`      |
-| Utility / domain test | `utils/__tests__/*.test.ts`                     |
-| Screen test           | `app/(tabs)/<screen>/__tests__/*.test.tsx`      |
+| Type                  | Location                                    |
+| --------------------- | ------------------------------------------- |
+| Repository test       | `services/repositories/__tests__/*.test.ts` |
+| Hook test             | `hooks/__tests__/*.test.ts`                 |
+| Component test        | `components/<folder>/__tests__/*.test.tsx`  |
+| Utility / domain test | `utils/__tests__/*.test.ts`                 |
+| Screen test           | `app/(tabs)/<screen>/__tests__/*.test.tsx`  |
 
 ---
 
@@ -192,4 +192,3 @@ Never move to the next step until the current tests pass.
 ❻ Ubiquitous language in code; Norwegian only in user-facing strings.
 ❼ Invariants are named functions with their own tests.
 ```
-

@@ -144,9 +144,7 @@ describe('practiceRepository.getAll', () => {
     const end = new Date('2024-12-31T00:00:00.000Z');
     mockClient.get.mockResolvedValueOnce({ data: { practices: [] } });
     await practiceRepository.getAll({ startDate: start, endDate: end });
-    expect(mockClient.get).toHaveBeenCalledWith(
-      expect.stringContaining('startDate=2024-01-01T00%3A00%3A00.000Z'),
-    );
+    expect(mockClient.get).toHaveBeenCalledWith(expect.stringContaining('startDate=2024-01-01T00%3A00%3A00.000Z'));
   });
 
   it('throws AppError with UNAUTHORIZED on 401', async () => {
@@ -198,9 +196,7 @@ describe('practiceRepository.create', () => {
 
   it('throws AppError with BAD_REQUEST on 400', async () => {
     mockClient.post.mockRejectedValueOnce(makeAxiosError(400, { message: 'Ugyldig feltverdi' }));
-    const caught = await practiceRepository
-      .create({ date: new Date(), environment: Environment.INDOOR, totalScore: -1 })
-      .catch((e) => e);
+    const caught = await practiceRepository.create({ date: new Date(), environment: Environment.INDOOR, totalScore: -1 }).catch((e) => e);
     expect(caught.code).toBe('BAD_REQUEST');
   });
 });
@@ -290,4 +286,3 @@ describe('practiceRepository.deleteEnd', () => {
     await expect(practiceRepository.deleteEnd('p-1', 'e-1')).rejects.toBeInstanceOf(AppError);
   });
 });
-
