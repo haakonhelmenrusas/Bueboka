@@ -96,11 +96,9 @@ function RootLayoutContent() {
       <StatusBar style="light" />
       <Stack screenOptions={{ headerShown: false }}>
         <Stack.Screen name="index" />
-        {isAuthenticated ? (
-          <Stack.Screen name="(tabs)" options={{ contentStyle: { backgroundColor: colors.primary } }} />
-        ) : (
-          <Stack.Screen name="auth" />
-        )}
+        <Stack.Screen name="intro" />
+        <Stack.Screen name="auth" />
+        <Stack.Screen name="(tabs)" options={{ contentStyle: { backgroundColor: colors.primary } }} />
       </Stack>
     </>
   );

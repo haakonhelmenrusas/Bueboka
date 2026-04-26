@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, Text, StyleSheet, Image } from 'react-native';
-import { Button } from '@/components/common';
+import Button from '@/components/common/Button/Button';
 import { colors } from '@/styles/colors';
 import { VersionService } from '@/services/versionService';
 

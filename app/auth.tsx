@@ -14,10 +14,9 @@ interface AuthScreenProps {
 function AuthScreen({ onAuthSuccess }: AuthScreenProps) {
   const { login, register, loginWithGoogle, isLoading, isAuthenticated, error, clearError } = useAuth();
   const router = useRouter();
-  const [isLogin, setIsLogin] = useState(true);
+  const [isLogin, setIsLogin] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [name, setName] = useState('');
   const [localError, setLocalError] = useState<string | null>(null);
   const [showVerification, setShowVerification] = useState(false);
   const [registeredEmail, setRegisteredEmail] = useState<string>('');
@@ -64,23 +63,20 @@ function AuthScreen({ onAuthSuccess }: AuthScreenProps) {
     setLocalError(null);
     clearError();
 
-    if (!email || !password || !name) {
-      setLocalError('Email, name, and password are required');
+    if (!email || !password) {
+      setLocalError('E-post og passord er påkrevd');
       return;
     }
 
     if (password.length < 8) {
-      setLocalError('Password must be at least 8 characters');
+      setLocalError('Passordet må være minst 8 tegn');
       return;
     }
 
     try {
-      await register(email, password, name);
-      // After successful registration, user will be automatically redirected to main screen
-      // by the AuthContext setting isAuthenticated: true
+      await register(email, password, '');
       setEmail('');
       setPassword('');
-      setName('');
       onAuthSuccess?.();
     } catch (error) {
       handleAuthError(error);
@@ -123,10 +119,8 @@ function AuthScreen({ onAuthSuccess }: AuthScreenProps) {
       <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
         <AuthLogo />
         <AuthForm
-          isLogin={isLogin}
           email={email}
           password={password}
-          name={name}
           isLoading={isLoading}
           onEmailChange={(text) => {
             setEmail(text);
@@ -134,10 +128,6 @@ function AuthScreen({ onAuthSuccess }: AuthScreenProps) {
           }}
           onPasswordChange={(text) => {
             setPassword(text);
-            if (localError || error) clearAuthErrors();
-          }}
-          onNameChange={(text) => {
-            setName(text);
             if (localError || error) clearAuthErrors();
           }}
         />
