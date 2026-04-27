@@ -7,7 +7,6 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faPlus } from '@fortawesome/free-solid-svg-icons/faPlus';
 import { faXmark } from '@fortawesome/free-solid-svg-icons/faXmark';
-import { faDeleteLeft } from '@fortawesome/free-solid-svg-icons/faDeleteLeft';
 import { faChevronLeft } from '@fortawesome/free-solid-svg-icons/faChevronLeft';
 import { faChevronRight } from '@fortawesome/free-solid-svg-icons/faChevronRight';
 import { faInfo } from '@fortawesome/free-solid-svg-icons/faInfo';
@@ -384,18 +383,6 @@ export default function CreatePracticeForm({
     const current = round.scores ?? [];
     if (maxArrows > 0 && current.length >= maxArrows) return;
     const newScores = [...current, score];
-    const newTotal = newScores.reduce((a, b) => a + b, 0);
-    setRounds((prev) => {
-      const next = [...prev];
-      next[roundIndex] = { ...next[roundIndex], scores: newScores, roundScore: newTotal };
-      return next;
-    });
-  };
-
-  const removeLastArrowScore = (roundIndex: number) => {
-    const current = rounds[roundIndex].scores ?? [];
-    if (current.length === 0) return;
-    const newScores = current.slice(0, -1);
     const newTotal = newScores.reduce((a, b) => a + b, 0);
     setRounds((prev) => {
       const next = [...prev];
@@ -808,7 +795,6 @@ export default function CreatePracticeForm({
               const endIdx = Math.min(startIdx + arrowsPerEnd, maxArrows);
               const arrowsInThisEnd = endIdx - startIdx;
               const endScores = currentScores.slice(startIdx, endIdx);
-              const endTotal = endScores.reduce((a, b) => a + b, 0);
 
               const isActiveEnd = !isFull && currentEndPage === activeEndPage;
               const isEndFilled = endScores.length >= arrowsInThisEnd;
@@ -921,24 +907,12 @@ export default function CreatePracticeForm({
                       <Text style={styles.scoringCompleteText}>✓ Alle piler registrert – score: {total}</Text>
                     </View>
                   )}
-                  {!isFull && isEndFilled && !isActiveEnd && !isEditing && (
-                    <View style={styles.endComplete}>
-                      <Text style={styles.endCompleteText}>
-                        Serie {currentEndPage + 1} ferdig – {endTotal} poeng
-                      </Text>
-                      {canGoNext && (
-                        <TouchableOpacity style={styles.endNextBtn} onPress={() => setEndPage(roundIndex, currentEndPage + 1)}>
-                          <Text style={styles.endNextBtnText}>Neste serie →</Text>
-                        </TouchableOpacity>
-                      )}
-                    </View>
-                  )}
-
-                  {filledCount > 0 && isActiveEnd && !isEditing && (
-                    <TouchableOpacity style={styles.backspaceBtn} onPress={() => removeLastArrowScore(roundIndex)}>
-                      <FontAwesomeIcon icon={faDeleteLeft} size={16} color={colors.textSecondary} />
-                      <Text style={styles.backspaceBtnText}>Fjern siste</Text>
-                    </TouchableOpacity>
+                  {!isFull && isEndFilled && !isActiveEnd && !isEditing && canGoNext && (
+                    <Button
+                      label="Neste serie"
+                      onPress={() => setEndPage(roundIndex, currentEndPage + 1)}
+                      buttonStyle={{ width: '100%' }}
+                    />
                   )}
                 </View>
               );
@@ -990,7 +964,7 @@ export default function CreatePracticeForm({
 
   return (
     <ModalWrapper visible={visible} onClose={handleClose} fullScreen>
-      <SafeAreaView style={styles.safeArea} edges={['bottom']}>
+      <SafeAreaView style={styles.safeArea} edges={['top', 'bottom']}>
         <KeyboardAvoidingView style={styles.container} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
           {/* Fixed header */}
           <Pressable onPress={Keyboard.dismiss}>

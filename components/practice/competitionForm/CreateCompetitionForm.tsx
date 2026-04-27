@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Keyboard, KeyboardAvoidingView, Platform, Pressable, ScrollView, Text, TouchableOpacity, View } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import * as Sentry from '@sentry/react-native';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faPlus } from '@fortawesome/free-solid-svg-icons/faPlus';
@@ -529,40 +530,41 @@ export default function CreateCompetitionForm({
   // ─── Render ────────────────────────────────────────────────────────────────
   return (
     <ModalWrapper visible={visible} onClose={handleClose} fullScreen>
-      <KeyboardAvoidingView style={styles.container} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
-        <Pressable onPress={Keyboard.dismiss}>
-          <ModalHeader title={isEditing ? 'Rediger konkurranse' : 'Ny konkurranse'} onPress={handleClose} />
-        </Pressable>
-
-        <StepIndicator steps={STEP_LABELS} currentStep={step} onStepPress={setStep} />
-
-        <ScrollView
-          style={styles.scrollView}
-          contentContainerStyle={styles.scrollContainer}
-          keyboardShouldPersistTaps="handled"
-          showsVerticalScrollIndicator={false}>
+      <SafeAreaView style={styles.container} edges={['top', 'bottom']}>
+        <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
           <Pressable onPress={Keyboard.dismiss}>
-            {step === 0 && renderInfoStep()}
-            {step === 1 && renderDetailsStep()}
-            {step === 2 && renderRoundsStep()}
-            {step === 3 && renderReflectionStep()}
+            <ModalHeader title={isEditing ? 'Rediger konkurranse' : 'Ny konkurranse'} onPress={handleClose} />
           </Pressable>
-        </ScrollView>
 
-        <NavigationFooter
-          currentStep={step}
-          totalSteps={TOTAL_STEPS}
-          stepLabels={STEP_LABELS}
-          isEditing={isEditing}
-          submitting={submitting}
-          saveLabel={isEditing ? 'Lagre endringer' : 'Lagre konkurranse'}
-          onCancel={handleClose}
-          onPrev={goPrev}
-          onNext={goNext}
-          onSave={handleSave}
-          onDelete={() => setConfirmVisible(true)}
-        />
-      </KeyboardAvoidingView>
+          <StepIndicator steps={STEP_LABELS} currentStep={step} onStepPress={setStep} />
+
+          <ScrollView
+            style={styles.scrollView}
+            contentContainerStyle={styles.scrollContainer}
+            keyboardShouldPersistTaps="handled"
+            showsVerticalScrollIndicator={false}>
+            <Pressable onPress={Keyboard.dismiss}>
+              {step === 0 && renderInfoStep()}
+              {step === 1 && renderDetailsStep()}
+              {step === 2 && renderRoundsStep()}
+              {step === 3 && renderReflectionStep()}
+            </Pressable>
+          </ScrollView>
+
+          <NavigationFooter
+            currentStep={step}
+            totalSteps={TOTAL_STEPS}
+            stepLabels={STEP_LABELS}
+            isEditing={isEditing}
+            submitting={submitting}
+            saveLabel={isEditing ? 'Lagre endringer' : 'Lagre konkurranse'}
+            onPrev={goPrev}
+            onNext={goNext}
+            onSave={handleSave}
+            onDelete={() => setConfirmVisible(true)}
+          />
+        </KeyboardAvoidingView>
+      </SafeAreaView>
 
       <ConfirmModal
         visible={confirmVisible}

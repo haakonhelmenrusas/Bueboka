@@ -418,33 +418,6 @@ export const styles = StyleSheet.create({
     paddingVertical: 4,
   },
 
-  // ─── End completion banner ────────────────────────────────────────────────────
-  endComplete: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingVertical: 8,
-    paddingHorizontal: 12,
-    backgroundColor: colors.infoBg,
-    borderRadius: 8,
-    borderWidth: 1,
-    borderColor: colors.infoBorder,
-  },
-  endCompleteText: {
-    fontSize: 13,
-    color: colors.info,
-    fontWeight: '600',
-  },
-  endNextBtn: {
-    paddingVertical: 6,
-    paddingHorizontal: 10,
-  },
-  endNextBtnText: {
-    fontSize: 13,
-    color: colors.primary,
-    fontWeight: '600',
-  },
-
   // ─── Scoring progress and buttons ─────────────────────────────────────────────
   scoringProgress: {
     flexDirection: 'row',
@@ -527,16 +500,6 @@ export const styles = StyleSheet.create({
     fontSize: 13,
     color: colors.success,
     fontWeight: '600',
-  },
-  backspaceBtn: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 6,
-    alignSelf: 'flex-start',
-  },
-  backspaceBtnText: {
-    fontSize: 13,
-    color: colors.textSecondary,
   },
 
   // ─── Rating section ───────────────────────────────────────────────────────────
