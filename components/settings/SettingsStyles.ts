@@ -174,20 +174,9 @@ export const styles = StyleSheet.create({
   },
 
   // ── Sponsor ────────────────────────────────────────────────────────────────
-  sponsorCard: {
-    backgroundColor: colors.white,
-    borderRadius: 16,
-    paddingVertical: 14,
-    paddingHorizontal: 16,
-    borderWidth: 1,
-    borderColor: 'rgba(0,0,0,0.06)',
+  sponsorContent: {
     alignItems: 'center',
     gap: 8,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.06,
-    shadowRadius: 6,
-    elevation: 2,
   },
   sponsorLabel: {
     fontSize: 14,
@@ -216,19 +205,16 @@ export const styles = StyleSheet.create({
     fontWeight: '700',
   },
 
-  // ── Danger zone ────────────────────────────────────────────────────────────
-  dangerCard: {
-    backgroundColor: colors.white,
-    borderRadius: 16,
-    padding: 16,
-    borderWidth: 1,
-    borderColor: 'rgba(255,107,107,0.35)',
+  // ── Card divider ───────────────────────────────────────────────────────────
+  cardDivider: {
+    height: 1,
+    backgroundColor: 'rgba(0,0,0,0.07)',
+    marginHorizontal: -16,
+  },
+
+  // ── Danger section (inside shared card) ────────────────────────────────────
+  dangerSection: {
     gap: 14,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.06,
-    shadowRadius: 6,
-    elevation: 2,
   },
   dangerHeading: {
     fontSize: 17,
@@ -239,10 +225,5 @@ export const styles = StyleSheet.create({
     fontSize: 13,
     lineHeight: 19,
     color: colors.textGray700,
-  },
-  dangerText: {
-    fontSize: 13,
-    color: colors.error,
-    fontStyle: 'italic',
   },
 });

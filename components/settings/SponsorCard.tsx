@@ -7,7 +7,7 @@ import { styles } from '@/components/settings/SettingsStyles';
 
 export default function SponsorCard() {
   return (
-    <View style={styles.sponsorCard}>
+    <View style={styles.sponsorContent}>
       <Text style={styles.sponsorLabel}>Sponset av</Text>
       <Image
         style={styles.sponsorLogo}

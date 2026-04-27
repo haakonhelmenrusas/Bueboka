@@ -54,7 +54,7 @@ export const styles = StyleSheet.create({
   scrollContent: {
     paddingHorizontal: 20,
     paddingTop: 8,
-    paddingBottom: 40,
+    paddingBottom: 140,
     gap: 8,
   },
   list: { gap: 8 },
@@ -75,10 +75,10 @@ export const styles = StyleSheet.create({
     color: colors.white,
   },
   placeholder: {
-    backgroundColor: 'rgba(12,130,172,0.05)',
+    backgroundColor: 'rgba(255,255,255,0.08)',
     borderWidth: 1,
     borderStyle: 'dashed',
-    borderColor: 'rgba(12,130,172,0.26)',
+    borderColor: 'rgba(255,255,255,0.3)',
     borderRadius: 12,
     padding: 20,
     alignItems: 'center',
@@ -86,6 +86,6 @@ export const styles = StyleSheet.create({
   placeholderText: {
     fontSize: 14,
     fontWeight: '600',
-    color: 'rgba(255,255,255,0.6)',
+    color: colors.white,
   },
 });

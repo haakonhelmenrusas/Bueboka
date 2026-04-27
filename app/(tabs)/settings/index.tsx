@@ -65,36 +65,42 @@ export default function Settings() {
         <View style={{ paddingTop: insets.top }}>
           <EmailVerificationBanner />
         </View>
-        <ScrollView contentContainerStyle={styles.contentContainer} showsVerticalScrollIndicator={false}>
+        <ScrollView
+          contentContainerStyle={[styles.contentContainer, { paddingBottom: insets.bottom + 92 }]}
+          showsVerticalScrollIndicator={false}>
           <Text style={styles.title}>Innstillinger</Text>
           {user && <AccountSection user={user} onProfileUpdate={handleProfileUpdate} />}
           <PublicProfileSection user={user} />
           <PrivacySection />
-          <SponsorCard />
-          <Button
-            variant="tertiary"
-            label={isLoggingOut ? 'Logger ut...' : 'Logg ut'}
-            disabled={isLoggingOut}
-            loading={isLoggingOut}
-            buttonStyle={styles.logoutButton}
-            textStyle={styles.logoutLabel}
-            iconPosition="right"
-            icon={<FontAwesomeIcon icon={faRightFromBracket} size={16} color={colors.primary} />}
-            onPress={handleLogout}
-          />
-          <View style={styles.dangerCard}>
-            <Text style={styles.dangerHeading}>Slett konto</Text>
-            <Text style={styles.dangerDescription}>
-              Når du sletter kontoen din, vil alle dine data bli permanent fjernet. Dette inkluderer treningsøkter, utstyr og
-              profilinformasjon. Denne handlingen kan ikke angres.
-            </Text>
+          <View style={styles.sectionCard}>
+            <SponsorCard />
+            <View style={styles.cardDivider} />
             <Button
-              variant="warning"
-              label={isDeleting ? 'Sletter konto...' : 'Slett konto'}
-              disabled={isDeleting || isLoggingOut}
-              loading={isDeleting}
-              onPress={() => setShowDeleteConfirm(true)}
+              variant="tertiary"
+              label={isLoggingOut ? 'Logger ut...' : 'Logg ut'}
+              disabled={isLoggingOut}
+              loading={isLoggingOut}
+              buttonStyle={styles.logoutButton}
+              textStyle={styles.logoutLabel}
+              iconPosition="right"
+              icon={<FontAwesomeIcon icon={faRightFromBracket} size={16} color={colors.primary} />}
+              onPress={handleLogout}
             />
+            <View style={styles.cardDivider} />
+            <View style={styles.dangerSection}>
+              <Text style={styles.dangerHeading}>Slett konto</Text>
+              <Text style={styles.dangerDescription}>
+                Når du sletter kontoen din, vil alle dine data bli permanent fjernet. Dette inkluderer treningsøkter, utstyr og
+                profilinformasjon. Denne handlingen kan ikke angres.
+              </Text>
+              <Button
+                variant="warning"
+                label={isDeleting ? 'Sletter konto...' : 'Slett konto'}
+                disabled={isDeleting || isLoggingOut}
+                loading={isDeleting}
+                onPress={() => setShowDeleteConfirm(true)}
+              />
+            </View>
           </View>
         </ScrollView>
       </LinearGradient>

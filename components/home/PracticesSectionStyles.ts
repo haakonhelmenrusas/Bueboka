@@ -32,10 +32,10 @@ export const styles = StyleSheet.create({
   },
   // ─── States ─────────────────────────────────────────────────────────────
   placeholder: {
-    backgroundColor: 'rgba(12, 130, 172, 0.05)',
+    backgroundColor: 'rgba(255,255,255,0.08)',
     borderWidth: 1,
     borderStyle: 'dashed',
-    borderColor: 'rgba(12, 130, 172, 0.26)',
+    borderColor: 'rgba(255,255,255,0.3)',
     borderRadius: 12,
     padding: 20,
     alignItems: 'center',
@@ -43,7 +43,7 @@ export const styles = StyleSheet.create({
   placeholderText: {
     fontSize: 14,
     fontWeight: '600',
-    color: colors.textSecondary,
+    color: colors.white,
   },
   loadingContainer: {
     padding: 40,

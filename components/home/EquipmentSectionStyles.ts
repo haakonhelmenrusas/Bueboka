@@ -20,10 +20,10 @@ export const styles = StyleSheet.create({
     gap: 8,
   },
   placeholder: {
-    backgroundColor: colors.dark05,
+    backgroundColor: 'rgba(255,255,255,0.08)',
     borderWidth: 1,
     borderStyle: 'dashed',
-    borderColor: colors.primary25,
+    borderColor: 'rgba(255,255,255,0.3)',
     borderRadius: 12,
     padding: 20,
     alignItems: 'center',
@@ -31,6 +31,6 @@ export const styles = StyleSheet.create({
   placeholderText: {
     fontSize: 14,
     fontWeight: '600',
-    color: colors.textSecondary,
+    color: colors.white,
   },
 });

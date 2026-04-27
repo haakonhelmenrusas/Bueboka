@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { Keyboard, Pressable, ScrollView, StyleSheet, View } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { AimDistanceMark, Arrows, Bow, BowSpecification, MarkValue, SightMark } from '@/types';
 import { useSharedValue, withTiming } from 'react-native-reanimated';
 import { Ballistics } from '@/utils';
@@ -19,6 +20,7 @@ import { AppError } from '@/services';
 
 export default function CalculateScreen() {
   const { user } = useAuth();
+  const insets = useSafeAreaInsets();
   const translateY = useSharedValue(300);
 
   const [sightMarks, setSightMarks] = useState<SightMark[]>([]);
@@ -253,8 +255,8 @@ export default function CalculateScreen() {
         </ScrollView>
       </Pressable>
 
-      {/* Fixed bottom button */}
-      <View style={styles.bottomBar}>
+      {/* Fixed bottom button – sits above the floating tab bar */}
+      <View style={[styles.bottomBar, { paddingBottom: insets.bottom + 92 }]}>
         <Button
           icon={<FontAwesomeIcon icon={faPlus} color={colors.tertiary} />}
           iconPosition="left"
