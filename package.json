@@ -9,8 +9,7 @@
     "web": "expo start --web",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "prepare": "husky",
-    "generate-splash": "node scripts/generate-splash.js"
+    "prepare": "husky"
   },
   "dependencies": {
     "@better-auth/expo": "^1.5.4",

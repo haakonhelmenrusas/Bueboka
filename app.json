@@ -18,7 +18,7 @@
       "package": "com.aaronshade.bueboka",
       "splash": {
         "image": "./assets/images/splash.png",
-        "resizeMode": "cover",
+        "resizeMode": "contain",
         "backgroundColor": "#29B6F6"
       }
     },
@@ -29,7 +29,7 @@
       "bundleIdentifier": "com.aaronshade.bueboka",
       "splash": {
         "image": "./assets/images/splash.png",
-        "resizeMode": "cover",
+        "resizeMode": "contain",
         "backgroundColor": "#29B6F6"
       },
       "infoPlist": {
@@ -70,7 +70,7 @@
         {
           "image": "./assets/images/splash.png",
           "backgroundColor": "#29B6F6",
-          "resizeMode": "cover"
+          "resizeMode": "contain"
         }
       ],
       [
