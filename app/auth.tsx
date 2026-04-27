@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { KeyboardAvoidingView, Platform, ScrollView } from 'react-native';
+import { InteractionManager, Keyboard, KeyboardAvoidingView, Platform, ScrollView } from 'react-native';
 import { useRouter } from 'expo-router';
 import { Button, Message } from '@/components/common';
 import { useAuth } from '@/hooks';
@@ -22,9 +22,12 @@ function AuthScreen({ onAuthSuccess }: AuthScreenProps) {
   const [registeredEmail, setRegisteredEmail] = useState<string>('');
 
   useEffect(() => {
-    if (isAuthenticated) {
+    if (!isAuthenticated) return;
+    Keyboard.dismiss();
+    const task = InteractionManager.runAfterInteractions(() => {
       router.replace('/(tabs)/home');
-    }
+    });
+    return () => task.cancel();
   }, [isAuthenticated, router]);
 
   const clearAuthErrors = () => {
