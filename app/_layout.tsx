@@ -4,7 +4,6 @@ import * as Sentry from '@sentry/react-native';
 import * as Clarity from '@microsoft/react-native-clarity';
 import React, { useEffect, useState } from 'react';
 import { AuthProvider } from '@/contexts';
-import { useAuth } from '@/hooks';
 import { colors } from '@/styles/colors';
 import { VersionService } from '@/services';
 import { UpdateRequired } from '@/components/common';
@@ -27,18 +26,16 @@ if (isNonDev) {
     // enableNativeFramesTracking is disabled — it requires a native module call
     // at startup and can cause a hard native crash on iOS with RN New Architecture.
   });
-
-  // Initialize Clarity
-  if (process.env.EXPO_PUBLIC_CLARITY_KEY) {
-    Clarity.initialize(process.env.EXPO_PUBLIC_CLARITY_KEY, {
-      logLevel: Clarity.LogLevel.Info,
-    });
-  }
 }
+
+// Clarity is initialised lazily inside RootLayoutContent to ensure Sentry's
+// native crash reporter is fully installed before Clarity touches the native
+// session-recording layer. Initialising Clarity at module-level (synchronously)
+// under RN New Architecture (RN 0.76+) can crash the process before Sentry
+// has a chance to register its signal handlers, resulting in silent crashes.
 
 function RootLayoutContent() {
   const ref = useNavigationContainerRef();
-  const { isAuthenticated } = useAuth();
   const [updateCheck, setUpdateCheck] = useState<{
     checked: boolean;
     updateRequired: boolean;
@@ -50,6 +47,19 @@ function RootLayoutContent() {
     message: '',
     storeUrl: '',
   });
+
+  // Initialise Clarity after the first render so Sentry's native crash reporter
+  // is fully registered before Clarity touches the native layer.
+  useEffect(() => {
+    if (!isNonDev) return;
+    const clarityKey = process.env.EXPO_PUBLIC_CLARITY_KEY;
+    if (!clarityKey) return;
+    try {
+      Clarity.initialize(clarityKey, { logLevel: Clarity.LogLevel.Info });
+    } catch (err) {
+      Sentry.captureException(err);
+    }
+  }, []);
 
   // Check version on app launch
   useEffect(() => {
