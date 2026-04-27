@@ -7,7 +7,7 @@
     },
     "name": "Bueboka",
     "slug": "bueboka",
-    "version": "1.6.5",
+    "version": "1.6.6",
     "icon": "./assets/images/icon.png",
     "extra": {
       "eas": {
@@ -33,7 +33,7 @@
         "backgroundColor": "#29B6F6"
       },
       "infoPlist": {
-        "CFBundleShortVersionString": "1.6.5",
+        "CFBundleShortVersionString": "1.6.6",
         "CFBundleIconName": "./assets/images/ipad.png",
         "ITSAppUsesNonExemptEncryption": false,
         "NSPhotoLibraryUsageDescription": "Bueboka trenger tilgang til bilder for at du skal kunne velge profilbilde.",
