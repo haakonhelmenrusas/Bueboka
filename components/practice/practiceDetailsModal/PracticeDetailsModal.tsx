@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, ScrollView, Alert } from 'react-native';
+import { View, Text, ScrollView, Alert, useWindowDimensions } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faMapPin } from '@fortawesome/free-solid-svg-icons/faMapPin';
@@ -30,6 +30,7 @@ interface PracticeDetailsModalProps {
 
 export function PracticeDetailsModal({ visible, practice, onClose, onEdit, onDeleted }: PracticeDetailsModalProps) {
   const [deleting, setDeleting] = useState(false);
+  const { height } = useWindowDimensions();
 
   // Enhanced validation - check if practice has required fields
   if (!practice || !practice.id || !practice.date) {
@@ -86,7 +87,7 @@ export function PracticeDetailsModal({ visible, practice, onClose, onEdit, onDel
 
   return (
     <ModalWrapper visible={visible} onClose={onClose}>
-      <View style={styles.modal}>
+      <View style={[styles.modal, { height: height * 0.85 }]}>
         <ModalHeader title={title} onPress={onClose} />
         <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
           <View style={styles.content}>
@@ -214,40 +215,40 @@ export function PracticeDetailsModal({ visible, practice, onClose, onEdit, onDel
               </View>
             )}
           </View>
+        </ScrollView>
 
-          <View style={styles.actions}>
-            {onEdit && <Button label="Rediger" onPress={onEdit} disabled={deleting} buttonStyle={styles.actionButton} />}
-            <View style={styles.actionRow}>
-              <Button
-                size="small"
-                label="Del"
-                onPress={handleShare}
-                type="outline"
-                disabled={deleting}
-                icon={<FontAwesomeIcon icon={faShare} size={14} color={colors.primary} />}
-                buttonStyle={styles.smallActionButton}
-              />
-              <Button
-                size="small"
-                label="Lukk"
-                onPress={onClose}
-                type="outline"
-                disabled={deleting}
-                buttonStyle={styles.smallActionButton}
-              />
-            </View>
+        <View style={styles.actions}>
+          {onEdit && <Button label="Rediger" onPress={onEdit} disabled={deleting} buttonStyle={styles.actionButton} />}
+          <View style={styles.actionRow}>
             <Button
-              label={deleting ? 'Sletter...' : 'Slett'}
-              onPress={handleDelete}
-              type="outline"
               size="small"
-              variant="warning"
+              label="Del"
+              onPress={handleShare}
+              type="outline"
               disabled={deleting}
-              icon={<FontAwesomeIcon icon={faTrash} size={16} color={colors.error} />}
-              buttonStyle={styles.actionButton}
+              icon={<FontAwesomeIcon icon={faShare} size={14} color={colors.primary} />}
+              buttonStyle={styles.smallActionButton}
+            />
+            <Button
+              size="small"
+              label="Lukk"
+              onPress={onClose}
+              type="outline"
+              disabled={deleting}
+              buttonStyle={styles.smallActionButton}
             />
           </View>
-        </ScrollView>
+          <Button
+            label={deleting ? 'Sletter...' : 'Slett'}
+            onPress={handleDelete}
+            type="outline"
+            size="small"
+            variant="warning"
+            disabled={deleting}
+            icon={<FontAwesomeIcon icon={faTrash} size={16} color={colors.error} />}
+            buttonStyle={styles.actionButton}
+          />
+        </View>
       </View>
     </ModalWrapper>
   );

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Modal, Pressable, StyleSheet } from 'react-native';
+import { Modal, Pressable, StyleSheet, View } from 'react-native';
 
 interface ModalWrapperProps {
   visible: boolean;
@@ -11,11 +11,14 @@ interface ModalWrapperProps {
 export default function ModalWrapper({ visible, onClose, children, fullScreen = false }: ModalWrapperProps) {
   return (
     <Modal presentationStyle="overFullScreen" animationType="fade" transparent={true} visible={visible} onRequestClose={onClose}>
-      <Pressable style={styles.overlay} onPress={onClose}>
-        <Pressable style={fullScreen ? styles.contentFullScreen : styles.content} onPress={() => {}}>
+      <View style={styles.overlay}>
+        {/* Backdrop tap-to-close sits behind the content as a sibling, not a parent.
+            Wrapping content in a Pressable intercepts scroll gestures on Android. */}
+        <Pressable style={StyleSheet.absoluteFill} onPress={onClose} />
+        <View style={fullScreen ? styles.contentFullScreen : styles.content}>
           {children}
-        </Pressable>
-      </Pressable>
+        </View>
+      </View>
     </Modal>
   );
 }

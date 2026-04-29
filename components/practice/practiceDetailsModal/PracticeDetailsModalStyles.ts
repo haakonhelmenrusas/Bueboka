@@ -1,14 +1,11 @@
 import { colors } from '@/styles/colors';
-import { Dimensions, StyleSheet } from 'react-native';
-
-const WINDOW_HEIGHT = Dimensions.get('window').height;
+import { StyleSheet } from 'react-native';
 
 export const styles = StyleSheet.create({
   modal: {
     backgroundColor: colors.white,
     borderRadius: 12,
     width: '100%',
-    height: WINDOW_HEIGHT * 0.85,
     flexDirection: 'column',
   },
   scrollView: {
