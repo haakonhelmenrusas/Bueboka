@@ -127,7 +127,7 @@ export default function HomeScreen() {
       <LinearGradient colors={[colors.primary, colors.secondary, '#1a4f66']} style={styles.gradient}>
         <ScrollView
           showsVerticalScrollIndicator={false}
-          contentContainerStyle={[styles.scrollContent, { paddingTop: insets.top + 20 }]}
+          contentContainerStyle={[styles.scrollContent, { paddingTop: insets.top + 20, paddingBottom: insets.bottom + 96 }]}
           refreshControl={<RefreshControl refreshing={refreshing} onRefresh={handleRefresh} tintColor="#FFFFFF" />}>
           <View style={styles.header}>
             <View style={styles.headerRow}>

@@ -195,8 +195,6 @@ const BowForm = ({ modalVisible, setModalVisible, bow, existingBows = [], onSucc
                 label="Favoritt"
                 onChange={(newValue) => dispatch({ type: 'SET_IS_FAVORITE', payload: newValue })}
               />
-
-              {/* ── Avansert ──────────────────────────────────────────────── */}
               <TouchableOpacity activeOpacity={0.7} style={styles.advancedToggle} onPress={() => setAdvancedOpen((prev) => !prev)}>
                 <View style={styles.advancedLine} />
                 <View style={styles.advancedLabelWrap}>
@@ -210,10 +208,19 @@ const BowForm = ({ modalVisible, setModalVisible, bow, existingBows = [], onSucc
                 </View>
                 <View style={styles.advancedLine} />
               </TouchableOpacity>
-
               {advancedOpen && (
                 <View style={styles.advancedContent}>
-                  {/* Row 1: Equipment */}
+                  <Select
+                    containerStyle={{ flex: 1, zIndex: 1500 }}
+                    label="Hånd"
+                    selectedValue={handOrientation}
+                    options={[
+                      { label: 'Velg hånd', value: '' },
+                      { label: 'Høyre (RH)', value: 'RH' },
+                      { label: 'Venstre (LH)', value: 'LH' },
+                    ]}
+                    onValueChange={(value) => dispatch({ type: 'SET_HAND_ORIENTATION', payload: value as 'RH' | 'LH' | '' })}
+                  />
                   <View style={styles.row}>
                     <Input
                       containerStyle={{ flex: 1 }}
@@ -228,19 +235,7 @@ const BowForm = ({ modalVisible, setModalVisible, bow, existingBows = [], onSucc
                       onChangeText={(value) => dispatch({ type: 'SET_RISER', payload: value })}
                     />
                   </View>
-                  {/* Row 2: Draw specs */}
                   <View style={styles.numberRow}>
-                    <Select
-                      containerStyle={{ flex: 1, zIndex: 1500 }}
-                      label="Hånd"
-                      selectedValue={handOrientation}
-                      options={[
-                        { label: 'Velg hånd', value: '' },
-                        { label: 'Høyre (RH)', value: 'RH' },
-                        { label: 'Venstre (LH)', value: 'LH' },
-                      ]}
-                      onValueChange={(value) => dispatch({ type: 'SET_HAND_ORIENTATION', payload: value as 'RH' | 'LH' | '' })}
-                    />
                     <Input
                       containerStyle={{ flex: 1 }}
                       label="Styrke (pund)"
@@ -258,8 +253,6 @@ const BowForm = ({ modalVisible, setModalVisible, bow, existingBows = [], onSucc
                   </View>
                 </View>
               )}
-
-              {/* ── Siktemerke ────────────────────────────────────────────── */}
               <TouchableOpacity activeOpacity={0.7} style={styles.advancedToggle} onPress={() => setSightMarkOpen((prev) => !prev)}>
                 <View style={styles.advancedLine} />
                 <View style={styles.advancedLabelWrap}>

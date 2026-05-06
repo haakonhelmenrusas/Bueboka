@@ -37,12 +37,7 @@ export async function authFetch<T = any>(endpoint: string, options: RequestInit 
 
     const data = isWrapped ? (raw as { data: T }).data : (raw as T);
 
-    // Verify we got actual data back
-    if (data === null || data === undefined) {
-      throw new Error('Ingen data mottatt fra serveren');
-    }
-
-    return { data };
+    return { data: (data ?? null) as T };
   } catch (error: any) {
     // 401/403 and network failures are expected and handled by callers — don't capture them.
     // Everything else is unexpected and should be tracked in Sentry.
