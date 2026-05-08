@@ -1,7 +1,6 @@
 import { StatusBar } from 'expo-status-bar';
 import { Stack, useNavigationContainerRef } from 'expo-router';
 import * as Sentry from '@sentry/react-native';
-import * as Clarity from '@microsoft/react-native-clarity';
 import React, { useEffect, useState } from 'react';
 import { AuthProvider } from '@/contexts';
 import { colors } from '@/styles/colors';
@@ -28,12 +27,6 @@ if (isNonDev) {
   });
 }
 
-// Clarity is initialised lazily inside RootLayoutContent to ensure Sentry's
-// native crash reporter is fully installed before Clarity touches the native
-// session-recording layer. Initialising Clarity at module-level (synchronously)
-// under RN New Architecture (RN 0.76+) can crash the process before Sentry
-// has a chance to register its signal handlers, resulting in silent crashes.
-
 function RootLayoutContent() {
   const ref = useNavigationContainerRef();
   const [updateCheck, setUpdateCheck] = useState<{
@@ -47,19 +40,6 @@ function RootLayoutContent() {
     message: '',
     storeUrl: '',
   });
-
-  // Initialise Clarity after the first render so Sentry's native crash reporter
-  // is fully registered before Clarity touches the native layer.
-  useEffect(() => {
-    if (!isNonDev) return;
-    const clarityKey = process.env.EXPO_PUBLIC_CLARITY_KEY;
-    if (!clarityKey) return;
-    try {
-      Clarity.initialize(clarityKey, { logLevel: Clarity.LogLevel.Info });
-    } catch (err) {
-      Sentry.captureException(err);
-    }
-  }, []);
 
   // Check version on app launch
   useEffect(() => {
