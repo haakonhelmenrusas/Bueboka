@@ -14,7 +14,7 @@ const isNonDev = appEnv !== 'development';
 
 if (isNonDev) {
   navigationIntegration = Sentry.reactNavigationIntegration({
-    enableTimeToInitialDisplay: true,
+    enableTimeToInitialDisplay: false,
   });
 
   Sentry.init({
