@@ -75,6 +75,7 @@
     "eslint-plugin-expo": "^1.0.0",
     "eslint-plugin-prettier": "^5.5.4",
     "eslint-plugin-react-hooks": "^5.2.0",
+    "expo-mcp": "~0.2.1",
     "husky": "^9.1.7",
     "prettier": "^3.6.2",
     "react-test-renderer": "19.2.0",
