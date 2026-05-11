@@ -37,7 +37,6 @@
       "extends": "base",
       "distribution": "store",
       "env": {
-        "EXPO_PUBLIC_API_URL": "${EXPO_PUBLIC_API_URL}",
         "EXPO_PUBLIC_APP_ENV": "preview"
       },
       "ios": {
@@ -49,7 +48,6 @@
     "production": {
       "extends": "base",
       "env": {
-        "EXPO_PUBLIC_API_URL": "${EXPO_PUBLIC_API_URL}",
         "EXPO_PUBLIC_APP_ENV": "production"
       },
       "ios": {
