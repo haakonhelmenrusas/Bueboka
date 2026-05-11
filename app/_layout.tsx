@@ -12,7 +12,7 @@ let navigationIntegration: any = null;
 const appEnv = process.env.EXPO_PUBLIC_APP_ENV || 'development';
 const isNonDev = appEnv !== 'development';
 
-if (isNonDev) {
+/*if (isNonDev) {
   navigationIntegration = Sentry.reactNavigationIntegration({
     enableTimeToInitialDisplay: false,
   });
@@ -25,7 +25,7 @@ if (isNonDev) {
     // enableNativeFramesTracking is disabled — it requires a native module call
     // at startup and can cause a hard native crash on iOS with RN New Architecture.
   });
-}
+}*/
 
 function RootLayoutContent() {
   const ref = useNavigationContainerRef();
@@ -53,7 +53,7 @@ function RootLayoutContent() {
       });
 
       // Log version info to Sentry for debugging
-      if (isNonDev) {
+      /*      if (isNonDev) {
         Sentry.addBreadcrumb({
           category: 'version',
           message: 'Version check completed',
@@ -65,7 +65,7 @@ function RootLayoutContent() {
             updateAvailable: result.updateAvailable,
           },
         });
-      }
+      }*/
     }
     checkAppVersion();
   }, []);
@@ -102,4 +102,5 @@ function RootLayout() {
   );
 }
 
-export default isNonDev ? Sentry.wrap(RootLayout) : RootLayout;
+export default RootLayout;
+//export default isNonDev ? Sentry.wrap(RootLayout) : RootLayout;
