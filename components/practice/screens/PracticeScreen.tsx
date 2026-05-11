@@ -9,7 +9,7 @@ import { useCallback, useState } from 'react';
 import { Arrows, Bow, Practice } from '@/types';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import SkeletonTrainingList from '@/components/practice/practiceCard/SkeletonTrainingList';
-import * as Sentry from '@sentry/react-native';
+import * as Sentry from '@/services/sentryStub';
 import { useFocusEffect } from '@react-navigation/native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useAuth } from '@/hooks';

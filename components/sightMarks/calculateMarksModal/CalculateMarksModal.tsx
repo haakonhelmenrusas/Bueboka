@@ -8,7 +8,7 @@ import { sightMarksRepository } from '@/services/repositories';
 import { useState } from 'react';
 import { offlineMutation } from '@/services/offline/mutationHelper';
 import { useAuth } from '@/contexts/AuthContext';
-import * as Sentry from '@sentry/react-native';
+import * as Sentry from '@/services/sentryStub';
 
 interface CalculateMarksModalProps {
   modalVisible: boolean;

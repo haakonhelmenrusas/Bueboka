@@ -2,7 +2,7 @@ import { authFetchClient as client } from '@/services/api/authFetch';
 import { handleApiError } from '@/services/api/errors';
 import { clearTokens, saveTokens } from '@/services/auth/tokenStorage';
 import { User } from '@/types';
-import * as Sentry from '@sentry/react-native';
+import * as Sentry from '@/services/sentryStub';
 
 /**
  * Registration data structure

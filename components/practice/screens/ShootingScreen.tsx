@@ -4,7 +4,7 @@ import { useLocalSearchParams, useRouter } from 'expo-router';
 import { colors } from '@/styles/colors';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faMinus, faPlus, faBullseye } from '@fortawesome/free-solid-svg-icons';
-import * as Sentry from '@sentry/react-native';
+import * as Sentry from '@/services/sentryStub';
 import { styles } from '@/components/practice/ShootingStyles';
 import { Button } from '@/components/common';
 import { SafeAreaView } from 'react-native-safe-area-context';

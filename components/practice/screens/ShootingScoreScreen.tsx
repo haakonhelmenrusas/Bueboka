@@ -5,7 +5,7 @@ import { Button } from '@/components/common';
 import { colors } from '@/styles/colors';
 import { useRouter, useLocalSearchParams } from 'expo-router';
 import { practiceRepository } from '@/services/repositories';
-import * as Sentry from '@sentry/react-native';
+import * as Sentry from '@/services/sentryStub';
 
 export default function ShootingScoreScreen() {
   const [hits, setHits] = useState<ArrowHit[]>([]);

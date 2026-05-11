@@ -1,6 +1,6 @@
 import NetInfo from '@react-native-community/netinfo';
 import { AppState, AppStateStatus } from 'react-native';
-import * as Sentry from '@sentry/react-native';
+import * as Sentry from '@/services/sentryStub';
 import {
   enqueueOperation,
   getQueueLength,

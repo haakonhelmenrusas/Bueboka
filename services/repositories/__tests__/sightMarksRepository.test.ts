@@ -15,7 +15,7 @@ jest.mock('@/services/api/authFetch', () => ({
   },
 }));
 
-jest.mock('@sentry/react-native', () => ({
+jest.mock('@/services/sentryStub', () => ({
   captureException: jest.fn(),
   captureMessage: jest.fn(),
   addBreadcrumb: jest.fn(),

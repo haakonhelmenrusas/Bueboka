@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
 import { ScrollView, View } from 'react-native';
-import * as Sentry from '@sentry/react-native';
+import * as Sentry from '@/services/sentryStub';
 import { Button, Message } from '@/components/common';
 import { CalculatedMarks, MarksResult, SightMark, SightMarkResult } from '@/types';
 import { CalculateMarksModal } from '@/components/sightMarks/calculateMarksModal/CalculateMarksModal';

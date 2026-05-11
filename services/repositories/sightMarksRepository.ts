@@ -1,6 +1,6 @@
 import { authFetchClient as client } from '@/services/api/authFetch';
 import { AimDistanceMark, BowSpecification, CalculatedMarks, MarksResult, SightMark, SightMarkCalc, SightMarkResult } from '@/types';
-import * as Sentry from '@sentry/react-native';
+import * as Sentry from '@/services/sentryStub';
 
 export const sightMarksRepository = {
   async getAll(): Promise<SightMark[]> {

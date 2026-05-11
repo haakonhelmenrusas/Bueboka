@@ -18,7 +18,7 @@ jest.mock('@react-native-async-storage/async-storage', () => ({
   removeItem: jest.fn(),
 }));
 
-jest.mock('@sentry/react-native', () => ({
+jest.mock('@/services/sentryStub', () => ({
   captureException: jest.fn(),
 }));
 

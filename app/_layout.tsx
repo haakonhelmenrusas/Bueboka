@@ -1,6 +1,6 @@
 import { StatusBar } from 'expo-status-bar';
 import { Stack, useNavigationContainerRef } from 'expo-router';
-import * as Sentry from '@sentry/react-native';
+import * as Sentry from '@/services/sentryStub';
 import React, { useEffect, useState } from 'react';
 import { AuthProvider } from '@/contexts';
 import { colors } from '@/styles/colors';
