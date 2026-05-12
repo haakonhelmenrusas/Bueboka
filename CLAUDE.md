@@ -86,3 +86,67 @@ Custom hooks include `useAuth`, `useNetworkState`, `useOfflineQueue`. Tests live
 ## Development workflow
 
 Domain discovery first — understand the ubiquitous language (see `docs/skills/domain-discovery.md`) before implementing. The full TDD/DDD workflow is in `docs/skills/tdd-ddd.md`. Write tests before implementation; repositories are the mock boundary.
+
+## Git workflow
+
+### Commit messages — Conventional Commits
+
+All commits follow the [Conventional Commits](https://www.conventionalcommits.org/) spec. Format:
+
+```
+<type>(<optional scope>): <short summary in present tense, lowercase>
+
+<optional body — wrap at 72 chars, explain *why* not *what*>
+
+Co-Authored-By: Claude Sonnet 4.6 <noreply@anthropic.com>
+```
+
+**Types:**
+
+- `feat` — new feature visible to the user
+- `fix` — bug fix
+- `refactor` — internal change with no behavioural difference
+- `perf` — performance improvement
+- `test` — adding or fixing tests only
+- `docs` — documentation only
+- `style` — formatting, whitespace, missing semicolons (no logic change)
+- `chore` — build config, dependency bumps, tooling
+- `ci` — changes to CI/EAS workflows or configuration
+
+Keep the summary under 70 chars. Use the body for the "why" — what was the user-visible problem, what constraint forced this approach, what alternatives were rejected.
+
+**Examples:**
+
+```
+fix: handle 404 from version endpoint without blocking startup
+refactor(auth): split AuthContext into login and session hooks
+chore(deps): pin react-native-reanimated to 4.2.1 for SDK 55
+```
+
+### Co-Author trailer
+
+Every commit Claude helps write must end with:
+
+```
+Co-Authored-By: Claude Sonnet 4.6 <noreply@anthropic.com>
+```
+
+Use a HEREDOC when committing to preserve the trailing newline:
+
+```bash
+git commit -m "$(cat <<'EOF'
+fix: short summary
+
+Optional body explaining why.
+
+Co-Authored-By: Claude Sonnet 4.6 <noreply@anthropic.com>
+EOF
+)"
+```
+
+### Other rules
+
+- Only commit when explicitly asked.
+- Prefer new commits over amending — never amend a pushed commit.
+- Stage specific files by name; avoid `git add -A` so secrets (`.env`, keys) don't slip in.
+- Never use `--no-verify` or `--no-gpg-sign` unless explicitly requested.
