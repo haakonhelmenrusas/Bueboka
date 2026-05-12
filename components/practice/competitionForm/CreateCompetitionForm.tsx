@@ -12,10 +12,12 @@ import ConfirmModal from '@/components/home/DeleteArrowSetModal/ConfirmModal';
 import { competitionRepository, type CreateCompetitionRoundData } from '@/services/repositories';
 import type { Arrows, Bow, Competition } from '@/types';
 import { Environment, PracticeCategory } from '@/types';
-import { TARGET_TYPE_OPTIONS } from '@/utils/Constants';
+import { getTargetTypeOptions } from '@/utils/Constants';
 import { colors } from '@/styles/colors';
+import { useTranslation } from '@/contexts';
+import type { TranslationKeys } from '@/lib/i18n';
 import { styles } from './CreateCompetitionFormStyles';
-import { PRACTICE_CATEGORY_OPTIONS, ENVIRONMENT_OPTIONS } from '@/components/practice/shared/formConstants';
+import { getPracticeCategoryOptions, getEnvironmentOptions } from '@/components/practice/shared/formConstants';
 import { isRangeCategory, parseNum, parseDate } from '@/components/practice/shared/formHelpers';
 import { useStepNavigation } from '@/components/practice/shared/useStepNavigation';
 import { useWeatherSelection } from '@/components/practice/shared/useWeatherSelection';
@@ -27,7 +29,12 @@ import { NavigationFooter } from '@/components/practice/shared/NavigationFooter'
 
 // ─── Step definitions ─────────────────────────────────────────────────────────
 const TOTAL_STEPS = 4;
-const STEP_LABELS = ['Info', 'Detaljer', 'Runder', 'Refleksjon'];
+const getStepLabels = (t: TranslationKeys): string[] => [
+  t['competitionStep.info'],
+  t['competitionStep.details'],
+  t['competitionStep.rounds'],
+  t['competitionStep.reflection'],
+];
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 export interface CompetitionRoundInput {
@@ -74,6 +81,12 @@ export default function CreateCompetitionForm({
   onSaved,
   editingCompetition = null,
 }: CreateCompetitionFormProps) {
+  const { t } = useTranslation();
+  const STEP_LABELS = getStepLabels(t);
+  const PRACTICE_CATEGORY_OPTIONS = getPracticeCategoryOptions(t);
+  const ENVIRONMENT_OPTIONS = getEnvironmentOptions(t);
+  const TARGET_TYPE_OPTIONS = getTargetTypeOptions(t);
+
   // Step navigation
   const { step, setStep, goNext, goPrev, resetStep } = useStepNavigation(TOTAL_STEPS);
 
@@ -260,7 +273,7 @@ export default function CreateCompetitionForm({
   // ─── Save ──────────────────────────────────────────────────────────────────
   const handleSave = async () => {
     if (!name.trim()) {
-      setError('Navn på konkurransen er påkrevd');
+      setError(t['competitionForm.nameRequired']);
       setStep(0);
       return;
     }
@@ -295,7 +308,7 @@ export default function CreateCompetitionForm({
       onClose();
     } catch (err) {
       Sentry.captureException(err);
-      setError(err instanceof Error ? err.message : 'Kunne ikke lagre konkurransen.');
+      setError(err instanceof Error ? err.message : t['competitionForm.saveError']);
     } finally {
       setSubmitting(false);
     }
@@ -320,18 +333,18 @@ export default function CreateCompetitionForm({
   const renderInfoStep = () => (
     <View style={styles.stepContent}>
       <Input
-        label="Navn på konkurransen"
+        label={t['competitionForm.nameLabel']}
         value={name}
         onChangeText={setName}
-        placeholder="F.eks. NM Innendørs 2026"
+        placeholder={t['competitionForm.namePlaceholder']}
         maxLength={120}
         containerStyle={styles.inputContainer}
       />
 
       <View style={styles.row}>
-        <DatePicker label="Dato" value={date} onDateChange={setDate} containerStyle={styles.field} />
+        <DatePicker label={t['form.date']} value={date} onDateChange={setDate} containerStyle={styles.field} />
         <Select
-          label="Kategori"
+          label={t['form.category']}
           options={PRACTICE_CATEGORY_OPTIONS}
           selectedValue={practiceCategory}
           onValueChange={(v) => handleCategoryChange(v as PracticeCategory)}
@@ -341,17 +354,17 @@ export default function CreateCompetitionForm({
 
       <View style={styles.row}>
         <Select
-          label="Miljø"
+          label={t['form.environment']}
           options={ENVIRONMENT_OPTIONS}
           selectedValue={environment}
           onValueChange={(v) => setEnvironment(v as Environment)}
           containerStyle={styles.field}
         />
         <Input
-          label="Sted"
+          label={t['form.location']}
           value={location}
           onChangeText={setLocation}
-          placeholder="F.eks. Oslo Spektrum"
+          placeholder={t['competitionForm.locationPlaceholder']}
           maxLength={80}
           containerStyle={styles.field}
         />
@@ -373,28 +386,28 @@ export default function CreateCompetitionForm({
   const renderDetailsStep = () => (
     <View style={styles.stepContent}>
       <Input
-        label="Arrangør"
+        label={t['competitionForm.organizer']}
         value={organizerName}
         onChangeText={setOrganizerName}
-        placeholder="F.eks. Norges Skytterforbund"
+        placeholder={t['competitionForm.organizerPlaceholder']}
         maxLength={100}
         containerStyle={styles.inputContainer}
       />
 
       <View style={styles.row}>
         <Input
-          label="Plassering"
+          label={t['competitionForm.placement']}
           value={placement}
           onChangeText={setPlacement}
-          placeholder="F.eks. 3"
+          placeholder={t['competitionForm.placementPlaceholder']}
           keyboardType="numeric"
           containerStyle={styles.field}
         />
         <Input
-          label="Antall deltakere"
+          label={t['competitionForm.participants']}
           value={numberOfParticipants}
           onChangeText={setNumberOfParticipants}
-          placeholder="F.eks. 120"
+          placeholder={t['competitionForm.participantsPlaceholder']}
           keyboardType="numeric"
           containerStyle={styles.field}
         />
@@ -404,8 +417,8 @@ export default function CreateCompetitionForm({
       <Pressable style={styles.personalBestRow} onPress={() => setPersonalBest((v) => !v)}>
         <FontAwesomeIcon icon={faStar} size={18} color={personalBest ? colors.accentYellow : colors.dimmed} />
         <View style={{ flex: 1 }}>
-          <Text style={styles.personalBestText}>Personlig rekord</Text>
-          <Text style={styles.personalBestHint}>Marker om dette var en personlig rekord</Text>
+          <Text style={styles.personalBestText}>{t['competitionForm.personalBest']}</Text>
+          <Text style={styles.personalBestHint}>{t['competitionForm.personalBestHint']}</Text>
         </View>
         <Checkbox value={personalBest} onChange={setPersonalBest} />
       </Pressable>
@@ -420,9 +433,9 @@ export default function CreateCompetitionForm({
           return (
             <View key={index} style={styles.roundCard}>
               <View style={styles.roundHeader}>
-                <Text style={styles.roundNumber}>Runde {round.roundNumber}</Text>
+                <Text style={styles.roundNumber}>{`${t['round.title']} ${round.roundNumber}`}</Text>
                 {rounds.length > 1 && (
-                  <TouchableOpacity style={styles.removeRoundBtn} onPress={() => removeRound(index)} accessibilityLabel="Fjern runde">
+                  <TouchableOpacity style={styles.removeRoundBtn} onPress={() => removeRound(index)} accessibilityLabel={t['round.remove']}>
                     <FontAwesomeIcon icon={faXmark} size={16} color={colors.textSecondary} />
                   </TouchableOpacity>
                 )}
@@ -432,16 +445,16 @@ export default function CreateCompetitionForm({
                 {rangeMode ? (
                   <>
                     <Input
-                      label="Fra (m)"
+                      label={t['form.distanceFrom']}
                       value={round.distanceFrom !== undefined ? String(round.distanceFrom) : ''}
-                      onChangeText={(t) => updateRound(index, 'distanceFrom', parseNum(t))}
+                      onChangeText={(v) => updateRound(index, 'distanceFrom', parseNum(v))}
                       keyboardType="numeric"
                       containerStyle={styles.roundField}
                     />
                     <Input
-                      label="Til (m)"
+                      label={t['form.distanceTo']}
                       value={round.distanceTo !== undefined ? String(round.distanceTo) : ''}
-                      onChangeText={(t) => updateRound(index, 'distanceTo', parseNum(t))}
+                      onChangeText={(v) => updateRound(index, 'distanceTo', parseNum(v))}
                       keyboardType="numeric"
                       containerStyle={styles.roundField}
                     />
@@ -449,18 +462,18 @@ export default function CreateCompetitionForm({
                 ) : (
                   <>
                     <Input
-                      label="Avstand (m)"
+                      label={t['form.distance']}
                       value={round.distanceMeters !== undefined ? String(round.distanceMeters) : ''}
-                      onChangeText={(t) => updateRound(index, 'distanceMeters', parseNum(t))}
+                      onChangeText={(v) => updateRound(index, 'distanceMeters', parseNum(v))}
                       keyboardType="numeric"
                       containerStyle={styles.roundField}
                     />
                     <Select
-                      label="Skive"
+                      label={t['form.target']}
                       options={TARGET_TYPE_OPTIONS}
                       selectedValue={round.targetType}
                       onValueChange={(v) => updateRound(index, 'targetType', v as string)}
-                      placeholder="Velg"
+                      placeholder={t['form.choose']}
                       searchable
                       containerStyle={styles.roundField}
                     />
@@ -470,28 +483,28 @@ export default function CreateCompetitionForm({
 
               <View style={styles.roundFields}>
                 <Input
-                  label="Piler m/score"
+                  label={t['form.arrowsWithScore']}
                   optional
                   value={round.numberArrows !== undefined && round.numberArrows !== null ? String(round.numberArrows) : ''}
-                  onChangeText={(t) => updateRound(index, 'numberArrows', parseNum(t))}
+                  onChangeText={(v) => updateRound(index, 'numberArrows', parseNum(v))}
                   keyboardType="numeric"
                   containerStyle={styles.roundField}
                 />
                 <Input
-                  label="Score"
+                  label={t['form.score']}
                   optional
                   value={round.roundScore !== undefined && round.roundScore !== null ? String(round.roundScore) : ''}
-                  onChangeText={(t) => updateRound(index, 'roundScore', parseNum(t) ?? 0)}
+                  onChangeText={(v) => updateRound(index, 'roundScore', parseNum(v) ?? 0)}
                   keyboardType="numeric"
                   containerStyle={styles.roundField}
                 />
               </View>
 
               <Input
-                label="Piler u/score"
+                label={t['form.arrowsWithoutScore']}
                 optional
                 value={round.arrowsWithoutScore !== undefined && round.arrowsWithoutScore !== null ? String(round.arrowsWithoutScore) : ''}
-                onChangeText={(t) => updateRound(index, 'arrowsWithoutScore', parseNum(t))}
+                onChangeText={(v) => updateRound(index, 'arrowsWithoutScore', parseNum(v))}
                 keyboardType="numeric"
                 containerStyle={{ width: '48%' }}
               />
@@ -504,9 +517,9 @@ export default function CreateCompetitionForm({
           onPress={addRound}
           disabled={rounds.length >= 20}>
           <FontAwesomeIcon icon={faPlus} size={14} color={colors.primary} />
-          <Text style={styles.addRoundBtnText}>Legg til runde</Text>
+          <Text style={styles.addRoundBtnText}>{t['round.add']}</Text>
         </TouchableOpacity>
-        {rounds.length >= 20 && <Text style={styles.limitMessage}>Maksimalt 20 runder er tillatt</Text>}
+        {rounds.length >= 20 && <Text style={styles.limitMessage}>{t['round.maxLimit']}</Text>}
       </View>
     </View>
   );
@@ -514,11 +527,11 @@ export default function CreateCompetitionForm({
   const renderReflectionStep = () => (
     <View style={styles.stepContent}>
       <Textarea
-        label="Notater"
+        label={t['form.notes']}
         optional
         value={notes}
         onChangeText={setNotes}
-        placeholderText={'Hvordan gikk konkurransen?\n\nHva gikk bra? Hva kan forbedres?'}
+        placeholderText={t['reflection.notesPlaceholder']}
         maxLength={500}
         containerStyle={styles.inputContainer}
       />
@@ -533,7 +546,7 @@ export default function CreateCompetitionForm({
       <SafeAreaView style={styles.container} edges={['top', 'bottom']}>
         <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
           <Pressable onPress={Keyboard.dismiss}>
-            <ModalHeader title={isEditing ? 'Rediger konkurranse' : 'Ny konkurranse'} onPress={handleClose} />
+            <ModalHeader title={isEditing ? t['competitionForm.editTitle'] : t['competitionForm.newTitle']} onPress={handleClose} />
           </Pressable>
 
           <StepIndicator steps={STEP_LABELS} currentStep={step} onStepPress={setStep} />
@@ -557,7 +570,7 @@ export default function CreateCompetitionForm({
             stepLabels={STEP_LABELS}
             isEditing={isEditing}
             submitting={submitting}
-            saveLabel={isEditing ? 'Lagre endringer' : 'Lagre konkurranse'}
+            saveLabel={t['form.save']}
             onPrev={goPrev}
             onNext={goNext}
             onSave={handleSave}
@@ -568,10 +581,8 @@ export default function CreateCompetitionForm({
 
       <ConfirmModal
         visible={confirmVisible}
-        title="Slett konkurranse"
-        message="Vil du slette konkurransen?"
-        confirmLabel="Slett"
-        cancelLabel="Avbryt"
+        title={t['competitionForm.deleteTitle']}
+        message={t['competitionForm.deleteMessage']}
         onCancel={() => setConfirmVisible(false)}
         onConfirm={() => {
           handleDelete();
@@ -581,10 +592,10 @@ export default function CreateCompetitionForm({
 
       <ConfirmModal
         visible={closeConfirmVisible}
-        title="Forkast endringer?"
-        message="Du har ulagrede endringer. Er du sikker på at du vil lukke uten å lagre?"
-        confirmLabel="Forkast"
-        cancelLabel="Fortsett redigering"
+        title={t['practiceForm.discardTitle']}
+        message={t['practiceForm.discardMessage']}
+        confirmLabel={t['practiceForm.discardConfirm']}
+        cancelLabel={t['practiceForm.discardCancel']}
         onCancel={() => setCloseConfirmVisible(false)}
         onConfirm={handleConfirmClose}
       />

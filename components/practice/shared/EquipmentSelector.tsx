@@ -2,6 +2,7 @@ import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { Select } from '@/components/common';
 import { colors } from '@/styles/colors';
+import { useTranslation } from '@/contexts';
 
 interface EquipmentSelectorProps {
   bowOptions: { label: string; value: string }[];
@@ -22,31 +23,33 @@ export function EquipmentSelector({
   onArrowSetChange,
   containerStyle,
 }: EquipmentSelectorProps) {
+  const { t } = useTranslation();
+
   if (bowOptions.length === 0 && arrowSetOptions.length === 0) {
     return null;
   }
 
   return (
     <View style={containerStyle}>
-      <Text style={styles.sectionTitle}>Utstyr</Text>
+      <Text style={styles.sectionTitle}>{t['form.equipment']}</Text>
       <View style={styles.row}>
         {bowOptions.length > 0 && (
           <Select
-            label="🏹 Bue"
+            label={t['form.bow']}
             options={bowOptions}
             selectedValue={selectedBow}
             onValueChange={onBowChange}
-            placeholder="Velg bue (valgfritt)"
+            placeholder={t['form.selectBowPlaceholder']}
             containerStyle={styles.field}
           />
         )}
         {arrowSetOptions.length > 0 && (
           <Select
-            label="🎯 Piler"
+            label={t['form.arrows']}
             options={arrowSetOptions}
             selectedValue={selectedArrowSet}
             onValueChange={onArrowSetChange}
-            placeholder="Velg piler (valgfritt)"
+            placeholder={t['form.selectArrowsPlaceholder']}
             containerStyle={styles.field}
           />
         )}

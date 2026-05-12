@@ -112,7 +112,7 @@ export function LanguageProvider({ children }: LanguageProviderProps) {
         });
       }
     },
-    [user?.id]
+    [user?.id],
   );
 
   const value: LanguageContextValue = {

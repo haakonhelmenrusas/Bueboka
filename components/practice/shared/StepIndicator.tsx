@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { colors } from '@/styles/colors';
+import { useTranslation } from '@/contexts';
 
 interface StepIndicatorProps {
   steps: string[];
@@ -9,6 +10,7 @@ interface StepIndicatorProps {
 }
 
 export function StepIndicator({ steps, currentStep, onStepPress }: StepIndicatorProps) {
+  const { t } = useTranslation();
   const totalSteps = steps.length;
 
   return (
@@ -18,7 +20,10 @@ export function StepIndicator({ steps, currentStep, onStepPress }: StepIndicator
         const isCompleted = i < currentStep;
         return (
           <React.Fragment key={i}>
-            <TouchableOpacity style={styles.stepItem} onPress={() => onStepPress(i)} accessibilityLabel={`Gå til ${label}`}>
+            <TouchableOpacity
+              style={styles.stepItem}
+              onPress={() => onStepPress(i)}
+              accessibilityLabel={`${t['practiceStep.goTo']} ${label}`}>
               <View style={[styles.stepDot, isActive && styles.stepDotActive, isCompleted && styles.stepDotCompleted]}>
                 <Text style={[styles.stepDotText, (isActive || isCompleted) && styles.stepDotTextActive]}>{i + 1}</Text>
               </View>

@@ -1,31 +1,38 @@
 import { Environment, PracticeCategory, WeatherCondition } from '@/types';
+import type { TranslationKeys } from '@/lib/i18n';
 
-// ─── Shared option lists ──────────────────────────────────────────────────────
-export const PRACTICE_CATEGORY_OPTIONS = [
-  { label: 'Skive innendørs', value: PracticeCategory.SKIVE_INDOOR },
-  { label: 'Skive utendørs', value: PracticeCategory.SKIVE_OUTDOOR },
-  { label: 'Jakt 3D', value: PracticeCategory.JAKT_3D },
-  { label: 'Felt', value: PracticeCategory.FELT },
+// ─── Option factories ─────────────────────────────────────────────────────────
+// These accept the translations object so the labels resolve in the active
+// locale. The values themselves are stable enum members shipped to the API.
+
+export const getPracticeCategoryOptions = (t: TranslationKeys) => [
+  { label: t['practiceCategory.skiveIndoor'], value: PracticeCategory.SKIVE_INDOOR },
+  { label: t['practiceCategory.skiveOutdoor'], value: PracticeCategory.SKIVE_OUTDOOR },
+  { label: t['practiceCategory.jakt3D'], value: PracticeCategory.JAKT_3D },
+  { label: t['practiceCategory.felt'], value: PracticeCategory.FELT },
 ];
 
-export const ENVIRONMENT_OPTIONS = [
-  { label: 'Innendørs', value: Environment.INDOOR },
-  { label: 'Utendørs', value: Environment.OUTDOOR },
+export const getEnvironmentOptions = (t: TranslationKeys) => [
+  { label: t['environment.indoor'], value: Environment.INDOOR },
+  { label: t['environment.outdoor'], value: Environment.OUTDOOR },
 ];
 
-export const WEATHER_OPTIONS: { value: WeatherCondition; label: string }[] = [
-  { value: WeatherCondition.SUN, label: '☀️ Sol' },
-  { value: WeatherCondition.CLOUDED, label: '⛅ Skyet' },
-  { value: WeatherCondition.CLEAR, label: '🌤 Klart' },
-  { value: WeatherCondition.RAIN, label: '🌧 Regn' },
-  { value: WeatherCondition.WIND, label: '💨 Vind' },
-  { value: WeatherCondition.SNOW, label: '❄️ Snø' },
-  { value: WeatherCondition.FOG, label: '🌫 Tåke' },
-  { value: WeatherCondition.THUNDER, label: '⛈ Torden' },
-  { value: WeatherCondition.CHANGING_CONDITIONS, label: '🔄 Skiftende' },
-  { value: WeatherCondition.OTHER, label: '🌡 Annet' },
+export const getWeatherOptions = (t: TranslationKeys): { value: WeatherCondition; label: string }[] => [
+  { value: WeatherCondition.SUN, label: t['weather.sun'] },
+  { value: WeatherCondition.CLOUDED, label: t['weather.clouded'] },
+  { value: WeatherCondition.CLEAR, label: t['weather.clear'] },
+  { value: WeatherCondition.RAIN, label: t['weather.rain'] },
+  { value: WeatherCondition.WIND, label: t['weather.wind'] },
+  { value: WeatherCondition.SNOW, label: t['weather.snow'] },
+  { value: WeatherCondition.FOG, label: t['weather.fog'] },
+  { value: WeatherCondition.THUNDER, label: t['weather.thunder'] },
+  { value: WeatherCondition.CHANGING_CONDITIONS, label: t['weather.changing'] },
+  { value: WeatherCondition.OTHER, label: t['weather.other'] },
 ];
 
+// ─── Arrow score button options ───────────────────────────────────────────────
+// These labels are numeric / single-letter ('X', 'M') and don't need
+// translation.
 export const ARROW_SCORE_OPTIONS = [
   { label: 'X', value: 10 },
   { label: '10', value: 10 },

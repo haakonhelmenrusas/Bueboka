@@ -150,4 +150,142 @@ export interface TranslationKeys {
   'arrowDetails.vanes': string;
   'arrowDetails.nock': string;
   'arrowDetails.notes': string;
+
+  // Shared form fields (used by practice + competition forms)
+  'form.date': string;
+  'form.category': string;
+  'form.environment': string;
+  'form.location': string;
+  'form.locationPlaceholder': string;
+  'form.weather': string;
+  'form.optional': string;
+  'form.notes': string;
+  'form.bow': string;
+  'form.arrows': string;
+  'form.selectBowPlaceholder': string;
+  'form.selectArrowsPlaceholder': string;
+  'form.equipment': string;
+  'form.prevStep': string;
+  'form.nextStep': string;
+  'form.save': string;
+  'form.saving': string;
+  'form.distance': string;
+  'form.distanceFrom': string;
+  'form.distanceTo': string;
+  'form.target': string;
+  'form.choose': string;
+  'form.arrowsWithScore': string;
+  'form.arrowsPerEnd': string;
+  'form.arrowsWithoutScore': string;
+  'form.score': string;
+
+  // Practice category options (used in the form Category select)
+  'practiceCategory.skiveIndoor': string;
+  'practiceCategory.skiveOutdoor': string;
+  'practiceCategory.jakt3D': string;
+  'practiceCategory.felt': string;
+
+  // Environment options (used in the form Environment select)
+  'environment.indoor': string;
+  'environment.outdoor': string;
+
+  // Weather chip labels
+  'weather.sun': string;
+  'weather.clouded': string;
+  'weather.clear': string;
+  'weather.rain': string;
+  'weather.wind': string;
+  'weather.snow': string;
+  'weather.fog': string;
+  'weather.thunder': string;
+  'weather.changing': string;
+  'weather.other': string;
+
+  // Practice form step indicator + navigation
+  'practiceStep.info': string;
+  'practiceStep.rounds': string;
+  'practiceStep.scoring': string;
+  'practiceStep.reflection': string;
+  'practiceStep.goTo': string;
+
+  // Competition form step indicator
+  'competitionStep.info': string;
+  'competitionStep.details': string;
+  'competitionStep.rounds': string;
+  'competitionStep.reflection': string;
+
+  // Target type labels (used in the rounds step Target select)
+  'target.size40cm': string;
+  'target.size60cm': string;
+  'target.size80cm': string;
+  'target.size122cm': string;
+  'target.figure3D': string;
+  'target.field24cm': string;
+  'target.field60cm': string;
+  'target.other': string;
+
+  // Round card UI
+  'round.title': string;
+  'round.remove': string;
+  'round.add': string;
+  'round.maxLimit': string;
+  'round.noDetails': string;
+
+  // Scoring step UI
+  'scoring.methodSection': string;
+  'scoring.methodButtons': string;
+  'scoring.methodTarget': string;
+  'scoring.startShooting': string;
+  'scoring.noArrowRounds': string;
+  'scoring.totalScoreLabel': string;
+  'scoring.points': string;
+  'scoring.manualScoreHint': string;
+  'scoring.previousEnd': string;
+  'scoring.nextEnd': string;
+  'scoring.endLabel': string;
+  'scoring.of': string;
+  'scoring.arrowsRecorded': string;
+  'scoring.sum': string;
+  'scoring.editingArrowPrefix': string;
+  'scoring.allRegistered': string;
+  'scoring.scoreSuffix': string;
+  'scoring.editArrowAriaPrefix': string;
+
+  // Reflection step UI
+  'reflection.ratingLabel': string;
+  'reflection.ratingPromptPractice': string;
+  'reflection.ratingPromptCompetition': string;
+  'reflection.ratingAriaPrefix': string;
+  'reflection.notesPlaceholder': string;
+
+  // Practice form (titles, confirms, errors)
+  'practiceForm.editTitle': string;
+  'practiceForm.newTitle': string;
+  'practiceForm.deleteTitle': string;
+  'practiceForm.deleteMessage': string;
+  'practiceForm.discardTitle': string;
+  'practiceForm.discardMessage': string;
+  'practiceForm.discardConfirm': string;
+  'practiceForm.discardCancel': string;
+  'practiceForm.saveError': string;
+  'practiceForm.startShootingError': string;
+
+  // Competition form (titles, fields, errors)
+  'competitionForm.editTitle': string;
+  'competitionForm.newTitle': string;
+  'competitionForm.deleteTitle': string;
+  'competitionForm.deleteMessage': string;
+  'competitionForm.saveError': string;
+  'competitionForm.nameRequired': string;
+  'competitionForm.nameLabel': string;
+  'competitionForm.namePlaceholder': string;
+  'competitionForm.organizer': string;
+  'competitionForm.organizerPlaceholder': string;
+  'competitionForm.placement': string;
+  'competitionForm.placementPlaceholder': string;
+  'competitionForm.participants': string;
+  'competitionForm.participantsPlaceholder': string;
+  'competitionForm.personalBest': string;
+  'competitionForm.personalBestHint': string;
+  'competitionForm.locationPlaceholder': string;
 }

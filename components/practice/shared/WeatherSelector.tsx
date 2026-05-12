@@ -2,7 +2,8 @@ import React from 'react';
 import { View, Text, Pressable, StyleSheet } from 'react-native';
 import { WeatherCondition } from '@/types';
 import { colors } from '@/styles/colors';
-import { WEATHER_OPTIONS } from './formConstants';
+import { useTranslation } from '@/contexts';
+import { getWeatherOptions } from './formConstants';
 
 interface WeatherSelectorProps {
   selectedWeather: WeatherCondition[];
@@ -10,11 +11,13 @@ interface WeatherSelectorProps {
 }
 
 export function WeatherSelector({ selectedWeather, onToggleWeather }: WeatherSelectorProps) {
+  const { t } = useTranslation();
+  const options = getWeatherOptions(t);
   return (
     <View style={styles.weatherSection}>
-      <Text style={styles.weatherLabel}>Vær (valgfritt)</Text>
+      <Text style={styles.weatherLabel}>{`${t['form.weather']} ${t['form.optional']}`}</Text>
       <View style={styles.weatherChips}>
-        {WEATHER_OPTIONS.map((opt) => {
+        {options.map((opt) => {
           const active = selectedWeather.includes(opt.value);
           return (
             <Pressable
