@@ -2,6 +2,7 @@ import { View, Text } from 'react-native';
 import { Bow, Arrows } from '@/types';
 import BowCard from '@/components/home/bowCard/BowCard';
 import ArrowCard from '@/components/home/arrowCard/ArrowCard';
+import { useTranslation } from '@/contexts';
 import { styles } from './EquipmentSectionStyles';
 
 interface Props {
@@ -12,15 +13,16 @@ interface Props {
 }
 
 export function EquipmentSection({ bows, arrows, onSelectBow, onSelectArrows }: Props) {
+  const { t } = useTranslation();
   return (
     <View style={styles.container}>
       <View>
         <View style={styles.header}>
-          <Text style={styles.title}>Buer</Text>
+          <Text style={styles.title}>{t['equipment.bows']}</Text>
         </View>
         {bows.length === 0 ? (
           <View style={styles.placeholder}>
-            <Text style={styles.placeholderText}>Ingen buer lagt til ennå</Text>
+            <Text style={styles.placeholderText}>{t['equipment.noBows']}</Text>
           </View>
         ) : (
           <View style={styles.list}>
@@ -33,11 +35,11 @@ export function EquipmentSection({ bows, arrows, onSelectBow, onSelectArrows }: 
 
       <View>
         <View style={styles.header}>
-          <Text style={styles.title}>Piler</Text>
+          <Text style={styles.title}>{t['equipment.arrows']}</Text>
         </View>
         {arrows.length === 0 ? (
           <View style={styles.placeholder}>
-            <Text style={styles.placeholderText}>Ingen piler lagt til ennå</Text>
+            <Text style={styles.placeholderText}>{t['equipment.noArrows']}</Text>
           </View>
         ) : (
           <View style={styles.list}>

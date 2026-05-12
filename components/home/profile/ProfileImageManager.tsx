@@ -3,6 +3,7 @@ import { Button } from '@/components/common';
 import { useState } from 'react';
 import * as ImagePicker from 'expo-image-picker';
 import * as FileSystem from 'expo-file-system';
+import { useTranslation } from '@/contexts';
 import { styles } from './ProfileImageManagerStyles';
 
 const MAX_IMAGE_SIZE_BYTES = 5 * 1024 * 1024;
@@ -16,6 +17,7 @@ interface Props {
 }
 
 export default function ProfileImageManager({ userName, avatarUrl, onUpload, onRemove, size }: Props) {
+  const { t } = useTranslation();
   const avatarSize = size ?? 72;
   const fontSize = size ? Math.round(size * 0.44) : 32;
   const [isUploading, setIsUploading] = useState(false);
@@ -29,7 +31,7 @@ export default function ProfileImageManager({ userName, avatarUrl, onUpload, onR
     const asked = await ImagePicker.requestMediaLibraryPermissionsAsync();
     if (asked.granted) return true;
 
-    Alert.alert('Ingen tilgang', 'Gi tilgang til bilder for å velge profilbilde.');
+    Alert.alert(t['avatar.noPermissionTitle'], t['avatar.noPermissionMessage']);
     return false;
   };
 
@@ -69,14 +71,14 @@ export default function ProfileImageManager({ userName, avatarUrl, onUpload, onR
       const size = await getFileSize(asset.uri, asset.fileSize);
 
       if (size !== null && size > MAX_IMAGE_SIZE_BYTES) {
-        Alert.alert('For stor fil', 'Bildet må være mindre enn 5MB.');
+        Alert.alert(t['avatar.tooLargeTitle'], t['avatar.tooLargeMessage']);
         return;
       }
 
       await onUpload(asset.uri);
-      Alert.alert('Profilbilde oppdatert', 'Profilbildet ditt er lagret.');
+      Alert.alert(t['avatar.uploadedTitle'], t['avatar.uploadedMessage']);
     } catch (error: any) {
-      Alert.alert('Kunne ikke laste opp bilde', error?.message || 'Prøv igjen.');
+      Alert.alert(t['avatar.uploadErrorTitle'], error?.message || t['common.tryAgain']);
     } finally {
       setIsUploading(false);
     }
@@ -86,18 +88,18 @@ export default function ProfileImageManager({ userName, avatarUrl, onUpload, onR
     if (!avatarUrl) return;
     setShowMenu(false);
 
-    Alert.alert('Fjern profilbilde', 'Vil du fjerne profilbildet ditt?', [
-      { text: 'Avbryt', style: 'cancel' },
+    Alert.alert(t['avatar.removeTitle'], t['avatar.removeConfirm'], [
+      { text: t['common.cancel'], style: 'cancel' },
       {
-        text: 'Fjern',
+        text: t['avatar.remove'],
         style: 'destructive',
         onPress: async () => {
           try {
             setIsRemoving(true);
             await onRemove();
-            Alert.alert('Fjernet', 'Profilbildet er fjernet.');
+            Alert.alert(t['avatar.removedTitle'], t['avatar.removedMessage']);
           } catch (error: any) {
-            Alert.alert('Kunne ikke fjerne bilde', error?.message || 'Prøv igjen.');
+            Alert.alert(t['avatar.removeErrorTitle'], error?.message || t['common.tryAgain']);
           } finally {
             setIsRemoving(false);
           }
@@ -123,11 +125,11 @@ export default function ProfileImageManager({ userName, avatarUrl, onUpload, onR
       <Modal visible={showMenu} transparent animationType="fade" onRequestClose={() => setShowMenu(false)}>
         <Pressable style={styles.modalBackdrop} onPress={() => setShowMenu(false)}>
           <View style={styles.menuContainer}>
-            <Text style={styles.menuTitle}>Profilbilde</Text>
+            <Text style={styles.menuTitle}>{t['avatar.menuTitle']}</Text>
             <View style={styles.menuActions}>
               <Button
                 buttonStyle={styles.menuButton}
-                label={isUploading ? 'Laster opp...' : 'Velg bilde'}
+                label={isUploading ? t['avatar.uploading'] : t['avatar.choose']}
                 onPress={handlePickAndUpload}
                 disabled={isUploading || isRemoving}
                 loading={isUploading}
@@ -137,13 +139,13 @@ export default function ProfileImageManager({ userName, avatarUrl, onUpload, onR
                   type="outline"
                   variant="warning"
                   buttonStyle={styles.menuButton}
-                  label={isRemoving ? 'Fjerner...' : 'Fjern bilde'}
+                  label={isRemoving ? t['avatar.removing'] : t['avatar.removeButton']}
                   onPress={handleRemove}
                   disabled={isUploading || isRemoving}
                   loading={isRemoving}
                 />
               )}
-              <Button type="outline" buttonStyle={styles.menuButton} label="Avbryt" onPress={() => setShowMenu(false)} />
+              <Button type="outline" buttonStyle={styles.menuButton} label={t['common.cancel']} onPress={() => setShowMenu(false)} />
             </View>
           </View>
         </Pressable>

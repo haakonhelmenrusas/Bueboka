@@ -5,6 +5,7 @@ import { styles } from './ProfileBoxStyles';
 import { Button, Badge } from '@/components/common';
 import { User } from '@/types';
 import { colors } from '@/styles/colors';
+import { useTranslation } from '@/contexts';
 import ProfileImageManager from './ProfileImageManager';
 
 interface Props {
@@ -16,12 +17,13 @@ interface Props {
 }
 
 export default function ProfileBox({ user, avatarUrl, onEdit, onAvatarUpload, onAvatarRemove }: Props) {
+  const { t } = useTranslation();
   return (
     <View style={styles.container}>
       <View style={styles.content}>
         <ProfileImageManager userName={user.name || user.email} avatarUrl={avatarUrl} onUpload={onAvatarUpload} onRemove={onAvatarRemove} />
         <View style={styles.info}>
-          <Text style={styles.name}>{user.name || user.email || 'Bruker'}</Text>
+          <Text style={styles.name}>{user.name || user.email || t['profileBox.fallbackName']}</Text>
           {user.club && <Text style={styles.club}>{user.club}</Text>}
           {user.skytternr && (
             <Badge variant="default" size="md" style={{ marginTop: 4 }}>
@@ -36,7 +38,7 @@ export default function ProfileBox({ user, avatarUrl, onEdit, onAvatarUpload, on
         iconPosition="left"
         type="outline"
         icon={<FontAwesomeIcon icon={faPencil} size={16} />}
-        label="Rediger profil"
+        label={t['profileBox.editProfile']}
         onPress={onEdit}
       />
     </View>
