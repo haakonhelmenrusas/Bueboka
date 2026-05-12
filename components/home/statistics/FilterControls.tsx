@@ -1,6 +1,7 @@
 import { View, Text, TouchableOpacity, ScrollView, StyleSheet } from 'react-native';
 import { colors } from '@/styles/colors';
-import { DATE_RANGE_OPTIONS, getCategoryLabel, type DateRange } from './constants';
+import { useTranslation } from '@/contexts';
+import { getDateRangeOptions, getCategoryLabel, type DateRange } from './constants';
 
 interface Props {
   dateRange: DateRange;
@@ -21,13 +22,15 @@ export function FilterControls({
   scoreCategory,
   onScoreCategoryChange,
 }: Props) {
+  const { t } = useTranslation();
   const allCategories = ['all', ...categories];
+  const dateRangeOptions = getDateRangeOptions(t);
 
   return (
     <View style={styles.container}>
-      <Text style={styles.label}>Periode</Text>
+      <Text style={styles.label}>{t['statistics.period']}</Text>
       <View style={styles.chipRow}>
-        {DATE_RANGE_OPTIONS.map((opt) => {
+        {dateRangeOptions.map((opt) => {
           const active = dateRange === opt.value;
           return (
             <TouchableOpacity
@@ -44,7 +47,7 @@ export function FilterControls({
       {/* Category for arrows chart */}
       {categories.length > 1 && (
         <>
-          <Text style={styles.label}>Kategori – Piler</Text>
+          <Text style={styles.label}>{t['statistics.arrowsCategoryLabel']}</Text>
           <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.chipRow}>
             {allCategories.map((cat) => {
               const active = arrowsCategory === cat;
@@ -54,13 +57,13 @@ export function FilterControls({
                   style={[styles.chip, active && styles.chipActive]}
                   onPress={() => onArrowsCategoryChange(cat)}
                   activeOpacity={0.7}>
-                  <Text style={[styles.chipText, active && styles.chipTextActive]}>{getCategoryLabel(cat)}</Text>
+                  <Text style={[styles.chipText, active && styles.chipTextActive]}>{getCategoryLabel(cat, t)}</Text>
                 </TouchableOpacity>
               );
             })}
           </ScrollView>
 
-          <Text style={styles.label}>Kategori – Score</Text>
+          <Text style={styles.label}>{t['statistics.scoreCategoryLabel']}</Text>
           <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.chipRow}>
             {allCategories.map((cat) => {
               const active = scoreCategory === cat;
@@ -70,7 +73,7 @@ export function FilterControls({
                   style={[styles.chip, active && styles.chipActive]}
                   onPress={() => onScoreCategoryChange(cat)}
                   activeOpacity={0.7}>
-                  <Text style={[styles.chipText, active && styles.chipTextActive]}>{getCategoryLabel(cat)}</Text>
+                  <Text style={[styles.chipText, active && styles.chipTextActive]}>{getCategoryLabel(cat, t)}</Text>
                 </TouchableOpacity>
               );
             })}

@@ -1,5 +1,6 @@
 import { Text, View } from 'react-native';
 import { PracticeFilter } from '@/types';
+import { useTranslation } from '@/contexts';
 import { styles } from './AktivitetStyles';
 
 interface EmptyStateProps {
@@ -7,10 +8,11 @@ interface EmptyStateProps {
 }
 
 export default function EmptyState({ filter }: EmptyStateProps) {
+  const { t } = useTranslation();
   const getMessage = () => {
-    if (filter === 'TRENING') return 'Ingen treninger lagt til ennå';
-    if (filter === 'KONKURRANSE') return 'Ingen konkurranser lagt til ennå';
-    return 'Ingen treninger eller konkurranser ennå';
+    if (filter === 'TRENING') return t['aktivitet.emptyPractices'];
+    if (filter === 'KONKURRANSE') return t['aktivitet.emptyCompetitions'];
+    return t['recentActivity.empty'];
   };
 
   return (

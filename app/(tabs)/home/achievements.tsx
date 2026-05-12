@@ -11,11 +11,13 @@ import { colors } from '@/styles/colors';
 import { achievementRepository } from '@/services/repositories';
 import { AchievementBadge } from '@/components/achievements/AchievementBadge';
 import { AchievementData, AchievementProgress, FilterCategory, FilterRarity, FilterStatus } from '@/types/Achievement';
+import { useTranslation } from '@/contexts';
 import { styles } from '@/components/achievements/AchievementsScreenStyles';
 
 export default function AchievementsScreen() {
   const router = useRouter();
   const insets = useSafeAreaInsets();
+  const { t } = useTranslation();
 
   const [data, setData] = useState<AchievementData | null>(null);
   const [loading, setLoading] = useState(true);
@@ -32,12 +34,12 @@ export default function AchievementsScreen() {
       const result = await achievementRepository.getAll();
       setData(result);
     } catch {
-      setError('Kunne ikke hente prestasjoner');
+      setError(t['achievements.fetchError']);
     } finally {
       setLoading(false);
       setRefreshing(false);
     }
-  }, []);
+  }, [t]);
 
   useFocusEffect(
     useCallback(() => {
@@ -73,16 +75,16 @@ export default function AchievementsScreen() {
             <View style={styles.headerTextWrap}>
               <View style={styles.titleRow}>
                 <FontAwesomeIcon icon={faTrophy} size={22} color={colors.warning} />
-                <Text style={styles.title}>Mine prestasjoner</Text>
+                <Text style={styles.title}>{t['home.myAchievements']}</Text>
               </View>
-              <Text style={styles.subtitle}>Lås opp prestasjoner ved å trene og delta i konkurranser</Text>
+              <Text style={styles.subtitle}>{t['achievements.subtitle']}</Text>
             </View>
           </View>
 
           {loading && (
             <View style={styles.centered}>
               <ActivityIndicator size="large" color={colors.white} />
-              <Text style={styles.loadingText}>Laster prestasjoner...</Text>
+              <Text style={styles.loadingText}>{t['achievements.loading']}</Text>
             </View>
           )}
 
@@ -90,7 +92,7 @@ export default function AchievementsScreen() {
             <View style={styles.errorBox}>
               <Text style={styles.errorText}>❌ {error}</Text>
               <TouchableOpacity style={styles.retryButton} onPress={loadData}>
-                <Text style={styles.retryText}>Prøv igjen</Text>
+                <Text style={styles.retryText}>{t['achievements.retry']}</Text>
               </TouchableOpacity>
             </View>
           )}
@@ -98,47 +100,47 @@ export default function AchievementsScreen() {
           {!loading && !error && data && (
             <>
               <View style={styles.summaryGrid}>
-                <SummaryCard label="Låst opp" value={data.summary.totalUnlocked} />
-                <SummaryCard label="Totalt" value={data.summary.totalAchievements} />
-                <SummaryCard label="Fullført" value={`${data.summary.completionPercentage}%`} />
-                <SummaryCard label="Poeng" value={data.summary.totalPoints} />
+                <SummaryCard label={t['achievements.summaryUnlocked']} value={data.summary.totalUnlocked} />
+                <SummaryCard label={t['statsSummary.total']} value={data.summary.totalAchievements} />
+                <SummaryCard label={t['achievements.summaryCompletion']} value={`${data.summary.completionPercentage}%`} />
+                <SummaryCard label={t['achievements.summaryPoints']} value={data.summary.totalPoints} />
               </View>
 
               <View style={styles.filtersContainer}>
                 <FilterRow
-                  label="Status"
+                  label={t['achievements.filterStatus']}
                   options={[
-                    { key: 'all', label: 'Alle' },
-                    { key: 'unlocked', label: 'Låst opp' },
-                    { key: 'locked', label: 'Låst' },
+                    { key: 'all', label: t['aktivitet.filterAll'] },
+                    { key: 'unlocked', label: t['achievements.filterStatusUnlocked'] },
+                    { key: 'locked', label: t['achievements.filterStatusLocked'] },
                   ]}
                   activeKey={filterStatus}
                   onSelect={(k) => setFilterStatus(k as FilterStatus)}
                 />
                 <FilterRow
-                  label="Kategori"
+                  label={t['form.category']}
                   options={[
-                    { key: 'all', label: 'Alle' },
-                    { key: 'MILESTONE', label: 'Milepæler' },
-                    { key: 'STREAK', label: 'Rekker' },
-                    { key: 'PERFORMANCE', label: 'Prestasjon' },
-                    { key: 'COMPETITION', label: 'Konkurranse' },
-                    { key: 'DEDICATION', label: 'Dedikasjon' },
-                    { key: 'EXPLORATION', label: 'Utforskning' },
-                    { key: 'SPECIAL', label: 'Spesial' },
+                    { key: 'all', label: t['aktivitet.filterAll'] },
+                    { key: 'MILESTONE', label: t['achievements.filterMilestone'] },
+                    { key: 'STREAK', label: t['achievements.filterStreak'] },
+                    { key: 'PERFORMANCE', label: t['achievements.filterPerformance'] },
+                    { key: 'COMPETITION', label: t['achievements.filterCompetition'] },
+                    { key: 'DEDICATION', label: t['achievements.filterDedication'] },
+                    { key: 'EXPLORATION', label: t['achievements.filterExploration'] },
+                    { key: 'SPECIAL', label: t['achievements.filterSpecial'] },
                   ]}
                   activeKey={filterCategory}
                   onSelect={(k) => setFilterCategory(k as FilterCategory)}
                 />
                 <FilterRow
-                  label="Sjeldenhet"
+                  label={t['achievements.filterRarity']}
                   options={[
-                    { key: 'all', label: 'Alle' },
-                    { key: 'COMMON', label: 'Vanlig' },
-                    { key: 'UNCOMMON', label: 'Uvanlig' },
-                    { key: 'RARE', label: 'Sjelden' },
-                    { key: 'EPIC', label: 'Episk' },
-                    { key: 'LEGENDARY', label: 'Legendarisk' },
+                    { key: 'all', label: t['aktivitet.filterAll'] },
+                    { key: 'COMMON', label: t['achievements.rarityCommon'] },
+                    { key: 'UNCOMMON', label: t['achievements.rarityUncommon'] },
+                    { key: 'RARE', label: t['achievements.rarityRare'] },
+                    { key: 'EPIC', label: t['achievements.rarityEpic'] },
+                    { key: 'LEGENDARY', label: t['achievements.rarityLegendary'] },
                   ]}
                   activeKey={filterRarity}
                   onSelect={(k) => setFilterRarity(k as FilterRarity)}
@@ -156,8 +158,8 @@ export default function AchievementsScreen() {
               ) : (
                 <View style={styles.emptyState}>
                   <FontAwesomeIcon icon={faStar} size={40} color={colors.white30} />
-                  <Text style={styles.emptyTitle}>Ingen merker funnet</Text>
-                  <Text style={styles.emptySubtitle}>Prøv å endre filtrene dine</Text>
+                  <Text style={styles.emptyTitle}>{t['achievements.emptyTitle']}</Text>
+                  <Text style={styles.emptySubtitle}>{t['achievements.emptySubtitle']}</Text>
                 </View>
               )}
             </>

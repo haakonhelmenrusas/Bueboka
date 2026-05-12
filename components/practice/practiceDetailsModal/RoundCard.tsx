@@ -2,6 +2,7 @@ import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { End, CompetitionRound } from '@/types';
 import { colors } from '@/styles/colors';
+import { useTranslation } from '@/contexts';
 
 interface RoundCardProps {
   end?: End;
@@ -10,6 +11,7 @@ interface RoundCardProps {
 }
 
 export function RoundCard({ end, round, roundNumber }: RoundCardProps) {
+  const { t } = useTranslation();
   const data = end || round;
   if (!data) return null;
 
@@ -31,31 +33,31 @@ export function RoundCard({ end, round, roundNumber }: RoundCardProps) {
       <View style={styles.roundMeta}>
         {roundNumber !== undefined && (
           <View style={styles.roundMetaItem}>
-            <Text style={styles.roundMetaLabel}>Runde</Text>
+            <Text style={styles.roundMetaLabel}>{t['round.title']}</Text>
             <Text style={styles.roundMetaValue}>{roundNumber}</Text>
           </View>
         )}
         {distanceText && (
           <View style={styles.roundMetaItem}>
-            <Text style={styles.roundMetaLabel}>Avstand</Text>
+            <Text style={styles.roundMetaLabel}>{t['roundCard.distance']}</Text>
             <Text style={styles.roundMetaValue}>{distanceText}</Text>
           </View>
         )}
         {targetText && (
           <View style={styles.roundMetaItem}>
-            <Text style={styles.roundMetaLabel}>Skive</Text>
+            <Text style={styles.roundMetaLabel}>{t['form.target']}</Text>
             <Text style={styles.roundMetaValue}>{targetText}</Text>
           </View>
         )}
         {scoreValue > 0 && (
           <View style={styles.roundMetaItem}>
-            <Text style={styles.roundMetaLabel}>Poeng</Text>
+            <Text style={styles.roundMetaLabel}>{t['practiceStep.scoring']}</Text>
             <Text style={styles.roundMetaValue}>{scoreValue}</Text>
           </View>
         )}
         {arrowsCount > 0 && (
           <View style={styles.roundMetaItem}>
-            <Text style={styles.roundMetaLabel}>Piler</Text>
+            <Text style={styles.roundMetaLabel}>{t['practiceDetails.arrowsLabel']}</Text>
             <Text style={styles.roundMetaValue}>{arrowsCount}</Text>
           </View>
         )}

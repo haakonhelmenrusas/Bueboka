@@ -1,97 +1,98 @@
 import { BowType, Material, PracticeCategory, WeatherCondition } from '@/types';
+import type { TranslationKeys } from '@/lib/i18n';
 
 /**
- * Get Norwegian label for bow type
+ * Get the localized label for a bow type.
  */
-export function getBowTypeLabel(type: BowType): string {
+export function getBowTypeLabel(type: BowType, t: TranslationKeys): string {
   switch (type) {
     case BowType.RECURVE:
-      return 'Recurve';
+      return t['bowType.recurve'];
     case BowType.COMPOUND:
-      return 'Compound';
+      return t['bowType.compound'];
     case BowType.LONGBOW:
-      return 'Langbue';
+      return t['bowType.longbow'];
     case BowType.BAREBOW:
-      return 'Barebow';
+      return t['bowType.barebow'];
     case BowType.HORSEBOW:
-      return 'Hestebue';
+      return t['bowType.horsebow'];
     case BowType.TRADITIONAL:
-      return 'Tradisjonell';
+      return t['bowType.traditional'];
     case BowType.OTHER:
-      return 'Annet';
+      return t['bowType.other'];
     default:
       return type;
   }
 }
 
 /**
- * Get Norwegian label for arrow material
+ * Get the localized label for an arrow material.
  */
-export function getArrowMaterialLabel(material: Material): string {
+export function getArrowMaterialLabel(material: Material, t: TranslationKeys): string {
   switch (material) {
     case Material.KARBON:
-      return 'Karbon';
+      return t['arrowMaterial.karbon'];
     case Material.ALUMINIUM:
-      return 'Aluminium';
+      return t['arrowMaterial.aluminium'];
     case Material.TREVERK:
-      return 'Treverk';
+      return t['arrowMaterial.treverk'];
     default:
       return material;
   }
 }
 
 /**
- * Get Norwegian label for practice category
+ * Get the localized label for a practice category.
  */
-export function getPracticeCategoryLabel(category: PracticeCategory): string {
+export function getPracticeCategoryLabel(category: PracticeCategory, t: TranslationKeys): string {
   switch (category) {
     case PracticeCategory.SKIVE_INDOOR:
-      return 'Skive innendørs';
+      return t['practiceCategory.skiveIndoor'];
     case PracticeCategory.SKIVE_OUTDOOR:
-      return 'Skive utendørs';
+      return t['practiceCategory.skiveOutdoor'];
     case PracticeCategory.JAKT_3D:
-      return 'Jakt 3D';
+      return t['practiceCategory.jakt3D'];
     case PracticeCategory.FELT:
-      return 'Felt';
+      return t['practiceCategory.felt'];
     default:
       return category;
   }
 }
 
 /**
- * Get emoji + label for weather condition
+ * Get emoji + localized label for a single weather condition.
  */
-export function getWeatherConditionLabel(condition: WeatherCondition): string {
+export function getWeatherConditionLabel(condition: WeatherCondition, t: TranslationKeys): string {
   switch (condition) {
     case WeatherCondition.SUN:
-      return '☀️ Sol';
+      return t['weather.sun'];
     case WeatherCondition.CLOUDED:
-      return '⛅ Skyet';
+      return t['weather.clouded'];
     case WeatherCondition.CLEAR:
-      return '🌤 Klart';
+      return t['weather.clear'];
     case WeatherCondition.RAIN:
-      return '🌧 Regn';
+      return t['weather.rain'];
     case WeatherCondition.WIND:
-      return '💨 Vind';
+      return t['weather.wind'];
     case WeatherCondition.SNOW:
-      return '❄️ Snø';
+      return t['weather.snow'];
     case WeatherCondition.FOG:
-      return '🌫 Tåke';
+      return t['weather.fog'];
     case WeatherCondition.THUNDER:
-      return '⛈ Torden';
+      return t['weather.thunder'];
     case WeatherCondition.CHANGING_CONDITIONS:
-      return '🔄 Skiftende';
+      return t['weather.changing'];
     case WeatherCondition.OTHER:
-      return '🌡 Annet';
+      return t['weather.other'];
     default:
       return condition;
   }
 }
 
 /**
- * Format multiple weather conditions into a single string
+ * Format multiple weather conditions into a single localized string.
  */
-export function formatWeatherConditions(conditions: WeatherCondition[]): string {
+export function formatWeatherConditions(conditions: WeatherCondition[], t: TranslationKeys): string {
   if (!conditions || conditions.length === 0) return '';
-  return conditions.map(getWeatherConditionLabel).join(', ');
+  return conditions.map((c) => getWeatherConditionLabel(c, t)).join(', ');
 }

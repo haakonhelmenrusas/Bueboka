@@ -288,4 +288,118 @@ export interface TranslationKeys {
   'competitionForm.personalBest': string;
   'competitionForm.personalBestHint': string;
   'competitionForm.locationPlaceholder': string;
+
+  // Activity feed tab
+  'aktivitet.title': string;
+  'aktivitet.filterAll': string;
+  'aktivitet.filterPractices': string;
+  'aktivitet.filterCompetitions': string;
+  'aktivitet.emptyPractices': string;
+  'aktivitet.emptyCompetitions': string;
+  'aktivitet.loadMore': string;
+  'aktivitet.remaining': string;
+
+  // Practice card (used on dashboard + activity feed)
+  'practiceCard.badgePractice': string;
+  'practiceCard.badgeCompetition': string;
+  'practiceCard.arrowsSuffix': string;
+  'practiceCard.placementLabel': string;
+  'practiceCard.envIndoor': string;
+  'practiceCard.envOutdoor': string;
+
+  // Practice details modal
+  'practiceDetails.confirmDeleteTitle': string;
+  'practiceDetails.deletePracticeConfirm': string;
+  'practiceDetails.deleteCompetitionConfirm': string;
+  'practiceDetails.deleteFailed': string;
+  'practiceDetails.share': string;
+  'practiceDetails.shareComingSoon': string;
+  'practiceDetails.totalScore': string;
+  'practiceDetails.arrowsShot': string;
+  'practiceDetails.bowLabel': string;
+  'practiceDetails.arrowsLabel': string;
+  'practiceDetails.placementOf': string;
+  'practiceDetails.unscoredTitle': string;
+  'practiceDetails.unscoredCountSuffix': string;
+  'practiceDetails.edit': string;
+  'practiceDetails.close': string;
+  'practiceDetails.deleting': string;
+
+  // Round card (in details modal)
+  'roundCard.distance': string;
+
+  // Bow types (from labelUtils)
+  'bowType.recurve': string;
+  'bowType.compound': string;
+  'bowType.longbow': string;
+  'bowType.barebow': string;
+  'bowType.horsebow': string;
+  'bowType.traditional': string;
+  'bowType.other': string;
+
+  // Arrow materials (from labelUtils)
+  'arrowMaterial.karbon': string;
+  'arrowMaterial.aluminium': string;
+  'arrowMaterial.treverk': string;
+
+  // Achievements screen
+  'achievements.fetchError': string;
+  'achievements.subtitle': string;
+  'achievements.loading': string;
+  'achievements.retry': string;
+  'achievements.summaryUnlocked': string;
+  'achievements.summaryCompletion': string;
+  'achievements.summaryPoints': string;
+  'achievements.filterStatus': string;
+  'achievements.filterStatusUnlocked': string;
+  'achievements.filterStatusLocked': string;
+  'achievements.filterMilestone': string;
+  'achievements.filterStreak': string;
+  'achievements.filterPerformance': string;
+  'achievements.filterCompetition': string;
+  'achievements.filterDedication': string;
+  'achievements.filterExploration': string;
+  'achievements.filterSpecial': string;
+  'achievements.filterRarity': string;
+  'achievements.rarityCommon': string;
+  'achievements.rarityUncommon': string;
+  'achievements.rarityRare': string;
+  'achievements.rarityEpic': string;
+  'achievements.rarityLegendary': string;
+  'achievements.emptyTitle': string;
+  'achievements.emptySubtitle': string;
+  'achievements.unlockedBadge': string;
+
+  // Statistics screen
+  'statistics.title': string;
+  'statistics.subtitle': string;
+  'statistics.loading': string;
+  'statistics.fetchError': string;
+  'statistics.emptyTitle': string;
+  'statistics.emptySubtitle': string;
+  'statistics.period': string;
+  'statistics.date7days': string;
+  'statistics.date30days': string;
+  'statistics.date90days': string;
+  'statistics.arrowsCategoryLabel': string;
+  'statistics.scoreCategoryLabel': string;
+  'statistics.categorySkiveIndoor': string;
+  'statistics.categorySkiveOutdoor': string;
+  'statistics.categoryJakt3D': string;
+  'statistics.categoryFelt': string;
+  'statistics.breakdownTitle': string;
+  'statistics.sessions': string;
+  'statistics.totalArrows': string;
+  'statistics.scoredArrows': string;
+  'statistics.unscored': string;
+  'statistics.arrowsPerSession': string;
+  'statistics.avgScorePerArrow': string;
+  'statistics.arrowsChartTitle': string;
+  'statistics.arrowsChartCardTitle': string;
+  'statistics.noDataForPeriod': string;
+  'statistics.scoreChartTitle': string;
+  'statistics.scoreChartCardTitle': string;
+  'statistics.noScoredForPeriod': string;
+  'statistics.legendTraining': string;
+  'statistics.legendCompetition': string;
 }

@@ -2,6 +2,7 @@ import { View, Text, Dimensions, StyleSheet } from 'react-native';
 import { BarChart } from 'react-native-gifted-charts';
 import type { Series } from '@/types';
 import { colors } from '@/styles/colors';
+import { useTranslation } from '@/contexts';
 import { SERIES_COLORS, formatDate } from './constants';
 
 const CHART_WIDTH = Dimensions.get('window').width - 96;
@@ -11,7 +12,7 @@ interface Props {
   selectedCategory: string;
 }
 
-function buildStackData(series: Series[], category: string) {
+function buildStackData(series: Series[], category: string, locale: 'no' | 'en') {
   const allDates = new Set<string>();
   series.forEach((s) =>
     s.data.forEach((d) => {
@@ -24,7 +25,7 @@ function buildStackData(series: Series[], category: string) {
   return Array.from(allDates)
     .sort()
     .map((date) => ({
-      label: formatDate(date),
+      label: formatDate(date, locale),
       stacks: series
         .map((s, i) => ({
           value: s.data
@@ -38,17 +39,18 @@ function buildStackData(series: Series[], category: string) {
 }
 
 export function ArrowsChart({ series, selectedCategory }: Props) {
-  const stackData = buildStackData(series, selectedCategory);
+  const { t, locale } = useTranslation();
+  const stackData = buildStackData(series, selectedCategory, locale);
 
   return (
     <View style={styles.container}>
-      <Text style={styles.sectionTitle}>Piler skytt per dato</Text>
+      <Text style={styles.sectionTitle}>{t['statistics.arrowsChartTitle']}</Text>
       <View style={styles.card}>
-        <Text style={styles.cardTitle}>Antall piler</Text>
+        <Text style={styles.cardTitle}>{t['statistics.arrowsChartCardTitle']}</Text>
 
         {stackData.length === 0 ? (
           <View style={styles.empty}>
-            <Text style={styles.emptyText}>Ingen data for valgt periode/kategori</Text>
+            <Text style={styles.emptyText}>{t['statistics.noDataForPeriod']}</Text>
           </View>
         ) : (
           <>

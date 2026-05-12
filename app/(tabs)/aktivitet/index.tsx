@@ -13,12 +13,14 @@ import ArrowForm from '@/components/home/arrowForm/ArrowForm';
 import { MobileActionButton } from '@/components/common';
 import { PracticeDetailsModal } from '@/components/practice/practiceDetailsModal';
 import { AktivitetHeader, PracticeList } from '@/components/aktivitet';
+import { useTranslation } from '@/contexts';
 import { styles } from '@/components/aktivitet/AktivitetStyles';
 
 const PAGE_SIZE = 15;
 
 export default function AktivitetScreen() {
   const insets = useSafeAreaInsets();
+  const { t } = useTranslation();
 
   const [bows, setBows] = useState<Bow[]>([]);
   const [arrows, setArrows] = useState<Arrows[]>([]);
@@ -101,7 +103,7 @@ export default function AktivitetScreen() {
         setSelectedCompetitionForDetails(full);
       } catch (error) {
         console.error('[AktivitetScreen] Error fetching competition:', error);
-        Alert.alert('Kunne ikke laste konkurranse', 'Konkurransen kunne ikke lastes. Prøv igjen senere.');
+        Alert.alert(t['home.loadCompetitionErrorTitle'], t['home.loadCompetitionErrorDesc']);
         setSelectedCompetitionForDetails(null);
       }
     } else {
@@ -110,7 +112,7 @@ export default function AktivitetScreen() {
         setSelectedPracticeForDetails(full);
       } catch (error) {
         console.error('[AktivitetScreen] Error fetching practice:', error);
-        Alert.alert('Kunne ikke laste trening', 'Treningen kunne ikke lastes. Prøv igjen senere.');
+        Alert.alert(t['home.loadPracticeErrorTitle'], t['home.loadPracticeErrorDesc']);
         setSelectedPracticeForDetails(null);
       }
     }

@@ -7,18 +7,22 @@ import { faHouse } from '@fortawesome/free-solid-svg-icons/faHouse';
 import { faTree } from '@fortawesome/free-solid-svg-icons/faTree';
 import { Environment } from '@/types';
 import { colors } from '@/styles/colors';
+import { useTranslation } from '@/contexts';
 
 interface PracticeTypeBadgeProps {
   practiceType?: 'TRENING' | 'KONKURRANSE' | null;
 }
 
 export function PracticeTypeBadge({ practiceType }: PracticeTypeBadgeProps) {
+  const { t } = useTranslation();
   const isCompetition = practiceType === 'KONKURRANSE';
 
   return (
     <View style={[styles.badge, isCompetition ? styles.badgeCompetition : styles.badgePractice]}>
       <FontAwesomeIcon icon={isCompetition ? faTrophy : faBullseye} size={14} color={isCompetition ? colors.warning : colors.white} />
-      <Text style={[styles.badgeText, isCompetition && styles.badgeTextCompetition]}>{isCompetition ? 'Konkurranse' : 'Trening'}</Text>
+      <Text style={[styles.badgeText, isCompetition && styles.badgeTextCompetition]}>
+        {isCompetition ? t['practiceCard.badgeCompetition'] : t['practiceCard.badgePractice']}
+      </Text>
     </View>
   );
 }
@@ -28,6 +32,7 @@ interface EnvironmentBadgeProps {
 }
 
 export function EnvironmentBadge({ environment }: EnvironmentBadgeProps) {
+  const { t } = useTranslation();
   if (!environment) return null;
 
   const isIndoor = environment === Environment.INDOOR || environment === 'INDOOR';
@@ -35,7 +40,7 @@ export function EnvironmentBadge({ environment }: EnvironmentBadgeProps) {
   return (
     <View style={[styles.badge, styles.badgeEnvironment]}>
       <FontAwesomeIcon icon={isIndoor ? faHouse : faTree} size={14} color={colors.secondary} />
-      <Text style={styles.badgeTextEnvironment}>{isIndoor ? 'Innendørs' : 'Utendørs'}</Text>
+      <Text style={styles.badgeTextEnvironment}>{isIndoor ? t['environment.indoor'] : t['environment.outdoor']}</Text>
     </View>
   );
 }

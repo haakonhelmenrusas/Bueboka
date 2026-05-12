@@ -1,12 +1,7 @@
 import { Text, TouchableOpacity, View } from 'react-native';
 import { PracticeFilter } from '@/types';
+import { useTranslation } from '@/contexts';
 import { styles } from './AktivitetStyles';
-
-const FILTERS: { label: string; value: PracticeFilter }[] = [
-  { label: 'Alle', value: 'all' },
-  { label: 'Treninger', value: 'TRENING' },
-  { label: 'Konkurranser', value: 'KONKURRANSE' },
-];
 
 interface FilterTabsProps {
   filter: PracticeFilter;
@@ -14,9 +9,16 @@ interface FilterTabsProps {
 }
 
 export default function FilterTabs({ filter, onFilterChange }: FilterTabsProps) {
+  const { t } = useTranslation();
+  const filters: { label: string; value: PracticeFilter }[] = [
+    { label: t['aktivitet.filterAll'], value: 'all' },
+    { label: t['aktivitet.filterPractices'], value: 'TRENING' },
+    { label: t['aktivitet.filterCompetitions'], value: 'KONKURRANSE' },
+  ];
+
   return (
     <View style={styles.filterRow}>
-      {FILTERS.map((f) => (
+      {filters.map((f) => (
         <TouchableOpacity
           key={f.value}
           style={[styles.filterTab, filter === f.value && styles.filterTabActive]}

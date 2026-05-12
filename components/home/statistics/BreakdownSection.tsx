@@ -9,6 +9,8 @@ import { faStar } from '@fortawesome/free-solid-svg-icons/faStar';
 import type { IconDefinition } from '@fortawesome/fontawesome-svg-core';
 import type { Series } from '@/types';
 import { colors } from '@/styles/colors';
+import { useTranslation } from '@/contexts';
+import type { TranslationKeys } from '@/lib/i18n';
 import { SERIES_COLORS } from './constants';
 
 export interface BreakdownItem {
@@ -29,7 +31,7 @@ function StatRow({ icon, label, value }: { icon: IconDefinition; label: string; 
   );
 }
 
-function BreakdownCard({ item }: { item: BreakdownItem }) {
+function BreakdownCard({ item, t }: { item: BreakdownItem; t: TranslationKeys }) {
   const totalArrows = item.data.reduce((sum, d) => sum + d.arrows, 0);
   const totalScore = item.data.reduce((sum, d) => sum + d.score, 0);
   const scoredArrows = item.data.reduce((sum, d) => sum + d.scoredArrows, 0);
@@ -47,12 +49,12 @@ function BreakdownCard({ item }: { item: BreakdownItem }) {
         </Text>
       </View>
       <View style={styles.divider} />
-      <StatRow icon={faCalendarDays} label="Antall økter" value={String(sessions)} />
-      <StatRow icon={faBullseye} label="Antall piler" value={String(totalArrows)} />
-      <StatRow icon={faCircleCheck} label="Piler med score" value={`${percentScored} %`} />
-      <StatRow icon={faCircleXmark} label="Uten score" value={`${100 - percentScored} %`} />
-      <StatRow icon={faChartLine} label="Piler per økt" value={String(avgArrows)} />
-      <StatRow icon={faStar} label="Gj. score/pil" value={avgScore} />
+      <StatRow icon={faCalendarDays} label={t['statistics.sessions']} value={String(sessions)} />
+      <StatRow icon={faBullseye} label={t['statistics.totalArrows']} value={String(totalArrows)} />
+      <StatRow icon={faCircleCheck} label={t['statistics.scoredArrows']} value={`${percentScored} %`} />
+      <StatRow icon={faCircleXmark} label={t['statistics.unscored']} value={`${100 - percentScored} %`} />
+      <StatRow icon={faChartLine} label={t['statistics.arrowsPerSession']} value={String(avgArrows)} />
+      <StatRow icon={faStar} label={t['statistics.avgScorePerArrow']} value={avgScore} />
     </View>
   );
 }
@@ -62,6 +64,7 @@ interface Props {
 }
 
 export function BreakdownSection({ series }: Props) {
+  const { t } = useTranslation();
   const items: BreakdownItem[] = series.map((s, i) => ({
     name: s.name,
     data: s.data,
@@ -70,10 +73,10 @@ export function BreakdownSection({ series }: Props) {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.sectionTitle}>Oversikt per kombinasjon</Text>
+      <Text style={styles.sectionTitle}>{t['statistics.breakdownTitle']}</Text>
       <View style={styles.grid}>
         {items.map((item) => (
-          <BreakdownCard key={item.name} item={item} />
+          <BreakdownCard key={item.name} item={item} t={t} />
         ))}
       </View>
     </View>
