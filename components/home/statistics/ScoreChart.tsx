@@ -2,6 +2,7 @@ import { View, Text, Dimensions, StyleSheet } from 'react-native';
 import { LineChart } from 'react-native-gifted-charts';
 import type { Series } from '@/types';
 import { colors } from '@/styles/colors';
+import { useTranslation } from '@/contexts';
 import { formatDate } from './constants';
 
 const CHART_WIDTH = Dimensions.get('window').width - 96;
@@ -55,15 +56,16 @@ interface Props {
 }
 
 export function ScoreChart({ series, selectedCategory }: Props) {
+  const { t, locale } = useTranslation();
   const scoreData = buildScoreData(series, selectedCategory);
 
   if (scoreData.length === 0) {
     return (
       <View style={styles.container}>
-        <Text style={styles.sectionTitle}>Score utvikling</Text>
+        <Text style={styles.sectionTitle}>{t['statistics.scoreChartTitle']}</Text>
         <View style={styles.card}>
           <View style={styles.empty}>
-            <Text style={styles.emptyText}>Ingen scorede piler for valgt periode/kategori</Text>
+            <Text style={styles.emptyText}>{t['statistics.noScoredForPeriod']}</Text>
           </View>
         </View>
       </View>
@@ -76,7 +78,7 @@ export function ScoreChart({ series, selectedCategory }: Props) {
   const trainingData = scoreData.map((d, i) => ({
     value: d.training ?? 0,
     hideDataPoint: d.training === null,
-    label: i % labelStep === 0 ? formatDate(d.date) : '',
+    label: i % labelStep === 0 ? formatDate(d.date, locale) : '',
   }));
 
   const competitionData = scoreData.map((d) => ({
@@ -88,9 +90,9 @@ export function ScoreChart({ series, selectedCategory }: Props) {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.sectionTitle}>Score utvikling</Text>
+      <Text style={styles.sectionTitle}>{t['statistics.scoreChartTitle']}</Text>
       <View style={styles.card}>
-        <Text style={styles.cardTitle}>Gjennomsnittlig score per pil</Text>
+        <Text style={styles.cardTitle}>{t['statistics.scoreChartCardTitle']}</Text>
         <LineChart
           data={trainingData}
           {...(hasCompetition ? { data2: competitionData } : {})}
@@ -130,12 +132,12 @@ export function ScoreChart({ series, selectedCategory }: Props) {
         <View style={styles.legend}>
           <View style={styles.legendItem}>
             <View style={[styles.legendLine, { backgroundColor: colors.primary }]} />
-            <Text style={styles.legendText}>Trening</Text>
+            <Text style={styles.legendText}>{t['statistics.legendTraining']}</Text>
           </View>
           {hasCompetition && (
             <View style={styles.legendItem}>
               <View style={[styles.legendLine, { backgroundColor: colors.accentYellow }]} />
-              <Text style={styles.legendText}>Konkurranse</Text>
+              <Text style={styles.legendText}>{t['statistics.legendCompetition']}</Text>
             </View>
           )}
         </View>

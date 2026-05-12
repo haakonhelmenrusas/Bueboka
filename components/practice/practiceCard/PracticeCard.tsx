@@ -7,22 +7,24 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { colors } from '@/styles/colors';
 import { getPracticeCategoryIcon } from '@/components/practice/practiceDetailsModal/constants';
 import { getPracticeCategoryLabel } from '@/utils/helpers/labelUtils';
+import { useTranslation } from '@/contexts';
 
 interface PracticeCardProps {
   card: PracticeCardItem;
   onPress?: (card: PracticeCardItem) => void;
 }
 
-function formatEnvironment(env?: string | null) {
-  if (!env) return null;
-  const normalized = env.toLowerCase();
-  if (normalized === 'inne' || normalized === 'indoor') return 'Inne';
-  if (normalized === 'ute' || normalized === 'outdoor') return 'Ute';
-  return env;
-}
-
 export default function PracticeCard({ card, onPress }: PracticeCardProps) {
+  const { t, locale } = useTranslation();
   const isCompetition = card.practiceType === 'KONKURRANSE';
+
+  function formatEnvironment(env?: string | null) {
+    if (!env) return null;
+    const normalized = env.toLowerCase();
+    if (normalized === 'inne' || normalized === 'indoor') return t['practiceCard.envIndoor'];
+    if (normalized === 'ute' || normalized === 'outdoor') return t['practiceCard.envOutdoor'];
+    return env;
+  }
 
   // Score label: "totalScore / arrowsWithScore"
   const scoreLabel = (() => {
@@ -35,7 +37,7 @@ export default function PracticeCard({ card, onPress }: PracticeCardProps) {
 
   // Format date
   const dateObj = new Date(card.date);
-  const formattedDate = dateObj.toLocaleDateString('nb-NO', {
+  const formattedDate = dateObj.toLocaleDateString(locale === 'en' ? 'en-GB' : 'nb-NO', {
     year: 'numeric',
     month: 'short',
     day: 'numeric',
@@ -62,7 +64,7 @@ export default function PracticeCard({ card, onPress }: PracticeCardProps) {
               color={isCompetition ? colors.primaryDark : colors.white}
             />
             <Text style={[styles.badgeText, isCompetition && styles.badgeTextCompetition]}>
-              {isCompetition ? 'Konkurranse' : 'Trening'}
+              {isCompetition ? t['practiceCard.badgeCompetition'] : t['practiceCard.badgePractice']}
             </Text>
           </View>
         </View>
@@ -73,14 +75,14 @@ export default function PracticeCard({ card, onPress }: PracticeCardProps) {
           {card.practiceCategory && (
             <View style={styles.detailItem}>
               {getPracticeCategoryIcon(card.practiceCategory as PracticeCategory, 14, colors.secondary)}
-              <Text style={styles.detailText}>{getPracticeCategoryLabel(card.practiceCategory as PracticeCategory)}</Text>
+              <Text style={styles.detailText}>{getPracticeCategoryLabel(card.practiceCategory as PracticeCategory, t)}</Text>
             </View>
           )}
 
           {card.arrowsShot > 0 && (
             <View style={styles.detailItem}>
               <FontAwesomeIcon icon={faArrowUp} size={14} color={colors.secondary} />
-              <Text style={styles.detailText}>{card.arrowsShot} piler</Text>
+              <Text style={styles.detailText}>{`${card.arrowsShot} ${t['practiceCard.arrowsSuffix']}`}</Text>
             </View>
           )}
 
@@ -101,7 +103,7 @@ export default function PracticeCard({ card, onPress }: PracticeCardProps) {
           {isCompetition && card.placement != null && (
             <View style={styles.detailItem}>
               <FontAwesomeIcon icon={faMedal} size={14} color={colors.secondary} />
-              <Text style={styles.detailText}>Plass: {card.placement}</Text>
+              <Text style={styles.detailText}>{`${t['practiceCard.placementLabel']} ${card.placement}`}</Text>
             </View>
           )}
         </View>

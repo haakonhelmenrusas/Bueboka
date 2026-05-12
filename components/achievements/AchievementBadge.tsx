@@ -27,6 +27,7 @@ import { faPersonHiking } from '@fortawesome/free-solid-svg-icons/faPersonHiking
 import { faClockRotateLeft } from '@fortawesome/free-solid-svg-icons/faClockRotateLeft';
 import { AchievementProgress, AchievementRarity, AchievementTier } from '@/types/Achievement';
 import { colors } from '@/styles/colors';
+import { useTranslation } from '@/contexts';
 import { styles } from './AchievementBadgeStyles';
 
 interface Props {
@@ -101,6 +102,7 @@ const SIZE_CONFIG = {
 };
 
 export function AchievementBadge({ progress, size = 'medium', showProgress = true }: Props) {
+  const { t } = useTranslation();
   const { achievement, percentage, isUnlocked, current, required } = progress;
   const icon = ICON_MAP[achievement.icon] ?? faTrophy;
   const rarityStyle = RARITY_COLORS[achievement.rarity];
@@ -148,7 +150,7 @@ export function AchievementBadge({ progress, size = 'medium', showProgress = tru
         {isUnlocked && (
           <View style={styles.unlockedBadge}>
             <FontAwesomeIcon icon={faStar} size={10} color={colors.warning} />
-            <Text style={styles.unlockedText}>Låst opp!</Text>
+            <Text style={styles.unlockedText}>{t['achievements.unlockedBadge']}</Text>
           </View>
         )}
       </View>

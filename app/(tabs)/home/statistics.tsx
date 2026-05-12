@@ -14,10 +14,12 @@ import { BreakdownSection } from '@/components/home/statistics/BreakdownSection'
 import { ArrowsChart } from '@/components/home/statistics/ArrowsChart';
 import { ScoreChart } from '@/components/home/statistics/ScoreChart';
 import { EmptyState } from '@/components/home/statistics/EmptyState';
+import { useTranslation } from '@/contexts';
 
 export default function StatisticsScreen() {
   const router = useRouter();
   const insets = useSafeAreaInsets();
+  const { t } = useTranslation();
 
   const [series, setSeries] = useState<Series[]>([]);
   const [loading, setLoading] = useState(true);
@@ -33,12 +35,12 @@ export default function StatisticsScreen() {
       const data = await statsApi.getDetailedStats();
       setSeries(data);
     } catch {
-      setError('Kunne ikke hente statistikk');
+      setError(t['statistics.fetchError']);
     } finally {
       setLoading(false);
       setRefreshing(false);
     }
-  }, []);
+  }, [t]);
 
   useFocusEffect(
     useCallback(() => {
@@ -69,15 +71,15 @@ export default function StatisticsScreen() {
               <FontAwesomeIcon icon={faChevronLeft} size={18} color={colors.white} />
             </TouchableOpacity>
             <View>
-              <Text style={styles.title}>Statistikk</Text>
-              <Text style={styles.subtitle}>Detaljert oversikt over din skyting</Text>
+              <Text style={styles.title}>{t['statistics.title']}</Text>
+              <Text style={styles.subtitle}>{t['statistics.subtitle']}</Text>
             </View>
           </View>
 
           {loading ? (
             <View style={styles.loadingContainer}>
               <ActivityIndicator size="large" color={colors.white} />
-              <Text style={styles.loadingText}>Laster statistikk…</Text>
+              <Text style={styles.loadingText}>{t['statistics.loading']}</Text>
             </View>
           ) : error ? (
             <View style={styles.loadingContainer}>

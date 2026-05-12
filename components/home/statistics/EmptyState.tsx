@@ -2,13 +2,15 @@ import { View, Text, StyleSheet } from 'react-native';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faChartBar } from '@fortawesome/free-solid-svg-icons/faChartBar';
 import { colors } from '@/styles/colors';
+import { useTranslation } from '@/contexts';
 
 export function EmptyState() {
+  const { t } = useTranslation();
   return (
     <View style={styles.container}>
       <FontAwesomeIcon icon={faChartBar} size={48} color="rgba(255,255,255,0.3)" />
-      <Text style={styles.title}>Ingen statistikk ennå</Text>
-      <Text style={styles.subtitle}>Legg til treninger for å se statistikk her</Text>
+      <Text style={styles.title}>{t['statistics.emptyTitle']}</Text>
+      <Text style={styles.subtitle}>{t['statistics.emptySubtitle']}</Text>
     </View>
   );
 }
