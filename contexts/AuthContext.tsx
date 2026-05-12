@@ -3,7 +3,7 @@ import { User } from '@/types';
 import { authService } from '@/services/auth/authService';
 import { clearTokens, getAccessToken, isTokenExpired, saveTokens } from '@/services/auth/tokenStorage';
 import { registerOfflineHandlers } from '@/services/offline/handlers';
-import * as Sentry from '@/services/sentryStub';
+import * as Sentry from '@sentry/react-native';
 import { authClient } from '@/services/auth/authClient';
 import { authStorage } from '@/services/auth/authStorage';
 import * as Linking from 'expo-linking';

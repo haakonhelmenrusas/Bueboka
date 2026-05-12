@@ -1,5 +1,5 @@
 import { AxiosError } from 'axios';
-import * as Sentry from '@/services/sentryStub';
+import * as Sentry from '@sentry/react-native';
 import { ApiError } from './types';
 
 /**

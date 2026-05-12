@@ -10,7 +10,7 @@ jest.mock('@/services/offline/syncManager', () => ({
   },
 }));
 
-jest.mock('@/services/sentryStub', () => ({
+jest.mock('@sentry/react-native', () => ({
   addBreadcrumb: jest.fn(),
   captureException: jest.fn(),
 }));

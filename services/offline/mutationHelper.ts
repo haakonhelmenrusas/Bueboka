@@ -1,6 +1,6 @@
 import { AppError } from '@/services/api/errors';
 import { syncManager } from '@/services/offline/syncManager';
-import * as Sentry from '@/services/sentryStub';
+import * as Sentry from '@sentry/react-native';
 
 /**
  * Mutation helper that enqueues operations when offline or on network failure
