@@ -17,6 +17,7 @@ npm run format:check   # Check formatting without writing
 ```
 
 Run a single test file:
+
 ```bash
 npx jest services/repositories/__tests__/practiceRepository.test.ts
 ```
@@ -24,6 +25,7 @@ npx jest services/repositories/__tests__/practiceRepository.test.ts
 ## Environment
 
 Requires `.env` with:
+
 - `EXPO_PUBLIC_API_URL` — backend base URL including `/api` (e.g. `http://localhost:3000/api`)
 - `EXPO_PUBLIC_CLARITY_KEY` — Microsoft Clarity key (leave empty to disable)
 

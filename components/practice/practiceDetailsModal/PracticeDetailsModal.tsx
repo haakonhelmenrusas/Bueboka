@@ -229,14 +229,7 @@ export function PracticeDetailsModal({ visible, practice, onClose, onEdit, onDel
               icon={<FontAwesomeIcon icon={faShare} size={14} color={colors.primary} />}
               buttonStyle={styles.smallActionButton}
             />
-            <Button
-              size="small"
-              label="Lukk"
-              onPress={onClose}
-              type="outline"
-              disabled={deleting}
-              buttonStyle={styles.smallActionButton}
-            />
+            <Button size="small" label="Lukk" onPress={onClose} type="outline" disabled={deleting} buttonStyle={styles.smallActionButton} />
           </View>
           <Button
             label={deleting ? 'Sletter...' : 'Slett'}

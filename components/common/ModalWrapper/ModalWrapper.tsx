@@ -15,9 +15,7 @@ export default function ModalWrapper({ visible, onClose, children, fullScreen = 
         {/* Backdrop tap-to-close sits behind the content as a sibling, not a parent.
             Wrapping content in a Pressable intercepts scroll gestures on Android. */}
         <Pressable style={StyleSheet.absoluteFill} onPress={onClose} />
-        <View style={fullScreen ? styles.contentFullScreen : styles.content}>
-          {children}
-        </View>
+        <View style={fullScreen ? styles.contentFullScreen : styles.content}>{children}</View>
       </View>
     </Modal>
   );

@@ -6,6 +6,7 @@ import { faChevronRight } from '@fortawesome/free-solid-svg-icons/faChevronRight
 import { faTrashCan } from '@fortawesome/free-regular-svg-icons/faTrashCan';
 import { Button } from '@/components/common';
 import { colors } from '@/styles/colors';
+import { useTranslation } from '@/contexts';
 
 interface NavigationFooterProps {
   currentStep: number;
@@ -32,6 +33,7 @@ export function NavigationFooter({
   onSave,
   onDelete,
 }: NavigationFooterProps) {
+  const { t } = useTranslation();
   const isFirstStep = currentStep === 0;
   const isLastStep = currentStep === totalSteps - 1;
 
@@ -43,7 +45,7 @@ export function NavigationFooter({
             style={[styles.navArrow, isFirstStep && styles.navArrowDisabled]}
             onPress={onPrev}
             disabled={isFirstStep}
-            accessibilityLabel="Forrige steg">
+            accessibilityLabel={t['form.prevStep']}>
             <FontAwesomeIcon icon={faChevronLeft} size={18} color={isFirstStep ? colors.dimmed : colors.primary} />
           </TouchableOpacity>
 
@@ -52,7 +54,7 @@ export function NavigationFooter({
           {isLastStep ? (
             <View style={styles.navArrow} />
           ) : (
-            <TouchableOpacity style={styles.navArrow} onPress={onNext} accessibilityLabel="Neste steg">
+            <TouchableOpacity style={styles.navArrow} onPress={onNext} accessibilityLabel={t['form.nextStep']}>
               <FontAwesomeIcon icon={faChevronRight} size={18} color={colors.primary} />
             </TouchableOpacity>
           )}
@@ -60,7 +62,7 @@ export function NavigationFooter({
 
         {/* Right: delete when editing on last step, spacer otherwise */}
         {isEditing && isLastStep ? (
-          <TouchableOpacity style={styles.navDeleteBtn} onPress={onDelete} accessibilityLabel="Slett">
+          <TouchableOpacity style={styles.navDeleteBtn} onPress={onDelete} accessibilityLabel={t['common.delete']}>
             <FontAwesomeIcon icon={faTrashCan} size={16} color={colors.error} />
           </TouchableOpacity>
         ) : (
@@ -72,7 +74,7 @@ export function NavigationFooter({
       {isLastStep && (
         <View style={styles.navActions}>
           <Button
-            label={submitting ? 'Lagrer...' : saveLabel || 'Lagre'}
+            label={submitting ? t['form.saving'] : saveLabel || t['form.save']}
             onPress={onSave}
             disabled={submitting}
             loading={submitting}

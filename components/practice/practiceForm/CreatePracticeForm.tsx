@@ -15,10 +15,12 @@ import { Button, DatePicker, Input, ModalHeader, ModalWrapper, Select, Textarea 
 import ConfirmModal from '@/components/home/DeleteArrowSetModal/ConfirmModal';
 import { practiceRepository, type CreateEndData } from '@/services/repositories';
 import { Arrows, Bow, Environment, Practice, PracticeCategory } from '@/types';
-import { TARGET_TYPE_OPTIONS } from '@/utils/Constants';
+import { getTargetTypeOptions } from '@/utils/Constants';
 import { colors } from '@/styles/colors';
+import { useTranslation } from '@/contexts';
+import type { TranslationKeys } from '@/lib/i18n';
 import { styles } from './CreatePracticeFormStyles';
-import { PRACTICE_CATEGORY_OPTIONS, ENVIRONMENT_OPTIONS, ARROW_SCORE_OPTIONS } from '@/components/practice/shared/formConstants';
+import { getPracticeCategoryOptions, getEnvironmentOptions, ARROW_SCORE_OPTIONS } from '@/components/practice/shared/formConstants';
 import { isRangeCategory, parseNum } from '@/components/practice/shared/formHelpers';
 import { useStepNavigation } from '@/components/practice/shared/useStepNavigation';
 import { useWeatherSelection } from '@/components/practice/shared/useWeatherSelection';
@@ -37,7 +39,12 @@ const DEFAULT_ARROWS_PER_END = 3;
 
 // ─── Step definitions ─────────────────────────────────────────────────────────
 const TOTAL_STEPS = 4;
-const STEP_LABELS = ['Info', 'Runder', 'Poeng', 'Refleksjon'];
+const getStepLabels = (t: TranslationKeys): string[] => [
+  t['practiceStep.info'],
+  t['practiceStep.rounds'],
+  t['practiceStep.scoring'],
+  t['practiceStep.reflection'],
+];
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 export interface RoundInput {
@@ -86,12 +93,12 @@ function emptyRound(cat: PracticeCategory): RoundInput {
       };
 }
 
-function getRoundSummary(round: RoundInput): string {
+function getRoundSummary(round: RoundInput, t: TranslationKeys): string {
   const parts: string[] = [];
   if (round.distanceMeters) parts.push(`${round.distanceMeters}m`);
   if (round.distanceFrom || round.distanceTo) parts.push(`${round.distanceFrom ?? '?'}–${round.distanceTo ?? '?'}m`);
   if (round.targetType) parts.push(round.targetType);
-  return parts.length > 0 ? parts.join(' · ') : 'Ingen detaljer';
+  return parts.length > 0 ? parts.join(' · ') : t['round.noDetails'];
 }
 
 function getChipColorStyle(score: number): any {
@@ -147,6 +154,11 @@ export default function CreatePracticeForm({
   editingPractice = null,
 }: CreatePracticeFormProps) {
   const router = useRouter();
+  const { t } = useTranslation();
+  const STEP_LABELS = getStepLabels(t);
+  const PRACTICE_CATEGORY_OPTIONS = getPracticeCategoryOptions(t);
+  const ENVIRONMENT_OPTIONS = getEnvironmentOptions(t);
+  const TARGET_TYPE_OPTIONS = getTargetTypeOptions(t);
 
   // Step navigation
   const { step, setStep, goNext, goPrev, resetStep } = useStepNavigation(TOTAL_STEPS);
@@ -489,7 +501,7 @@ export default function CreatePracticeForm({
       onClose();
     } catch (err) {
       Sentry.captureException(err);
-      setError(err instanceof Error ? err.message : 'Kunne ikke lagre trening.');
+      setError(err instanceof Error ? err.message : t['practiceForm.saveError']);
     } finally {
       setSubmitting(false);
     }
@@ -534,7 +546,7 @@ export default function CreatePracticeForm({
       });
     } catch (err) {
       Sentry.captureException(err);
-      setError(err instanceof Error ? err.message : 'Kunne ikke starte skyteøkten.');
+      setError(err instanceof Error ? err.message : t['practiceForm.startShootingError']);
     } finally {
       setSubmitting(false);
     }
@@ -559,9 +571,9 @@ export default function CreatePracticeForm({
   const renderInfoStep = () => (
     <View style={styles.stepContent}>
       <View style={styles.row}>
-        <DatePicker label="Dato" value={date} onDateChange={setDate} containerStyle={styles.field} />
+        <DatePicker label={t['form.date']} value={date} onDateChange={setDate} containerStyle={styles.field} />
         <Select
-          label="Kategori"
+          label={t['form.category']}
           options={PRACTICE_CATEGORY_OPTIONS}
           selectedValue={practiceCategory}
           onValueChange={(v) => handleCategoryChange(v as PracticeCategory)}
@@ -571,17 +583,17 @@ export default function CreatePracticeForm({
 
       <View style={styles.row}>
         <Select
-          label="Miljø"
+          label={t['form.environment']}
           options={ENVIRONMENT_OPTIONS}
           selectedValue={environment}
           onValueChange={(v) => setEnvironment(v as Environment)}
           containerStyle={styles.field}
         />
         <Input
-          label="Sted"
+          label={t['form.location']}
           value={location}
           onChangeText={setLocation}
-          placeholder="F.eks. Oslo"
+          placeholder={t['form.locationPlaceholder']}
           maxLength={64}
           containerStyle={styles.field}
         />
@@ -608,9 +620,9 @@ export default function CreatePracticeForm({
           return (
             <View key={index} style={styles.roundCard}>
               <View style={styles.roundHeader}>
-                <Text style={styles.roundNumber}>Runde {index + 1}</Text>
+                <Text style={styles.roundNumber}>{`${t['round.title']} ${index + 1}`}</Text>
                 {rounds.length > 1 && (
-                  <TouchableOpacity style={styles.removeRoundBtn} onPress={() => removeRound(index)} accessibilityLabel="Fjern runde">
+                  <TouchableOpacity style={styles.removeRoundBtn} onPress={() => removeRound(index)} accessibilityLabel={t['round.remove']}>
                     <FontAwesomeIcon icon={faXmark} size={16} color={colors.textSecondary} />
                   </TouchableOpacity>
                 )}
@@ -620,16 +632,16 @@ export default function CreatePracticeForm({
                 {rangeMode ? (
                   <>
                     <Input
-                      label="Fra (m)"
+                      label={t['form.distanceFrom']}
                       value={round.distanceFrom !== undefined ? String(round.distanceFrom) : ''}
-                      onChangeText={(t) => updateRound(index, 'distanceFrom', parseNum(t))}
+                      onChangeText={(v) => updateRound(index, 'distanceFrom', parseNum(v))}
                       keyboardType="numeric"
                       containerStyle={styles.roundField}
                     />
                     <Input
-                      label="Til (m)"
+                      label={t['form.distanceTo']}
                       value={round.distanceTo !== undefined ? String(round.distanceTo) : ''}
-                      onChangeText={(t) => updateRound(index, 'distanceTo', parseNum(t))}
+                      onChangeText={(v) => updateRound(index, 'distanceTo', parseNum(v))}
                       keyboardType="numeric"
                       containerStyle={styles.roundField}
                     />
@@ -637,18 +649,18 @@ export default function CreatePracticeForm({
                 ) : (
                   <>
                     <Input
-                      label="Avstand (m)"
+                      label={t['form.distance']}
                       value={round.distanceMeters !== undefined ? String(round.distanceMeters) : ''}
-                      onChangeText={(t) => updateRound(index, 'distanceMeters', parseNum(t))}
+                      onChangeText={(v) => updateRound(index, 'distanceMeters', parseNum(v))}
                       keyboardType="numeric"
                       containerStyle={styles.roundField}
                     />
                     <Select
-                      label="Skive"
+                      label={t['form.target']}
                       options={TARGET_TYPE_OPTIONS}
                       selectedValue={round.targetType}
                       onValueChange={(v) => updateRound(index, 'targetType', v as string)}
-                      placeholder="Velg"
+                      placeholder={t['form.choose']}
                       searchable
                       containerStyle={styles.roundField}
                     />
@@ -658,18 +670,18 @@ export default function CreatePracticeForm({
 
               <View style={styles.roundFields}>
                 <Input
-                  label="Piler m/score"
+                  label={t['form.arrowsWithScore']}
                   optional
                   value={round.numberArrows !== undefined ? String(round.numberArrows) : ''}
-                  onChangeText={(t) => updateRound(index, 'numberArrows', parseNum(t))}
+                  onChangeText={(v) => updateRound(index, 'numberArrows', parseNum(v))}
                   keyboardType="numeric"
                   containerStyle={styles.roundField}
                 />
                 <Input
-                  label="Piler / serie"
+                  label={t['form.arrowsPerEnd']}
                   optional
                   value={round.arrowsPerEnd !== undefined ? String(round.arrowsPerEnd) : ''}
-                  onChangeText={(t) => updateRound(index, 'arrowsPerEnd', parseNum(t))}
+                  onChangeText={(v) => updateRound(index, 'arrowsPerEnd', parseNum(v))}
                   keyboardType="numeric"
                   containerStyle={styles.roundField}
                 />
@@ -677,18 +689,18 @@ export default function CreatePracticeForm({
 
               <View style={styles.roundFields}>
                 <Input
-                  label="Score"
+                  label={t['form.score']}
                   optional
                   value={round.roundScore !== 0 ? String(round.roundScore) : ''}
-                  onChangeText={(t) => updateRound(index, 'roundScore', parseNum(t) ?? 0)}
+                  onChangeText={(v) => updateRound(index, 'roundScore', parseNum(v) ?? 0)}
                   keyboardType="numeric"
                   containerStyle={styles.roundField}
                 />
                 <Input
-                  label="Piler u/score"
+                  label={t['form.arrowsWithoutScore']}
                   optional
                   value={round.arrowsWithoutScore !== undefined ? String(round.arrowsWithoutScore) : ''}
-                  onChangeText={(t) => updateRound(index, 'arrowsWithoutScore', parseNum(t))}
+                  onChangeText={(v) => updateRound(index, 'arrowsWithoutScore', parseNum(v))}
                   keyboardType="numeric"
                   containerStyle={styles.roundField}
                 />
@@ -702,9 +714,9 @@ export default function CreatePracticeForm({
           onPress={addRound}
           disabled={rounds.length >= 20}>
           <FontAwesomeIcon icon={faPlus} size={14} color={colors.primary} />
-          <Text style={styles.addRoundBtnText}>Legg til runde</Text>
+          <Text style={styles.addRoundBtnText}>{t['round.add']}</Text>
         </TouchableOpacity>
-        {rounds.length >= 20 && <Text style={styles.limitMessage}>Maksimalt 20 runder er tillatt</Text>}
+        {rounds.length >= 20 && <Text style={styles.limitMessage}>{t['round.maxLimit']}</Text>}
       </View>
     </View>
   );
@@ -716,20 +728,20 @@ export default function CreatePracticeForm({
       <View style={styles.stepContent}>
         {/* Scoring method selection */}
         <View style={styles.scoringMethodSection}>
-          <Text style={styles.sectionTitle}>Registreringsmetode</Text>
+          <Text style={styles.sectionTitle}>{t['scoring.methodSection']}</Text>
           <View style={styles.scoringMethodButtons}>
             <Pressable
               style={[styles.scoringMethodButton, scoringMethod === 'buttons' && styles.scoringMethodButtonActive]}
               onPress={() => setScoringMethod('buttons')}>
               <Text style={[styles.scoringMethodButtonText, scoringMethod === 'buttons' && styles.scoringMethodButtonTextActive]}>
-                Tall-knapper
+                {t['scoring.methodButtons']}
               </Text>
             </Pressable>
             <Pressable
               style={[styles.scoringMethodButton, scoringMethod === 'target' && styles.scoringMethodButtonActive]}
               onPress={() => setScoringMethod('target')}>
               <Text style={[styles.scoringMethodButtonText, scoringMethod === 'target' && styles.scoringMethodButtonTextActive]}>
-                Plasser på skive
+                {t['scoring.methodTarget']}
               </Text>
             </Pressable>
           </View>
@@ -738,7 +750,7 @@ export default function CreatePracticeForm({
         {/* Start shooting button */}
         {!isEditing && scoringMethod === 'target' && (
           <View style={styles.startShootingSection}>
-            <Button label="Start skyting" onPress={handleStartShooting} disabled={submitting} loading={submitting} />
+            <Button label={t['scoring.startShooting']} onPress={handleStartShooting} disabled={submitting} loading={submitting} />
           </View>
         )}
 
@@ -746,9 +758,7 @@ export default function CreatePracticeForm({
           <>
             {roundsWithArrows.length === 0 && (
               <View style={styles.emptyScoring}>
-                <Text style={styles.emptyScoringText}>
-                  Ingen runder med definert antall piler.{'\n'}Gå tilbake til «Runder» og fyll inn «Piler m/score».
-                </Text>
+                <Text style={styles.emptyScoringText}>{t['scoring.noArrowRounds']}</Text>
               </View>
             )}
 
@@ -764,17 +774,17 @@ export default function CreatePracticeForm({
                 return (
                   <View key={roundIndex} style={styles.scoringCard}>
                     <View style={styles.scoringCardHeader}>
-                      <Text style={styles.scoringRoundTitle}>Runde {roundIndex + 1}</Text>
-                      <Text style={styles.scoringRoundMeta}>{getRoundSummary(round)}</Text>
+                      <Text style={styles.scoringRoundTitle}>{`${t['round.title']} ${roundIndex + 1}`}</Text>
+                      <Text style={styles.scoringRoundMeta}>{getRoundSummary(round, t)}</Text>
                     </View>
                     <View style={styles.manualScoreNotice}>
                       <FontAwesomeIcon icon={faInfo} size={16} color={colors.info} style={styles.manualScoreNoticeIcon} />
                       <View style={styles.manualScoreNoticeBody}>
-                        <Text style={styles.manualScoreNoticeMain}>Totalscore: {round.roundScore} poeng</Text>
-                        <Text style={styles.manualScoreNoticeHint}>
-                          Du har registrert en totalscore for denne runden. Vil du score enkeltpiler i stedet, fjern totalscoren under
-                          «Runder»-steget.
-                        </Text>
+                        <Text
+                          style={
+                            styles.manualScoreNoticeMain
+                          }>{`${t['scoring.totalScoreLabel']} ${round.roundScore} ${t['scoring.points']}`}</Text>
+                        <Text style={styles.manualScoreNoticeHint}>{t['scoring.manualScoreHint']}</Text>
                       </View>
                     </View>
                   </View>
@@ -809,8 +819,8 @@ export default function CreatePracticeForm({
               return (
                 <View key={roundIndex} style={styles.scoringCard}>
                   <View style={styles.scoringCardHeader}>
-                    <Text style={styles.scoringRoundTitle}>Runde {roundIndex + 1}</Text>
-                    <Text style={styles.scoringRoundMeta}>{getRoundSummary(round)}</Text>
+                    <Text style={styles.scoringRoundTitle}>{`${t['round.title']} ${roundIndex + 1}`}</Text>
+                    <Text style={styles.scoringRoundMeta}>{getRoundSummary(round, t)}</Text>
                   </View>
 
                   {/* End navigation */}
@@ -820,17 +830,15 @@ export default function CreatePracticeForm({
                         style={[styles.endNavBtn, !canGoPrev && styles.endNavBtnDisabled]}
                         onPress={() => setEndPage(roundIndex, currentEndPage - 1)}
                         disabled={!canGoPrev}
-                        accessibilityLabel="Forrige serie">
+                        accessibilityLabel={t['scoring.previousEnd']}>
                         <FontAwesomeIcon icon={faChevronLeft} size={18} color={canGoPrev ? colors.primary : colors.textSecondary} />
                       </TouchableOpacity>
-                      <Text style={styles.endNavLabel}>
-                        Serie {currentEndPage + 1} / {totalEnds}
-                      </Text>
+                      <Text style={styles.endNavLabel}>{`${t['scoring.endLabel']} ${currentEndPage + 1} / ${totalEnds}`}</Text>
                       <TouchableOpacity
                         style={[styles.endNavBtn, !canGoNext && styles.endNavBtnDisabled]}
                         onPress={() => setEndPage(roundIndex, currentEndPage + 1)}
                         disabled={!canGoNext}
-                        accessibilityLabel="Neste serie">
+                        accessibilityLabel={t['scoring.nextEnd']}>
                         <FontAwesomeIcon icon={faChevronRight} size={18} color={canGoNext ? colors.primary : colors.textSecondary} />
                       </TouchableOpacity>
                     </View>
@@ -853,7 +861,9 @@ export default function CreatePracticeForm({
                             scored ? [styles.arrowChipFilled, getChipColorStyle(endScores[i])] : styles.arrowChipEmpty,
                           ]}
                           onPress={scored ? () => setEditingIndex(roundIndex, isThisChipEditing ? null : absIdx) : undefined}
-                          accessibilityLabel={scored ? `Endre pil ${i + 1}: ${endScores[i]} poeng` : undefined}>
+                          accessibilityLabel={
+                            scored ? `${t['scoring.editArrowAriaPrefix']} ${i + 1}: ${endScores[i]} ${t['scoring.points']}` : undefined
+                          }>
                           <Text
                             style={[
                               styles.arrowChipText,
@@ -868,16 +878,19 @@ export default function CreatePracticeForm({
                   </View>
 
                   <View style={styles.scoringProgress}>
-                    <Text style={styles.scoringProgressText}>
-                      {filledCount} av {maxArrows} piler registrert
-                    </Text>
-                    {filledCount > 0 && <Text style={styles.scoringTotal}>Sum: {total}</Text>}
+                    <Text
+                      style={
+                        styles.scoringProgressText
+                      }>{`${filledCount} ${t['scoring.of']} ${maxArrows} ${t['scoring.arrowsRecorded']}`}</Text>
+                    {filledCount > 0 && <Text style={styles.scoringTotal}>{`${t['scoring.sum']} ${total}`}</Text>}
                   </View>
 
                   {/* Score buttons */}
                   {showScoreButtons && (
                     <>
-                      {isEditing && <Text style={styles.editingHint}>Velg ny verdi for pil {(editingIdx! % arrowsPerEnd) + 1}</Text>}
+                      {isEditing && (
+                        <Text style={styles.editingHint}>{`${t['scoring.editingArrowPrefix']} ${(editingIdx! % arrowsPerEnd) + 1}`}</Text>
+                      )}
                       <View style={styles.scoreButtonsGrid}>
                         {ARROW_SCORE_OPTIONS.filter((opt) => opt.label !== 'X' || environment === Environment.OUTDOOR).map((opt) => {
                           const { button: buttonStyle, text: textStyle } = getScoreButtonColorStyle(opt.label);
@@ -904,12 +917,12 @@ export default function CreatePracticeForm({
                   {/* Complete banners */}
                   {isFull && !isEditing && currentEndPage === totalEnds - 1 && (
                     <View style={styles.scoringComplete}>
-                      <Text style={styles.scoringCompleteText}>✓ Alle piler registrert – score: {total}</Text>
+                      <Text style={styles.scoringCompleteText}>{`${t['scoring.allRegistered']} ${t['scoring.scoreSuffix']} ${total}`}</Text>
                     </View>
                   )}
                   {!isFull && isEndFilled && !isActiveEnd && !isEditing && canGoNext && (
                     <Button
-                      label="Neste serie"
+                      label={t['scoring.nextEnd']}
                       onPress={() => setEndPage(roundIndex, currentEndPage + 1)}
                       buttonStyle={{ width: '100%' }}
                     />
@@ -926,8 +939,8 @@ export default function CreatePracticeForm({
   const renderReflectionStep = () => (
     <View style={styles.stepContent}>
       <View style={styles.ratingSection}>
-        <Text style={styles.ratingLabel}>Vurdering (valgfritt)</Text>
-        <Text style={styles.ratingHelpText}>Hvordan vil du vurdere treningen?</Text>
+        <Text style={styles.ratingLabel}>{t['reflection.ratingLabel']}</Text>
+        <Text style={styles.ratingHelpText}>{t['reflection.ratingPromptPractice']}</Text>
         <View style={styles.ratingButtons}>
           {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((num) => {
             const active = rating === num;
@@ -936,7 +949,7 @@ export default function CreatePracticeForm({
                 key={num}
                 style={[styles.ratingButton, active && styles.ratingButtonActive]}
                 onPress={() => setRating(active ? null : num)}
-                accessibilityLabel={`Vurdering ${num} av 10`}>
+                accessibilityLabel={`${t['reflection.ratingAriaPrefix']} ${num} ${t['scoring.of']} 10`}>
                 <Text style={[styles.ratingButtonText, active && styles.ratingButtonTextActive]}>{num}</Text>
               </Pressable>
             );
@@ -945,11 +958,11 @@ export default function CreatePracticeForm({
       </View>
 
       <Textarea
-        label="Notater"
+        label={t['form.notes']}
         optional
         value={notes}
         onChangeText={setNotes}
-        placeholderText="Hvordan gikk treningen?&#10;&#10;Hva gikk bra? Hva kan forbedres?"
+        placeholderText={t['reflection.notesPlaceholder']}
         maxLength={500}
         containerStyle={styles.inputContainer}
       />
@@ -968,7 +981,7 @@ export default function CreatePracticeForm({
         <KeyboardAvoidingView style={styles.container} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
           {/* Fixed header */}
           <Pressable onPress={Keyboard.dismiss}>
-            <ModalHeader title={isEditing ? 'Rediger trening' : 'Ny trening'} onPress={handleClose} />
+            <ModalHeader title={isEditing ? t['practiceForm.editTitle'] : t['practiceForm.newTitle']} onPress={handleClose} />
           </Pressable>
 
           <StepIndicator steps={STEP_LABELS} currentStep={step} onStepPress={setStep} />
@@ -994,7 +1007,7 @@ export default function CreatePracticeForm({
             stepLabels={STEP_LABELS}
             isEditing={isEditing}
             submitting={submitting}
-            saveLabel={isEditing ? 'Lagre' : 'Lagre'}
+            saveLabel={t['form.save']}
             onPrev={goPrev}
             onNext={goNext}
             onSave={handleSaveAndFinish}
@@ -1005,10 +1018,8 @@ export default function CreatePracticeForm({
 
       <ConfirmModal
         visible={confirmVisible}
-        title="Slett trening"
-        message="Vil du slette treningen?"
-        confirmLabel="Slett"
-        cancelLabel="Avbryt"
+        title={t['practiceForm.deleteTitle']}
+        message={t['practiceForm.deleteMessage']}
         onCancel={() => setConfirmVisible(false)}
         onConfirm={() => {
           handleDelete();
@@ -1018,10 +1029,10 @@ export default function CreatePracticeForm({
 
       <ConfirmModal
         visible={closeConfirmVisible}
-        title="Forkast endringer?"
-        message="Du har ulagrede endringer. Er du sikker på at du vil lukke uten å lagre?"
-        confirmLabel="Forkast"
-        cancelLabel="Fortsett redigering"
+        title={t['practiceForm.discardTitle']}
+        message={t['practiceForm.discardMessage']}
+        confirmLabel={t['practiceForm.discardConfirm']}
+        cancelLabel={t['practiceForm.discardCancel']}
         onCancel={() => setCloseConfirmVisible(false)}
         onConfirm={handleConfirmClose}
       />

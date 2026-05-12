@@ -45,7 +45,7 @@ describe('LanguageProvider', () => {
     const { getByTestId } = render(
       <LanguageProvider>
         <Probe />
-      </LanguageProvider>
+      </LanguageProvider>,
     );
 
     await waitFor(() => {
@@ -58,7 +58,7 @@ describe('LanguageProvider', () => {
     const { getByTestId } = render(
       <LanguageProvider>
         <Probe />
-      </LanguageProvider>
+      </LanguageProvider>,
     );
 
     await waitFor(() => {
@@ -73,7 +73,7 @@ describe('LanguageProvider', () => {
     const { getByTestId } = render(
       <LanguageProvider>
         <Probe />
-      </LanguageProvider>
+      </LanguageProvider>,
     );
 
     await waitFor(() => {
@@ -92,7 +92,7 @@ describe('LanguageProvider', () => {
     render(
       <LanguageProvider>
         <Capture />
-      </LanguageProvider>
+      </LanguageProvider>,
     );
 
     await waitFor(() => expect(captured?.isLoaded).toBe(true));
