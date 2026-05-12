@@ -5,6 +5,7 @@ import { useRouter, useFocusEffect } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { StatsSummary, EquipmentSection, PracticesSection } from '@/components/home';
 import { useAuth } from '@/hooks';
+import { useTranslation } from '@/contexts';
 import { Message, Button, MobileActionButton } from '@/components/common';
 import { colors } from '@/styles/colors';
 import { statsApi, StatsResponse } from '@/services/api/statsApi';
@@ -27,6 +28,7 @@ import { PracticeDetailsModal } from '@/components/practice/practiceDetailsModal
 
 export default function HomeScreen() {
   const { user, refreshUser } = useAuth();
+  const { t } = useTranslation();
   const router = useRouter();
   const insets = useSafeAreaInsets();
   const [refreshing, setRefreshing] = useState(false);
@@ -99,8 +101,8 @@ export default function HomeScreen() {
       await userRepository.updateAvatar(uri);
       await refreshUser();
     } catch (err) {
-      const message = err instanceof AppError ? err.message : 'Kunne ikke laste opp bilde. Prøv igjen.';
-      Alert.alert('Feil', message);
+      const message = err instanceof AppError ? err.message : t['home.uploadAvatarError'];
+      Alert.alert(t['common.error'], message);
     }
   }
 
@@ -109,15 +111,15 @@ export default function HomeScreen() {
       await userRepository.removeAvatar();
       await refreshUser();
     } catch (err) {
-      const message = err instanceof AppError ? err.message : 'Kunne ikke fjerne bilde. Prøv igjen.';
-      Alert.alert('Feil', message);
+      const message = err instanceof AppError ? err.message : t['home.removeAvatarError'];
+      Alert.alert(t['common.error'], message);
     }
   }
 
   if (!user) {
     return (
       <View style={styles.container}>
-        <Message title="Ikke innlogget" description="Vennligst logg inn for å se hjemskjermen." />
+        <Message title={t['home.notLoggedInTitle']} description={t['home.notLoggedInDesc']} />
       </View>
     );
   }
@@ -139,20 +141,20 @@ export default function HomeScreen() {
                 size={48}
               />
               <View style={styles.headerInfo}>
-                <Text style={styles.greeting}>{user.name?.split(' ')[0] || 'Skytter'}</Text>
+                <Text style={styles.greeting}>{user.name?.split(' ')[0] || t['home.greetingFallback']}</Text>
                 {user.club && <Text style={styles.club}>{user.club}</Text>}
               </View>
               <View style={styles.headerButtons}>
                 <TouchableOpacity
                   style={styles.searchButton}
                   onPress={() => router.push('/(tabs)/skyttere')}
-                  accessibilityLabel="Søk etter skyttere">
+                  accessibilityLabel={t['home.searchArchers']}>
                   <FontAwesomeIcon icon={faUserGroup} size={18} color={colors.white} />
                 </TouchableOpacity>
                 <TouchableOpacity
                   style={styles.trophyButton}
                   onPress={() => router.push('/(tabs)/home/achievements')}
-                  accessibilityLabel="Mine prestasjoner">
+                  accessibilityLabel={t['home.myAchievements']}>
                   <FontAwesomeIcon icon={faTrophy} size={20} color={colors.warning} />
                 </TouchableOpacity>
               </View>
@@ -164,7 +166,7 @@ export default function HomeScreen() {
             size="small"
             buttonStyle={{ alignSelf: 'center' }}
             icon={<FontAwesomeIcon icon={faChevronRight} size={16} color={colors.warning} />}
-            label="Se detaljert statistikk"
+            label={t['home.detailedStats']}
             onPress={() => router.push('/(tabs)/home/statistics')}
           />
           <PracticesSection
@@ -175,7 +177,7 @@ export default function HomeScreen() {
                 setSelectedPracticeForDetails(fullPractice);
               } catch (error) {
                 console.error('[HomeScreen] Error fetching practice:', error);
-                Alert.alert('Kunne ikke laste trening', 'Treningen kunne ikke lastes. Prøv igjen senere.');
+                Alert.alert(t['home.loadPracticeErrorTitle'], t['home.loadPracticeErrorDesc']);
                 setSelectedPracticeForDetails(null);
               }
             }}
@@ -185,7 +187,7 @@ export default function HomeScreen() {
                 setSelectedCompetitionForDetails(fullCompetition);
               } catch (error) {
                 console.error('[HomeScreen] Error fetching competition:', error);
-                Alert.alert('Kunne ikke laste konkurranse', 'Konkurransen kunne ikke lastes. Prøv igjen senere.');
+                Alert.alert(t['home.loadCompetitionErrorTitle'], t['home.loadCompetitionErrorDesc']);
                 setSelectedCompetitionForDetails(null);
               }
             }}

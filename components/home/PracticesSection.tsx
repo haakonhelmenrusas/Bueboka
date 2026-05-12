@@ -9,6 +9,7 @@ import PracticeCard from '@/components/practice/practiceCard/PracticeCard';
 import SkeletonTrainingCard from '@/components/practice/practiceCard/SkeletonTrainingCard';
 import { styles } from './PracticesSectionStyles';
 import { colors } from '@/styles/colors';
+import { useTranslation } from '@/contexts';
 
 const RECENT_COUNT = 5;
 
@@ -21,6 +22,7 @@ interface Props {
 
 export function PracticesSection({ onSelectPractice, onSelectCompetition, refreshKey }: Props) {
   const router = useRouter();
+  const { t } = useTranslation();
   const [cards, setCards] = useState<PracticeCardItem[]>([]);
   const [loading, setLoading] = useState(false);
 
@@ -55,12 +57,12 @@ export function PracticesSection({ onSelectPractice, onSelectCompetition, refres
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <Text style={styles.title}>Siste aktivitet</Text>
+        <Text style={styles.title}>{t['recentActivity.title']}</Text>
         <TouchableOpacity
           style={styles.seeAllBtn}
           onPress={() => router.push('/(tabs)/aktivitet')}
-          accessibilityLabel="Se alle aktiviteter">
-          <Text style={styles.seeAllText}>Se alle</Text>
+          accessibilityLabel={t['recentActivity.seeAllAriaLabel']}>
+          <Text style={styles.seeAllText}>{t['common.seeAll']}</Text>
           <FontAwesomeIcon icon={faChevronRight} size={12} color={colors.warning} />
         </TouchableOpacity>
       </View>
@@ -73,7 +75,7 @@ export function PracticesSection({ onSelectPractice, onSelectCompetition, refres
         </View>
       ) : cards.length === 0 ? (
         <View style={styles.placeholder}>
-          <Text style={styles.placeholderText}>Ingen treninger eller konkurranser ennå</Text>
+          <Text style={styles.placeholderText}>{t['recentActivity.empty']}</Text>
         </View>
       ) : (
         <View style={styles.list}>

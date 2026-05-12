@@ -9,6 +9,7 @@ import { faBullseye } from '@fortawesome/free-solid-svg-icons/faBullseye';
 import { faCircleCheck } from '@fortawesome/free-solid-svg-icons/faCircleCheck';
 import { faCircleXmark } from '@fortawesome/free-solid-svg-icons/faCircleXmark';
 import { colors } from '@/styles/colors';
+import { useTranslation } from '@/contexts';
 import { styles } from './StatsSummaryStyles';
 
 interface StatsData {
@@ -40,7 +41,17 @@ function StatRow({ icon, label, value }: { icon: IconDefinition; label: string; 
   );
 }
 
-function PeriodCard({ title, icon, data }: { title: string; icon: IconDefinition; data: StatsData }) {
+function PeriodCard({
+  title,
+  icon,
+  data,
+  labels,
+}: {
+  title: string;
+  icon: IconDefinition;
+  data: StatsData;
+  labels: { totalArrows: string; withScore: string; withoutScore: string };
+}) {
   return (
     <View style={styles.card}>
       <View style={styles.cardHeader}>
@@ -51,16 +62,17 @@ function PeriodCard({ title, icon, data }: { title: string; icon: IconDefinition
       </View>
 
       <View style={styles.cardStats}>
-        <StatRow icon={faBullseye} label="Totalt antall piler" value={data.totalArrows} />
+        <StatRow icon={faBullseye} label={labels.totalArrows} value={data.totalArrows} />
         <View style={styles.divider} />
-        <StatRow icon={faCircleCheck} label="Med score" value={data.scoredArrows} />
-        <StatRow icon={faCircleXmark} label="Uten score" value={data.unscoredArrows} />
+        <StatRow icon={faCircleCheck} label={labels.withScore} value={data.scoredArrows} />
+        <StatRow icon={faCircleXmark} label={labels.withoutScore} value={data.unscoredArrows} />
       </View>
     </View>
   );
 }
 
 export function StatsSummary({ last7Days, last30Days, overall }: Props) {
+  const { t } = useTranslation();
   const [displayIndex, setDisplayIndex] = useState(0);
   // Use a ref so the PanResponder closure always reads the latest index
   const indexRef = useRef(0);
@@ -69,10 +81,16 @@ export function StatsSummary({ last7Days, last30Days, overall }: Props) {
   const dotWidth = useRef(new Animated.Value(18)).current;
 
   const cards = [
-    { title: 'Siste 7 dager', icon: faCalendarDays, data: last7Days ?? EMPTY },
-    { title: 'Siste 30 dager', icon: faArrowTrendUp, data: last30Days ?? EMPTY },
-    { title: 'Totalt', icon: faChartBar, data: overall ?? EMPTY },
+    { title: t['statsSummary.last7days'], icon: faCalendarDays, data: last7Days ?? EMPTY },
+    { title: t['statsSummary.last30days'], icon: faArrowTrendUp, data: last30Days ?? EMPTY },
+    { title: t['statsSummary.total'], icon: faChartBar, data: overall ?? EMPTY },
   ];
+
+  const periodLabels = {
+    totalArrows: t['statsSummary.totalArrows'],
+    withScore: t['statsSummary.withScore'],
+    withoutScore: t['statsSummary.withoutScore'],
+  };
 
   // dir: +1 = next (swipe left), -1 = prev (swipe right)
   function navigate(dir: 1 | -1) {
@@ -125,7 +143,7 @@ export function StatsSummary({ last7Days, last30Days, overall }: Props) {
       {/* Clip the sliding card so it doesn't bleed into surrounding UI */}
       <View style={styles.carouselTrack} {...panResponder.panHandlers}>
         <Animated.View style={{ transform: [{ translateX }] }}>
-          <PeriodCard title={current.title} icon={current.icon} data={current.data} />
+          <PeriodCard title={current.title} icon={current.icon} data={current.data} labels={periodLabels} />
         </Animated.View>
       </View>
 

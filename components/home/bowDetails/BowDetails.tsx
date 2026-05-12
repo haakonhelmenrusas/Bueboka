@@ -6,6 +6,7 @@ import { styles } from '../DetailsStyles';
 import { colors } from '@/styles/colors';
 import { capitalizeFirstLetter } from '@/utils';
 import { DataValue, ModalWrapper } from '@/components/common';
+import { useTranslation } from '@/contexts';
 
 interface Props {
   bow: Bow;
@@ -15,6 +16,7 @@ interface Props {
 }
 
 export default function BowDetails({ bow, visible, onClose, onEdit }: Props) {
+  const { t } = useTranslation();
   return (
     <ModalWrapper visible={visible} onClose={onClose}>
       <ScrollView style={styles.modalView} showsVerticalScrollIndicator={false} bounces={false}>
@@ -32,50 +34,50 @@ export default function BowDetails({ bow, visible, onClose, onEdit }: Props) {
 
         <View style={styles.content}>
           <View style={styles.row}>
-            <Text style={styles.label}>Type</Text>
+            <Text style={styles.label}>{t['bowDetails.type']}</Text>
             <Text style={styles.value}>{capitalizeFirstLetter(bow.type)}</Text>
           </View>
           <View style={styles.row}>
-            <Text style={styles.label}>Fra øye til nock</Text>
+            <Text style={styles.label}>{t['bowDetails.eyeToNock']}</Text>
             <DataValue textStyle={styles.value} value={bow.eyeToNock} suffix=" cm" />
           </View>
           <View style={styles.row}>
-            <Text style={styles.label}>Fra øye til sikte</Text>
+            <Text style={styles.label}>{t['bowDetails.eyeToSight']}</Text>
             <DataValue textStyle={styles.value} value={bow.eyeToSight} suffix=" cm" />
           </View>
           <View style={styles.row}>
-            <Text style={styles.label}>Målt sikte</Text>
+            <Text style={styles.label}>{t['bowDetails.aimMeasure']}</Text>
             <DataValue textStyle={styles.value} value={bow.aimMeasure} suffix=" cm" />
           </View>
           {bow.limbs && (
             <View style={styles.row}>
-              <Text style={styles.label}>Lemmer</Text>
+              <Text style={styles.label}>{t['bowDetails.limbs']}</Text>
               <Text style={styles.value}>{bow.limbs}</Text>
             </View>
           )}
           {bow.riser && (
             <View style={styles.row}>
-              <Text style={styles.label}>Midtstykke</Text>
+              <Text style={styles.label}>{t['bowDetails.riser']}</Text>
               <Text style={styles.value}>{bow.riser}</Text>
             </View>
           )}
           {bow.handOrientation && (
             <View style={styles.row}>
-              <Text style={styles.label}>Hånd</Text>
-              <Text style={styles.value}>{bow.handOrientation === 'RH' ? 'Høyre (RH)' : 'Venstre (LH)'}</Text>
+              <Text style={styles.label}>{t['bowDetails.hand']}</Text>
+              <Text style={styles.value}>{bow.handOrientation === 'RH' ? t['bowDetails.handRH'] : t['bowDetails.handLH']}</Text>
             </View>
           )}
           <View style={styles.row}>
-            <Text style={styles.label}>Styrke</Text>
-            <DataValue textStyle={styles.value} value={bow.drawWeight} suffix=" pund" />
+            <Text style={styles.label}>{t['bowDetails.drawWeight']}</Text>
+            <DataValue textStyle={styles.value} value={bow.drawWeight} suffix={t['bowDetails.poundsSuffix']} />
           </View>
           <View style={styles.row}>
-            <Text style={styles.label}>Lengde</Text>
+            <Text style={styles.label}>{t['bowDetails.bowLength']}</Text>
             <DataValue textStyle={styles.value} value={bow.bowLength} suffix={'"'} />
           </View>
           {bow.notes && (
             <View style={styles.row}>
-              <Text style={styles.label}>Notater</Text>
+              <Text style={styles.label}>{t['bowDetails.notes']}</Text>
               <Text style={styles.value}>{bow.notes}</Text>
             </View>
           )}

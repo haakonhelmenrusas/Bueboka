@@ -1,6 +1,7 @@
 import React from 'react';
 import { Modal, Pressable, Text, View } from 'react-native';
 import { Button } from '@/components/common';
+import { useTranslation } from '@/contexts';
 import { styles } from './ConfirmModalStyles';
 
 interface ConfirmModalProps {
@@ -13,15 +14,8 @@ interface ConfirmModalProps {
   cancelLabel?: string;
 }
 
-export default function ConfirmModal({
-  visible,
-  onCancel,
-  onConfirm,
-  title,
-  message,
-  confirmLabel = 'Slett',
-  cancelLabel = 'Avbryt',
-}: ConfirmModalProps) {
+export default function ConfirmModal({ visible, onCancel, onConfirm, title, message, confirmLabel, cancelLabel }: ConfirmModalProps) {
+  const { t } = useTranslation();
   return (
     <Modal visible={visible} transparent animationType="fade" onRequestClose={onCancel}>
       <Pressable style={styles.overlay} onPress={onCancel}>
@@ -29,8 +23,8 @@ export default function ConfirmModal({
           {title ? <Text style={styles.title}>{title}</Text> : null}
           <Text style={styles.text}>{message}</Text>
           <View style={styles.actions}>
-            <Button label={cancelLabel} type="outline" onPress={onCancel} />
-            <Button variant="warning" label={confirmLabel} onPress={onConfirm} />
+            <Button label={cancelLabel ?? t['common.cancel']} type="outline" onPress={onCancel} />
+            <Button variant="warning" label={confirmLabel ?? t['common.delete']} onPress={onConfirm} />
           </View>
         </Pressable>
       </Pressable>
