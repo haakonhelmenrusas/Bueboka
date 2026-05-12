@@ -3,6 +3,7 @@ import { Keyboard, KeyboardAvoidingView, Platform, ScrollView } from 'react-nati
 import { useRouter } from 'expo-router';
 import { Button, Message } from '@/components/common';
 import { useAuth } from '@/hooks';
+import { useTranslation } from '@/contexts';
 import { AppError } from '@/services';
 import { AuthLogo, AuthForm, SocialLogin, AuthToggle, LoadingOverlay, EmailVerification } from '@/components/auth';
 import { styles } from '@/components/auth/AuthStyles';
@@ -13,6 +14,7 @@ interface AuthScreenProps {
 
 function AuthScreen({ onAuthSuccess }: AuthScreenProps) {
   const { login, register, loginWithGoogle, isLoading, isAuthenticated, error, clearError } = useAuth();
+  const { t } = useTranslation();
   const router = useRouter();
   const [isLogin, setIsLogin] = useState(false);
   const [email, setEmail] = useState('');
@@ -37,7 +39,7 @@ function AuthScreen({ onAuthSuccess }: AuthScreenProps) {
     if (error instanceof AppError) {
       setLocalError(error.message);
     } else {
-      setLocalError(error?.message || 'An error occurred');
+      setLocalError(error?.message || t['validation.genericError']);
     }
   };
 
@@ -46,7 +48,7 @@ function AuthScreen({ onAuthSuccess }: AuthScreenProps) {
     clearError();
 
     if (!email || !password) {
-      setLocalError('Email and password are required');
+      setLocalError(t['validation.emailPasswordRequired']);
       return;
     }
 
@@ -65,12 +67,12 @@ function AuthScreen({ onAuthSuccess }: AuthScreenProps) {
     clearError();
 
     if (!email || !password) {
-      setLocalError('E-post og passord er påkrevd');
+      setLocalError(t['validation.emailPasswordRequired']);
       return;
     }
 
     if (password.length < 8) {
-      setLocalError('Passordet må være minst 8 tegn');
+      setLocalError(t['validation.passwordMinLength']);
       return;
     }
 
@@ -134,14 +136,14 @@ function AuthScreen({ onAuthSuccess }: AuthScreenProps) {
         />
         <Button
           buttonStyle={{ marginTop: 8 }}
-          label={isLoading ? 'Venter...' : isLogin ? 'Logg inn' : 'Opprett konto'}
+          label={isLoading ? t['common.loading'] : isLogin ? t['auth.loginButton'] : t['auth.registerButton']}
           onPress={handleSubmit}
           disabled={isLoading}
           variant="tertiary"
         />
         {(localError || error) && (
           <Message
-            title="Feil"
+            title={t['auth.errorTitle']}
             description={localError || error || ''}
             onPress={() => {
               setLocalError(null);

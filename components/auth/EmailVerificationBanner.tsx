@@ -2,11 +2,13 @@ import React, { useState } from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { colors } from '@/styles/colors';
 import { useAuth } from '@/hooks';
+import { useTranslation } from '@/contexts';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faExclamationCircle, faTimes } from '@fortawesome/free-solid-svg-icons';
 
 export default function EmailVerificationBanner() {
   const { user, resendVerificationEmail } = useAuth();
+  const { t } = useTranslation();
   const [dismissed, setDismissed] = useState(false);
   const [sending, setSending] = useState(false);
 
@@ -19,10 +21,10 @@ export default function EmailVerificationBanner() {
     try {
       setSending(true);
       await resendVerificationEmail();
-      alert('Verification email sent! Check your inbox.');
+      alert(t['emailVerification.sentSuccess']);
     } catch (error: any) {
       console.error('Resend verification email error:', error);
-      const errorMessage = error?.message || error?.response?.data?.message || 'Failed to send verification email. Please try again.';
+      const errorMessage = error?.message || error?.response?.data?.message || t['emailBanner.sendError'];
       alert(errorMessage);
     } finally {
       setSending(false);
@@ -34,9 +36,9 @@ export default function EmailVerificationBanner() {
       <View style={styles.content}>
         <FontAwesomeIcon icon={faExclamationCircle} size={18} color={colors.white} style={styles.icon} />
         <View style={styles.textContainer}>
-          <Text style={styles.text}>E-posten din er ikke bekreftet.</Text>
+          <Text style={styles.text}>{t['emailBanner.notVerified']}</Text>
           <TouchableOpacity onPress={handleResend} disabled={sending}>
-            <Text style={styles.link}>{sending ? 'Sender...' : 'Send bekreftelse på nytt'}</Text>
+            <Text style={styles.link}>{sending ? t['emailBanner.sending'] : t['emailBanner.resend']}</Text>
           </TouchableOpacity>
         </View>
       </View>

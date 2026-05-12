@@ -1,5 +1,6 @@
 import { View } from 'react-native';
 import { Input } from '@/components/common';
+import { useTranslation } from '@/contexts';
 import { styles } from './AuthStyles';
 
 interface AuthFormProps {
@@ -11,10 +12,11 @@ interface AuthFormProps {
 }
 
 export default function AuthForm({ email, password, isLoading, onEmailChange, onPasswordChange }: AuthFormProps) {
+  const { t } = useTranslation();
   return (
     <View style={styles.form}>
       <Input
-        label="E-post"
+        label={t['auth.emailLabel']}
         value={email}
         onChangeText={onEmailChange}
         keyboardType="email-address"
@@ -23,7 +25,7 @@ export default function AuthForm({ email, password, isLoading, onEmailChange, on
         labelStyle={styles.whiteLabel}
       />
       <Input
-        label="Passord"
+        label={t['auth.passwordLabel']}
         value={password}
         onChangeText={onPasswordChange}
         secureTextEntry
