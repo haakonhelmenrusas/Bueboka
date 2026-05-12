@@ -3,6 +3,7 @@ import { ActivityIndicator, StyleSheet, Text, View } from 'react-native';
 import { colors } from '@/styles/colors';
 import { Button, Message } from '@/components/common';
 import { useAuth } from '@/hooks';
+import { useTranslation } from '@/contexts';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faEnvelope } from '@fortawesome/free-solid-svg-icons';
 
@@ -13,6 +14,7 @@ interface EmailVerificationProps {
 
 export default function EmailVerification({ email, onVerified }: EmailVerificationProps) {
   const { resendVerificationEmail, refreshUser, user, isLoading } = useAuth();
+  const { t } = useTranslation();
   const [resending, setResending] = useState(false);
   const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
   const [cooldown, setCooldown] = useState(0);
@@ -24,7 +26,7 @@ export default function EmailVerification({ email, onVerified }: EmailVerificati
       setResending(true);
       setMessage(null);
       await resendVerificationEmail();
-      setMessage({ type: 'success', text: 'Verification email sent! Check your inbox.' });
+      setMessage({ type: 'success', text: t['emailVerification.sentSuccess'] });
 
       // Start cooldown
       setCooldown(60);
@@ -38,7 +40,7 @@ export default function EmailVerification({ email, onVerified }: EmailVerificati
         });
       }, 1000);
     } catch (error: any) {
-      setMessage({ type: 'error', text: error.message || 'Failed to resend email' });
+      setMessage({ type: 'error', text: error.message || t['emailVerification.sendFailed'] });
     } finally {
       setResending(false);
     }
@@ -50,10 +52,10 @@ export default function EmailVerification({ email, onVerified }: EmailVerificati
       if (user?.emailVerified) {
         onVerified?.();
       } else {
-        setMessage({ type: 'error', text: 'Email not verified yet. Please check your inbox.' });
+        setMessage({ type: 'error', text: t['emailVerification.notVerifiedYet'] });
       }
-    } catch (error: any) {
-      setMessage({ type: 'error', text: 'Failed to check verification status' });
+    } catch {
+      setMessage({ type: 'error', text: t['emailVerification.checkFailed'] });
     }
   };
 
@@ -63,24 +65,30 @@ export default function EmailVerification({ email, onVerified }: EmailVerificati
         <FontAwesomeIcon icon={faEnvelope} size={64} color={colors.primary} />
       </View>
 
-      <Text style={styles.title}>Bekreft e-postadressen din</Text>
+      <Text style={styles.title}>{t['emailVerification.title']}</Text>
       <Text style={styles.description}>
-        Vi har sendt en bekreftelseslenke til <Text style={styles.email}>{email}</Text>
+        {t['emailVerification.sentTo']} <Text style={styles.email}>{email}</Text>
       </Text>
-      <Text style={styles.instructions}>
-        Klikk på lenken i e-posten for å bekrefte kontoen din. Når du har bekreftet, kan du komme tilbake hit og trykke på "Jeg har
-        bekreftet".
-      </Text>
+      <Text style={styles.instructions}>{t['emailVerification.instructions']}</Text>
 
       {message && (
-        <Message title={message.type === 'success' ? 'Suksess' : 'Feil'} description={message.text} onPress={() => setMessage(null)} />
+        <Message
+          title={message.type === 'success' ? t['common.success'] : t['common.error']}
+          description={message.text}
+          onPress={() => setMessage(null)}
+        />
       )}
 
       <View style={styles.buttonsContainer}>
-        <Button label="Jeg har bekreftet" onPress={handleCheckVerification} disabled={isLoading} buttonStyle={styles.primaryButton} />
+        <Button
+          label={t['emailVerification.checkButton']}
+          onPress={handleCheckVerification}
+          disabled={isLoading}
+          buttonStyle={styles.primaryButton}
+        />
 
         <Button
-          label={cooldown > 0 ? `Send på nytt (${cooldown}s)` : 'Send e-post på nytt'}
+          label={cooldown > 0 ? `${t['emailVerification.resendCooldown']} (${cooldown}s)` : t['emailVerification.resendButton']}
           onPress={handleResendEmail}
           disabled={resending || isLoading || cooldown > 0}
           variant="standard"
@@ -91,11 +99,11 @@ export default function EmailVerification({ email, onVerified }: EmailVerificati
       {(isLoading || resending) && (
         <View style={styles.loadingContainer}>
           <ActivityIndicator size="small" color={colors.primary} />
-          <Text style={styles.loadingText}>{resending ? 'Sender e-post...' : 'Sjekker status...'}</Text>
+          <Text style={styles.loadingText}>{resending ? t['emailVerification.sendingEmail'] : t['emailVerification.checkingStatus']}</Text>
         </View>
       )}
 
-      <Text style={styles.helpText}>Fikk du ikke e-posten? Sjekk søppelpostmappen din eller klikk "Send e-post på nytt".</Text>
+      <Text style={styles.helpText}>{t['emailVerification.helpText']}</Text>
     </View>
   );
 }

@@ -1,12 +1,18 @@
-import React from 'react';
-import { Text } from 'react-native';
-import { act, render, waitFor } from '@testing-library/react-native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import { LanguageProvider, useTranslation } from '@/contexts/LanguageContext';
+// jestSetup.ts ships a default mock for @/contexts/LanguageContext so other
+// components can render without a real provider. This test needs the real
+// implementation to verify the provider's behavior.
+jest.unmock('@/contexts/LanguageContext');
 
 jest.mock('expo-localization', () => ({
   getLocales: jest.fn(() => [{ languageCode: 'en' }]),
 }));
+
+import React from 'react';
+import { Text } from 'react-native';
+import { act, render, waitFor } from '@testing-library/react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+// eslint-disable-next-line import/first
+import { LanguageProvider, useTranslation } from '@/contexts/LanguageContext';
 
 jest.mock('@/hooks/useAuth', () => ({
   useAuth: jest.fn(() => ({ user: null, isLoading: false, isAuthenticated: false })),

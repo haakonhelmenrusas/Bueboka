@@ -6,12 +6,14 @@ import { useRouter } from 'expo-router';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Button } from '@/components/common';
 import { colors } from '@/styles/colors';
+import { useTranslation } from '@/contexts';
 import { styles } from '@/components/intro/IntroStyles';
 
 export const INTRO_SEEN_KEY = 'bueboka_has_seen_intro';
 
 export default function IntroScreen() {
   const router = useRouter();
+  const { t } = useTranslation();
 
   const markSeenAndNavigate = async () => {
     await AsyncStorage.setItem(INTRO_SEEN_KEY, 'true');
@@ -38,20 +40,24 @@ export default function IntroScreen() {
 
           {/* Hero copy */}
           <View style={styles.heroSection}>
-            <Text style={styles.tagline}>Treningsporing for bueskyttere</Text>
+            <Text style={styles.tagline}>{t['intro.tagline']}</Text>
             <Text style={styles.title}>
-              {'Hvert skudd\n'}
-              <Text style={styles.titleAccent}>teller.</Text>
+              {t['intro.titleLine1']}
+              {'\n'}
+              <Text style={styles.titleAccent}>{t['intro.titleLine2']}</Text>
             </Text>
-            <Text style={styles.body}>
-              Logg treninger og konkurranser, spor siktmerkene dine og følg fremgangen over tid. Alt du trenger for å bli en bedre
-              bueskytter.
-            </Text>
+            <Text style={styles.body}>{t['intro.body']}</Text>
           </View>
 
           {/* CTA */}
           <View style={styles.ctaSection}>
-            <Button label="Kom i gang" onPress={markSeenAndNavigate} variant="tertiary" width="100%" buttonStyle={styles.ctaButton} />
+            <Button
+              label={t['intro.getStarted']}
+              onPress={markSeenAndNavigate}
+              variant="tertiary"
+              width="100%"
+              buttonStyle={styles.ctaButton}
+            />
           </View>
         </View>
       </SafeAreaView>

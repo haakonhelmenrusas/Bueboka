@@ -41,6 +41,24 @@ jest.mock('@better-auth/expo/client', () => ({
   expoClient: jest.fn(),
 }));
 
+// Provide a default LanguageProvider/useTranslation so components that consume
+// the i18n context can render under test without each test having to wrap in
+// the real provider. Defaults to the Norwegian translations so existing tests
+// that match Norwegian copy keep working. Individual tests can override with
+// jest.spyOn / jest.doMock if they need a different locale.
+jest.mock('@/contexts/LanguageContext', () => {
+  const { no } = require('@/lib/i18n/translations/no');
+  return {
+    LanguageProvider: ({ children }: { children: React.ReactNode }) => children,
+    useTranslation: () => ({
+      locale: 'no',
+      t: no,
+      setLanguage: jest.fn().mockResolvedValue(undefined),
+      isLoaded: true,
+    }),
+  };
+});
+
 // Mock expo-router
 jest.mock('expo-router', () => ({
   ...jest.requireActual('expo-router'),
