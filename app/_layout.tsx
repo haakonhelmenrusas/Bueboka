@@ -2,7 +2,7 @@ import { StatusBar } from 'expo-status-bar';
 import { Stack, useNavigationContainerRef } from 'expo-router';
 import * as Sentry from '@sentry/react-native';
 import React, { useEffect, useState } from 'react';
-import { AuthProvider } from '@/contexts';
+import { AuthProvider, LanguageProvider } from '@/contexts';
 import { colors } from '@/styles/colors';
 import { VersionService } from '@/services';
 import { UpdateRequired } from '@/components/common';
@@ -98,7 +98,9 @@ function RootLayoutContent() {
 function RootLayout() {
   return (
     <AuthProvider>
-      <RootLayoutContent />
+      <LanguageProvider>
+        <RootLayoutContent />
+      </LanguageProvider>
     </AuthProvider>
   );
 }
