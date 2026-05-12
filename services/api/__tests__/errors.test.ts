@@ -1,7 +1,7 @@
 import { AxiosError, AxiosHeaders } from 'axios';
 import { AppError, handleApiError } from '../errors';
 
-jest.mock('@/services/sentryStub', () => ({
+jest.mock('@sentry/react-native', () => ({
   captureException: jest.fn(),
 }));
 

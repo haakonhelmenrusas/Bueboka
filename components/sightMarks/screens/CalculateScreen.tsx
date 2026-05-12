@@ -4,7 +4,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { AimDistanceMark, Arrows, Bow, BowSpecification, MarkValue, SightMark } from '@/types';
 import { useSharedValue, withTiming } from 'react-native-reanimated';
 import { Ballistics } from '@/utils';
-import * as Sentry from '@/services/sentryStub';
+import * as Sentry from '@sentry/react-native';
 import { colors } from '@/styles/colors';
 import SightMarkSetCard from '@/components/sightMarks/sightMarkSetCard/SightMarkSetCard';
 import MarksForm from '@/components/sightMarks/marksForm/MarksForm';

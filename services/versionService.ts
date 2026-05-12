@@ -1,7 +1,7 @@
 import { Platform } from 'react-native';
 import * as Application from 'expo-application';
 import * as Linking from 'expo-linking';
-import * as Sentry from '@/services/sentryStub';
+import * as Sentry from '@sentry/react-native';
 
 const API_BASE_URL = process.env.EXPO_PUBLIC_API_URL || 'http://localhost:3000/api';
 

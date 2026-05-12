@@ -11,7 +11,7 @@ import { useEffect, useState } from 'react';
 import ConfirmModal from '@/components/home/DeleteArrowSetModal/ConfirmModal';
 import { userRepository } from '@/services/repositories';
 import { AppError } from '@/services';
-import { AccountSection, PublicProfileSection, PrivacySection, SponsorCard } from '@/components/settings';
+import { AccountSection, PublicProfileSection, PrivacySection, SponsorCard, LanguageSection } from '@/components/settings';
 import { EmailVerificationBanner } from '@/components/auth';
 
 export default function Settings() {
@@ -71,6 +71,7 @@ export default function Settings() {
           <Text style={styles.title}>Innstillinger</Text>
           {user && <AccountSection user={user} onProfileUpdate={handleProfileUpdate} />}
           <PublicProfileSection user={user} />
+          <LanguageSection />
           <PrivacySection />
           <View style={styles.sectionCard}>
             <SponsorCard />

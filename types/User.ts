@@ -15,6 +15,12 @@ export interface User {
   publicStats: boolean;
   publicSkytternr: boolean;
   publicAchievements: boolean;
+  /**
+   * UI language preference synced across devices.
+   * `null` means the user has not yet chosen — clients fall back to the OS
+   * locale or the default. Valid values: 'no', 'en'.
+   */
+  locale: string | null;
   createdAt: string;
   updatedAt: string;
 }

@@ -75,6 +75,14 @@
           "resizeMode": "contain"
         }
       ],
+      [
+        "@sentry/react-native/expo",
+        {
+          "url": "https://sentry.io/",
+          "project": "bueboka",
+          "organization": "haakon-rusas"
+        }
+      ],
       "@react-native-community/datetimepicker",
       [
         "expo-image-picker",

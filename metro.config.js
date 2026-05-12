@@ -1,7 +1,7 @@
-const { getDefaultConfig } = require('expo/metro-config');
+const { getSentryExpoConfig } = require('@sentry/react-native/metro');
 const { wrapWithReanimatedMetroConfig } = require('react-native-reanimated/metro-config');
 
-const config = getDefaultConfig(__dirname);
+const config = getSentryExpoConfig(__dirname);
 
 // Expo Router's require.context (_ctx.js) discovers every *.ts/tsx file in app/,
 // including test files, before Metro's blockList runs.  Intercept at the

@@ -1,5 +1,5 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import * as Sentry from '@/services/sentryStub';
+import * as Sentry from '@sentry/react-native';
 
 export type OperationType = string;
 

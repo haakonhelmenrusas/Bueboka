@@ -104,6 +104,23 @@ export const userRepository = {
   },
 
   /**
+   * Update the user's UI language preference.
+   * PATCH /api/users
+   *
+   * Server validates `locale` against the literals 'no' | 'en' (any other
+   * value returns 400). Pass `null` only if you intentionally want to clear
+   * a previously-set preference.
+   */
+  async updateLocale(locale: 'no' | 'en' | null): Promise<User> {
+    try {
+      const response = await client.patch<User>('/users', { locale });
+      return response.data;
+    } catch (error) {
+      throw handleApiError(error);
+    }
+  },
+
+  /**
    * Delete user account
    * DELETE /api/users/delete
    */
