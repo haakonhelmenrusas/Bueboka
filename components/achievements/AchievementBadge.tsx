@@ -28,6 +28,7 @@ import { faClockRotateLeft } from '@fortawesome/free-solid-svg-icons/faClockRota
 import { AchievementProgress, AchievementRarity, AchievementTier } from '@/types/Achievement';
 import { colors } from '@/styles/colors';
 import { useTranslation } from '@/contexts';
+import { getAchievementName, getAchievementDescription } from '@/utils/helpers/achievementLabels';
 import { styles } from './AchievementBadgeStyles';
 
 interface Props {
@@ -130,10 +131,10 @@ export function AchievementBadge({ progress, size = 'medium', showProgress = tru
         <Text
           style={[styles.name, { fontSize: sizeConfig.nameFontSize, color: isUnlocked ? colors.text : colors.textSecondary }]}
           numberOfLines={2}>
-          {achievement.name}
+          {getAchievementName(achievement.id, achievement.name, t)}
         </Text>
         <Text style={[styles.description, { fontSize: sizeConfig.descFontSize }]} numberOfLines={3}>
-          {achievement.description}
+          {getAchievementDescription(achievement.id, achievement.description, t)}
         </Text>
 
         {showProgress && !isUnlocked && (
