@@ -6,6 +6,7 @@ import { Checkbox } from '@/components/common';
 import { styles } from '@/components/settings/SettingsStyles';
 import { User } from '@/types';
 import { userRepository } from '@/services/repositories';
+import { useTranslation } from '@/contexts';
 
 type FeedbackMsg = { type: 'success' | 'error'; text: string } | null;
 
@@ -14,6 +15,7 @@ interface PublicProfileSectionProps {
 }
 
 export default function PublicProfileSection({ user }: PublicProfileSectionProps) {
+  const { t } = useTranslation();
   const [isPublic, setIsPublic] = useState(false);
   const [publicName, setPublicName] = useState(true);
   const [publicClub, setPublicClub] = useState(true);
@@ -57,10 +59,10 @@ export default function PublicProfileSection({ user }: PublicProfileSectionProps
 
     try {
       await userRepository.updatePublicSettings(updates);
-      setPublicMsg({ type: 'success', text: 'Innstillinger lagret' });
+      setPublicMsg({ type: 'success', text: t['settings.publicSaved'] });
       setTimeout(() => setPublicMsg(null), 3000);
     } catch {
-      setPublicMsg({ type: 'error', text: 'Kunne ikke lagre innstillinger' });
+      setPublicMsg({ type: 'error', text: t['settings.publicSaveError'] });
     } finally {
       setPublicSaving(false);
     }
@@ -70,46 +72,46 @@ export default function PublicProfileSection({ user }: PublicProfileSectionProps
     <View style={styles.section}>
       <View style={styles.sectionTitleRow}>
         <FontAwesomeIcon icon={faGlobe} size={18} color="#fff" />
-        <Text style={styles.sectionTitle}>Offentlig profil</Text>
+        <Text style={styles.sectionTitle}>{t['settings.publicProfileTitle']}</Text>
       </View>
       <View style={styles.sectionCard}>
-        <Text style={styles.privacyIntro}>Gjør profilen din søkbar for andre brukere. Du velger selv hva du ønsker å dele.</Text>
+        <Text style={styles.privacyIntro}>{t['settings.publicProfileIntro']}</Text>
         <Checkbox
           value={isPublic}
-          label="Gjør profilen min offentlig"
+          label={t['settings.makeProfilePublic']}
           onChange={(v) => handlePublicSettingChange({ isPublic: v })}
           disabled={publicSaving}
         />
         {isPublic && (
           <View style={styles.publicSubSettings}>
-            <Text style={styles.publicSubLabel}>Velg hva som vises offentlig:</Text>
+            <Text style={styles.publicSubLabel}>{t['settings.choosePublicFields']}</Text>
             <Checkbox
               value={publicName}
-              label="Navn"
+              label={t['settings.publicName']}
               onChange={(v) => handlePublicSettingChange({ publicName: v })}
               disabled={publicSaving}
             />
             <Checkbox
               value={publicClub}
-              label="Klubb"
+              label={t['settings.publicClub']}
               onChange={(v) => handlePublicSettingChange({ publicClub: v })}
               disabled={publicSaving}
             />
             <Checkbox
               value={publicSkytternr}
-              label="Skytternummer"
+              label={t['settings.publicArcherNumber']}
               onChange={(v) => handlePublicSettingChange({ publicSkytternr: v })}
               disabled={publicSaving}
             />
             <Checkbox
               value={publicStats}
-              label="Statistikk (totalt antall piler og snittpoeng)"
+              label={t['settings.publicStats']}
               onChange={(v) => handlePublicSettingChange({ publicStats: v })}
               disabled={publicSaving}
             />
             <Checkbox
               value={publicAchievements}
-              label="Prestasjoner (antall oppnådde prestasjoner)"
+              label={t['settings.publicAchievements']}
               onChange={(v) => handlePublicSettingChange({ publicAchievements: v })}
               disabled={publicSaving}
             />

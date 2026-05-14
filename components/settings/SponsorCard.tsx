@@ -4,11 +4,14 @@ import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faExternalLink } from '@fortawesome/free-solid-svg-icons';
 import { colors } from '@/styles/colors';
 import { styles } from '@/components/settings/SettingsStyles';
+import { useTranslation } from '@/contexts';
 
 export default function SponsorCard() {
+  const { t } = useTranslation();
+
   return (
     <View style={styles.sponsorContent}>
-      <Text style={styles.sponsorLabel}>Sponset av</Text>
+      <Text style={styles.sponsorLabel}>{t['settings.sponsorLabel']}</Text>
       <Image
         style={styles.sponsorLogo}
         contentFit="contain"
@@ -21,7 +24,7 @@ export default function SponsorCard() {
         onPress={() => Linking.openURL('https://www.arcticbuesport.no?utm_source=bueboka&utm_medium=bueboka&utm_campaign=bueboka2026')}>
         <View style={styles.sponsorLink}>
           <Text>
-            Besøk nettsiden <FontAwesomeIcon icon={faExternalLink} size={14} color={colors.primary} />
+            {t['settings.sponsorVisitWebsite']} <FontAwesomeIcon icon={faExternalLink} size={14} color={colors.primary} />
           </Text>
         </View>
       </TouchableOpacity>

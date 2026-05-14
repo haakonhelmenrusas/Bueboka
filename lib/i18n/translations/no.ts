@@ -492,4 +492,129 @@ export const no: TranslationKeys = {
 
   'confirmRemove.message': 'Bekreft fjerning av siktemerker',
   'confirmRemove.yes': 'Ja',
+
+  // Common additions
+  'common.advanced': 'Avansert',
+  'common.favourite': 'Favoritt',
+  'common.noResults': 'Ingen treff',
+  'common.chooseOption': 'Velg et alternativ',
+
+  // Settings screen
+  'settings.title': 'Innstillinger',
+  'settings.logout': 'Logg ut',
+  'settings.loggingOut': 'Logger ut...',
+  'settings.deleteAccount': 'Slett konto',
+  'settings.deletingAccount': 'Sletter konto...',
+  'settings.deleteDescription':
+    'Når du sletter kontoen din, vil alle dine data bli permanent fjernet. Dette inkluderer treningsøkter, utstyr og profilinformasjon. Denne handlingen kan ikke angres.',
+  'settings.confirmDeleteTitle': 'Bekreft sletting av konto',
+  'settings.confirmDeleteMessage':
+    'Er du sikker på at du vil slette kontoen din? Alle dine data vil bli permanent fjernet, inkludert treningsøkter, utstyr og profilinformasjon. Denne handlingen kan ikke angres.',
+  'settings.confirmDeleteYes': 'Ja, slett konto',
+  'settings.deleteError': 'Kunne ikke slette konto. Prøv igjen.',
+
+  // Settings — account section
+  'settings.accountTitle': 'Konto',
+  'settings.accountNameLabel': 'Navn',
+  'settings.accountEmailLabel': 'E-post',
+  'settings.accountClubLabel': 'Klubb',
+  'settings.accountArcherNumberLabel': 'Skytternummer',
+
+  // Settings — public profile section
+  'settings.publicProfileTitle': 'Offentlig profil',
+  'settings.publicProfileIntro': 'Gjør profilen din søkbar for andre brukere. Du velger selv hva du ønsker å dele.',
+  'settings.makeProfilePublic': 'Gjør profilen min offentlig',
+  'settings.choosePublicFields': 'Velg hva som vises offentlig:',
+  'settings.publicName': 'Navn',
+  'settings.publicClub': 'Klubb',
+  'settings.publicArcherNumber': 'Skytternummer',
+  'settings.publicStats': 'Statistikk (totalt antall piler og snittpoeng)',
+  'settings.publicAchievements': 'Prestasjoner (antall oppnådde prestasjoner)',
+  'settings.publicSaved': 'Innstillinger lagret',
+  'settings.publicSaveError': 'Kunne ikke lagre innstillinger',
+
+  // Settings — privacy section
+  'settings.privacyTitle': 'Personvern og datasikkerhet',
+  'settings.privacyIntro': 'Dine data er trygge hos oss. Vi tar personvern på alvor og forplikter oss til å beskytte informasjonen din.',
+  'settings.privacyNeverSharedTitle': 'Aldri delt eller solgt',
+  'settings.privacyNeverSharedDesc': 'Vi deler eller selger aldri dataene dine til tredjeparter. Din informasjon forblir privat.',
+  'settings.privacyAppOnlyTitle': 'Kun til appens drift',
+  'settings.privacyAppOnlyDesc': 'Vi bruker kun dataene dine til å drive appen og gi deg den beste brukeropplevelsen.',
+  'settings.privacyYourControlTitle': 'Din kontroll',
+  'settings.privacyYourControlDesc': 'Du kan når som helst slette kontoen din og all tilhørende data.',
+  'settings.privacySecureStorageTitle': 'Sikker lagring',
+  'settings.privacySecureStorageDesc': 'All data krypteres og lagres sikkert i samsvar med moderne sikkerhetsstandarder.',
+  'settings.privacyAnalyticsTitle': 'Analyse og forbedring',
+  'settings.privacyAnalyticsPre': 'Vi bruker',
+  'settings.privacyAnalyticsMid':
+    'for å forstå hvordan appen brukes og forbedre brukeropplevelsen. Les mer i',
+  'settings.privacyMSPrivacy': 'Microsofts personvernerklæring',
+  'settings.privacyFooter': 'Hvis du har spørsmål om hvordan vi håndterer dataene dine, ta gjerne kontakt med oss.',
+
+  // Settings — sponsor card
+  'settings.sponsorLabel': 'Sponset av',
+  'settings.sponsorVisitWebsite': 'Besøk nettsiden',
+
+  // Bow form
+  'bowForm.editTitle': 'Rediger bue',
+  'bowForm.newTitle': 'Ny bue',
+  'bowForm.nameLabel': 'Navn på bue',
+  'bowForm.nameRequired': 'Du må fylle inn navn på bue',
+  'bowForm.typeLabel': 'Buetype',
+  'bowForm.handPlaceholder': 'Velg hånd',
+  'bowForm.drawWeight': 'Styrke (pund)',
+  'bowForm.bowLength': 'Lengde (tommer)',
+  'bowForm.sightMarksSection': 'Siktemerke',
+  'bowForm.eyeToNock': 'Øye til nock (cm)',
+  'bowForm.eyeToSight': 'Øye til sikte (cm)',
+  'bowForm.notesPlaceholder': 'F.eks. Spesielle innstillinger eller justeringer',
+  'bowForm.deleteTitle': 'Slett bue',
+  'bowForm.deleteMessage': 'Vil du slette buen "{name}"?',
+  'bowForm.maxBowsError': 'Du kan ikke ha mer enn 5 buer',
+  'bowForm.saveError': 'Kunne ikke lagre bue',
+  'bowForm.deleteError': 'Kunne ikke slette bue',
+
+  // Arrow form
+  'arrowForm.editTitle': 'Rediger pilsett',
+  'arrowForm.newTitle': 'Nytt pilsett',
+  'arrowForm.nameLabel': 'Navn på pilsett',
+  'arrowForm.nameHelpText': 'F.eks. Carbon X23',
+  'arrowForm.nameInfo': '(obligatorisk)',
+  'arrowForm.arrowCountHelpText': 'F.eks. 12',
+  'arrowForm.grainSuffix': '(grain)',
+  'arrowForm.mmSuffix': '(mm)',
+  'arrowForm.lengthHelpText': 'F.eks. 31',
+  'arrowForm.weightHelpText': 'F.eks. 400',
+  'arrowForm.spineHelpText': 'F.eks. 500',
+  'arrowForm.diameterHelpText': 'F.eks. 5.2',
+  'arrowForm.pointTypeHelpText': 'F.eks. Bullet',
+  'arrowForm.pointWeightHelpText': 'F.eks. 100',
+  'arrowForm.vanesHelpText': 'F.eks. Bohning X Vanes',
+  'arrowForm.nockHelpText': 'F.eks. Easton G Nock',
+  'arrowForm.notesPlaceholder': 'Ekstra informasjon om pilsettet',
+  'arrowForm.deleteTitle': 'Slett pilsett',
+  'arrowForm.deleteMessage': 'Vil du slette pilsettet "{name}"?',
+  'arrowForm.nameRequired': 'Navn er påkrevd',
+  'arrowForm.deleteError': 'Kunne ikke slette pilsett',
+  'arrowForm.saveError': 'Kunne ikke lagre pilsett',
+
+  // Profile form
+  'profileForm.nameLabel': 'Navn',
+  'profileForm.nameHelpText': 'Ditt fulle navn',
+  'profileForm.nameRequired': 'Navn er påkrevd',
+  'profileForm.clubLabel': 'Klubb',
+  'profileForm.clubPlaceholder': 'Velg en klubb',
+  'profileForm.noClub': 'Ingen / ikke tilknyttet',
+  'profileForm.archerNumberLabel': 'Skytternr',
+  'profileForm.archerNumberHelpText': 'Ditt skytternummer',
+
+  // Offline banner
+  'offline.disconnected': 'Frakoblet — endringer synkroniseres når du er tilkoblet',
+  'offline.syncing': 'Jobber...',
+  'offline.queued': '{count} i kø – trykk for å synkronisere',
+
+  // Update required screen
+  'update.title': 'Oppdatering påkrevd',
+  'update.button': 'Oppdater nå',
+  'update.subtext': 'Du må oppdatere appen for å fortsette å bruke Bueboka',
 };

@@ -492,4 +492,128 @@ export const en: TranslationKeys = {
 
   'confirmRemove.message': 'Confirm removal of sight marks',
   'confirmRemove.yes': 'Yes',
+
+  // Common additions
+  'common.advanced': 'Advanced',
+  'common.favourite': 'Favourite',
+  'common.noResults': 'No results',
+  'common.chooseOption': 'Choose an option',
+
+  // Settings screen
+  'settings.title': 'Settings',
+  'settings.logout': 'Log out',
+  'settings.loggingOut': 'Logging out...',
+  'settings.deleteAccount': 'Delete account',
+  'settings.deletingAccount': 'Deleting account...',
+  'settings.deleteDescription':
+    'When you delete your account, all your data will be permanently removed. This includes training sessions, equipment and profile information. This action cannot be undone.',
+  'settings.confirmDeleteTitle': 'Confirm account deletion',
+  'settings.confirmDeleteMessage':
+    'Are you sure you want to delete your account? All your data will be permanently removed, including training sessions, equipment and profile information. This action cannot be undone.',
+  'settings.confirmDeleteYes': 'Yes, delete account',
+  'settings.deleteError': 'Could not delete account. Please try again.',
+
+  // Settings — account section
+  'settings.accountTitle': 'Account',
+  'settings.accountNameLabel': 'Name',
+  'settings.accountEmailLabel': 'Email',
+  'settings.accountClubLabel': 'Club',
+  'settings.accountArcherNumberLabel': 'Archer number',
+
+  // Settings — public profile section
+  'settings.publicProfileTitle': 'Public profile',
+  'settings.publicProfileIntro': 'Make your profile searchable to other users. You choose what you want to share.',
+  'settings.makeProfilePublic': 'Make my profile public',
+  'settings.choosePublicFields': 'Choose what is shown publicly:',
+  'settings.publicName': 'Name',
+  'settings.publicClub': 'Club',
+  'settings.publicArcherNumber': 'Archer number',
+  'settings.publicStats': 'Statistics (total arrows and average score)',
+  'settings.publicAchievements': 'Achievements (number of unlocked achievements)',
+  'settings.publicSaved': 'Settings saved',
+  'settings.publicSaveError': 'Could not save settings',
+
+  // Settings — privacy section
+  'settings.privacyTitle': 'Privacy and data security',
+  'settings.privacyIntro': 'Your data is safe with us. We take privacy seriously and commit to protecting your information.',
+  'settings.privacyNeverSharedTitle': 'Never shared or sold',
+  'settings.privacyNeverSharedDesc': 'We never share or sell your data to third parties. Your information remains private.',
+  'settings.privacyAppOnlyTitle': 'Used for app operation only',
+  'settings.privacyAppOnlyDesc': 'We only use your data to operate the app and give you the best user experience.',
+  'settings.privacyYourControlTitle': 'Your control',
+  'settings.privacyYourControlDesc': 'You can delete your account and all associated data at any time.',
+  'settings.privacySecureStorageTitle': 'Secure storage',
+  'settings.privacySecureStorageDesc': 'All data is encrypted and stored securely in accordance with modern security standards.',
+  'settings.privacyAnalyticsTitle': 'Analytics and improvement',
+  'settings.privacyAnalyticsPre': 'We use',
+  'settings.privacyAnalyticsMid': 'to understand how the app is used and improve the user experience. Read more in',
+  'settings.privacyMSPrivacy': "Microsoft's privacy statement",
+  'settings.privacyFooter': 'If you have questions about how we handle your data, please feel free to contact us.',
+
+  // Settings — sponsor card
+  'settings.sponsorLabel': 'Sponsored by',
+  'settings.sponsorVisitWebsite': 'Visit website',
+
+  // Bow form
+  'bowForm.editTitle': 'Edit bow',
+  'bowForm.newTitle': 'New bow',
+  'bowForm.nameLabel': 'Bow name',
+  'bowForm.nameRequired': 'Bow name is required',
+  'bowForm.typeLabel': 'Bow type',
+  'bowForm.handPlaceholder': 'Choose hand',
+  'bowForm.drawWeight': 'Draw weight (lbs)',
+  'bowForm.bowLength': 'Length (inches)',
+  'bowForm.sightMarksSection': 'Sight marks',
+  'bowForm.eyeToNock': 'Eye to nock (cm)',
+  'bowForm.eyeToSight': 'Eye to sight (cm)',
+  'bowForm.notesPlaceholder': 'e.g. Special settings or adjustments',
+  'bowForm.deleteTitle': 'Delete bow',
+  'bowForm.deleteMessage': 'Delete bow "{name}"?',
+  'bowForm.maxBowsError': 'You cannot have more than 5 bows',
+  'bowForm.saveError': 'Could not save bow',
+  'bowForm.deleteError': 'Could not delete bow',
+
+  // Arrow form
+  'arrowForm.editTitle': 'Edit arrow set',
+  'arrowForm.newTitle': 'New arrow set',
+  'arrowForm.nameLabel': 'Arrow set name',
+  'arrowForm.nameHelpText': 'e.g. Carbon X23',
+  'arrowForm.nameInfo': '(required)',
+  'arrowForm.arrowCountHelpText': 'e.g. 12',
+  'arrowForm.grainSuffix': '(grain)',
+  'arrowForm.mmSuffix': '(mm)',
+  'arrowForm.lengthHelpText': 'e.g. 31',
+  'arrowForm.weightHelpText': 'e.g. 400',
+  'arrowForm.spineHelpText': 'e.g. 500',
+  'arrowForm.diameterHelpText': 'e.g. 5.2',
+  'arrowForm.pointTypeHelpText': 'e.g. Bullet',
+  'arrowForm.pointWeightHelpText': 'e.g. 100',
+  'arrowForm.vanesHelpText': 'e.g. Bohning X Vanes',
+  'arrowForm.nockHelpText': 'e.g. Easton G Nock',
+  'arrowForm.notesPlaceholder': 'Extra information about the arrow set',
+  'arrowForm.deleteTitle': 'Delete arrow set',
+  'arrowForm.deleteMessage': 'Delete arrow set "{name}"?',
+  'arrowForm.nameRequired': 'Name is required',
+  'arrowForm.deleteError': 'Could not delete arrow set',
+  'arrowForm.saveError': 'Could not save arrow set',
+
+  // Profile form
+  'profileForm.nameLabel': 'Name',
+  'profileForm.nameHelpText': 'Your full name',
+  'profileForm.nameRequired': 'Name is required',
+  'profileForm.clubLabel': 'Club',
+  'profileForm.clubPlaceholder': 'Choose a club',
+  'profileForm.noClub': 'None / not affiliated',
+  'profileForm.archerNumberLabel': 'Archer no.',
+  'profileForm.archerNumberHelpText': 'Your archer number',
+
+  // Offline banner
+  'offline.disconnected': 'Offline — changes will sync when connected',
+  'offline.syncing': 'Working...',
+  'offline.queued': '{count} queued — tap to sync',
+
+  // Update required screen
+  'update.title': 'Update required',
+  'update.button': 'Update now',
+  'update.subtext': 'You must update the app to continue using Bueboka',
 };

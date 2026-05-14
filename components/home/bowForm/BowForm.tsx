@@ -12,6 +12,7 @@ import { colors } from '@/styles/colors';
 import ConfirmModal from '@/components/home/DeleteArrowSetModal/ConfirmModal';
 import { bowRepository } from '@/services/repositories';
 import { AppError } from '@/services';
+import { useTranslation } from '@/contexts';
 
 interface BowFormProps {
   modalVisible: boolean;
@@ -23,6 +24,7 @@ interface BowFormProps {
 }
 
 const BowForm = ({ modalVisible, setModalVisible, bow, existingBows = [], onSuccess, onDeleteSuccess }: BowFormProps) => {
+  const { t } = useTranslation();
   const [confirmVisible, setConfirmVisible] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [advancedOpen, setAdvancedOpen] = useState(false);
@@ -87,12 +89,10 @@ const BowForm = ({ modalVisible, setModalVisible, bow, existingBows = [], onSucc
       };
 
       if (bow) {
-        // Edit mode
         await bowRepository.update(bow.id, bowData);
       } else {
-        // Create mode
         if (bows.length >= 5) {
-          alert('Du kan ikke ha mer enn 5 buer');
+          alert(t['bowForm.maxBowsError']);
           return;
         }
         await bowRepository.create(bowData);
@@ -103,11 +103,7 @@ const BowForm = ({ modalVisible, setModalVisible, bow, existingBows = [], onSucc
       onSuccess?.();
     } catch (error) {
       console.error('Error saving bow:', error);
-      if (error instanceof AppError) {
-        alert(error.message);
-      } else {
-        alert('Kunne ikke lagre bue');
-      }
+      alert(error instanceof AppError ? error.message : t['bowForm.saveError']);
     } finally {
       setSubmitting(false);
     }
@@ -125,11 +121,7 @@ const BowForm = ({ modalVisible, setModalVisible, bow, existingBows = [], onSucc
       onSuccess?.();
     } catch (error) {
       console.error('Error deleting bow:', error);
-      if (error instanceof AppError) {
-        alert(error.message);
-      } else {
-        alert('Kunne ikke slette bue');
-      }
+      alert(error instanceof AppError ? error.message : t['bowForm.deleteError']);
     } finally {
       setSubmitting(false);
     }
@@ -164,41 +156,41 @@ const BowForm = ({ modalVisible, setModalVisible, bow, existingBows = [], onSucc
         setModalVisible(false);
       }}>
       <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={styles.modal}>
-        <ModalHeader onPress={handleCloseModal} title={bow ? 'Rediger bue' : 'Ny bue'} />
+        <ModalHeader onPress={handleCloseModal} title={bow ? t['bowForm.editTitle'] : t['bowForm.newTitle']} />
         <ScrollView keyboardShouldPersistTaps="handled" showsVerticalScrollIndicator={false} contentContainerStyle={styles.scrollContent}>
           <Pressable onPress={() => Keyboard.dismiss()}>
             <View style={styles.inputs}>
               <Input
                 value={name}
                 onChangeText={(value) => dispatch({ type: 'SET_NAME', payload: value })}
-                label="Navn på bue"
+                label={t['bowForm.nameLabel']}
                 error={nameError}
-                errorMessage="Du må fylle inn navn på bue"
+                errorMessage={t['bowForm.nameRequired']}
               />
               <Select
                 containerStyle={{ zIndex: 2000 }}
-                label="Buetype"
+                label={t['bowForm.typeLabel']}
                 selectedValue={type}
                 options={[
-                  { label: 'Recurve', value: BowType.RECURVE },
-                  { label: 'Compound', value: BowType.COMPOUND },
-                  { label: 'Langbue', value: BowType.LONGBOW },
-                  { label: 'Barebow', value: BowType.BAREBOW },
-                  { label: 'Rytterbue', value: BowType.HORSEBOW },
-                  { label: 'Tradisjonell', value: BowType.TRADITIONAL },
-                  { label: 'Annet', value: BowType.OTHER },
+                  { label: t['bowType.recurve'], value: BowType.RECURVE },
+                  { label: t['bowType.compound'], value: BowType.COMPOUND },
+                  { label: t['bowType.longbow'], value: BowType.LONGBOW },
+                  { label: t['bowType.barebow'], value: BowType.BAREBOW },
+                  { label: t['bowType.horsebow'], value: BowType.HORSEBOW },
+                  { label: t['bowType.traditional'], value: BowType.TRADITIONAL },
+                  { label: t['bowType.other'], value: BowType.OTHER },
                 ]}
                 onValueChange={(value) => dispatch({ type: 'SET_TYPE', payload: value })}
               />
               <Checkbox
                 value={isFavorite}
-                label="Favoritt"
+                label={t['common.favourite']}
                 onChange={(newValue) => dispatch({ type: 'SET_IS_FAVORITE', payload: newValue })}
               />
               <TouchableOpacity activeOpacity={0.7} style={styles.advancedToggle} onPress={() => setAdvancedOpen((prev) => !prev)}>
                 <View style={styles.advancedLine} />
                 <View style={styles.advancedLabelWrap}>
-                  <Text style={styles.advancedLabel}>Avansert</Text>
+                  <Text style={styles.advancedLabel}>{t['common.advanced']}</Text>
                   <FontAwesomeIcon
                     icon={faChevronDown}
                     size={11}
@@ -212,25 +204,25 @@ const BowForm = ({ modalVisible, setModalVisible, bow, existingBows = [], onSucc
                 <View style={styles.advancedContent}>
                   <Select
                     containerStyle={{ flex: 1, zIndex: 1500 }}
-                    label="Hånd"
+                    label={t['bowDetails.hand']}
                     selectedValue={handOrientation}
                     options={[
-                      { label: 'Velg hånd', value: '' },
-                      { label: 'Høyre (RH)', value: 'RH' },
-                      { label: 'Venstre (LH)', value: 'LH' },
+                      { label: t['bowForm.handPlaceholder'], value: '' },
+                      { label: t['bowDetails.handRH'], value: 'RH' },
+                      { label: t['bowDetails.handLH'], value: 'LH' },
                     ]}
                     onValueChange={(value) => dispatch({ type: 'SET_HAND_ORIENTATION', payload: value as 'RH' | 'LH' | '' })}
                   />
                   <View style={styles.row}>
                     <Input
                       containerStyle={{ flex: 1 }}
-                      label="Lemmer"
+                      label={t['bowDetails.limbs']}
                       value={limbs}
                       onChangeText={(value) => dispatch({ type: 'SET_LIMBS', payload: value })}
                     />
                     <Input
                       containerStyle={{ flex: 1 }}
-                      label="Midtstykke"
+                      label={t['bowDetails.riser']}
                       value={riser}
                       onChangeText={(value) => dispatch({ type: 'SET_RISER', payload: value })}
                     />
@@ -238,14 +230,14 @@ const BowForm = ({ modalVisible, setModalVisible, bow, existingBows = [], onSucc
                   <View style={styles.numberRow}>
                     <Input
                       containerStyle={{ flex: 1 }}
-                      label="Styrke (pund)"
+                      label={t['bowForm.drawWeight']}
                       keyboardType="numeric"
                       value={drawWeight}
                       onChangeText={(value) => handleNumberChange(value, 'SET_DRAW_WEIGHT', dispatch)}
                     />
                     <Input
                       containerStyle={{ flex: 1 }}
-                      label="Lengde (tommer)"
+                      label={t['bowForm.bowLength']}
                       keyboardType="numeric"
                       value={bowLength}
                       onChangeText={(value) => handleNumberChange(value, 'SET_BOW_LENGTH', dispatch)}
@@ -256,7 +248,7 @@ const BowForm = ({ modalVisible, setModalVisible, bow, existingBows = [], onSucc
               <TouchableOpacity activeOpacity={0.7} style={styles.advancedToggle} onPress={() => setSightMarkOpen((prev) => !prev)}>
                 <View style={styles.advancedLine} />
                 <View style={styles.advancedLabelWrap}>
-                  <Text style={styles.advancedLabel}>Siktemerke</Text>
+                  <Text style={styles.advancedLabel}>{t['bowForm.sightMarksSection']}</Text>
                   <FontAwesomeIcon
                     icon={faChevronDown}
                     size={11}
@@ -271,21 +263,21 @@ const BowForm = ({ modalVisible, setModalVisible, bow, existingBows = [], onSucc
                 <View style={styles.numberRow}>
                   <Input
                     containerStyle={{ flex: 1 }}
-                    label="Øye til nock (cm)"
+                    label={t['bowForm.eyeToNock']}
                     keyboardType="numeric"
                     value={eyeToNock}
                     onChangeText={(value) => handleNumberChange(value, 'SET_EYE_TO_NOCK', dispatch)}
                   />
                   <Input
                     containerStyle={{ flex: 1 }}
-                    label="Øye til sikte (cm)"
+                    label={t['bowForm.eyeToSight']}
                     keyboardType="numeric"
                     value={eyeToSight}
                     onChangeText={(value) => handleNumberChange(value, 'SET_EYE_TO_SIGHT', dispatch)}
                   />
                   <Input
                     containerStyle={{ flex: 1 }}
-                    label="Målt sikte"
+                    label={t['bowDetails.aimMeasure']}
                     keyboardType="numeric"
                     value={aimMeasure}
                     onChangeText={(value) => handleNumberChange(value, 'SET_AIM_MEASURE', dispatch)}
@@ -294,11 +286,11 @@ const BowForm = ({ modalVisible, setModalVisible, bow, existingBows = [], onSucc
               )}
 
               <Textarea
-                label="Notater"
+                label={t['bowDetails.notes']}
                 optional
                 value={notes}
                 onChangeText={(value) => dispatch({ type: 'SET_NOTES', payload: value })}
-                placeholderText="F.eks. Spesielle innstillinger eller justeringer"
+                placeholderText={t['bowForm.notesPlaceholder']}
               />
             </View>
           </Pressable>
@@ -309,23 +301,23 @@ const BowForm = ({ modalVisible, setModalVisible, bow, existingBows = [], onSucc
               <FontAwesomeIcon icon={faTrashCan} size={16} color={colors.error} />
             </TouchableOpacity>
           )}
-          <Button disabled={!name || submitting} onPress={handleSubmit} label={submitting ? 'Lagrer...' : 'Lagre'} />
+          <Button disabled={!name || submitting} onPress={handleSubmit} label={submitting ? t['form.saving'] : t['form.save']} />
           <Button
             type="outline"
             onPress={() => {
               clearForm();
               setModalVisible(false);
             }}
-            label="Avbryt"
+            label={t['common.cancel']}
           />
         </View>
       </KeyboardAvoidingView>
       <ConfirmModal
         visible={confirmVisible}
-        title="Slett bue"
-        message={'Vil du slette buen "' + name + '"?'}
-        confirmLabel="Slett"
-        cancelLabel="Avbryt"
+        title={t['bowForm.deleteTitle']}
+        message={t['bowForm.deleteMessage'].replace('{name}', name)}
+        confirmLabel={t['common.delete']}
+        cancelLabel={t['common.cancel']}
         onCancel={() => setConfirmVisible(false)}
         onConfirm={() => {
           handleDelete();
