@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { StyleProp, Text, TextInput, TextInputProps, TextStyle, View, ViewStyle } from 'react-native';
 import { defaultStyles } from './InputStyles';
 import { colors } from '@/styles/colors';
+import { useTranslation } from '@/contexts';
 
 interface InputProps extends TextInputProps {
   label: string;
@@ -45,6 +46,7 @@ const Input = React.forwardRef<TextInput, InputProps>(
     },
     ref,
   ) => {
+    const { t } = useTranslation();
     const [isFocused, setIsFocused] = useState(false);
     const showError = Boolean(error);
 
@@ -63,7 +65,7 @@ const Input = React.forwardRef<TextInput, InputProps>(
         <View style={defaultStyles.labelContainer}>
           <Text style={[defaultStyles.label, labelStyle]}>
             {label}
-            {optional && <Text style={defaultStyles.optional}> (valgfritt)</Text>}
+            {optional && <Text style={defaultStyles.optional}> {t['form.optional']}</Text>}
           </Text>
           {info ? <Text style={defaultStyles.infoText}>{info}</Text> : null}
         </View>

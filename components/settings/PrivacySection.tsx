@@ -7,47 +7,39 @@ import { faShield } from '@fortawesome/free-solid-svg-icons/faShield';
 import { faChartBar } from '@fortawesome/free-solid-svg-icons/faChartBar';
 import { colors } from '@/styles/colors';
 import { styles } from '@/components/settings/SettingsStyles';
+import { useTranslation } from '@/contexts';
+import type { TranslationKeys } from '@/lib/i18n/types';
 
-const privacyItems = [
-  {
-    icon: faLock,
-    title: 'Aldri delt eller solgt',
-    desc: 'Vi deler eller selger aldri dataene dine til tredjeparter. Din informasjon forblir privat.',
-  },
-  {
-    icon: faBullseye,
-    title: 'Kun til appens drift',
-    desc: 'Vi bruker kun dataene dine til å drive appen og gi deg den beste brukeropplevelsen.',
-  },
-  {
-    icon: faKey,
-    title: 'Din kontroll',
-    desc: 'Du kan når som helst slette kontoen din og all tilhørende data.',
-  },
-  {
-    icon: faShield,
-    title: 'Sikker lagring',
-    desc: 'All data krypteres og lagres sikkert i samsvar med moderne sikkerhetsstandarder.',
-  },
+type PrivacyItem = {
+  icon: any;
+  titleKey: keyof TranslationKeys;
+  descKey: keyof TranslationKeys;
+};
+
+const PRIVACY_ITEMS: PrivacyItem[] = [
+  { icon: faLock, titleKey: 'settings.privacyNeverSharedTitle', descKey: 'settings.privacyNeverSharedDesc' },
+  { icon: faBullseye, titleKey: 'settings.privacyAppOnlyTitle', descKey: 'settings.privacyAppOnlyDesc' },
+  { icon: faKey, titleKey: 'settings.privacyYourControlTitle', descKey: 'settings.privacyYourControlDesc' },
+  { icon: faShield, titleKey: 'settings.privacySecureStorageTitle', descKey: 'settings.privacySecureStorageDesc' },
 ];
 
 export default function PrivacySection() {
+  const { t } = useTranslation();
+
   return (
     <View style={styles.section}>
-      <Text style={styles.sectionTitle}>Personvern og datasikkerhet</Text>
+      <Text style={styles.sectionTitle}>{t['settings.privacyTitle']}</Text>
       <View style={styles.sectionCard}>
-        <Text style={styles.privacyIntro}>
-          Dine data er trygge hos oss. Vi tar personvern på alvor og forplikter oss til å beskytte informasjonen din.
-        </Text>
+        <Text style={styles.privacyIntro}>{t['settings.privacyIntro']}</Text>
         <View style={styles.privacyList}>
-          {privacyItems.map(({ icon, title, desc }) => (
-            <View key={title} style={styles.privacyItem}>
+          {PRIVACY_ITEMS.map(({ icon, titleKey, descKey }) => (
+            <View key={titleKey} style={styles.privacyItem}>
               <View style={styles.privacyIconWrap}>
                 <FontAwesomeIcon icon={icon} size={15} color={colors.primary} />
               </View>
               <View style={styles.privacyItemContent}>
-                <Text style={styles.privacyItemTitle}>{title}</Text>
-                <Text style={styles.privacyItemDesc}>{desc}</Text>
+                <Text style={styles.privacyItemTitle}>{t[titleKey]}</Text>
+                <Text style={styles.privacyItemDesc}>{t[descKey]}</Text>
               </View>
             </View>
           ))}
@@ -56,22 +48,22 @@ export default function PrivacySection() {
               <FontAwesomeIcon icon={faChartBar} size={15} color={colors.primary} />
             </View>
             <View style={styles.privacyItemContent}>
-              <Text style={styles.privacyItemTitle}>Analyse og forbedring</Text>
+              <Text style={styles.privacyItemTitle}>{t['settings.privacyAnalyticsTitle']}</Text>
               <Text style={styles.privacyItemDesc}>
-                Vi bruker{' '}
+                {t['settings.privacyAnalyticsPre']}{' '}
                 <Text style={styles.link} onPress={() => Linking.openURL('https://clarity.microsoft.com/')}>
                   Microsoft Clarity
                 </Text>{' '}
-                for å forstå hvordan appen brukes og forbedre brukeropplevelsen. Les mer i{' '}
+                {t['settings.privacyAnalyticsMid']}{' '}
                 <Text style={styles.link} onPress={() => Linking.openURL('https://privacy.microsoft.com/privacystatement')}>
-                  Microsofts personvernerklæring
+                  {t['settings.privacyMSPrivacy']}
                 </Text>
                 .
               </Text>
             </View>
           </View>
         </View>
-        <Text style={styles.privacyFooter}>Hvis du har spørsmål om hvordan vi håndterer dataene dine, ta gjerne kontakt med oss.</Text>
+        <Text style={styles.privacyFooter}>{t['settings.privacyFooter']}</Text>
       </View>
     </View>
   );

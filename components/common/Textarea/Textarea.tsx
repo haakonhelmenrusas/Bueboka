@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Platform, StyleProp, Text, TextInput, TextInputProps, TextStyle, View, ViewStyle } from 'react-native';
 import { defaultStyles } from './TextareaStyles';
 import { colors } from '@/styles/colors';
+import { useTranslation } from '@/contexts';
 
 interface TextareaProps extends TextInputProps {
   label: string;
@@ -39,6 +40,7 @@ const Textarea = React.forwardRef<TextInput, TextareaProps>(
     },
     ref,
   ) => {
+    const { t } = useTranslation();
     const [isFocused, setIsFocused] = useState(false);
 
     const handleFocus = (e: any) => {
@@ -62,7 +64,7 @@ const Textarea = React.forwardRef<TextInput, TextareaProps>(
           {icon && <View style={defaultStyles.icon}>{icon}</View>}
           <Text style={[defaultStyles.label, labelStyle]}>
             {label}
-            {optional && <Text style={defaultStyles.optional}> (valgfritt)</Text>}
+            {optional && <Text style={defaultStyles.optional}> {t['form.optional']}</Text>}
           </Text>
           {info ? <Text style={defaultStyles.infoText}>{info}</Text> : null}
         </View>

@@ -3,6 +3,7 @@ import { View, Text, StyleSheet, Image } from 'react-native';
 import Button from '@/components/common/Button/Button';
 import { colors } from '@/styles/colors';
 import { VersionService } from '@/services/versionService';
+import { useTranslation } from '@/contexts';
 
 interface UpdateRequiredProps {
   message: string;
@@ -10,6 +11,8 @@ interface UpdateRequiredProps {
 }
 
 export default function UpdateRequired({ message, storeUrl }: UpdateRequiredProps) {
+  const { t } = useTranslation();
+
   const handleUpdate = () => {
     VersionService.openStore(storeUrl);
   };
@@ -18,10 +21,10 @@ export default function UpdateRequired({ message, storeUrl }: UpdateRequiredProp
     <View style={styles.container}>
       <View style={styles.content}>
         <Image source={require('@/assets/images/icon.png')} style={styles.icon} />
-        <Text style={styles.title}>Oppdatering påkrevd</Text>
+        <Text style={styles.title}>{t['update.title']}</Text>
         <Text style={styles.message}>{message}</Text>
-        <Button label="Oppdater nå" onPress={handleUpdate} variant="tertiary" buttonStyle={styles.button} />
-        <Text style={styles.subtext}>Du må oppdatere appen for å fortsette å bruke Bueboka</Text>
+        <Button label={t['update.button']} onPress={handleUpdate} variant="tertiary" buttonStyle={styles.button} />
+        <Text style={styles.subtext}>{t['update.subtext']}</Text>
       </View>
     </View>
   );

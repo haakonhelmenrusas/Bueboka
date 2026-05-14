@@ -13,9 +13,11 @@ import { userRepository } from '@/services/repositories';
 import { AppError } from '@/services';
 import { AccountSection, PublicProfileSection, PrivacySection, SponsorCard, LanguageSection } from '@/components/settings';
 import { EmailVerificationBanner } from '@/components/auth';
+import { useTranslation } from '@/contexts';
 
 export default function Settings() {
   const { logout, deleteAccount, user, refreshUser } = useAuth();
+  const { t } = useTranslation();
   const insets = useSafeAreaInsets();
 
   const [isLoggingOut, setIsLoggingOut] = useState(false);
@@ -52,7 +54,7 @@ export default function Settings() {
       await deleteAccount();
     } catch (error: any) {
       console.error('Error deleting account:', error);
-      Alert.alert('Feil', error?.message || 'Kunne ikke slette konto. Prøv igjen.');
+      Alert.alert(t['common.error'], error?.message || t['settings.deleteError']);
     } finally {
       setIsDeleting(false);
       setShowDeleteConfirm(false);
@@ -68,7 +70,7 @@ export default function Settings() {
         <ScrollView
           contentContainerStyle={[styles.contentContainer, { paddingBottom: insets.bottom + 92 }]}
           showsVerticalScrollIndicator={false}>
-          <Text style={styles.title}>Innstillinger</Text>
+          <Text style={styles.title}>{t['settings.title']}</Text>
           {user && <AccountSection user={user} onProfileUpdate={handleProfileUpdate} />}
           <PublicProfileSection user={user} />
           <LanguageSection />
@@ -78,7 +80,7 @@ export default function Settings() {
             <View style={styles.cardDivider} />
             <Button
               variant="tertiary"
-              label={isLoggingOut ? 'Logger ut...' : 'Logg ut'}
+              label={isLoggingOut ? t['settings.loggingOut'] : t['settings.logout']}
               disabled={isLoggingOut}
               loading={isLoggingOut}
               buttonStyle={styles.logoutButton}
@@ -89,14 +91,11 @@ export default function Settings() {
             />
             <View style={styles.cardDivider} />
             <View style={styles.dangerSection}>
-              <Text style={styles.dangerHeading}>Slett konto</Text>
-              <Text style={styles.dangerDescription}>
-                Når du sletter kontoen din, vil alle dine data bli permanent fjernet. Dette inkluderer treningsøkter, utstyr og
-                profilinformasjon. Denne handlingen kan ikke angres.
-              </Text>
+              <Text style={styles.dangerHeading}>{t['settings.deleteAccount']}</Text>
+              <Text style={styles.dangerDescription}>{t['settings.deleteDescription']}</Text>
               <Button
                 variant="warning"
-                label={isDeleting ? 'Sletter konto...' : 'Slett konto'}
+                label={isDeleting ? t['settings.deletingAccount'] : t['settings.deleteAccount']}
                 disabled={isDeleting || isLoggingOut}
                 loading={isDeleting}
                 onPress={() => setShowDeleteConfirm(true)}
@@ -108,10 +107,10 @@ export default function Settings() {
 
       <ConfirmModal
         visible={showDeleteConfirm}
-        title="Bekreft sletting av konto"
-        message="Er du sikker på at du vil slette kontoen din? Alle dine data vil bli permanent fjernet, inkludert treningsøkter, utstyr og profilinformasjon. Denne handlingen kan ikke angres."
-        confirmLabel="Ja, slett konto"
-        cancelLabel="Avbryt"
+        title={t['settings.confirmDeleteTitle']}
+        message={t['settings.confirmDeleteMessage']}
+        confirmLabel={t['settings.confirmDeleteYes']}
+        cancelLabel={t['common.cancel']}
         onCancel={() => setShowDeleteConfirm(false)}
         onConfirm={handleConfirmDelete}
       />

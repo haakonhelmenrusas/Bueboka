@@ -18,6 +18,7 @@ import { colors } from '@/styles/colors';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faChevronDown } from '@fortawesome/free-solid-svg-icons/faChevronDown';
 import { faCheck } from '@fortawesome/free-solid-svg-icons/faCheck';
+import { useTranslation } from '@/contexts';
 
 type Option = {
   label: string;
@@ -49,8 +50,10 @@ export const Select: React.FC<Props> = ({
   containerStyle,
   zIndex = 1000,
   searchable = false,
-  placeholder = 'Velg et alternativ',
+  placeholder,
 }) => {
+  const { t } = useTranslation();
+  const resolvedPlaceholder = placeholder ?? t['common.chooseOption'];
   const [open, setOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [selectBoxPosition, setSelectBoxPosition] = useState({ x: 0, y: 0, width: 0, height: 0 });
@@ -105,7 +108,7 @@ export const Select: React.FC<Props> = ({
     outputRange: ['0deg', '180deg'],
   });
 
-  const selectedLabel = options.find((opt) => opt.value === selectedValue)?.label || placeholder;
+  const selectedLabel = options.find((opt) => opt.value === selectedValue)?.label || resolvedPlaceholder;
 
   const renderOption = (item: Option, index: number) => (
     <Pressable
@@ -131,7 +134,7 @@ export const Select: React.FC<Props> = ({
         filteredOptions.map(renderOption)
       ) : (
         <View style={styles.option}>
-          <Text style={[styles.optionText, { color: colors.dimmed }]}>Ingen treff</Text>
+          <Text style={[styles.optionText, { color: colors.dimmed }]}>{t['common.noResults']}</Text>
         </View>
       )}
     </ScrollView>
@@ -144,7 +147,7 @@ export const Select: React.FC<Props> = ({
       <View style={styles.labelContainer}>
         <Text style={styles.label}>
           {label}
-          {optional && <Text style={styles.optional}> (valgfritt)</Text>}
+          {optional && <Text style={styles.optional}> {t['form.optional']}</Text>}
         </Text>
         {info ? <Text style={styles.infoText}>{info}</Text> : null}
       </View>

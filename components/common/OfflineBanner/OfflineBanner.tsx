@@ -3,10 +3,12 @@ import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { useNetworkState } from '@/hooks/useNetworkState';
 import { useOfflineQueue } from '@/hooks/useOfflineQueue';
 import { colors } from '@/styles/colors';
+import { useTranslation } from '@/contexts';
 
 export function OfflineBanner() {
   const { isConnected } = useNetworkState();
   const { queueLength, isSyncing, syncNow } = useOfflineQueue();
+  const { t } = useTranslation();
 
   if (isConnected && queueLength === 0) {
     return null;
@@ -15,7 +17,7 @@ export function OfflineBanner() {
   if (!isConnected) {
     return (
       <View style={styles.banner}>
-        <Text style={styles.text}>📴 Frakoblet — endringer synkroniseres når du er tilkoblet</Text>
+        <Text style={styles.text}>📴 {t['offline.disconnected']}</Text>
       </View>
     );
   }
@@ -23,7 +25,9 @@ export function OfflineBanner() {
   if (queueLength > 0) {
     return (
       <Pressable style={styles.banner} onPress={syncNow} disabled={isSyncing}>
-        <Text style={styles.text}>{isSyncing ? '🔄 Jobber...' : `⏳ ${queueLength} i kø - klikk for å synkronisere`}</Text>
+        <Text style={styles.text}>
+          {isSyncing ? `🔄 ${t['offline.syncing']}` : `⏳ ${t['offline.queued'].replace('{count}', String(queueLength))}`}
+        </Text>
       </Pressable>
     );
   }

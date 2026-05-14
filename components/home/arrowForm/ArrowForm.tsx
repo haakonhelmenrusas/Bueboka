@@ -12,6 +12,7 @@ import { colors } from '@/styles/colors';
 import ConfirmModal from '@/components/home/DeleteArrowSetModal/ConfirmModal';
 import { arrowsRepository } from '@/services/repositories';
 import { AppError } from '@/services';
+import { useTranslation } from '@/contexts';
 
 interface Props {
   modalVisible: boolean;
@@ -21,6 +22,7 @@ interface Props {
 }
 
 export default function ArrowForm({ modalVisible, setArrowModalVisible, arrowSet, existingArrowSets }: Props) {
+  const { t } = useTranslation();
   const [confirmVisible, setConfirmVisible] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [advancedOpen, setAdvancedOpen] = useState(false);
@@ -81,11 +83,7 @@ export default function ArrowForm({ modalVisible, setArrowModalVisible, arrowSet
       setArrowModalVisible(false);
     } catch (error) {
       console.error('Error deleting arrows:', error);
-      if (error instanceof AppError) {
-        alert(error.message);
-      } else {
-        alert('Kunne ikke slette pilsett');
-      }
+      alert(error instanceof AppError ? error.message : t['arrowForm.deleteError']);
     } finally {
       setSubmitting(false);
     }
@@ -98,7 +96,7 @@ export default function ArrowForm({ modalVisible, setArrowModalVisible, arrowSet
 
   async function handleSubmit() {
     if (!name) {
-      alert('Navn er påkrevd');
+      alert(t['arrowForm.nameRequired']);
       return;
     }
 
@@ -121,10 +119,8 @@ export default function ArrowForm({ modalVisible, setArrowModalVisible, arrowSet
       };
 
       if (arrowSet) {
-        // Edit mode
         await arrowsRepository.update(arrowSet.id, arrowsData);
       } else {
-        // Create mode
         await arrowsRepository.create(arrowsData);
       }
 
@@ -140,11 +136,7 @@ export default function ArrowForm({ modalVisible, setArrowModalVisible, arrowSet
       setArrowModalVisible(false);
     } catch (error) {
       console.error('Error saving arrows:', error);
-      if (error instanceof AppError) {
-        alert(error.message);
-      } else {
-        alert('Kunne ikke lagre pilsett');
-      }
+      alert(error instanceof AppError ? error.message : t['arrowForm.saveError']);
     } finally {
       setSubmitting(false);
     }
@@ -174,34 +166,34 @@ export default function ArrowForm({ modalVisible, setArrowModalVisible, arrowSet
         setArrowModalVisible(false);
       }}>
       <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={styles.modal}>
-        <ModalHeader onPress={handleCloseModal} title={arrowSet ? 'Rediger pilsett' : 'Nytt pilsett'} />
+        <ModalHeader onPress={handleCloseModal} title={arrowSet ? t['arrowForm.editTitle'] : t['arrowForm.newTitle']} />
         <ScrollView keyboardShouldPersistTaps="handled" showsVerticalScrollIndicator={false} contentContainerStyle={styles.scrollContent}>
           <Pressable onPress={() => Keyboard.dismiss()}>
             <View style={styles.inputs}>
               <Input
                 value={name}
                 onChangeText={(value) => dispatch({ type: 'SET_NAME', payload: value })}
-                helpText="F.eks. Carbon X23"
-                label="Navn på pilsett"
-                info="(obligatorisk)"
+                helpText={t['arrowForm.nameHelpText']}
+                label={t['arrowForm.nameLabel']}
+                info={t['arrowForm.nameInfo']}
               />
               <View style={styles.row}>
                 <Select
                   containerStyle={{ flex: 1 }}
-                  label="Materiale"
+                  label={t['arrowDetails.material']}
                   selectedValue={material}
                   options={[
-                    { label: 'Karbon', value: Material.KARBON },
-                    { label: 'Aluminium', value: Material.ALUMINIUM },
-                    { label: 'Treverk', value: Material.TREVERK },
+                    { label: t['arrowMaterial.karbon'], value: Material.KARBON },
+                    { label: t['arrowMaterial.aluminium'], value: Material.ALUMINIUM },
+                    { label: t['arrowMaterial.treverk'], value: Material.TREVERK },
                   ]}
                   onValueChange={(value) => dispatch({ type: 'SET_MATERIAL', payload: value })}
                 />
                 <Input
                   containerStyle={{ flex: 1 }}
-                  label="Antall piler"
+                  label={t['arrowDetails.arrowCount']}
                   keyboardType="numeric"
-                  helpText="F.eks. 12"
+                  helpText={t['arrowForm.arrowCountHelpText']}
                   value={arrowsCount}
                   onChangeText={(value) => handleNumberChange(value, 'SET_ARROWS_COUNT', dispatch)}
                 />
@@ -209,15 +201,14 @@ export default function ArrowForm({ modalVisible, setArrowModalVisible, arrowSet
 
               <Checkbox
                 value={isFavorite}
-                label="Favoritt"
+                label={t['common.favourite']}
                 onChange={(newValue) => dispatch({ type: 'SET_FAVORITE', payload: newValue })}
               />
 
-              {/* ── Avansert ──────────────────────────────────────────────── */}
               <TouchableOpacity activeOpacity={0.7} style={styles.advancedToggle} onPress={() => setAdvancedOpen((prev) => !prev)}>
                 <View style={styles.advancedLine} />
                 <View style={styles.advancedLabelWrap}>
-                  <Text style={styles.advancedLabel}>Avansert</Text>
+                  <Text style={styles.advancedLabel}>{t['common.advanced']}</Text>
                   <FontAwesomeIcon
                     icon={faChevronDown}
                     size={11}
@@ -233,19 +224,19 @@ export default function ArrowForm({ modalVisible, setArrowModalVisible, arrowSet
                   <View style={styles.row}>
                     <Input
                       containerStyle={{ flex: 1 }}
-                      label="Lengde"
-                      info="(tommer)"
+                      label={t['arrowDetails.length']}
+                      info={t['arrowDetails.lengthSuffix']}
                       keyboardType="numeric"
-                      helpText="F.eks. 31"
+                      helpText={t['arrowForm.lengthHelpText']}
                       value={length}
                       onChangeText={(value) => dispatch({ type: 'SET_LENGTH', payload: value })}
                     />
                     <Input
                       containerStyle={{ flex: 1 }}
-                      label="Vekt"
-                      info="(grain)"
+                      label={t['arrowDetails.weight']}
+                      info={t['arrowForm.grainSuffix']}
                       keyboardType="numeric"
-                      helpText="F.eks. 400"
+                      helpText={t['arrowForm.weightHelpText']}
                       value={weight}
                       onChangeText={(value) => handleNumberChange(value, 'SET_WEIGHT', dispatch)}
                     />
@@ -253,17 +244,17 @@ export default function ArrowForm({ modalVisible, setArrowModalVisible, arrowSet
                   <View style={styles.row}>
                     <Input
                       containerStyle={{ flex: 1 }}
-                      label="Spine"
-                      helpText="F.eks. 500"
+                      label={t['arrowDetails.spine']}
+                      helpText={t['arrowForm.spineHelpText']}
                       value={spine}
                       onChangeText={(value) => dispatch({ type: 'SET_SPINE', payload: value })}
                     />
                     <Input
                       containerStyle={{ flex: 1 }}
-                      label="Diameter"
-                      info="(mm)"
+                      label={t['arrowDetails.diameter']}
+                      info={t['arrowForm.mmSuffix']}
                       keyboardType="numeric"
-                      helpText="F.eks. 5.2"
+                      helpText={t['arrowForm.diameterHelpText']}
                       value={diameter}
                       onChangeText={(value) => handleNumberChange(value, 'SET_DIAMETER', dispatch)}
                     />
@@ -271,30 +262,30 @@ export default function ArrowForm({ modalVisible, setArrowModalVisible, arrowSet
                   <View style={styles.row}>
                     <Input
                       containerStyle={{ flex: 1 }}
-                      label="Pilspisstype"
-                      helpText="F.eks. Bullet"
+                      label={t['arrowDetails.pointType']}
+                      helpText={t['arrowForm.pointTypeHelpText']}
                       value={pointType}
                       onChangeText={(value) => dispatch({ type: 'SET_POINT_TYPE', payload: value })}
                     />
                     <Input
                       containerStyle={{ flex: 1 }}
-                      label="Spissvekt"
-                      info="(grain)"
+                      label={t['arrowDetails.pointWeight']}
+                      info={t['arrowForm.grainSuffix']}
                       keyboardType="numeric"
-                      helpText="F.eks. 100"
+                      helpText={t['arrowForm.pointWeightHelpText']}
                       value={pointWeight}
                       onChangeText={(value) => handleNumberChange(value, 'SET_POINT_WEIGHT', dispatch)}
                     />
                   </View>
                   <Input
-                    label="Vanes"
-                    helpText="F.eks. Bohning X Vanes"
+                    label={t['arrowDetails.vanes']}
+                    helpText={t['arrowForm.vanesHelpText']}
                     value={vanes}
                     onChangeText={(value) => dispatch({ type: 'SET_VANES', payload: value })}
                   />
                   <Input
-                    label="Nock"
-                    helpText="F.eks. Easton G Nock"
+                    label={t['arrowDetails.nock']}
+                    helpText={t['arrowForm.nockHelpText']}
                     value={nock}
                     onChangeText={(value) => dispatch({ type: 'SET_NOCK', payload: value })}
                   />
@@ -302,19 +293,24 @@ export default function ArrowForm({ modalVisible, setArrowModalVisible, arrowSet
               )}
 
               <Textarea
-                label="Notater"
+                label={t['arrowDetails.notes']}
                 optional
                 value={notes}
                 onChangeText={(value) => dispatch({ type: 'SET_NOTES', payload: value })}
-                placeholder="Ekstra informasjon om pilsettet"
+                placeholder={t['arrowForm.notesPlaceholder']}
               />
             </View>
           </Pressable>
         </ScrollView>
         <View style={styles.footer}>
-          <Button disabled={!name || submitting} onPress={handleSubmit} label={submitting ? 'Lagrer...' : 'Lagre'} />
+          <Button disabled={!name || submitting} onPress={handleSubmit} label={submitting ? t['form.saving'] : t['form.save']} />
           {arrowSet && (
-            <Button variant="warning" label="Slett" onPress={() => setConfirmVisible(true)} type="outline" disabled={submitting}>
+            <Button
+              variant="warning"
+              label={t['common.delete']}
+              onPress={() => setConfirmVisible(true)}
+              type="outline"
+              disabled={submitting}>
               <FontAwesomeIcon icon={faTrash} size={16} color={colors.warning} />
             </Button>
           )}
@@ -325,13 +321,13 @@ export default function ArrowForm({ modalVisible, setArrowModalVisible, arrowSet
               clearForm();
               setArrowModalVisible(false);
             }}
-            label="Avbryt"
+            label={t['common.cancel']}
           />
         </View>
       </KeyboardAvoidingView>
       <ConfirmModal
-        title={'Slett pilsett'}
-        message={'Vil du slette pilsettet "' + arrowSet?.name + '"?'}
+        title={t['arrowForm.deleteTitle']}
+        message={t['arrowForm.deleteMessage'].replace('{name}', arrowSet?.name ?? '')}
         visible={confirmVisible}
         onCancel={() => setConfirmVisible(false)}
         onConfirm={() => {

@@ -536,4 +536,126 @@ export interface TranslationKeys {
   // Confirm remove marks
   'confirmRemove.message': string;
   'confirmRemove.yes': string;
+
+  // Common additions
+  'common.advanced': string;
+  'common.favourite': string;
+  'common.noResults': string;
+  'common.chooseOption': string;
+
+  // Settings screen
+  'settings.title': string;
+  'settings.logout': string;
+  'settings.loggingOut': string;
+  'settings.deleteAccount': string;
+  'settings.deletingAccount': string;
+  'settings.deleteDescription': string;
+  'settings.confirmDeleteTitle': string;
+  'settings.confirmDeleteMessage': string;
+  'settings.confirmDeleteYes': string;
+  'settings.deleteError': string;
+
+  // Settings — account section
+  'settings.accountTitle': string;
+  'settings.accountNameLabel': string;
+  'settings.accountEmailLabel': string;
+  'settings.accountClubLabel': string;
+  'settings.accountArcherNumberLabel': string;
+
+  // Settings — public profile section
+  'settings.publicProfileTitle': string;
+  'settings.publicProfileIntro': string;
+  'settings.makeProfilePublic': string;
+  'settings.choosePublicFields': string;
+  'settings.publicName': string;
+  'settings.publicClub': string;
+  'settings.publicArcherNumber': string;
+  'settings.publicStats': string;
+  'settings.publicAchievements': string;
+  'settings.publicSaved': string;
+  'settings.publicSaveError': string;
+
+  // Settings — privacy section
+  'settings.privacyTitle': string;
+  'settings.privacyIntro': string;
+  'settings.privacyNeverSharedTitle': string;
+  'settings.privacyNeverSharedDesc': string;
+  'settings.privacyAppOnlyTitle': string;
+  'settings.privacyAppOnlyDesc': string;
+  'settings.privacyYourControlTitle': string;
+  'settings.privacyYourControlDesc': string;
+  'settings.privacySecureStorageTitle': string;
+  'settings.privacySecureStorageDesc': string;
+  'settings.privacyAnalyticsTitle': string;
+  'settings.privacyAnalyticsPre': string;
+  'settings.privacyAnalyticsMid': string;
+  'settings.privacyMSPrivacy': string;
+  'settings.privacyFooter': string;
+
+  // Settings — sponsor card
+  'settings.sponsorLabel': string;
+  'settings.sponsorVisitWebsite': string;
+
+  // Bow form
+  'bowForm.editTitle': string;
+  'bowForm.newTitle': string;
+  'bowForm.nameLabel': string;
+  'bowForm.nameRequired': string;
+  'bowForm.typeLabel': string;
+  'bowForm.handPlaceholder': string;
+  'bowForm.drawWeight': string;
+  'bowForm.bowLength': string;
+  'bowForm.sightMarksSection': string;
+  'bowForm.eyeToNock': string;
+  'bowForm.eyeToSight': string;
+  'bowForm.notesPlaceholder': string;
+  'bowForm.deleteTitle': string;
+  'bowForm.deleteMessage': string;
+  'bowForm.maxBowsError': string;
+  'bowForm.saveError': string;
+  'bowForm.deleteError': string;
+
+  // Arrow form
+  'arrowForm.editTitle': string;
+  'arrowForm.newTitle': string;
+  'arrowForm.nameLabel': string;
+  'arrowForm.nameHelpText': string;
+  'arrowForm.nameInfo': string;
+  'arrowForm.arrowCountHelpText': string;
+  'arrowForm.grainSuffix': string;
+  'arrowForm.mmSuffix': string;
+  'arrowForm.lengthHelpText': string;
+  'arrowForm.weightHelpText': string;
+  'arrowForm.spineHelpText': string;
+  'arrowForm.diameterHelpText': string;
+  'arrowForm.pointTypeHelpText': string;
+  'arrowForm.pointWeightHelpText': string;
+  'arrowForm.vanesHelpText': string;
+  'arrowForm.nockHelpText': string;
+  'arrowForm.notesPlaceholder': string;
+  'arrowForm.deleteTitle': string;
+  'arrowForm.deleteMessage': string;
+  'arrowForm.nameRequired': string;
+  'arrowForm.deleteError': string;
+  'arrowForm.saveError': string;
+
+  // Profile form
+  'profileForm.nameLabel': string;
+  'profileForm.nameHelpText': string;
+  'profileForm.nameRequired': string;
+  'profileForm.clubLabel': string;
+  'profileForm.clubPlaceholder': string;
+  'profileForm.noClub': string;
+  'profileForm.archerNumberLabel': string;
+  'profileForm.archerNumberHelpText': string;
+
+  // Offline banner
+  'offline.disconnected': string;
+  'offline.syncing': string;
+  'offline.queued': string;
+
+  // Update required screen
+  'update.title': string;
+  'update.button': string;
+  'update.subtext': string;
 }
