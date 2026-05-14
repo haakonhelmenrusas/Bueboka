@@ -3,6 +3,7 @@ import { LineChart } from 'react-native-gifted-charts';
 import { CalculatedMarks, MarksResult } from '@/types';
 import { Message } from '@/components/common';
 import { colors } from '@/styles/colors';
+import { useTranslation } from '@/contexts';
 
 interface ChartScreenProps {
   calculatedMarks: MarksResult | null;
@@ -11,6 +12,7 @@ interface ChartScreenProps {
 }
 
 export default function ChartScreen({ calculatedMarks, marks: _marks, setModalVisible }: ChartScreenProps) {
+  const { t } = useTranslation();
   // Use the first available angle key (usually '0' for flat ground)
   const primaryAngleKey = calculatedMarks ? (Object.keys(calculatedMarks.sight_marks_by_hill_angle)[0] ?? '0') : '0';
 
@@ -44,10 +46,10 @@ export default function ChartScreen({ calculatedMarks, marks: _marks, setModalVi
       {data.length === 0 ? (
         <View style={styles.emptyState}>
           <Message
-            title="Ingen beregnede siktemerker"
-            description="For å beregne siktemerker kan du trykke på knappen under."
+            title={t['sightMarks.noCalculatedTitle']}
+            description={t['sightMarks.noCalculatedDescription']}
             onPress={() => setModalVisible(true)}
-            buttonLabel="Beregn siktemerker"
+            buttonLabel={t['sightMarks.calculateButton']}
           />
         </View>
       ) : (

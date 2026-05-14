@@ -16,10 +16,12 @@ import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { arrowsRepository, bowRepository, sightMarksRepository } from '@/services/repositories';
 import { offlineMutation } from '@/services/offline/mutationHelper';
 import { useAuth } from '@/contexts/AuthContext';
+import { useTranslation } from '@/contexts';
 import { AppError } from '@/services';
 
 export default function CalculateScreen() {
   const { user } = useAuth();
+  const { t } = useTranslation();
   const insets = useSafeAreaInsets();
   const translateY = useSharedValue(300);
 
@@ -39,15 +41,11 @@ export default function CalculateScreen() {
       setSightMarks(all.sort((a, b) => new Date(b.createdAt ?? 0).getTime() - new Date(a.createdAt ?? 0).getTime()));
     } catch (err) {
       Sentry.captureException(err);
-      setError(
-        err instanceof AppError && err.code === 'NETWORK_ERROR'
-          ? 'Nettverksfeil - sjekk internettforbindelsen'
-          : 'Kunne ikke laste siktemerker',
-      );
+      setError(err instanceof AppError && err.code === 'NETWORK_ERROR' ? t['sightMarks.networkError'] : t['sightMarks.loadError']);
     } finally {
       setIsLoading(false);
     }
-  }, []);
+  }, [t]);
 
   useEffect(() => {
     loadData();
@@ -60,10 +58,10 @@ export default function CalculateScreen() {
     const bows = Array.isArray(bowsData) ? bowsData : [];
     const arrows = Array.isArray(arrowsData) ? arrowsData : [];
     const bow = bows.find((b) => b.isFavorite) ?? bows[0];
-    if (!bow) throw new Error('Ingen bue funnet');
+    if (!bow) throw new Error(t['sightMarks.loadError']);
     const arrowSet = arrows.find((a) => a.isFavorite) ?? arrows[0] ?? null;
     const spec = await sightMarksRepository.getBowSpecificationByBowId(bow.id);
-    if (!spec?.id) throw new Error('Kunne ikke hente gyldig bue-spesifikasjon');
+    if (!spec?.id) throw new Error(t['sightMarks.loadError']);
     return { bow, arrows: arrowSet, spec };
   }
 
@@ -149,13 +147,13 @@ export default function CalculateScreen() {
         await loadData();
       } catch (err) {
         Sentry.captureException(err);
-        setError('Kunne ikke beregne siktemerker');
+        setError(t['sightMarks.calculateError']);
         setStatus('error');
         return;
       }
       setStatus('idle');
     },
-    [activeSightMark, user, loadData],
+    [activeSightMark, user, loadData, t],
   );
 
   // ─── Delete single mark from a set ─────────────────────────────────────────
@@ -201,7 +199,7 @@ export default function CalculateScreen() {
       await loadData();
     } catch (err) {
       Sentry.captureException(err);
-      setError('Kunne ikke fjerne siktemerke');
+      setError(t['sightMarks.removeError']);
       setStatus('error');
     } finally {
       setStatus('idle');
@@ -222,7 +220,7 @@ export default function CalculateScreen() {
       await loadData();
     } catch (err) {
       Sentry.captureException(err);
-      setError('Kunne ikke slette innskyting');
+      setError(t['sightMarks.deleteSetError']);
       setStatus('error');
     } finally {
       setStatus('idle');
@@ -236,10 +234,17 @@ export default function CalculateScreen() {
     <GestureHandlerRootView style={styles.page}>
       <Pressable style={{ flex: 1 }} onPress={Keyboard.dismiss}>
         <ScrollView contentContainerStyle={styles.list}>
-          {error && <Message title="Oisann, noe gikk galt." description={error} onPress={() => setError(null)} buttonLabel="Lukk" />}
+          {error && (
+            <Message
+              title={t['sightMarks.errorTitle']}
+              description={error}
+              onPress={() => setError(null)}
+              buttonLabel={t['practiceDetails.close']}
+            />
+          )}
 
           {!isLoading && sightMarks.length === 0 && !error && (
-            <Message title="Ingen innskyting registrert" description="Trykk «Ny innskyting» for å legge inn dine første siktemerker." />
+            <Message title={t['sightMarks.emptyTitle']} description={t['sightMarks.emptyDescription']} />
           )}
 
           {sightMarks.map((sm) => (
@@ -260,7 +265,7 @@ export default function CalculateScreen() {
         <Button
           icon={<FontAwesomeIcon icon={faPlus} color={colors.tertiary} />}
           iconPosition="left"
-          label="Ny innskyting"
+          label={t['sightMarks.newSet']}
           onPress={handleNewSet}
           buttonStyle={styles.newSetButton}
         />

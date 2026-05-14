@@ -8,8 +8,10 @@ import { styles } from '@/components/sightMarks/SightMarksStyles';
 import { useFocusEffect } from 'expo-router';
 import { sightMarksRepository } from '@/services/repositories/sightMarksRepository';
 import { colors } from '@/styles/colors';
+import { useTranslation } from '@/contexts';
 
 export default function SightMarks() {
+  const { t } = useTranslation();
   const [screen, setScreen] = useState('calculate');
   const insets = useSafeAreaInsets();
 
@@ -37,14 +39,14 @@ export default function SightMarks() {
     <View style={styles.container}>
       <LinearGradient colors={[colors.primary, colors.secondary, '#1a4f66']} style={styles.gradient}>
         <View style={{ paddingTop: insets.top + 16 }}>
-          <Text style={styles.title}>Beregn siktemerker</Text>
+          <Text style={styles.title}>{t['sightMarks.title']}</Text>
           <View style={styles.header}>
             <TouchableOpacity style={styles.headerItem} onPress={() => setScreen('calculate')} activeOpacity={0.7}>
-              <Text style={[styles.headerText, screen === 'calculate' ? styles.activeText : null]}>Innskyting</Text>
+              <Text style={[styles.headerText, screen === 'calculate' ? styles.activeText : null]}>{t['sightMarks.tabCalibration']}</Text>
               {screen === 'calculate' && <View style={styles.activeLine} />}
             </TouchableOpacity>
             <TouchableOpacity style={styles.headerItem} onPress={() => setScreen('marks')} activeOpacity={0.7}>
-              <Text style={[styles.headerText, screen === 'marks' ? styles.activeText : null]}>Siktemerker</Text>
+              <Text style={[styles.headerText, screen === 'marks' ? styles.activeText : null]}>{t['sightMarks.tabMarks']}</Text>
               {screen === 'marks' && <View style={styles.activeLine} />}
             </TouchableOpacity>
           </View>
