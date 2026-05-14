@@ -16,6 +16,7 @@ import { useFocusEffect } from 'expo-router';
 import { sightMarksRepository } from '@/services/repositories';
 import { offlineMutation } from '@/services/offline/mutationHelper';
 import { useAuth } from '@/contexts/AuthContext';
+import { useTranslation } from '@/contexts';
 
 interface MarksScreenProps {
   setScreen: (screen: string) => void;
@@ -23,6 +24,7 @@ interface MarksScreenProps {
 
 export default function MarksScreen({ setScreen }: MarksScreenProps) {
   const { user } = useAuth();
+  const { t } = useTranslation();
   const [showSpeed, setShowSpeed] = useState(false);
   // const [showGraph, setShowGraph] = useState(false);
   const [ballistics, setBallistics] = useState<CalculatedMarks | null>(null);
@@ -118,10 +120,10 @@ export default function MarksScreen({ setScreen }: MarksScreenProps) {
         return (
           <View style={styles.emptyState}>
             <Message
-              title="Ingen beregnede siktemerker"
-              description="For å beregne siktemerker kan du trykke på knappen under."
+              title={t['sightMarks.noCalculatedTitle']}
+              description={t['sightMarks.noCalculatedDescription']}
               onPress={() => setModalVisible(true)}
-              buttonLabel="Beregn siktemerker"
+              buttonLabel={t['sightMarks.calculateButton']}
             />
           </View>
         );
@@ -129,10 +131,10 @@ export default function MarksScreen({ setScreen }: MarksScreenProps) {
       return (
         <View style={styles.emptyState}>
           <Message
-            title="For få tilgjengelige avstander"
-            description="Du trenger flere avstander for å beregne siktemerker."
+            title={t['sightMarks.tooFewDistancesTitle']}
+            description={t['sightMarks.tooFewDistancesDescription']}
             onPress={() => setScreen('calculate')}
-            buttonLabel="Gå til innskyting"
+            buttonLabel={t['sightMarks.goToCalibration']}
           />
         </View>
       );
@@ -141,10 +143,10 @@ export default function MarksScreen({ setScreen }: MarksScreenProps) {
     return (
       <View style={styles.emptyState}>
         <Message
-          title="Ingen data"
-          description="Legg inn dine merker for å beregne siktemerker."
+          title={t['sightMarks.noDataTitle']}
+          description={t['sightMarks.noDataDescription']}
           onPress={() => setScreen('calculate')}
-          buttonLabel="Gå til innskyting"
+          buttonLabel={t['sightMarks.goToCalibration']}
         />
       </View>
     );
@@ -171,7 +173,7 @@ export default function MarksScreen({ setScreen }: MarksScreenProps) {
               type="outline"
               iconPosition="left"
               icon={<FontAwesomeIcon icon={faWind} size={20} color={colors.white} />}
-              label="Vis hastigheter"
+              label={t['sightMarks.showSpeed']}
               onPress={() => setShowSpeed(!showSpeed)}
               {...outlineWhite}
             />
@@ -181,7 +183,7 @@ export default function MarksScreen({ setScreen }: MarksScreenProps) {
               type="outline"
               iconPosition="left"
               icon={<FontAwesomeIcon icon={faRotateRight} color={colors.white} />}
-              label="Beregn på nytt"
+              label={t['sightMarks.recalculate']}
               onPress={handleRemoveMarks}
               {...outlineWhite}
             />

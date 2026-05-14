@@ -10,6 +10,7 @@ import Animated, { runOnJS, SharedValue, useAnimatedStyle, useSharedValue, withS
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 import { colors } from '@/styles/colors';
 import { checkDecimalCount } from '@/utils';
+import { useTranslation } from '@/contexts';
 
 interface MarksFormProps {
   status: string;
@@ -21,6 +22,7 @@ interface MarksFormProps {
 }
 
 const MarksForm: FC<MarksFormProps> = ({ sendMarks, status, setIsFormVisible, translateY, isNewSet = false }) => {
+  const { t } = useTranslation();
   const [aimValue, setAimValue] = useState('');
   const [distanceValue, setDistance] = useState('');
   const [nameValue, setNameValue] = useState('');
@@ -122,18 +124,18 @@ const MarksForm: FC<MarksFormProps> = ({ sendMarks, status, setIsFormVisible, tr
           <Notch />
           {isNewSet && (
             <Input
-              label="Navn på innskyting (valgfritt)"
+              label={t['marksForm.nameLabel']}
               value={nameValue}
               onChangeText={setNameValue}
               containerStyle={{ marginBottom: 8 }}
-              placeholder="F.eks. Utendørs 2025"
+              placeholder={t['marksForm.namePlaceholder']}
             />
           )}
           <View style={styles.inputs}>
             <Input
               textAlign="center"
               labelStyle={{ justifyContent: 'center' }}
-              label="Avstand"
+              label={t['roundCard.distance']}
               keyboardType="numeric"
               value={distanceValue}
               onChangeText={(value) => handleDistanceChange(value)}
@@ -144,7 +146,7 @@ const MarksForm: FC<MarksFormProps> = ({ sendMarks, status, setIsFormVisible, tr
             <Input
               textAlign="center"
               labelStyle={{ justifyContent: 'center' }}
-              label="Merke"
+              label={t['marksForm.mark']}
               keyboardType="numeric"
               value={aimValue}
               onChangeText={(value) => handleAimChange(value)}
@@ -157,7 +159,7 @@ const MarksForm: FC<MarksFormProps> = ({ sendMarks, status, setIsFormVisible, tr
             loading={status === 'pending'}
             buttonStyle={styles.button}
             onPress={handleAddMark}
-            label="Beregn"
+            label={t['calcMarks.calculate']}
           />
         </Animated.View>
       </GestureDetector>

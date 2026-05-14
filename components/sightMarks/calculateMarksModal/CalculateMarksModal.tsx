@@ -8,6 +8,7 @@ import { sightMarksRepository } from '@/services/repositories';
 import { useState } from 'react';
 import { offlineMutation } from '@/services/offline/mutationHelper';
 import { useAuth } from '@/contexts/AuthContext';
+import { useTranslation } from '@/contexts';
 import * as Sentry from '@sentry/react-native';
 
 interface CalculateMarksModalProps {
@@ -28,6 +29,7 @@ export const CalculateMarksModal = ({
   onResultCreated,
 }: CalculateMarksModalProps) => {
   const { user } = useAuth();
+  const { t } = useTranslation();
   const [{ distanceFrom, distanceFromError, distanceTo, distanceToError, interval, intervalError, angles }, dispatch] = useCalcMarksForm();
   const [status, setStatus] = useState<'idle' | 'pending' | 'error'>('idle');
   const [error, setError] = useState<string | null>(null);
@@ -40,7 +42,7 @@ export const CalculateMarksModal = ({
 
   async function calculateMarksFunc(distanceFrom: number, distanceTo: number, interval: number) {
     if (!ballistics) {
-      setError('Ballistikkdata mangler. Legg inn et siktemerke først.');
+      setError(t['calcMarks.ballisticsMissing']);
       return;
     }
 
@@ -121,7 +123,7 @@ export const CalculateMarksModal = ({
         },
       });
 
-      const errorMessage = error?.response?.data?.message || error?.response?.data?.error || 'Kunne ikke beregne siktemerker';
+      const errorMessage = error?.response?.data?.message || error?.response?.data?.error || t['sightMarks.calculateError'];
       setError(errorMessage);
       setStatus('error');
     } finally {
@@ -159,44 +161,44 @@ export const CalculateMarksModal = ({
         keyboardVerticalOffset={Platform.OS === 'ios' ? 100 : undefined}
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         style={styles.modal}>
-        <ModalHeader onPress={handleCloseModal} title="Beregn siktemerker" />
+        <ModalHeader onPress={handleCloseModal} title={t['sightMarks.calculateButton']} />
         <View style={styles.inputs}>
           <Input
             containerStyle={{ flex: 1 }}
-            label="Fra avstand"
+            label={t['calcMarks.fromDistance']}
             onBlur={() => dispatch({ type: 'SET_DISTANCE_FROM_ERROR', payload: false })}
             keyboardType="numeric"
             value={distanceFrom}
             error={distanceFromError}
-            errorMessage="Verdi mangler"
+            errorMessage={t['calcMarks.missingValue']}
             onChangeText={(value) => handleNumberChange(value, 'SET_DISTANCE_FROM', dispatch)}
           />
           <Input
             containerStyle={{ flex: 1 }}
             onBlur={() => dispatch({ type: 'SET_DISTANCE_TO_ERROR', payload: false })}
-            label="Til avstand"
+            label={t['calcMarks.toDistance']}
             keyboardType="numeric"
             value={distanceTo}
             error={distanceToError}
             onChangeText={(value) => handleNumberChange(value, 'SET_DISTANCE_TO', dispatch)}
-            errorMessage="Verdi mangler"
+            errorMessage={t['calcMarks.missingValue']}
           />
           <Input
             containerStyle={{ flex: 1 }}
-            label="Intervall"
+            label={t['calcMarks.interval']}
             onBlur={() => dispatch({ type: 'SET_INTERVAL_ERROR', payload: false })}
             keyboardType="numeric"
             value={interval}
             error={intervalError}
             onChangeText={(value) => handleNumberChange(value, 'SET_INTERVAL', dispatch)}
-            errorMessage="Verdi mangler"
+            errorMessage={t['calcMarks.missingValue']}
           />
         </View>
         <View style={styles.angles}>
           <Input
             textAlign="center"
             containerStyle={{ flex: 1 }}
-            label="Vinkel"
+            label={t['calcMarks.angle']}
             keyboardType="numbers-and-punctuation"
             value={angles[0]?.toString() || ''}
             onChange={(event) => handleAngleChange(event.nativeEvent.text, 0)}
@@ -204,7 +206,7 @@ export const CalculateMarksModal = ({
           <Input
             textAlign="center"
             containerStyle={{ flex: 1 }}
-            label="Vinkel"
+            label={t['calcMarks.angle']}
             keyboardType="numbers-and-punctuation"
             value={angles[1]?.toString() || ''}
             onChange={(event) => handleAngleChange(event.nativeEvent.text, 1)}
@@ -212,7 +214,7 @@ export const CalculateMarksModal = ({
           <Input
             textAlign="center"
             containerStyle={{ flex: 1 }}
-            label="Vinkel"
+            label={t['calcMarks.angle']}
             keyboardType="numbers-and-punctuation"
             value={angles[2]?.toString() || ''}
             onChange={(event) => handleAngleChange(event.nativeEvent.text, 2)}
@@ -220,14 +222,19 @@ export const CalculateMarksModal = ({
         </View>
         {error && (
           <View style={{ marginTop: 16 }}>
-            <Message title="Feil" description={error} onPress={() => setError(null)} buttonLabel="Lukk" />
+            <Message
+              title={t['common.error']}
+              description={error}
+              onPress={() => setError(null)}
+              buttonLabel={t['practiceDetails.close']}
+            />
           </View>
         )}
         <View style={styles.buttons}>
-          <Button loading={status === 'pending'} width="auto" label="Beregn" onPress={handleSave} />
+          <Button loading={status === 'pending'} width="auto" label={t['calcMarks.calculate']} onPress={handleSave} />
           <Button
             type="outline"
-            label="Lukk"
+            label={t['practiceDetails.close']}
             onPress={() => {
               closeModal();
             }}

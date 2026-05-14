@@ -6,6 +6,7 @@ import { faPlus } from '@fortawesome/free-solid-svg-icons/faPlus';
 import { faTrash } from '@fortawesome/free-solid-svg-icons/faTrash';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { colors } from '@/styles/colors';
+import { useTranslation } from '@/contexts';
 import { styles } from './SightMarkSetCardStyles';
 
 interface SightMarkSetCardProps {
@@ -16,14 +17,14 @@ interface SightMarkSetCardProps {
   status: 'idle' | 'pending' | 'error';
 }
 
-function formatDate(iso: string): string {
-  return new Date(iso).toLocaleDateString('nb-NO', { day: '2-digit', month: 'short', year: 'numeric' });
-}
-
 export default function SightMarkSetCard({ sightMark, onAddMark, onDeleteMark, onDeleteSet, status }: SightMarkSetCardProps) {
+  const { t, locale } = useTranslation();
+  const formatDate = (iso: string): string =>
+    new Date(iso).toLocaleDateString(locale === 'en' ? 'en-GB' : 'nb-NO', { day: '2-digit', month: 'short', year: 'numeric' });
+
   const ballistics = sightMark.ballisticsParameters as CalculatedMarks | null;
   const markCount = sightMark.givenMarks?.length ?? 0;
-  const displayName = sightMark.name ?? sightMark.bowSpec?.bow?.name ?? 'Innskyting';
+  const displayName = sightMark.name ?? sightMark.bowSpec?.bow?.name ?? t['sightMarkCard.fallbackName'];
 
   return (
     <View style={styles.card}>
@@ -34,14 +35,14 @@ export default function SightMarkSetCard({ sightMark, onAddMark, onDeleteMark, o
           <Text style={styles.date}>{formatDate(sightMark.createdAt)}</Text>
         </View>
         <View style={styles.badge}>
-          <Text style={styles.badgeText}>{markCount} merker</Text>
+          <Text style={styles.badgeText}>{`${markCount} ${t['sightMarkCard.marksCount']}`}</Text>
         </View>
         <Button
           type="outline"
           size="small"
           iconPosition="left"
           icon={<FontAwesomeIcon icon={faPlus} size={12} color={colors.white} />}
-          label="Legg til"
+          label={t['sightMarkCard.addMark']}
           onPress={onAddMark}
           buttonStyle={{ borderColor: colors.white }}
           textStyle={{ color: colors.white }}
@@ -63,7 +64,7 @@ export default function SightMarkSetCard({ sightMark, onAddMark, onDeleteMark, o
           size="small"
           iconPosition="left"
           icon={<FontAwesomeIcon icon={faTrash} size={12} color="rgba(255,255,255,0.7)" />}
-          label="Slett innskyting"
+          label={t['sightMarkCard.deleteSet']}
           onPress={onDeleteSet}
           buttonStyle={{ flex: 1, borderWidth: 0, backgroundColor: 'transparent' }}
           textStyle={{ color: 'rgba(255,255,255,0.95)' }}

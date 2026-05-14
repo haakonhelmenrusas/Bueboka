@@ -482,4 +482,58 @@ export interface TranslationKeys {
   'achievement.early-bird.description': string;
   'achievement.night-owl.name': string;
   'achievement.night-owl.description': string;
+
+  // Sight marks tab (CalculateScreen + MarksScreen)
+  'sightMarks.title': string;
+  'sightMarks.tabCalibration': string;
+  'sightMarks.tabMarks': string;
+  'sightMarks.networkError': string;
+  'sightMarks.loadError': string;
+  'sightMarks.calculateError': string;
+  'sightMarks.removeError': string;
+  'sightMarks.deleteSetError': string;
+  'sightMarks.errorTitle': string;
+  'sightMarks.emptyTitle': string;
+  'sightMarks.emptyDescription': string;
+  'sightMarks.newSet': string;
+  'sightMarks.noCalculatedTitle': string;
+  'sightMarks.noCalculatedDescription': string;
+  'sightMarks.calculateButton': string;
+  'sightMarks.tooFewDistancesTitle': string;
+  'sightMarks.tooFewDistancesDescription': string;
+  'sightMarks.goToCalibration': string;
+  'sightMarks.noDataTitle': string;
+  'sightMarks.noDataDescription': string;
+  'sightMarks.showSpeed': string;
+  'sightMarks.recalculate': string;
+
+  // Calculate marks modal
+  'calcMarks.fromDistance': string;
+  'calcMarks.toDistance': string;
+  'calcMarks.interval': string;
+  'calcMarks.missingValue': string;
+  'calcMarks.angle': string;
+  'calcMarks.ballisticsMissing': string;
+  'calcMarks.calculate': string;
+
+  // Marks form (sliding sheet)
+  'marksForm.nameLabel': string;
+  'marksForm.namePlaceholder': string;
+  'marksForm.mark': string;
+
+  // Sight mark set card
+  'sightMarkCard.fallbackName': string;
+  'sightMarkCard.marksCount': string;
+  'sightMarkCard.addMark': string;
+  'sightMarkCard.deleteSet': string;
+
+  // Marks table
+  'marksTable.calculated': string;
+  'marksTable.removeAria': string;
+  'marksTable.empty': string;
+  'marksTable.emptyDescription': string;
+
+  // Confirm remove marks
+  'confirmRemove.message': string;
+  'confirmRemove.yes': string;
 }
