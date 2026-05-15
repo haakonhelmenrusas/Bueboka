@@ -9,6 +9,7 @@ import { styles } from '@/components/skyttere/PublicProfileDetailStyles';
 import { colors } from '@/styles/colors';
 import { Message } from '@/components/common';
 import { BackButton, LoadingState, ProfileHeader, ProfileStats, ProfileAchievements } from '@/components/skyttere';
+import { useTranslation } from '@/contexts';
 
 export default function PublicProfileDetailPage() {
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -16,6 +17,7 @@ export default function PublicProfileDetailPage() {
   const navigation = useNavigation();
   const insets = useSafeAreaInsets();
 
+  const { t } = useTranslation();
   const [profile, setProfile] = useState<PublicProfile | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -44,7 +46,7 @@ export default function PublicProfileDetailPage() {
         setProfile(data);
       } catch (err: any) {
         console.error('[PublicProfileDetail] Error fetching profile:', err);
-        setError(err.message || 'Kunne ikke laste profil');
+        setError(err.message || t['skyttere.loadProfileError']);
       } finally {
         setLoading(false);
       }
@@ -69,7 +71,7 @@ export default function PublicProfileDetailPage() {
         <LinearGradient colors={[colors.primary, colors.secondary, '#1a4f66']} style={styles.gradient}>
           <View style={[styles.scrollContent, { paddingTop: insets.top }]}>
             <BackButton onPress={() => router.back()} />
-            <Message title="Profil ikke funnet" description={error || 'Kunne ikke finne den forespurte profilen'} />
+            <Message title={t['skyttere.profileNotFound']} description={error || t['skyttere.profileNotFoundDesc']} />
           </View>
         </LinearGradient>
       </View>

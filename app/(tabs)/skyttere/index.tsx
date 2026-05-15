@@ -11,8 +11,10 @@ import { useAuth } from '@/hooks';
 import { Message } from '@/components/common';
 import { hexToRgba } from '@/utils';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { useTranslation } from '@/contexts';
 
 export default function SkytterePage() {
+  const { t } = useTranslation();
   const { user } = useAuth();
   const insets = useSafeAreaInsets();
   const pathname = usePathname();
@@ -93,7 +95,7 @@ export default function SkytterePage() {
   if (!user) {
     return (
       <View style={styles.container}>
-        <Message title="Ikke innlogget" description="Vennligst logg inn for å søke etter bueskyttere." />
+        <Message title={t['skyttere.notLoggedInTitle']} description={t['skyttere.notLoggedInDesc']} />
       </View>
     );
   }

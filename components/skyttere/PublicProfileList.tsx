@@ -6,6 +6,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faUser } from '@fortawesome/free-regular-svg-icons';
 import { colors } from '@/styles/colors';
 import { hexToRgba } from '@/utils';
+import { useTranslation } from '@/contexts';
 
 interface Props {
   profiles: PublicProfile[];
@@ -15,11 +16,13 @@ interface Props {
 }
 
 export default function PublicProfileList({ profiles, loading, searched, query }: Props) {
+  const { t } = useTranslation();
+
   if (loading) {
     return (
       <View style={styles.centerContainer}>
         <ActivityIndicator size="large" color={colors.white} />
-        <Text style={styles.loadingText}>Søker...</Text>
+        <Text style={styles.loadingText}>{t['skyttere.searching']}</Text>
       </View>
     );
   }
@@ -28,8 +31,8 @@ export default function PublicProfileList({ profiles, loading, searched, query }
     return (
       <View style={styles.centerContainer}>
         <FontAwesomeIcon icon={faUser} size={48} color={hexToRgba(colors.white, 0.4)} />
-        <Text style={styles.emptyTitle}>Ingen resultater</Text>
-        <Text style={styles.emptySubtitle}>Fant ingen bueskyttere som matcher &quot;{query}&quot;</Text>
+        <Text style={styles.emptyTitle}>{t['skyttere.noResults']}</Text>
+        <Text style={styles.emptySubtitle}>{t['skyttere.noResultsDesc'].replace('{query}', query)}</Text>
       </View>
     );
   }
@@ -55,13 +58,14 @@ interface ProfileCardProps {
 }
 
 function ProfileCard({ profile }: ProfileCardProps) {
+  const { t } = useTranslation();
   const router = useRouter();
 
   const handlePress = () => {
     router.push(`/skyttere/${profile.id}`);
   };
 
-  const displayName = profile.name ?? 'Anonym bueskytter';
+  const displayName = profile.name ?? t['skyttere.anonymousArcher'];
 
   return (
     <Pressable

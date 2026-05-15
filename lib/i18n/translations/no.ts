@@ -617,4 +617,28 @@ export const no: TranslationKeys = {
   'update.title': 'Oppdatering påkrevd',
   'update.button': 'Oppdater nå',
   'update.subtext': 'Du må oppdatere appen for å fortsette å bruke Bueboka',
+
+  // Skyttere (public profile search + detail)
+  'skyttere.notLoggedInTitle': 'Ikke innlogget',
+  'skyttere.notLoggedInDesc': 'Vennligst logg inn for å søke etter bueskyttere.',
+  'skyttere.profileNotFound': 'Profil ikke funnet',
+  'skyttere.profileNotFoundDesc': 'Kunne ikke finne den forespurte profilen',
+  'skyttere.loadProfileError': 'Kunne ikke laste profil',
+  'skyttere.searchTitle': 'Finn bueskyttere',
+  'skyttere.searchSubtitle':
+    'Søk blant bueskyttere som har valgt å dele profilen sin med andre Bueboka-skyttere. Det er kun registrerte brukere som kan søke.',
+  'skyttere.searchPlaceholder': 'Søk etter navn eller klubb…',
+  'skyttere.searchIdle': 'Begynn å skrive for å søke',
+  'skyttere.backButton': 'Tilbake til søk',
+  'skyttere.loadingProfile': 'Laster profil...',
+  'skyttere.searching': 'Søker...',
+  'skyttere.noResults': 'Ingen resultater',
+  'skyttere.noResultsDesc': 'Fant ingen bueskyttere som matcher "{query}"',
+  'skyttere.anonymousArcher': 'Anonym bueskytter',
+  'skyttere.unknownName': 'Ukjent navn',
+  'skyttere.statsTitle': 'Statistikk',
+  'skyttere.totalArrows': 'Piler skutt totalt',
+  'skyttere.avgScore': 'Snittpoeng per pil',
+  'skyttere.achievementsTitle': 'Prestasjoner',
+  'skyttere.achievementsUnlocked': 'Prestasjoner oppnådd',
 };

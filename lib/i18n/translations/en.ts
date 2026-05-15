@@ -616,4 +616,28 @@ export const en: TranslationKeys = {
   'update.title': 'Update required',
   'update.button': 'Update now',
   'update.subtext': 'You must update the app to continue using Bueboka',
+
+  // Skyttere (public profile search + detail)
+  'skyttere.notLoggedInTitle': 'Not logged in',
+  'skyttere.notLoggedInDesc': 'Please log in to search for archers.',
+  'skyttere.profileNotFound': 'Profile not found',
+  'skyttere.profileNotFoundDesc': 'Could not find the requested profile',
+  'skyttere.loadProfileError': 'Could not load profile',
+  'skyttere.searchTitle': 'Find archers',
+  'skyttere.searchSubtitle':
+    'Search among archers who have chosen to share their profile with other Bueboka archers. Only registered users can search.',
+  'skyttere.searchPlaceholder': 'Search by name or club…',
+  'skyttere.searchIdle': 'Start typing to search',
+  'skyttere.backButton': 'Back to search',
+  'skyttere.loadingProfile': 'Loading profile...',
+  'skyttere.searching': 'Searching...',
+  'skyttere.noResults': 'No results',
+  'skyttere.noResultsDesc': 'No archers found matching "{query}"',
+  'skyttere.anonymousArcher': 'Anonymous archer',
+  'skyttere.unknownName': 'Unknown name',
+  'skyttere.statsTitle': 'Statistics',
+  'skyttere.totalArrows': 'Total arrows shot',
+  'skyttere.avgScore': 'Average score per arrow',
+  'skyttere.achievementsTitle': 'Achievements',
+  'skyttere.achievementsUnlocked': 'Achievements unlocked',
 };

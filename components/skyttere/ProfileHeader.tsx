@@ -5,6 +5,7 @@ import { faUser as faUserRegular } from '@fortawesome/free-regular-svg-icons';
 import { colors } from '@/styles/colors';
 import { hexToRgba } from '@/utils';
 import { styles } from './PublicProfileDetailStyles';
+import { useTranslation } from '@/contexts';
 
 interface ProfileHeaderProps {
   name: string | null;
@@ -14,6 +15,7 @@ interface ProfileHeaderProps {
 }
 
 export default function ProfileHeader({ name, image, club, skytternr }: ProfileHeaderProps) {
+  const { t } = useTranslation();
   return (
     <>
       <View style={styles.avatarWrap}>
@@ -26,7 +28,7 @@ export default function ProfileHeader({ name, image, club, skytternr }: ProfileH
         )}
       </View>
 
-      <Text style={styles.name}>{name || 'Ukjent navn'}</Text>
+      <Text style={styles.name}>{name || t['skyttere.unknownName']}</Text>
 
       {(club || skytternr) && (
         <View style={styles.badges}>

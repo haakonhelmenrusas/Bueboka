@@ -4,6 +4,7 @@ import { faSearch, faUsers } from '@fortawesome/free-solid-svg-icons';
 import { colors } from '@/styles/colors';
 import { hexToRgba } from '@/utils';
 import { styles } from './SkyttereStyles';
+import { useTranslation } from '@/contexts';
 
 interface SearchHeroProps {
   query: string;
@@ -14,15 +15,14 @@ interface SearchHeroProps {
 }
 
 export default function SearchHero({ query, onQueryChange, onFocus, onBlur, animatedSearchStyle }: SearchHeroProps) {
+  const { t } = useTranslation();
   return (
     <View style={styles.hero}>
       <View style={styles.heroIcon}>
         <FontAwesomeIcon icon={faUsers} size={36} color={colors.white} />
       </View>
-      <Text style={styles.title}>Finn bueskyttere</Text>
-      <Text style={styles.subtitle}>
-        Søk blant bueskyttere som har valgt å dele profilen sin med andre Bueboka-skyttere. Det er kun registrerte brukere som kan søke.
-      </Text>
+      <Text style={styles.title}>{t['skyttere.searchTitle']}</Text>
+      <Text style={styles.subtitle}>{t['skyttere.searchSubtitle']}</Text>
       <Animated.View style={[styles.searchWrap, animatedSearchStyle]}>
         <View style={styles.searchIcon}>
           <FontAwesomeIcon icon={faSearch} size={20} color={hexToRgba(colors.white, 0.5)} />
@@ -33,7 +33,7 @@ export default function SearchHero({ query, onQueryChange, onFocus, onBlur, anim
           onChangeText={onQueryChange}
           onFocus={onFocus}
           onBlur={onBlur}
-          placeholder="Søk etter navn eller klubb…"
+          placeholder={t['skyttere.searchPlaceholder']}
           autoComplete="off"
           autoCapitalize="none"
           autoCorrect={false}

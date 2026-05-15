@@ -658,4 +658,27 @@ export interface TranslationKeys {
   'update.title': string;
   'update.button': string;
   'update.subtext': string;
+
+  // Skyttere (public profile search + detail)
+  'skyttere.notLoggedInTitle': string;
+  'skyttere.notLoggedInDesc': string;
+  'skyttere.profileNotFound': string;
+  'skyttere.profileNotFoundDesc': string;
+  'skyttere.loadProfileError': string;
+  'skyttere.searchTitle': string;
+  'skyttere.searchSubtitle': string;
+  'skyttere.searchPlaceholder': string;
+  'skyttere.searchIdle': string;
+  'skyttere.backButton': string;
+  'skyttere.loadingProfile': string;
+  'skyttere.searching': string;
+  'skyttere.noResults': string;
+  'skyttere.noResultsDesc': string;
+  'skyttere.anonymousArcher': string;
+  'skyttere.unknownName': string;
+  'skyttere.statsTitle': string;
+  'skyttere.totalArrows': string;
+  'skyttere.avgScore': string;
+  'skyttere.achievementsTitle': string;
+  'skyttere.achievementsUnlocked': string;
 }
