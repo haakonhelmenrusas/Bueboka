@@ -1,9 +1,11 @@
 import { useEffect, useState } from 'react';
-import { Text, View } from 'react-native';
+import { Text, TouchableOpacity, View } from 'react-native';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faGlobe } from '@fortawesome/free-solid-svg-icons/faGlobe';
-import { Checkbox } from '@/components/common';
+import { faChevronDown } from '@fortawesome/free-solid-svg-icons/faChevronDown';
+import { Checkbox, Toggle } from '@/components/common';
 import { styles } from '@/components/settings/SettingsStyles';
+import { colors } from '@/styles/colors';
 import { User } from '@/types';
 import { userRepository } from '@/services/repositories';
 import { useTranslation } from '@/contexts';
@@ -16,6 +18,7 @@ interface PublicProfileSectionProps {
 
 export default function PublicProfileSection({ user }: PublicProfileSectionProps) {
   const { t } = useTranslation();
+  const [subOpen, setSubOpen] = useState(false);
   const [isPublic, setIsPublic] = useState(false);
   const [publicName, setPublicName] = useState(true);
   const [publicClub, setPublicClub] = useState(true);
@@ -76,45 +79,55 @@ export default function PublicProfileSection({ user }: PublicProfileSectionProps
       </View>
       <View style={styles.sectionCard}>
         <Text style={styles.privacyIntro}>{t['settings.publicProfileIntro']}</Text>
-        <Checkbox
-          value={isPublic}
-          label={t['settings.makeProfilePublic']}
-          onChange={(v) => handlePublicSettingChange({ isPublic: v })}
-          disabled={publicSaving}
-        />
+        <Toggle value={isPublic} label={t['settings.makeProfilePublic']} onToggle={(v) => handlePublicSettingChange({ isPublic: v })} />
         {isPublic && (
           <View style={styles.publicSubSettings}>
-            <Text style={styles.publicSubLabel}>{t['settings.choosePublicFields']}</Text>
-            <Checkbox
-              value={publicName}
-              label={t['settings.publicName']}
-              onChange={(v) => handlePublicSettingChange({ publicName: v })}
-              disabled={publicSaving}
-            />
-            <Checkbox
-              value={publicClub}
-              label={t['settings.publicClub']}
-              onChange={(v) => handlePublicSettingChange({ publicClub: v })}
-              disabled={publicSaving}
-            />
-            <Checkbox
-              value={publicSkytternr}
-              label={t['settings.publicArcherNumber']}
-              onChange={(v) => handlePublicSettingChange({ publicSkytternr: v })}
-              disabled={publicSaving}
-            />
-            <Checkbox
-              value={publicStats}
-              label={t['settings.publicStats']}
-              onChange={(v) => handlePublicSettingChange({ publicStats: v })}
-              disabled={publicSaving}
-            />
-            <Checkbox
-              value={publicAchievements}
-              label={t['settings.publicAchievements']}
-              onChange={(v) => handlePublicSettingChange({ publicAchievements: v })}
-              disabled={publicSaving}
-            />
+            <TouchableOpacity
+              style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}
+              onPress={() => setSubOpen((prev) => !prev)}
+              activeOpacity={0.7}>
+              <Text style={styles.publicSubLabel}>{t['settings.choosePublicFields']}</Text>
+              <FontAwesomeIcon
+                icon={faChevronDown}
+                size={11}
+                color={colors.textSecondary}
+                style={{ transform: [{ rotate: subOpen ? '180deg' : '0deg' }] }}
+              />
+            </TouchableOpacity>
+            {subOpen && (
+              <>
+                <Checkbox
+                  value={publicName}
+                  label={t['settings.publicName']}
+                  onChange={(v) => handlePublicSettingChange({ publicName: v })}
+                  disabled={publicSaving}
+                />
+                <Checkbox
+                  value={publicClub}
+                  label={t['settings.publicClub']}
+                  onChange={(v) => handlePublicSettingChange({ publicClub: v })}
+                  disabled={publicSaving}
+                />
+                <Checkbox
+                  value={publicSkytternr}
+                  label={t['settings.publicArcherNumber']}
+                  onChange={(v) => handlePublicSettingChange({ publicSkytternr: v })}
+                  disabled={publicSaving}
+                />
+                <Checkbox
+                  value={publicStats}
+                  label={t['settings.publicStats']}
+                  onChange={(v) => handlePublicSettingChange({ publicStats: v })}
+                  disabled={publicSaving}
+                />
+                <Checkbox
+                  value={publicAchievements}
+                  label={t['settings.publicAchievements']}
+                  onChange={(v) => handlePublicSettingChange({ publicAchievements: v })}
+                  disabled={publicSaving}
+                />
+              </>
+            )}
           </View>
         )}
         {publicMsg && (
