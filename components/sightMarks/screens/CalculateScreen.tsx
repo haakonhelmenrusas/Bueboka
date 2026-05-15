@@ -153,7 +153,7 @@ export default function CalculateScreen() {
       }
       setStatus('idle');
     },
-    [activeSightMark, user, loadData, t],
+    [ensureBowSpec, activeSightMark, loadData, user?.id, t],
   );
 
   // ─── Delete single mark from a set ─────────────────────────────────────────
@@ -260,8 +260,7 @@ export default function CalculateScreen() {
         </ScrollView>
       </Pressable>
 
-      {/* Fixed bottom button – sits above the floating tab bar */}
-      <View style={[styles.bottomBar, { paddingBottom: insets.bottom + 92 }]}>
+      <View style={[styles.bottomBar, { paddingBottom: insets.bottom + 80 }]}>
         <Button
           icon={<FontAwesomeIcon icon={faPlus} color={colors.tertiary} />}
           iconPosition="left"
@@ -288,7 +287,7 @@ export default function CalculateScreen() {
 
 const styles = StyleSheet.create({
   page: { flex: 1 },
-  list: { paddingHorizontal: 12, paddingTop: 12, paddingBottom: 16 },
-  bottomBar: { paddingHorizontal: 16, paddingBottom: 16, paddingTop: 8 },
+  list: { paddingHorizontal: 12, paddingTop: 12, paddingBottom: 80 },
+  bottomBar: { paddingHorizontal: 16, paddingTop: 8 },
   newSetButton: { width: '100%' },
 });

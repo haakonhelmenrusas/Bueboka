@@ -1,4 +1,4 @@
-import { Keyboard, KeyboardAvoidingView, Platform, View } from 'react-native';
+import { Keyboard, KeyboardAvoidingView, Platform, ScrollView, View } from 'react-native';
 import { Button, Input, Message, ModalHeader, ModalWrapper } from '@/components/common';
 import { CalculatedMarks, MarksResult } from '@/types';
 import { handleNumberChange } from '@/utils';
@@ -159,87 +159,82 @@ export const CalculateMarksModal = ({
       visible={modalVisible}>
       <KeyboardAvoidingView
         keyboardVerticalOffset={Platform.OS === 'ios' ? 100 : undefined}
-        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-        style={styles.modal}>
-        <ModalHeader onPress={handleCloseModal} title={t['sightMarks.calculateButton']} />
-        <View style={styles.inputs}>
-          <Input
-            containerStyle={{ flex: 1 }}
-            label={t['calcMarks.fromDistance']}
-            onBlur={() => dispatch({ type: 'SET_DISTANCE_FROM_ERROR', payload: false })}
-            keyboardType="numeric"
-            value={distanceFrom}
-            error={distanceFromError}
-            errorMessage={t['calcMarks.missingValue']}
-            onChangeText={(value) => handleNumberChange(value, 'SET_DISTANCE_FROM', dispatch)}
-          />
-          <Input
-            containerStyle={{ flex: 1 }}
-            onBlur={() => dispatch({ type: 'SET_DISTANCE_TO_ERROR', payload: false })}
-            label={t['calcMarks.toDistance']}
-            keyboardType="numeric"
-            value={distanceTo}
-            error={distanceToError}
-            onChangeText={(value) => handleNumberChange(value, 'SET_DISTANCE_TO', dispatch)}
-            errorMessage={t['calcMarks.missingValue']}
-          />
-          <Input
-            containerStyle={{ flex: 1 }}
-            label={t['calcMarks.interval']}
-            onBlur={() => dispatch({ type: 'SET_INTERVAL_ERROR', payload: false })}
-            keyboardType="numeric"
-            value={interval}
-            error={intervalError}
-            onChangeText={(value) => handleNumberChange(value, 'SET_INTERVAL', dispatch)}
-            errorMessage={t['calcMarks.missingValue']}
-          />
-        </View>
-        <View style={styles.angles}>
-          <Input
-            textAlign="center"
-            containerStyle={{ flex: 1 }}
-            label={t['calcMarks.angle']}
-            keyboardType="numbers-and-punctuation"
-            value={angles[0]?.toString() || ''}
-            onChange={(event) => handleAngleChange(event.nativeEvent.text, 0)}
-          />
-          <Input
-            textAlign="center"
-            containerStyle={{ flex: 1 }}
-            label={t['calcMarks.angle']}
-            keyboardType="numbers-and-punctuation"
-            value={angles[1]?.toString() || ''}
-            onChange={(event) => handleAngleChange(event.nativeEvent.text, 1)}
-          />
-          <Input
-            textAlign="center"
-            containerStyle={{ flex: 1 }}
-            label={t['calcMarks.angle']}
-            keyboardType="numbers-and-punctuation"
-            value={angles[2]?.toString() || ''}
-            onChange={(event) => handleAngleChange(event.nativeEvent.text, 2)}
-          />
-        </View>
-        {error && (
-          <View style={{ marginTop: 16 }}>
-            <Message
-              title={t['common.error']}
-              description={error}
-              onPress={() => setError(null)}
-              buttonLabel={t['practiceDetails.close']}
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
+        <ScrollView style={styles.modal} keyboardShouldPersistTaps="handled" showsVerticalScrollIndicator={false} bounces={false}>
+          <ModalHeader onPress={handleCloseModal} title={t['sightMarks.calculateButton']} />
+          <View style={styles.inputs}>
+            <Input
+              containerStyle={{ flex: 1 }}
+              label={t['calcMarks.fromDistance']}
+              onBlur={() => dispatch({ type: 'SET_DISTANCE_FROM_ERROR', payload: false })}
+              keyboardType="numeric"
+              value={distanceFrom}
+              error={distanceFromError}
+              errorMessage={t['calcMarks.missingValue']}
+              onChangeText={(value) => handleNumberChange(value, 'SET_DISTANCE_FROM', dispatch)}
+            />
+            <Input
+              containerStyle={{ flex: 1 }}
+              onBlur={() => dispatch({ type: 'SET_DISTANCE_TO_ERROR', payload: false })}
+              label={t['calcMarks.toDistance']}
+              keyboardType="numeric"
+              value={distanceTo}
+              error={distanceToError}
+              onChangeText={(value) => handleNumberChange(value, 'SET_DISTANCE_TO', dispatch)}
+              errorMessage={t['calcMarks.missingValue']}
+            />
+            <Input
+              containerStyle={{ flex: 1 }}
+              label={t['calcMarks.interval']}
+              onBlur={() => dispatch({ type: 'SET_INTERVAL_ERROR', payload: false })}
+              keyboardType="numeric"
+              value={interval}
+              error={intervalError}
+              onChangeText={(value) => handleNumberChange(value, 'SET_INTERVAL', dispatch)}
+              errorMessage={t['calcMarks.missingValue']}
             />
           </View>
-        )}
-        <View style={styles.buttons}>
-          <Button loading={status === 'pending'} width="auto" label={t['calcMarks.calculate']} onPress={handleSave} />
-          <Button
-            type="outline"
-            label={t['practiceDetails.close']}
-            onPress={() => {
-              closeModal();
-            }}
-          />
-        </View>
+          <View style={styles.angles}>
+            <Input
+              textAlign="center"
+              containerStyle={{ flex: 1 }}
+              label={t['calcMarks.angle']}
+              keyboardType="numbers-and-punctuation"
+              value={angles[0]?.toString() || ''}
+              onChange={(event) => handleAngleChange(event.nativeEvent.text, 0)}
+            />
+            <Input
+              textAlign="center"
+              containerStyle={{ flex: 1 }}
+              label={t['calcMarks.angle']}
+              keyboardType="numbers-and-punctuation"
+              value={angles[1]?.toString() || ''}
+              onChange={(event) => handleAngleChange(event.nativeEvent.text, 1)}
+            />
+            <Input
+              textAlign="center"
+              containerStyle={{ flex: 1 }}
+              label={t['calcMarks.angle']}
+              keyboardType="numbers-and-punctuation"
+              value={angles[2]?.toString() || ''}
+              onChange={(event) => handleAngleChange(event.nativeEvent.text, 2)}
+            />
+          </View>
+          {error && (
+            <View style={{ marginTop: 16 }}>
+              <Message
+                title={t['common.error']}
+                description={error}
+                onPress={() => setError(null)}
+                buttonLabel={t['practiceDetails.close']}
+              />
+            </View>
+          )}
+          <View style={styles.buttons}>
+            <Button loading={status === 'pending'} buttonStyle={{ flex: 1 }} label={t['calcMarks.calculate']} onPress={handleSave} />
+            <Button type="outline" buttonStyle={{ flex: 1 }} label={t['practiceDetails.close']} onPress={closeModal} />
+          </View>
+        </ScrollView>
       </KeyboardAvoidingView>
     </ModalWrapper>
   );

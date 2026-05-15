@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
 import { ScrollView, View } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import * as Sentry from '@sentry/react-native';
 import { Button, Message } from '@/components/common';
 import { CalculatedMarks, MarksResult, SightMark, SightMarkResult } from '@/types';
@@ -25,6 +26,7 @@ interface MarksScreenProps {
 export default function MarksScreen({ setScreen }: MarksScreenProps) {
   const { user } = useAuth();
   const { t } = useTranslation();
+  const insets = useSafeAreaInsets();
   const [showSpeed, setShowSpeed] = useState(false);
   // const [showGraph, setShowGraph] = useState(false);
   const [ballistics, setBallistics] = useState<CalculatedMarks | null>(null);
@@ -37,8 +39,9 @@ export default function MarksScreen({ setScreen }: MarksScreenProps) {
     setIsLoading(true);
     try {
       const marks = await sightMarksRepository.getAll();
-      // Get newest sight mark (most recent)
-      const current = marks.sort((a, b) => new Date(b.createdAt ?? 0).getTime() - new Date(a.createdAt ?? 0).getTime())[0] ?? null;
+      const sorted = marks.sort((a, b) => new Date(b.createdAt ?? 0).getTime() - new Date(a.createdAt ?? 0).getTime());
+      // Prefer the most recent collection that has 2+ calibration points; fall back to most recent
+      const current = sorted.find((m) => (m.givenDistances?.length ?? 0) >= 2) ?? sorted[0] ?? null;
       setActiveSightMark(current);
       setBallistics((current?.ballisticsParameters as CalculatedMarks) ?? null);
 
@@ -116,7 +119,7 @@ export default function MarksScreen({ setScreen }: MarksScreenProps) {
     }
 
     if (ballistics) {
-      if (ballistics.given_distances?.length > 1) {
+      if ((activeSightMark?.givenDistances?.length ?? 0) >= 2) {
         return (
           <View style={styles.emptyState}>
             <Message
@@ -167,7 +170,7 @@ export default function MarksScreen({ setScreen }: MarksScreenProps) {
       {/* )} */}
 
       {calculatedMarks && (
-        <View style={styles.actionBar}>
+        <View style={[styles.actionBar, { paddingBottom: insets.bottom + 80 }]}>
           {
             <Button
               type="outline"
