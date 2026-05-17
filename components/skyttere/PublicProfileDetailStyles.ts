@@ -28,6 +28,7 @@ export const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     paddingVertical: 12,
+    marginHorizontal: 20,
     gap: 8,
   },
   backText: {

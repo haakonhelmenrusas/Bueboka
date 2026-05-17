@@ -1,8 +1,8 @@
-import { useState, useEffect, useCallback, useRef } from 'react';
+import { useState, useEffect, useCallback, useRef, useLayoutEffect } from 'react';
 import { Animated, View, ScrollView } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
-import { useFocusEffect, usePathname } from 'expo-router';
-import { PublicProfileList, SearchHero, SearchIdleState } from '@/components/skyttere';
+import { useFocusEffect, usePathname, useRouter, useNavigation } from 'expo-router';
+import { PublicProfileList, SearchHero, SearchIdleState, BackButton } from '@/components/skyttere';
 import { publicProfilesApi } from '@/services';
 import { PublicProfile } from '@/types';
 import { styles } from '@/components/skyttere/SkyttereStyles';
@@ -17,7 +17,16 @@ export default function SkytterePage() {
   const { t } = useTranslation();
   const { user } = useAuth();
   const insets = useSafeAreaInsets();
+  const router = useRouter();
+  const navigation = useNavigation();
   const pathname = usePathname();
+
+  useLayoutEffect(() => {
+    navigation.getParent()?.setOptions({ tabBarStyle: { display: 'none' } });
+    return () => {
+      navigation.getParent()?.setOptions({ tabBarStyle: undefined });
+    };
+  }, [navigation]);
   const [query, setQuery] = useState('');
   const [profiles, setProfiles] = useState<PublicProfile[]>([]);
   const [loading, setLoading] = useState(false);
@@ -107,6 +116,7 @@ export default function SkytterePage() {
           showsVerticalScrollIndicator={false}
           contentContainerStyle={[styles.scrollContent, { paddingTop: insets.top }]}
           keyboardShouldPersistTaps="always">
+          <BackButton onPress={() => router.back()} />
           <SearchHero
             query={query}
             onQueryChange={setQuery}

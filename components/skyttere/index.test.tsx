@@ -11,6 +11,13 @@ jest.mock('@/hooks', () => ({
   useAuth: jest.fn(),
 }));
 
+jest.mock('expo-router', () => ({
+  useFocusEffect: jest.fn(),
+  usePathname: () => '/skyttere',
+  useNavigation: () => ({ getParent: () => ({ setOptions: jest.fn() }) }),
+  useRouter: () => ({ back: jest.fn(), push: jest.fn() }),
+}));
+
 // Mock only the publicProfilesApi export; everything else from @/services is unused here.
 jest.mock('@/services', () => ({
   publicProfilesApi: { search: jest.fn() },

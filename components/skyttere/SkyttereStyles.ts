@@ -14,7 +14,7 @@ export const styles = StyleSheet.create({
   },
   hero: {
     paddingHorizontal: 20,
-    paddingTop: 40,
+    paddingTop: 16,
     paddingBottom: 56,
     alignItems: 'center',
     width: '100%',
