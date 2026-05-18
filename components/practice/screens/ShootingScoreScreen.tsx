@@ -6,8 +6,10 @@ import { colors } from '@/styles/colors';
 import { useRouter, useLocalSearchParams } from 'expo-router';
 import { practiceRepository } from '@/services/repositories';
 import * as Sentry from '@sentry/react-native';
+import { useTranslation } from '@/contexts';
 
 export default function ShootingScoreScreen() {
+  const t = useTranslation();
   const [hits, setHits] = useState<ArrowHit[]>([]);
   const [isSaving, setIsSaving] = useState(false);
   const router = useRouter();
@@ -117,15 +119,15 @@ export default function ShootingScoreScreen() {
   return (
     <View style={styles.container}>
       <View style={styles.mainContent}>
-        <Text style={styles.title}>Registrer Piler</Text>
-        <Text style={styles.subtitle}>Trykk eller hold for å zoome og plassere piler</Text>
+        <Text style={styles.title}>{t['shootingScore.title']}</Text>
+        <Text style={styles.subtitle}>{t['shootingScore.subtitle']}</Text>
 
         <ScoringGrid hits={hits} onAddHit={handleAddHit} />
 
         <View style={styles.stats}>
-          <Text style={styles.statsText}>Piler skutt: {hits.length}</Text>
+          <Text style={styles.statsText}>{t['shootingScore.arrowsShotLabel']}{hits.length}</Text>
           <TouchableOpacity onPress={handleClear}>
-            <Text style={styles.clearText}>Tøm piler</Text>
+            <Text style={styles.clearText}>{t['shootingScore.clearArrows']}</Text>
           </TouchableOpacity>
         </View>
       </View>
@@ -173,7 +175,7 @@ export default function ShootingScoreScreen() {
         </View>
 
         <Button
-          label={isSaving ? 'Lagrer...' : 'Ferdig'}
+          label={isSaving ? t['form.saving'] : t['shootingScore.done']}
           onPress={handleSave}
           disabled={hits.length === 0 || isSaving}
           loading={isSaving}
