@@ -5,6 +5,7 @@ import PracticeCard from '@/components/practice/practiceCard/PracticeCard';
 import { Message } from '@/components/common';
 import { ScrollView } from 'react-native-gesture-handler';
 import { practiceToCardItem } from '@/utils/helpers/practiceHelpers';
+import { useTranslation } from '@/contexts';
 
 interface PracticeListProps {
   practices: Practice[];
@@ -12,6 +13,7 @@ interface PracticeListProps {
 }
 
 export default function PracticeList({ practices, onEditPractice }: PracticeListProps) {
+  const t = useTranslation();
   const sortedPractices = [...practices].sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
 
   const handleCardPress = (practiceId: string) => {
@@ -23,7 +25,7 @@ export default function PracticeList({ practices, onEditPractice }: PracticeList
 
   const renderPracticeList = () => {
     if (!practices || practices.length === 0) {
-      return <Message title="Ingen treninger" description="Legg til treninger ved å trykke på 'Ny trening'" />;
+      return <Message title={t['practiceList.empty']} description={t['practiceList.emptyDesc']} />;
     }
 
     return (

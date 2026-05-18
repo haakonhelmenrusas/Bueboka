@@ -16,8 +16,10 @@ import { useAuth } from '@/hooks';
 import { arrowsRepository, bowRepository, practiceRepository } from '@/services/repositories';
 import { AppError } from '@/services';
 import CreatePracticeForm from '@/components/practice/practiceForm/CreatePracticeForm';
+import { useTranslation } from '@/contexts';
 
 export default function PracticeScreen() {
+  const t = useTranslation();
   const { user, isLoading: authLoading } = useAuth();
   const [modalVisible, setModalVisible] = useState(false);
   const [practices, setPractices] = useState<Practice[]>([]);
@@ -53,7 +55,7 @@ export default function PracticeScreen() {
       if (err instanceof AppError) {
         setError(err.message);
       } else {
-        setError('Kunne ikke laste treninger');
+        setError(t['practiceScreen.loadError']);
       }
       setPractices([]);
       setBows([]);
@@ -94,11 +96,11 @@ export default function PracticeScreen() {
     }
 
     if (!user) {
-      return <Message title="Ikke innlogget" description="Vennligst logg inn for å se treninger." />;
+      return <Message title={t['practiceScreen.notLoggedInTitle']} description={t['practiceScreen.notLoggedInDesc']} />;
     }
 
     if (error) {
-      return <Message title="Feil" description={error} />;
+      return <Message title={t['common.error']} description={error} />;
     }
 
     return <PracticeList practices={practices} onEditPractice={handleEditPractice} />;
@@ -107,10 +109,10 @@ export default function PracticeScreen() {
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <GestureHandlerRootView style={styles.container}>
-        <Text style={styles.title}>Treninger</Text>
+        <Text style={styles.title}>{t['practiceScreen.title']}</Text>
         {renderContent()}
         {user && (
-          <Button onPress={handleOpenModal} icon={<FontAwesomeIcon icon={faPlus} size={20} color={colors.white} />} label={'Ny trening'} />
+          <Button onPress={handleOpenModal} icon={<FontAwesomeIcon icon={faPlus} size={20} color={colors.white} />} label={t['practiceScreen.newPractice']} />
         )}
         <CreatePracticeForm
           visible={modalVisible}

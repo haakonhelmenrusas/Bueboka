@@ -1,7 +1,9 @@
 import { Stack } from 'expo-router';
 import { colors } from '@/styles/colors';
+import { useTranslation } from '@/contexts';
 
 const Layout = () => {
+  const t = useTranslation();
   return (
     <Stack
       screenOptions={{
@@ -16,14 +18,14 @@ const Layout = () => {
       <Stack.Screen
         name="index"
         options={{
-          title: 'Treninger',
+          title: t['practiceScreen.title'],
           headerShown: false,
         }}
       />
       <Stack.Screen
         name="shooting/index"
         options={{
-          title: 'Skyteøkt',
+          title: t['shootingScreen.title'],
           headerShown: false,
         }}
       />
