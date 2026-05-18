@@ -681,4 +681,22 @@ export interface TranslationKeys {
   'skyttere.avgScore': string;
   'skyttere.achievementsTitle': string;
   'skyttere.achievementsUnlocked': string;
+  'practiceScreen.title': string;
+  'practiceScreen.notLoggedInTitle': string;
+  'practiceScreen.notLoggedInDesc': string;
+  'practiceScreen.loadError': string;
+  'practiceScreen.newPractice': string;
+  'practiceList.empty': string;
+  'practiceList.emptyDesc': string;
+  'shootingScreen.title': string;
+  'shootingScreen.arrowCountLabel': string;
+  'shootingScreen.registerOnTarget': string;
+  'shootingScreen.dateLabel': string;
+  'shootingScreen.saveError': string;
+  'shootingScreen.save': string;
+  'shootingScore.title': string;
+  'shootingScore.subtitle': string;
+  'shootingScore.arrowsShotLabel': string;
+  'shootingScore.clearArrows': string;
+  'shootingScore.done': string;
 }
