@@ -8,8 +8,10 @@ import * as Sentry from '@sentry/react-native';
 import { styles } from '@/components/practice/ShootingStyles';
 import { Button } from '@/components/common';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { useTranslation } from '@/contexts';
 
 export default function ShootingScreen() {
+  const t = useTranslation();
   const params = useLocalSearchParams();
   const router = useRouter();
   const [arrowCount, setArrowCount] = useState(0);
@@ -40,7 +42,7 @@ export default function ShootingScreen() {
       router.replace('/(tabs)/home');
     } catch (error) {
       Sentry.captureException(error);
-      Alert.alert('Feil', 'Kunne ikke lagre treningen. Vennligst prøv igjen.');
+      Alert.alert(t['common.error'], t['shootingScreen.saveError']);
     } finally {
       setIsSaving(false);
     }
@@ -56,9 +58,9 @@ export default function ShootingScreen() {
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <View style={styles.container}>
-        <Text style={styles.title}>Skyteøkt</Text>
+        <Text style={styles.title}>{t['shootingScreen.title']}</Text>
         <View style={styles.arrowCountContainer}>
-          <Text style={styles.arrowCountLabel}>Antall piler skutt</Text>
+          <Text style={styles.arrowCountLabel}>{t['shootingScreen.arrowCountLabel']}</Text>
           <Text style={styles.arrowCount}>{arrowCount}</Text>
         </View>
         <View style={styles.buttonContainer}>
@@ -72,14 +74,14 @@ export default function ShootingScreen() {
 
         <TouchableOpacity style={styles.scoreButton} onPress={openScoring}>
           <FontAwesomeIcon icon={faBullseye} size={20} color={colors.white} />
-          <Text style={styles.scoreButtonText}>Registrer piler på skive</Text>
+          <Text style={styles.scoreButtonText}>{t['shootingScreen.registerOnTarget']}</Text>
         </TouchableOpacity>
 
         <View style={styles.infoContainer}>
-          <Text style={styles.infoText}>Dato: {params.date}</Text>
+          <Text style={styles.infoText}>{t['shootingScreen.dateLabel']}{params.date}</Text>
         </View>
         <Button
-          label={isSaving ? 'Lagrer...' : 'Lagre trening'}
+          label={isSaving ? t['form.saving'] : t['shootingScreen.save']}
           onPress={savePractice}
           disabled={isSaving}
           loading={isSaving}
