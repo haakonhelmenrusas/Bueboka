@@ -538,6 +538,12 @@ export interface TranslationKeys {
   'confirmRemove.message': string;
   'confirmRemove.yes': string;
 
+  // FAB action menu
+  'fab.newPractice': string;
+  'fab.newCompetition': string;
+  'fab.newBow': string;
+  'fab.newArrows': string;
+
   // Common additions
   'common.advanced': string;
   'common.favourite': string;
