@@ -14,6 +14,7 @@ export const no: TranslationKeys = {
   'intro.body':
     'Logg treninger og konkurranser, spor siktmerkene dine og følg fremgangen over tid. Alt du trenger for å bli en bedre bueskytter.',
   'intro.getStarted': 'Kom i gang',
+  'intro.chooseLanguage': 'Velg språk',
 
   'auth.emailLabel': 'E-post',
   'auth.passwordLabel': 'Passord',

@@ -14,6 +14,7 @@ export const en: TranslationKeys = {
   'intro.body':
     'Log practices and competitions, track your sight marks and follow your progress over time. Everything you need to become a better archer.',
   'intro.getStarted': 'Get started',
+  'intro.chooseLanguage': 'Choose language',
 
   'auth.emailLabel': 'Email',
   'auth.passwordLabel': 'Password',
