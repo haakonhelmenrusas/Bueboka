@@ -228,6 +228,10 @@ export const no: TranslationKeys = {
   'scoring.scoreSuffix': '– score:',
   'scoring.editArrowAriaPrefix': 'Endre pil',
   'scoring.arrowScoring': 'Pilpoeng',
+  'scoring.scoreNow': 'Registrer score',
+  'scoring.editScores': 'Rediger score',
+  'scoring.continueScoring': 'Fortsett scoring',
+  'scoring.done': 'Ferdig',
 
   'reflection.ratingLabel': 'Vurdering (valgfritt)',
   'reflection.ratingPromptPractice': 'Hvordan vil du vurdere treningen?',

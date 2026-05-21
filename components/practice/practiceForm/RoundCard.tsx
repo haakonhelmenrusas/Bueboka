@@ -1,14 +1,13 @@
 import { Text, TouchableOpacity, View } from 'react-native';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faXmark } from '@fortawesome/free-solid-svg-icons/faXmark';
-import { Input, Select } from '@/components/common';
+import { Input, Select, Button } from '@/components/common';
 import { useTranslation } from '@/contexts';
-import { Environment, PracticeCategory } from '@/types';
+import { PracticeCategory } from '@/types';
 import { getTargetTypeOptions } from '@/utils/Constants';
 import { isRangeCategory, parseNum } from '@/components/practice/shared/formHelpers';
 import { colors } from '@/styles/colors';
 import { styles } from './CreatePracticeFormStyles';
-import { InlineScoringSection } from './InlineScoringSection';
 import type { RoundInput } from './CreatePracticeForm';
 
 interface RoundCardProps {
@@ -16,18 +15,9 @@ interface RoundCardProps {
   roundIndex: number;
   roundCount: number;
   practiceCategory: PracticeCategory;
-  environment: Environment;
-  endPage: number;
-  editingIndex: number | null;
-  scoringExpanded: boolean;
-  scoringMethod: 'buttons' | 'target';
-  onToggleScoringExpanded: () => void;
   onRemoveRound: () => void;
   onUpdateRound: <K extends keyof RoundInput>(field: K, value: RoundInput[K]) => void;
-  onSetEndPage: (page: number) => void;
-  onSetEditingIndex: (idx: number | null) => void;
-  onAddArrowScore: (score: number) => void;
-  onUpdateArrowScore: (arrowIndex: number, score: number) => void;
+  onOpenScoring: () => void;
 }
 
 export function RoundCard({
@@ -35,26 +25,25 @@ export function RoundCard({
   roundIndex,
   roundCount,
   practiceCategory,
-  environment,
-  endPage,
-  editingIndex,
-  scoringExpanded,
-  scoringMethod,
-  onToggleScoringExpanded,
   onRemoveRound,
   onUpdateRound,
-  onSetEndPage,
-  onSetEditingIndex,
-  onAddArrowScore,
-  onUpdateArrowScore,
+  onOpenScoring,
 }: RoundCardProps) {
   const { t } = useTranslation();
   const rangeMode = isRangeCategory(practiceCategory);
   const TARGET_TYPE_OPTIONS = getTargetTypeOptions(t);
 
   const maxArrows = round.numberArrows ?? 0;
-  const hasManualScore = round.roundScore > 0 && (round.scores ?? []).length === 0;
-  const showScoring = scoringMethod === 'buttons' && (maxArrows > 0 || hasManualScore);
+  const currentScores = round.scores ?? [];
+  const filledCount = currentScores.length;
+  const isFull = maxArrows > 0 && filledCount >= maxArrows;
+  const hasPartialScores = filledCount > 0 && !isFull;
+  const hasManualScore = round.roundScore > 0 && filledCount === 0;
+  const showScoreButton = maxArrows > 0 && !hasManualScore;
+
+  const scoreButtonLabel = isFull ? t['scoring.editScores'] : hasPartialScores ? t['scoring.continueScoring'] : t['scoring.scoreNow'];
+
+  const total = currentScores.reduce((a, b) => a + b, 0);
 
   return (
     <View style={styles.roundCard}>
@@ -145,20 +134,22 @@ export function RoundCard({
         />
       </View>
 
-      {showScoring && (
-        <InlineScoringSection
-          round={round}
-          roundIndex={roundIndex}
-          environment={environment}
-          endPage={endPage}
-          editingIndex={editingIndex}
-          expanded={scoringExpanded}
-          onToggleExpanded={onToggleScoringExpanded}
-          onSetEndPage={onSetEndPage}
-          onSetEditingIndex={onSetEditingIndex}
-          onAddArrowScore={onAddArrowScore}
-          onUpdateArrowScore={onUpdateArrowScore}
-        />
+      {showScoreButton && (
+        <View style={{ marginTop: 8 }}>
+          {filledCount > 0 && (
+            <Text style={styles.scoringProgressText}>
+              {isFull
+                ? `${t['scoring.allRegistered']} ${t['scoring.scoreSuffix']} ${total}`
+                : `${filledCount}/${maxArrows} ${t['scoring.arrowsRecorded']} · ${t['scoring.sum']} ${total}`}
+            </Text>
+          )}
+          <Button
+            label={scoreButtonLabel}
+            onPress={onOpenScoring}
+            type={filledCount > 0 ? 'outline' : 'filled'}
+            buttonStyle={{ marginTop: 6 }}
+          />
+        </View>
       )}
     </View>
   );

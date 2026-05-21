@@ -228,6 +228,10 @@ export const en: TranslationKeys = {
   'scoring.scoreSuffix': '– score:',
   'scoring.editArrowAriaPrefix': 'Edit arrow',
   'scoring.arrowScoring': 'Arrow scoring',
+  'scoring.scoreNow': 'Score now',
+  'scoring.editScores': 'Edit scores',
+  'scoring.continueScoring': 'Continue scoring',
+  'scoring.done': 'Done',
 
   'reflection.ratingLabel': 'Rating (optional)',
   'reflection.ratingPromptPractice': 'How would you rate the practice?',

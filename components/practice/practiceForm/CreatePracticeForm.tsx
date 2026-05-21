@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import { Keyboard, KeyboardAvoidingView, Platform, Pressable, ScrollView, View } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as Sentry from '@sentry/react-native';
-import { useRouter } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { ModalHeader, ModalWrapper } from '@/components/common';
@@ -22,6 +21,7 @@ import { NavigationFooter } from '@/components/practice/shared/NavigationFooter'
 import { InfoStep } from './InfoStep';
 import { RoundsStep } from './RoundsStep';
 import { ReflectionStep } from './ReflectionStep';
+import { ScoringModal } from './ScoringModal';
 
 // ─── Storage keys ────────────────────────────────────────────────────────────
 const STORAGE_KEY_DISTANCE = 'bueboka_last_distance';
@@ -87,7 +87,6 @@ export default function CreatePracticeForm({
   onPracticeSaved,
   editingPractice = null,
 }: CreatePracticeFormProps) {
-  const router = useRouter();
   const { t } = useTranslation();
   const insets = useSafeAreaInsets();
   const STEP_LABELS = getStepLabels(t);
@@ -103,7 +102,7 @@ export default function CreatePracticeForm({
   const [rounds, setRounds] = useState<RoundInput[]>([emptyRound(PracticeCategory.SKIVE_INDOOR)]);
   const [rating, setRating] = useState<number | null>(null);
   const [notes, setNotes] = useState('');
-  const [scoringMethod, setScoringMethod] = useState<'buttons' | 'target'>('buttons');
+  const [scoringRoundIndex, setScoringRoundIndex] = useState<number | null>(null);
 
   // Weather selection hook
   const { weather, setWeather, toggleWeather } = useWeatherSelection(environment);
@@ -119,7 +118,6 @@ export default function CreatePracticeForm({
   const [closeConfirmVisible, setCloseConfirmVisible] = useState(false);
   const [endPages, setEndPages] = useState<Record<number, number>>({});
   const [editingIndices, setEditingIndices] = useState<Record<number, number | null>>({});
-  const [expandedScoring, setExpandedScoring] = useState<Record<number, boolean>>({});
   const [editingId, setEditingId] = useState<string | null>(null);
 
   // Derived
@@ -146,7 +144,6 @@ export default function CreatePracticeForm({
 
     resetStep();
     setError(null);
-    setExpandedScoring({});
 
     if (editingPractice) {
       setEditingId(editingPractice.id);
@@ -246,17 +243,6 @@ export default function CreatePracticeForm({
     setEditingIndices((prev) => ({ ...prev, [roundIndex]: idx }));
   };
 
-  const toggleScoringExpanded = (roundIndex: number) => {
-    setExpandedScoring((prev) => {
-      const next: Record<number, boolean> = {};
-      for (const key of Object.keys(prev)) {
-        next[Number(key)] = false;
-      }
-      next[roundIndex] = !prev[roundIndex];
-      return next;
-    });
-  };
-
   // ─── Reset ───────────────────────────────────────────────────────────────────
   const resetForm = () => {
     setDate(new Date());
@@ -269,7 +255,6 @@ export default function CreatePracticeForm({
     setRounds([emptyRound(PracticeCategory.SKIVE_INDOOR)]);
     setRating(null);
     setNotes('');
-    setExpandedScoring({});
   };
 
   const handleClose = () => {
@@ -312,17 +297,6 @@ export default function CreatePracticeForm({
           updated.scores = updated.scores.slice(0, max);
           updated.roundScore = updated.scores.reduce((a, b) => a + b, 0);
         }
-      }
-      // Auto-expand scoring when user sets numberArrows
-      if (field === 'numberArrows' && typeof value === 'number' && value > 0) {
-        setExpandedScoring((prev) => {
-          const next: Record<number, boolean> = {};
-          for (const key of Object.keys(prev)) {
-            next[Number(key)] = false;
-          }
-          next[index] = true;
-          return next;
-        });
       }
       next[index] = updated;
       return next;
@@ -403,37 +377,23 @@ export default function CreatePracticeForm({
 
       await persistLastUsed(validRounds);
 
-      const totalScore = validRounds.reduce((sum, r) => sum + (r.roundScore ?? 0), 0);
+      const commonPayload = {
+        date: date.toISOString(),
+        environment,
+        practiceCategory,
+        weather,
+        location: location || undefined,
+        bowId: selectedBow || undefined,
+        arrowsId: selectedArrowSet || undefined,
+        notes: notes || undefined,
+        rating: rating ?? undefined,
+        rounds: buildRounds(validRounds),
+      };
 
       if (editingId) {
-        const updatePayload = {
-          date,
-          environment,
-          practiceCategory,
-          weather,
-          location: location || undefined,
-          bowId: selectedBow || undefined,
-          arrowsId: selectedArrowSet || undefined,
-          notes: notes || undefined,
-          rating: rating ?? undefined,
-          rounds: buildRounds(validRounds),
-        };
-        await practiceRepository.update(editingId, updatePayload);
+        await practiceRepository.update(editingId, commonPayload);
       } else {
-        const createPayload = {
-          date,
-          environment,
-          practiceCategory,
-          weather,
-          location: location || undefined,
-          bowId: selectedBow || undefined,
-          arrowsId: selectedArrowSet || undefined,
-          notes: notes || undefined,
-          rating: rating ?? undefined,
-          totalScore,
-          ends: buildRounds(validRounds),
-        };
-        await practiceRepository.create(createPayload);
+        await practiceRepository.create(commonPayload);
       }
 
       onPracticeSaved?.();
@@ -441,41 +401,6 @@ export default function CreatePracticeForm({
     } catch (err) {
       Sentry.captureException(err);
       setError(err instanceof Error ? err.message : t['practiceForm.saveError']);
-    } finally {
-      setSubmitting(false);
-    }
-  };
-
-  // ─── Start shooting ───────────────────────────────────────────────────────────
-  const handleStartShooting = async () => {
-    setSubmitting(true);
-    setError(null);
-    try {
-      const validRounds = getValidRounds();
-
-      await persistLastUsed(validRounds);
-
-      onClose();
-
-      router.push({
-        pathname: '/(tabs)/home/shooting',
-        params: {
-          date: date.toISOString().split('T')[0],
-          bowId: selectedBow || '',
-          arrowsId: selectedArrowSet || '',
-          notes: notes || '',
-          environment,
-          practiceCategory,
-          weather: JSON.stringify(weather),
-          location: location || '',
-          rating: rating?.toString() || '',
-          distance: validRounds[0]?.distanceMeters?.toString() || '18',
-          targetSize: validRounds[0]?.targetType?.replace('cm', '') || '80',
-        },
-      });
-    } catch (err) {
-      Sentry.captureException(err);
-      setError(err instanceof Error ? err.message : t['practiceForm.startShootingError']);
     } finally {
       setSubmitting(false);
     }
@@ -537,23 +462,10 @@ export default function CreatePracticeForm({
                 <RoundsStep
                   rounds={rounds}
                   practiceCategory={practiceCategory}
-                  environment={environment}
-                  scoringMethod={scoringMethod}
-                  isEditing={isEditing}
-                  submitting={submitting}
-                  endPages={endPages}
-                  editingIndices={editingIndices}
-                  expandedScoring={expandedScoring}
-                  onScoringMethodChange={setScoringMethod}
-                  onStartShooting={handleStartShooting}
                   onAddRound={addRound}
                   onRemoveRound={removeRound}
                   onUpdateRound={updateRound}
-                  onSetEndPage={setEndPage}
-                  onSetEditingIndex={setEditingIndex}
-                  onAddArrowScore={addArrowScore}
-                  onUpdateArrowScore={updateArrowScore}
-                  onToggleScoringExpanded={toggleScoringExpanded}
+                  onOpenScoring={setScoringRoundIndex}
                 />
               )}
               {step === 2 && (
@@ -597,6 +509,22 @@ export default function CreatePracticeForm({
         onCancel={() => setCloseConfirmVisible(false)}
         onConfirm={handleConfirmClose}
       />
+
+      {scoringRoundIndex !== null && (
+        <ScoringModal
+          visible
+          round={rounds[scoringRoundIndex]}
+          roundIndex={scoringRoundIndex}
+          environment={environment}
+          endPage={endPages[scoringRoundIndex] ?? 0}
+          editingIndex={editingIndices[scoringRoundIndex] ?? null}
+          onClose={() => setScoringRoundIndex(null)}
+          onSetEndPage={(page) => setEndPage(scoringRoundIndex, page)}
+          onSetEditingIndex={(idx) => setEditingIndex(scoringRoundIndex, idx)}
+          onAddArrowScore={(score) => addArrowScore(scoringRoundIndex, score)}
+          onUpdateArrowScore={(arrowIndex, score) => updateArrowScore(scoringRoundIndex, arrowIndex, score)}
+        />
+      )}
     </ModalWrapper>
   );
 }
