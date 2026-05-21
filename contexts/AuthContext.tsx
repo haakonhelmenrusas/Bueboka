@@ -372,20 +372,32 @@ export function AuthProvider({ children }: AuthProviderProps) {
         setState((prev) => ({ ...prev, isLoading: false }));
       }
     } catch (error: any) {
-      // Only log as a warning if it's an unexpected error.
-      // 401 = session expired, NETWORK_ERROR = offline/backend down — both are
-      // normal conditions that should resolve silently.
       const isAuthError = error?.code === 'UNAUTHORIZED' || error?.status === 401 || error?.response?.status === 401;
       const isNetworkError = error?.code === 'NETWORK_ERROR' || error?.message?.includes('Network');
 
-      if (!isAuthError && !isNetworkError) {
-        Sentry.captureException(error, { tags: { context: 'initializeAuth' } });
-      } else if (isAuthError) {
+      if (isAuthError) {
         Sentry.addBreadcrumb({ category: 'auth', message: 'No valid session on startup, clearing token', level: 'info' });
-        // Clear the stale token so the next startup doesn't hit /profile again
         await clearTokens();
+      } else if (isNetworkError) {
+        // Network unavailable (offline, dev server restarting, hot reload) —
+        // fall back to cached session data so the user stays logged in.
+        const cached = authStorage.getItem('bueboka_session_data');
+        if (cached) {
+          try {
+            const parsed = JSON.parse(cached);
+            const cachedUser = parsed?.user ?? parsed?.data?.user;
+            if (cachedUser?.id) {
+              setState({ user: cachedUser, isAuthenticated: true, isLoading: false, error: null });
+              Sentry.setUser({ id: cachedUser.id, email: cachedUser.email, username: cachedUser.name || undefined });
+              return;
+            }
+          } catch {
+            // Cached data is corrupt — fall through to unauthenticated state
+          }
+        }
+      } else {
+        Sentry.captureException(error, { tags: { context: 'initializeAuth' } });
       }
-      // Network errors: silently proceed to auth screen (backend offline / no connectivity)
 
       setState((prev) => ({ ...prev, isLoading: false }));
     }

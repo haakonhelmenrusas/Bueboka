@@ -25,7 +25,11 @@ const CHUNK_SUFFIX = '__c';
 const KNOWN_KEYS = ['bueboka_cookie', 'bueboka_session_data'];
 
 // ─── Module-level state (avoids class / prototype issues under Babel) ────────
-const _cache = new Map<string, string>();
+// Attach to globalThis so the cache survives Fast Refresh module re-evaluation.
+// When Metro re-evaluates this file, `const _cache = new Map()` would wipe the
+// session cookies, causing the user to appear logged out on every code change.
+const CACHE_KEY = '__bueboka_authStorage_cache';
+const _cache: Map<string, string> = (globalThis as any)[CACHE_KEY] ?? ((globalThis as any)[CACHE_KEY] = new Map<string, string>());
 
 // ─── Chunked async helpers ───────────────────────────────────────────────────
 
