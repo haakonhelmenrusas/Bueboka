@@ -18,6 +18,7 @@ export interface TranslationKeys {
   'intro.titleLine2': string;
   'intro.body': string;
   'intro.getStarted': string;
+  'intro.chooseLanguage': string;
 
   // Auth screen
   'auth.emailLabel': string;

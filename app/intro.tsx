@@ -8,6 +8,7 @@ import { Button } from '@/components/common';
 import { colors } from '@/styles/colors';
 import { useTranslation } from '@/contexts';
 import { styles } from '@/components/intro/IntroStyles';
+import IntroLanguagePicker from '@/components/intro/IntroLanguagePicker';
 
 export const INTRO_SEEN_KEY = 'bueboka_has_seen_intro';
 
@@ -30,6 +31,8 @@ export default function IntroScreen() {
 
       <SafeAreaView style={styles.safeArea}>
         <View style={styles.container}>
+          <IntroLanguagePicker />
+
           {/* Logo */}
           <View style={styles.logoSection}>
             <View style={styles.logoWrapper}>
