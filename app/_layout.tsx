@@ -89,7 +89,7 @@ function RootLayoutContent() {
         <Stack.Screen name="index" />
         <Stack.Screen name="intro" />
         <Stack.Screen name="auth" />
-        <Stack.Screen name="(tabs)" options={{ contentStyle: { backgroundColor: colors.primary } }} />
+        <Stack.Screen name="(tabs)" options={{ contentStyle: { backgroundColor: colors.primary }, gestureEnabled: false }} />
         <Stack.Screen name="skyttere" options={{ headerShown: false }} />
         <Stack.Screen name="achievements" options={{ headerShown: false }} />
       </Stack>

@@ -24,9 +24,8 @@ export interface CreateEndData {
  * Practice creation data structure
  */
 export interface CreatePracticeData {
-  date: Date;
+  date: Date | string;
   environment: Environment;
-  totalScore: number;
   rating?: number;
   location?: string;
   weather?: WeatherCondition[];
@@ -35,7 +34,7 @@ export interface CreatePracticeData {
   arrowsId?: string;
   roundTypeId?: string;
   notes?: string;
-  ends?: CreateEndData[];
+  rounds: CreateEndData[];
 }
 
 /**

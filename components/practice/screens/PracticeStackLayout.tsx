@@ -22,13 +22,6 @@ const Layout = () => {
           headerShown: false,
         }}
       />
-      <Stack.Screen
-        name="shooting/index"
-        options={{
-          title: t['shootingScreen.title'],
-          headerShown: false,
-        }}
-      />
     </Stack>
   );
 };
