@@ -9,10 +9,20 @@ import { View, ActivityIndicator } from 'react-native';
 import { OfflineBanner } from '@/components/common';
 import { useAuth } from '@/hooks';
 import { Redirect } from 'expo-router';
+import { useNavigation } from 'expo-router';
+import { useEffect } from 'react';
 import FloatingTabBar from '@/components/common/FloatingTabBar/FloatingTabBar';
 
 export default function AppLayout() {
   const { isAuthenticated, isLoading } = useAuth();
+  const parentNavigation = useNavigation();
+
+  // Block navigating back to auth/intro screens via Android back button or iOS gesture
+  useEffect(() => {
+    return parentNavigation.addListener('beforeRemove', (e) => {
+      e.preventDefault();
+    });
+  }, [parentNavigation]);
 
   if (isLoading) {
     return (
