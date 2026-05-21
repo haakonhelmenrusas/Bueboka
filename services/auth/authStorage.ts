@@ -26,7 +26,6 @@ const KNOWN_KEYS = ['bueboka_cookie', 'bueboka_session_data'];
 
 // ─── Module-level state (avoids class / prototype issues under Babel) ────────
 const _cache = new Map<string, string>();
-let _ready = false;
 
 // ─── Chunked async helpers ───────────────────────────────────────────────────
 
@@ -83,16 +82,11 @@ export const authStorage = {
    * that the session cookie is available synchronously on the first request.
    */
   async initialize(): Promise<void> {
-    if (_ready) return;
-    try {
-      const values = await Promise.all(KNOWN_KEYS.map(_read));
-      KNOWN_KEYS.forEach((key, i) => {
-        const v = values[i];
-        if (v != null) _cache.set(key, v);
-      });
-    } finally {
-      _ready = true;
-    }
+    const values = await Promise.all(KNOWN_KEYS.map(_read));
+    KNOWN_KEYS.forEach((key, i) => {
+      const v = values[i];
+      if (v != null) _cache.set(key, v);
+    });
   },
 
   /** Synchronous read – satisfies ExpoClientOptions.storage */

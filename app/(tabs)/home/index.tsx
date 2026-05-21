@@ -147,13 +147,13 @@ export default function HomeScreen() {
               <View style={styles.headerButtons}>
                 <TouchableOpacity
                   style={styles.searchButton}
-                  onPress={() => router.push('/(tabs)/skyttere')}
+                  onPress={() => router.push('/skyttere')}
                   accessibilityLabel={t['home.searchArchers']}>
                   <FontAwesomeIcon icon={faUserGroup} size={18} color={colors.white} />
                 </TouchableOpacity>
                 <TouchableOpacity
                   style={styles.trophyButton}
-                  onPress={() => router.push('/(tabs)/home/achievements')}
+                  onPress={() => router.push('/achievements')}
                   accessibilityLabel={t['home.myAchievements']}>
                   <FontAwesomeIcon icon={faTrophy} size={20} color={colors.warning} />
                 </TouchableOpacity>
