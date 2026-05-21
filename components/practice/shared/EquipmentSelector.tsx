@@ -64,7 +64,7 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     color: colors.primary,
     marginBottom: 8,
-    marginTop: 4,
+    marginTop: 16,
   },
   row: {
     flexDirection: 'row',

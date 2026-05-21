@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import { Keyboard, KeyboardAvoidingView, Platform, Pressable, ScrollView } from 'react-native';
+import { Keyboard, KeyboardAvoidingView, Platform, Pressable, ScrollView, View } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as Sentry from '@sentry/react-native';
 import { useRouter } from 'expo-router';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { ModalHeader, ModalWrapper } from '@/components/common';
 import ConfirmModal from '@/components/home/DeleteArrowSetModal/ConfirmModal';
@@ -89,6 +89,7 @@ export default function CreatePracticeForm({
 }: CreatePracticeFormProps) {
   const router = useRouter();
   const { t } = useTranslation();
+  const insets = useSafeAreaInsets();
   const STEP_LABELS = getStepLabels(t);
 
   // Step navigation
@@ -498,7 +499,7 @@ export default function CreatePracticeForm({
 
   return (
     <ModalWrapper visible={visible} onClose={handleClose} fullScreen>
-      <SafeAreaView style={styles.safeArea} edges={['top', 'bottom']}>
+      <View style={[styles.safeArea, { paddingTop: insets.top, paddingBottom: insets.bottom }]}>
         <KeyboardAvoidingView style={styles.container} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
           <Pressable onPress={Keyboard.dismiss}>
             <ModalHeader title={isEditing ? t['practiceForm.editTitle'] : t['practiceForm.newTitle']} onPress={handleClose} />
@@ -574,7 +575,7 @@ export default function CreatePracticeForm({
             onDelete={() => setConfirmVisible(true)}
           />
         </KeyboardAvoidingView>
-      </SafeAreaView>
+      </View>
 
       <ConfirmModal
         visible={confirmVisible}
