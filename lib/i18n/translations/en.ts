@@ -494,6 +494,12 @@ export const en: TranslationKeys = {
   'confirmRemove.message': 'Confirm removal of sight marks',
   'confirmRemove.yes': 'Yes',
 
+  // FAB action menu
+  'fab.newPractice': 'New practice',
+  'fab.newCompetition': 'New competition',
+  'fab.newBow': 'New bow',
+  'fab.newArrows': 'New arrows',
+
   // Common additions
   'common.advanced': 'Advanced',
   'common.favourite': 'Favourite',

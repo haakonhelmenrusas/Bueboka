@@ -494,6 +494,12 @@ export const no: TranslationKeys = {
   'confirmRemove.message': 'Bekreft fjerning av siktemerker',
   'confirmRemove.yes': 'Ja',
 
+  // FAB action menu
+  'fab.newPractice': 'Ny trening',
+  'fab.newCompetition': 'Ny konkurranse',
+  'fab.newBow': 'Ny bue',
+  'fab.newArrows': 'Nye piler',
+
   // Common additions
   'common.advanced': 'Avansert',
   'common.favourite': 'Favoritt',
