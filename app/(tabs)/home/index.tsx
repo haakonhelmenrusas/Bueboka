@@ -147,7 +147,7 @@ export default function HomeScreen() {
               <View style={styles.headerButtons}>
                 <TouchableOpacity
                   style={styles.searchButton}
-                  onPress={() => router.push('/(tabs)/skyttere')}
+                  onPress={() => router.push('/skyttere')}
                   accessibilityLabel={t['home.searchArchers']}>
                   <FontAwesomeIcon icon={faUserGroup} size={18} color={colors.white} />
                 </TouchableOpacity>
