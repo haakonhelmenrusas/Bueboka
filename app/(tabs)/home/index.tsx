@@ -153,7 +153,7 @@ export default function HomeScreen() {
                 </TouchableOpacity>
                 <TouchableOpacity
                   style={styles.trophyButton}
-                  onPress={() => router.push('/(tabs)/home/achievements')}
+                  onPress={() => router.push('/achievements')}
                   accessibilityLabel={t['home.myAchievements']}>
                   <FontAwesomeIcon icon={faTrophy} size={20} color={colors.warning} />
                 </TouchableOpacity>
