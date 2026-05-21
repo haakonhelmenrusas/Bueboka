@@ -30,6 +30,9 @@ export const getWeatherOptions = (t: TranslationKeys): { value: WeatherCondition
   { value: WeatherCondition.OTHER, label: t['weather.other'] },
 ];
 
+// ─── Scoring defaults ────────────────────────────────────────────────────────
+export const DEFAULT_ARROWS_PER_END = 3;
+
 // ─── Arrow score button options ───────────────────────────────────────────────
 // These labels are numeric / single-letter ('X', 'M') and don't need
 // translation.

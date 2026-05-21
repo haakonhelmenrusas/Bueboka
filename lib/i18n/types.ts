@@ -251,6 +251,7 @@ export interface TranslationKeys {
   'scoring.allRegistered': string;
   'scoring.scoreSuffix': string;
   'scoring.editArrowAriaPrefix': string;
+  'scoring.arrowScoring': string;
 
   // Reflection step UI
   'reflection.ratingLabel': string;

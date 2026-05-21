@@ -227,6 +227,7 @@ export const no: TranslationKeys = {
   'scoring.allRegistered': '✓ Alle piler registrert',
   'scoring.scoreSuffix': '– score:',
   'scoring.editArrowAriaPrefix': 'Endre pil',
+  'scoring.arrowScoring': 'Pilpoeng',
 
   'reflection.ratingLabel': 'Vurdering (valgfritt)',
   'reflection.ratingPromptPractice': 'Hvordan vil du vurdere treningen?',
@@ -553,8 +554,7 @@ export const no: TranslationKeys = {
   'settings.privacySecureStorageDesc': 'All data krypteres og lagres sikkert i samsvar med moderne sikkerhetsstandarder.',
   'settings.privacyAnalyticsTitle': 'Analyse og forbedring',
   'settings.privacyAnalyticsPre': 'Vi bruker',
-  'settings.privacyAnalyticsMid':
-    'for å forstå hvordan appen brukes og forbedre brukeropplevelsen. Les mer i',
+  'settings.privacyAnalyticsMid': 'for å forstå hvordan appen brukes og forbedre brukeropplevelsen. Les mer i',
   'settings.privacyMSPrivacy': 'Microsofts personvernerklæring',
   'settings.privacyFooter': 'Hvis du har spørsmål om hvordan vi håndterer dataene dine, ta gjerne kontakt med oss.',
 

@@ -227,6 +227,7 @@ export const en: TranslationKeys = {
   'scoring.allRegistered': '✓ All arrows recorded',
   'scoring.scoreSuffix': '– score:',
   'scoring.editArrowAriaPrefix': 'Edit arrow',
+  'scoring.arrowScoring': 'Arrow scoring',
 
   'reflection.ratingLabel': 'Rating (optional)',
   'reflection.ratingPromptPractice': 'How would you rate the practice?',
