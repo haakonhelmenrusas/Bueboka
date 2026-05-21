@@ -81,9 +81,9 @@ export function StatsSummary({ last7Days, last30Days, overall }: Props) {
   const dotWidth = useRef(new Animated.Value(18)).current;
 
   const cards = [
-    { title: t['statsSummary.last7days'], icon: faCalendarDays, data: last7Days ?? EMPTY },
-    { title: t['statsSummary.last30days'], icon: faArrowTrendUp, data: last30Days ?? EMPTY },
     { title: t['statsSummary.total'], icon: faChartBar, data: overall ?? EMPTY },
+    { title: t['statsSummary.last30days'], icon: faArrowTrendUp, data: last30Days ?? EMPTY },
+    { title: t['statsSummary.last7days'], icon: faCalendarDays, data: last7Days ?? EMPTY },
   ];
 
   const periodLabels = {
