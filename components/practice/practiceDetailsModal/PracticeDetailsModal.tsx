@@ -17,9 +17,17 @@ import { RoundCard } from './RoundCard';
 import { styles } from './PracticeDetailsModalStyles';
 import { PRACTICE_CATEGORY_ICONS } from './constants';
 import { calculateTotalArrows, calculateTotalScore } from './helpers';
-import { getBowTypeLabel, getArrowMaterialLabel, getPracticeCategoryLabel, formatWeatherConditions } from '@/utils/helpers/labelUtils';
+import {
+  getBowTypeLabel,
+  getArrowMaterialLabel,
+  getPracticeCategoryLabel,
+  getEnvironmentLabel,
+  formatWeatherConditions,
+} from '@/utils/helpers/labelUtils';
 import { practiceRepository, competitionRepository } from '@/services/repositories';
 import { useTranslation } from '@/contexts';
+import { ShareSessionModal } from '@/components/practice/shareCard';
+import type { SessionShareData } from '@/components/practice/shareCard';
 
 interface PracticeDetailsModalProps {
   visible: boolean;
@@ -31,6 +39,7 @@ interface PracticeDetailsModalProps {
 
 export function PracticeDetailsModal({ visible, practice, onClose, onEdit, onDeleted }: PracticeDetailsModalProps) {
   const [deleting, setDeleting] = useState(false);
+  const [shareVisible, setShareVisible] = useState(false);
   const { height } = useWindowDimensions();
   const { t, locale } = useTranslation();
 
@@ -86,9 +95,38 @@ export function PracticeDetailsModal({ visible, practice, onClose, onEdit, onDel
     );
   };
 
-  const handleShare = () => {
-    // Placeholder for sharing functionality
-    Alert.alert(t['practiceDetails.share'], t['practiceDetails.shareComingSoon']);
+  const getDistanceMeters = (): number | null => {
+    if (isPractice) {
+      const ends = (practice as Practice).ends;
+      const firstWithDist = ends?.find((e) => e.distanceMeters);
+      return firstWithDist?.distanceMeters ?? null;
+    }
+    if (isCompetition) {
+      const rounds = (practice as Competition).rounds;
+      const firstWithDist = rounds?.find((r) => r.distanceMeters);
+      return firstWithDist?.distanceMeters ?? null;
+    }
+    return null;
+  };
+
+  const arrowsWithoutScore = isPractice
+    ? (practice as Practice).ends?.reduce((sum, end) => sum + (end.arrowsWithoutScore || 0), 0) || 0
+    : isCompetition
+      ? (practice as Competition).rounds?.reduce((sum, r) => sum + (r.arrowsWithoutScore || 0), 0) || 0
+      : 0;
+
+  const shareData: SessionShareData = {
+    date: practice.date,
+    practiceType: practiceType as 'TRENING' | 'KONKURRANSE',
+    totalScore,
+    arrowsShot: totalArrows,
+    arrowsWithoutScore,
+    bowName: practice.bow?.name ?? null,
+    bowType: practice.bow ? getBowTypeLabel(practice.bow.type, t) : null,
+    distanceMeters: getDistanceMeters(),
+    category: practice.practiceCategory ? getPracticeCategoryLabel(practice.practiceCategory, t) : null,
+    environment: practice.environment ? getEnvironmentLabel(practice.environment, t) : null,
+    location: practice.location ?? null,
   };
 
   return (
@@ -231,7 +269,7 @@ export function PracticeDetailsModal({ visible, practice, onClose, onEdit, onDel
             <Button
               size="small"
               label={t['practiceDetails.share']}
-              onPress={handleShare}
+              onPress={() => setShareVisible(true)}
               type="outline"
               disabled={deleting}
               icon={<FontAwesomeIcon icon={faShare} size={14} color={colors.primary} />}
@@ -258,6 +296,7 @@ export function PracticeDetailsModal({ visible, practice, onClose, onEdit, onDel
           />
         </View>
       </View>
+      <ShareSessionModal visible={shareVisible} onClose={() => setShareVisible(false)} data={shareData} />
     </ModalWrapper>
   );
 }
