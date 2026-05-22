@@ -9,6 +9,32 @@ import { authStorage } from '@/services/auth/authStorage';
 import * as Linking from 'expo-linking';
 import * as WebBrowser from 'expo-web-browser';
 import * as SecureStore from 'expo-secure-store';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
+const CACHED_USER_KEY = 'cached_user_profile';
+
+async function cacheUser(user: User): Promise<void> {
+  try {
+    await AsyncStorage.setItem(CACHED_USER_KEY, JSON.stringify(user));
+  } catch {}
+}
+
+async function getCachedUser(): Promise<User | null> {
+  try {
+    const raw = await AsyncStorage.getItem(CACHED_USER_KEY);
+    if (raw) {
+      const user = JSON.parse(raw);
+      if (user?.id) return user;
+    }
+  } catch {}
+  return null;
+}
+
+async function clearCachedUser(): Promise<void> {
+  try {
+    await AsyncStorage.removeItem(CACHED_USER_KEY);
+  } catch {}
+}
 
 // Complete any pending OAuth sessions
 // This must be called at module level for iOS deep linking to work properly
@@ -69,50 +95,23 @@ export function AuthProvider({ children }: AuthProviderProps) {
    */
   const checkSession = useCallback(async () => {
     try {
-      // Guard: only call /profile if we actually have a stored token.
-      // checkSession is triggered during OAuth flows; the token should have
-      // been saved to SecureStore before this is called.
       const token = await getAccessToken();
       if (!token) {
         setState((prev) => ({ ...prev, isLoading: false }));
         return;
       }
 
-      // Use profile endpoint to get full user data instead of minimal session data
-      const { userRepository } = await import('@/services/repositories/userRepository');
-      const [fullUser, session] = await Promise.all([userRepository.getCurrentUser(), authClient.getSession()]);
-
+      const fullUser = await fetchAndSetFullUser();
       if (fullUser) {
-        // /api/profile doesn't include emailVerified (it's in the auth table),
-        // so merge it from the Better Auth session
-        const userWithVerification: User = {
-          ...fullUser,
-          emailVerified: session?.data?.user?.emailVerified ?? fullUser.emailVerified,
-        };
-
-        setState({
-          user: userWithVerification,
-          isAuthenticated: true,
-          isLoading: false,
-          error: null,
-        });
-
-        Sentry.setUser({
-          id: userWithVerification.id,
-          email: userWithVerification.email,
-          username: userWithVerification.name || undefined,
-        });
+        setAuthenticatedUser(fullUser);
       } else {
         setState((prev) => ({ ...prev, isLoading: false }));
       }
     } catch (error: any) {
-      // Only log as a warning if it's not a 401/authentication error
       const isAuthError = error?.code === 'UNAUTHORIZED' || error?.status === 401 || error?.response?.status === 401;
-
       if (!isAuthError) {
         Sentry.captureException(error, { tags: { context: 'checkSession' } });
       }
-
       setState((prev) => ({ ...prev, isLoading: false }));
     }
   }, []);
@@ -197,6 +196,8 @@ export function AuthProvider({ children }: AuthProviderProps) {
       email: user.email,
       username: user.name || undefined,
     });
+
+    cacheUser(user);
   }
 
   /**
@@ -245,6 +246,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
     } catch (error: any) {
       Sentry.captureException(error, { tags: { context: 'logout' } });
     } finally {
+      await clearCachedUser();
       Sentry.setUser(null);
       setState({
         user: null,
@@ -260,30 +262,11 @@ export function AuthProvider({ children }: AuthProviderProps) {
    */
   const refreshUser = useCallback(async () => {
     try {
-      // Use userRepository.getCurrentUser() to get the full profile data from /api/profile
-      // as the default auth session endpoint returns a limited user object
-      const { userRepository } = await import('@/services/repositories/userRepository');
-      const [profileUser, session] = await Promise.all([userRepository.getCurrentUser(), authClient.getSession()]);
-
-      if (profileUser?.id) {
-        // /api/profile doesn't include emailVerified (it's in the auth table),
-        // so merge it from the Better Auth session
-        const fullUser: User = {
-          ...profileUser,
-          emailVerified: session?.data?.user?.emailVerified ?? profileUser.emailVerified,
-        };
-
-        setState((prev) => ({
-          ...prev,
-          user: fullUser,
-          isAuthenticated: true,
-        }));
-
-        Sentry.setUser({
-          id: fullUser.id,
-          email: fullUser.email,
-          username: fullUser.name || undefined,
-        });
+      const fullUser = await fetchAndSetFullUser();
+      if (fullUser) {
+        setState((prev) => ({ ...prev, user: fullUser, isAuthenticated: true }));
+        Sentry.setUser({ id: fullUser.id, email: fullUser.email, username: fullUser.name || undefined });
+        cacheUser(fullUser);
       } else {
         setState((prev) => ({ ...prev, isLoading: false }));
       }
@@ -319,9 +302,39 @@ export function AuthProvider({ children }: AuthProviderProps) {
   /**
    * Initialize authentication state from stored token
    */
+  async function fetchAndSetFullUser(): Promise<User | null> {
+    const { userRepository } = await import('@/services/repositories/userRepository');
+    const [response, session] = await Promise.all([userRepository.getCurrentUser() as any, authClient.getSession()]);
+    const profileUser = response.data?.profile || response;
+
+    if (profileUser && profileUser.id) {
+      const fullUser: User = {
+        ...profileUser,
+        emailVerified: session?.data?.user?.emailVerified ?? profileUser.emailVerified,
+      };
+      return fullUser;
+    }
+    return null;
+  }
+
+  async function revalidateSession() {
+    try {
+      const fullUser = await fetchAndSetFullUser();
+      if (fullUser) {
+        setAuthenticatedUser(fullUser);
+      }
+    } catch (error: any) {
+      const isAuthError = error?.code === 'UNAUTHORIZED' || error?.status === 401 || error?.response?.status === 401;
+      if (isAuthError) {
+        await clearTokens();
+        await clearCachedUser();
+        Sentry.setUser(null);
+        setState({ user: null, isAuthenticated: false, isLoading: false, error: null });
+      }
+    }
+  }
+
   async function initializeAuth() {
-    // Warm the sync cookie cache before any API calls fire so that
-    // expoClient can attach the session cookie to the very first request.
     await authStorage.initialize();
     try {
       const token = await getAccessToken();
@@ -331,43 +344,27 @@ export function AuthProvider({ children }: AuthProviderProps) {
         return;
       }
 
-      // Don't call /profile with a token we already know is expired.
-      // This prevents a guaranteed 401 on startup when a stale token
-      // lingers in SecureStore (e.g. after reinstalling a dev build).
       const expired = await isTokenExpired();
       if (expired) {
         await clearTokens();
+        await clearCachedUser();
         setState((prev) => ({ ...prev, isLoading: false }));
         return;
       }
 
-      // Use profile endpoint instead of session endpoint to get full user data on init
-      const { userRepository } = await import('@/services/repositories/userRepository');
-      const [response, session] = await Promise.all([userRepository.getCurrentUser() as any, authClient.getSession()]);
+      // Show cached user immediately, then revalidate in background
+      const cachedUser = await getCachedUser();
+      if (cachedUser) {
+        setState({ user: cachedUser, isAuthenticated: true, isLoading: false, error: null });
+        Sentry.setUser({ id: cachedUser.id, email: cachedUser.email, username: cachedUser.name || undefined });
+        revalidateSession();
+        return;
+      }
 
-      // Handle the nested data structure if present
-      const profileUser = response.data?.profile || response;
-
-      if (profileUser && profileUser.id) {
-        // /api/profile doesn't include emailVerified (it's in the auth table),
-        // so merge it from the Better Auth session
-        const fullUser: User = {
-          ...profileUser,
-          emailVerified: session?.data?.user?.emailVerified ?? profileUser.emailVerified,
-        };
-
-        setState({
-          user: fullUser,
-          isAuthenticated: true,
-          isLoading: false,
-          error: null,
-        });
-
-        Sentry.setUser({
-          id: fullUser.id,
-          email: fullUser.email,
-          username: fullUser.name || undefined,
-        });
+      // No cache (first login or cache cleared) — blocking network call
+      const fullUser = await fetchAndSetFullUser();
+      if (fullUser) {
+        setAuthenticatedUser(fullUser);
       } else {
         setState((prev) => ({ ...prev, isLoading: false }));
       }
@@ -378,22 +375,13 @@ export function AuthProvider({ children }: AuthProviderProps) {
       if (isAuthError) {
         Sentry.addBreadcrumb({ category: 'auth', message: 'No valid session on startup, clearing token', level: 'info' });
         await clearTokens();
+        await clearCachedUser();
       } else if (isNetworkError) {
-        // Network unavailable (offline, dev server restarting, hot reload) —
-        // fall back to cached session data so the user stays logged in.
-        const cached = authStorage.getItem('bueboka_session_data');
+        const cached = await getCachedUser();
         if (cached) {
-          try {
-            const parsed = JSON.parse(cached);
-            const cachedUser = parsed?.user ?? parsed?.data?.user;
-            if (cachedUser?.id) {
-              setState({ user: cachedUser, isAuthenticated: true, isLoading: false, error: null });
-              Sentry.setUser({ id: cachedUser.id, email: cachedUser.email, username: cachedUser.name || undefined });
-              return;
-            }
-          } catch {
-            // Cached data is corrupt — fall through to unauthenticated state
-          }
+          setState({ user: cached, isAuthenticated: true, isLoading: false, error: null });
+          Sentry.setUser({ id: cached.id, email: cached.email, username: cached.name || undefined });
+          return;
         }
       } else {
         Sentry.captureException(error, { tags: { context: 'initializeAuth' } });
