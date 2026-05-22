@@ -346,7 +346,7 @@ export default function CreatePracticeForm({
       const round: CreateEndData = {
         roundScore: r.roundScore ?? 0,
       };
-      if (r.numberArrows !== undefined) round.arrows = r.numberArrows;
+      if (r.numberArrows !== undefined) round.numberArrows = r.numberArrows;
       if (r.arrowsPerEnd !== undefined) round.arrowsPerEnd = r.arrowsPerEnd;
       if (r.arrowsWithoutScore !== undefined) round.arrowsWithoutScore = r.arrowsWithoutScore;
       if (r.distanceMeters !== undefined) round.distanceMeters = r.distanceMeters;
