@@ -1,5 +1,6 @@
 import { useState, useRef, useCallback } from 'react';
 import { View, Text, TouchableOpacity, Pressable, Animated, StyleSheet } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faPlus } from '@fortawesome/free-solid-svg-icons/faPlus';
 import { faXmark } from '@fortawesome/free-solid-svg-icons/faXmark';
@@ -22,6 +23,7 @@ const NUM_ITEMS = 4;
 export function MobileActionButton({ onCreatePractice, onCreateCompetition, onCreateBow, onCreateArrows }: MobileActionButtonProps) {
   const [open, setOpen] = useState(false);
   const { t } = useTranslation();
+  const insets = useSafeAreaInsets();
   const animValues = useRef(Array.from({ length: NUM_ITEMS }, () => new Animated.Value(0))).current;
 
   const openMenu = useCallback(() => {
@@ -83,7 +85,7 @@ export function MobileActionButton({ onCreatePractice, onCreateCompetition, onCr
     <View style={StyleSheet.absoluteFill} pointerEvents="box-none">
       {open && <Pressable style={StyleSheet.absoluteFill} onPress={closeMenu} />}
 
-      <View style={styles.wrapper} pointerEvents="box-none">
+      <View style={[styles.wrapper, { bottom: insets.bottom + 92 }]} pointerEvents="box-none">
         {open && (
           <View style={styles.menu}>
             {[...actions].reverse().map((action, displayIndex) => {
