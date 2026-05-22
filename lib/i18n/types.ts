@@ -319,7 +319,6 @@ export interface TranslationKeys {
   'practiceDetails.deleteCompetitionConfirm': string;
   'practiceDetails.deleteFailed': string;
   'practiceDetails.share': string;
-  'practiceDetails.shareComingSoon': string;
   'practiceDetails.totalScore': string;
   'practiceDetails.arrowsShot': string;
   'practiceDetails.bowLabel': string;
@@ -711,4 +710,22 @@ export interface TranslationKeys {
   'shootingScore.arrowsShotLabel': string;
   'shootingScore.clearArrows': string;
   'shootingScore.done': string;
+
+  // Share card & modal
+  'share.totalScore': string;
+  'share.arrowsShot': string;
+  'share.withScoring': string;
+  'share.withoutScoring': string;
+  'share.trainingSession': string;
+  'share.date': string;
+  'share.category': string;
+  'share.bow': string;
+  'share.distance': string;
+  'share.environment': string;
+  'share.location': string;
+  'shareModal.title': string;
+  'shareModal.hint': string;
+  'shareModal.share': string;
+  'shareModal.sharing': string;
+  'shareModal.shareError': string;
 }

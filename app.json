@@ -39,12 +39,16 @@
         "NSPhotoLibraryUsageDescription": "Bueboka trenger tilgang til bilder for at du skal kunne velge profilbilde.",
         "CFBundleURLTypes": [
           {
-            "CFBundleURLSchemes": ["bueboka"]
+            "CFBundleURLSchemes": [
+              "bueboka"
+            ]
           }
         ]
       }
     },
-    "runtimeVersion": { "policy": "appVersion" },
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
     "updates": {
       "url": "https://u.expo.dev/a740b024-fdf9-420d-9998-a6ae076ebc43",
       "enabled": false,
@@ -92,7 +96,8 @@
       ],
       "expo-image",
       "expo-web-browser",
-      "expo-secure-store"
+      "expo-secure-store",
+      "expo-sharing"
     ]
   }
 }

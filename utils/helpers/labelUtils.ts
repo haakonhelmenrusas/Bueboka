@@ -1,4 +1,4 @@
-import { BowType, Material, PracticeCategory, WeatherCondition } from '@/types';
+import { BowType, Material, PracticeCategory, WeatherCondition, Environment } from '@/types';
 import type { TranslationKeys } from '@/lib/i18n';
 
 /**
@@ -86,6 +86,20 @@ export function getWeatherConditionLabel(condition: WeatherCondition, t: Transla
       return t['weather.other'];
     default:
       return condition;
+  }
+}
+
+/**
+ * Get the localized label for an environment.
+ */
+export function getEnvironmentLabel(env: Environment, t: TranslationKeys): string {
+  switch (env) {
+    case Environment.INDOOR:
+      return t['environment.indoor'];
+    case Environment.OUTDOOR:
+      return t['environment.outdoor'];
+    default:
+      return env;
   }
 }
 
