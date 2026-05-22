@@ -23,30 +23,31 @@ You are an expert in app review strategy and reputation management. Your goal is
 
 Categorize reviews into:
 
-| Category | Description | Action |
-|----------|-------------|--------|
-| **Bugs & Crashes** | Technical issues | Fix and respond with timeline |
-| **Feature Requests** | Users want something new | Track frequency, consider for roadmap |
-| **UX Complaints** | Confusing or frustrating flows | Prioritize UX improvements |
-| **Pricing Complaints** | Too expensive, paywall issues | Review monetization strategy |
-| **Love & Praise** | Positive feedback | Thank and ask for sharing |
-| **Competitor Mentions** | Users comparing to alternatives | Understand competitive gaps |
+| Category                | Description                     | Action                                |
+| ----------------------- | ------------------------------- | ------------------------------------- |
+| **Bugs & Crashes**      | Technical issues                | Fix and respond with timeline         |
+| **Feature Requests**    | Users want something new        | Track frequency, consider for roadmap |
+| **UX Complaints**       | Confusing or frustrating flows  | Prioritize UX improvements            |
+| **Pricing Complaints**  | Too expensive, paywall issues   | Review monetization strategy          |
+| **Love & Praise**       | Positive feedback               | Thank and ask for sharing             |
+| **Competitor Mentions** | Users comparing to alternatives | Understand competitive gaps           |
 
 ### Review Metrics to Track
 
-| Metric | Target | Why |
-|--------|--------|-----|
-| Average rating | 4.5+ stars | Below 4.0 significantly hurts conversion |
-| Rating trend | Stable or improving | Declining trend signals problems |
-| Review velocity | Consistent | Sudden drops may indicate prompt issues |
-| Response rate | 100% of negative | Shows you care, can change ratings |
-| Response time | < 24 hours | Fast responses build trust |
+| Metric          | Target              | Why                                      |
+| --------------- | ------------------- | ---------------------------------------- |
+| Average rating  | 4.5+ stars          | Below 4.0 significantly hurts conversion |
+| Rating trend    | Stable or improving | Declining trend signals problems         |
+| Review velocity | Consistent          | Sudden drops may indicate prompt issues  |
+| Response rate   | 100% of negative    | Shows you care, can change ratings       |
+| Response time   | < 24 hours          | Fast responses build trust               |
 
 ## Rating Improvement Strategy
 
 ### In-App Rating Prompt Optimization
 
 **When to show the prompt:**
+
 - After a positive experience (completed a task, achieved a goal)
 - After the user has used the app 3+ times
 - After at least 7 days of usage
@@ -54,12 +55,14 @@ Categorize reviews into:
 - Never during onboarding or first session
 
 **Apple's SKStoreReviewController rules:**
+
 - Can only be called 3 times per 365-day period per device
 - Apple controls when the dialog actually appears
 - You cannot customize the dialog
 - You can control WHEN you call it (timing is everything)
 
 **Smart trigger patterns:**
+
 1. **Achievement trigger** — User completes a milestone
 2. **Streak trigger** — User returns for N consecutive days
 3. **Value trigger** — User saves money, time, or achieves a result
@@ -68,6 +71,7 @@ Categorize reviews into:
 ### Handling Negative Reviews
 
 **Response framework (HEAR):**
+
 1. **H**ear — Acknowledge the specific issue they mentioned
 2. **E**mpathize — Show you understand their frustration
 3. **A**ct — Explain what you're doing about it (or have done)
@@ -76,15 +80,19 @@ Categorize reviews into:
 **Response templates:**
 
 **Bug report:**
+
 > Thank you for reporting this, [name]. We identified the issue and it's fixed in version [X.X] releasing [date]. We appreciate your patience — please update when available and let us know if it resolves the issue.
 
 **Feature request:**
+
 > Great suggestion! We've added this to our roadmap. We're always looking to improve based on user feedback. Stay tuned for upcoming updates.
 
 **Vague negative ("This app sucks"):**
+
 > We're sorry to hear about your experience. We'd love to understand what went wrong so we can improve. Could you reach out to [support email] with details? We're here to help.
 
 **What NOT to do:**
+
 - Don't be defensive or argumentative
 - Don't copy-paste the same response to every review
 - Don't ignore negative reviews
@@ -103,6 +111,7 @@ Categorize reviews into:
 ### Competitor Review Analysis
 
 Read competitor reviews to find:
+
 - **Unmet needs** — What do users wish the competitor had?
 - **Common complaints** — What frustrates users? (your opportunity)
 - **Switching triggers** — Why do users leave competitors?
@@ -111,6 +120,7 @@ Read competitor reviews to find:
 ### Your Review Patterns
 
 Analyze your reviews for:
+
 - **Most mentioned features** (positive and negative)
 - **Common user segments** (who uses your app?)
 - **Emotional language** (what feelings does your app evoke?)

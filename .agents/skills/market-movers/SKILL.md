@@ -30,24 +30,25 @@ Use these MCP tools to gather chart movement data:
 
 ### 1. Chart Movement Summary
 
-| Metric | Value |
-|--------|-------|
-| Period compared | [date] vs [date] |
-| Chart / Country | top-free / US |
-| Total significant moves | |
-| New entries | |
-| Dropped out | |
-| Biggest gainer | +X positions |
-| Biggest loser | -X positions |
+| Metric                  | Value            |
+| ----------------------- | ---------------- |
+| Period compared         | [date] vs [date] |
+| Chart / Country         | top-free / US    |
+| Total significant moves |                  |
+| New entries             |                  |
+| Dropped out             |                  |
+| Biggest gainer          | +X positions     |
+| Biggest loser           | -X positions     |
 
 ### 2. Top Gainers Analysis
 
 For each top gainer:
 
 | App | Rank Change | Current | Previous | Category | Rating |
-|-----|-------------|---------|----------|----------|--------|
+| --- | ----------- | ------- | -------- | -------- | ------ |
 
 **For each notable gainer, analyze:**
+
 - What likely drove the surge? (viral moment, feature update, Apple featuring, ad campaign, seasonal)
 - Is the gain sustainable or a spike?
 - What can the user learn from this app's strategy?
@@ -57,9 +58,10 @@ For each top gainer:
 For each top loser:
 
 | App | Rank Change | Current | Previous | Category | Rating |
-|-----|-------------|---------|----------|----------|--------|
+| --- | ----------- | ------- | -------- | -------- | ------ |
 
 **For each notable loser, analyze:**
+
 - What might have caused the decline? (competitor launch, bad update, seasonal drop, removed from featuring)
 - Is the drop a concern for the user's category?
 - Does this create an opportunity?
@@ -69,9 +71,10 @@ For each top loser:
 Apps that appeared in the top 100 for the first time:
 
 | App | Entered At | Category | Rating | Reviews |
-|-----|-----------|----------|--------|---------|
+| --- | ---------- | -------- | ------ | ------- |
 
 **Analyze:**
+
 - Is this a new launch or a resurgent app?
 - Does it compete in the user's category?
 - What launch strategy did they likely use?
@@ -81,11 +84,12 @@ Apps that appeared in the top 100 for the first time:
 Apps that fell out of the top 100:
 
 | App | Previous Rank | Category | Rating |
-|-----|--------------|----------|--------|
+| --- | ------------- | -------- | ------ |
 
 ### 6. Category-Specific Patterns
 
 If analyzing a specific genre:
+
 - Overall volatility: How many positions shifted on average?
 - Top 10 stability: Are the top spots locked or fluid?
 - Entry barrier: What rank did new entries typically land at?
@@ -104,10 +108,10 @@ Based on the market movements:
 ### Recommendations Table
 
 | Priority | Action | Why | Expected Impact |
-|----------|--------|-----|-----------------|
-| 1 | | | |
-| 2 | | | |
-| 3 | | | |
+| -------- | ------ | --- | --------------- |
+| 1        |        |     |                 |
+| 2        |        |     |                 |
+| 3        |        |     |                 |
 
 ## Output Format
 

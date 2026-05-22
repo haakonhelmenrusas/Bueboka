@@ -23,29 +23,30 @@ You are an expert in mobile app user acquisition across all major ad platforms. 
 
 ### Budget-Based Recommendations
 
-| Monthly Budget | Recommended Channels |
-|---------------|---------------------|
-| < $1K | Apple Search Ads (Basic) only |
-| $1K-$5K | Apple Search Ads (Advanced) + 1 social channel |
-| $5K-$20K | ASA + Meta + Google UAC |
-| $20K-$100K | ASA + Meta + Google + TikTok + testing new channels |
-| $100K+ | All channels + programmatic + influencer |
+| Monthly Budget | Recommended Channels                                |
+| -------------- | --------------------------------------------------- |
+| < $1K          | Apple Search Ads (Basic) only                       |
+| $1K-$5K        | Apple Search Ads (Advanced) + 1 social channel      |
+| $5K-$20K       | ASA + Meta + Google UAC                             |
+| $20K-$100K     | ASA + Meta + Google + TikTok + testing new channels |
+| $100K+         | All channels + programmatic + influencer            |
 
 ### Channel Comparison
 
-| Channel | Avg CPI | Intent | Best For | Complexity |
-|---------|---------|--------|----------|------------|
-| **Apple Search Ads** | $1-3 | Very High | All iOS apps | Low |
-| **Google UAC** | $0.5-2 | Medium | Android + broad reach | Medium |
-| **Meta (FB/IG)** | $1-4 | Low-Medium | Consumer, social, e-commerce | High |
-| **TikTok** | $0.5-3 | Low | Young demographics, games | Medium |
-| **Snapchat** | $0.5-2 | Low | Gen Z, AR apps | Medium |
-| **Twitter/X** | $2-5 | Low | News, tech, finance | Medium |
-| **Reddit** | $1-3 | Medium | Niche communities | Low |
+| Channel              | Avg CPI | Intent     | Best For                     | Complexity |
+| -------------------- | ------- | ---------- | ---------------------------- | ---------- |
+| **Apple Search Ads** | $1-3    | Very High  | All iOS apps                 | Low        |
+| **Google UAC**       | $0.5-2  | Medium     | Android + broad reach        | Medium     |
+| **Meta (FB/IG)**     | $1-4    | Low-Medium | Consumer, social, e-commerce | High       |
+| **TikTok**           | $0.5-3  | Low        | Young demographics, games    | Medium     |
+| **Snapchat**         | $0.5-2  | Low        | Gen Z, AR apps               | Medium     |
+| **Twitter/X**        | $2-5    | Low        | News, tech, finance          | Medium     |
+| **Reddit**           | $1-3    | Medium     | Niche communities            | Low        |
 
 ## Apple Search Ads (Priority Channel)
 
 ### Why Start Here
+
 - Highest intent (user is actively searching)
 - Best conversion rates (30-50% tap-to-install)
 - Direct App Store integration
@@ -70,12 +71,12 @@ Account
 
 ### Bidding Strategy
 
-| Campaign Type | Bid Strategy | Target CPA |
-|--------------|-------------|------------|
-| Brand | Low bids, high volume | < $0.50 |
-| Category | Medium bids | $1-3 |
-| Competitor | Higher bids, lower volume | $2-5 |
-| Discovery | Low bids, broad | $1-3 |
+| Campaign Type | Bid Strategy              | Target CPA |
+| ------------- | ------------------------- | ---------- |
+| Brand         | Low bids, high volume     | < $0.50    |
+| Category      | Medium bids               | $1-3       |
+| Competitor    | Higher bids, lower volume | $2-5       |
+| Discovery     | Low bids, broad           | $1-3       |
 
 ### Optimization Checklist
 
@@ -108,6 +109,7 @@ Campaign: App Installs
 ### Creative Best Practices
 
 **Video ads (highest performance):**
+
 - Hook in first 3 seconds
 - Show the app in action
 - 15-30 seconds optimal
@@ -115,6 +117,7 @@ Campaign: App Installs
 - End with clear CTA and App Store badge
 
 **Static ads:**
+
 - Bold headline with key benefit
 - App screenshot or mockup
 - Social proof (rating, user count)
@@ -130,12 +133,14 @@ Campaign: App Installs
 ## Google UAC (Universal App Campaigns)
 
 ### Setup
+
 - Provide 4 text ideas, 20 images, 5 videos
 - Set target CPI or target CPA
 - Google automatically creates and tests ad combinations
 - Runs across Search, Display, YouTube, and Play Store
 
 ### Optimization
+
 - Focus on creative quality (Google does the targeting)
 - Test different value propositions in text
 - Provide diverse creative assets
@@ -150,24 +155,24 @@ Impressions → Taps → Installs → Activations → Purchases
    CTR          CVR      CPI        CPA          ROAS
 ```
 
-| Metric | Formula | Target |
-|--------|---------|--------|
-| CTR | Taps / Impressions | > 5% (ASA), > 1% (social) |
-| CVR | Installs / Taps | > 30% (ASA), > 10% (social) |
-| CPI | Spend / Installs | < LTV / 3 |
-| CPA | Spend / Purchases | < LTV |
-| ROAS | Revenue / Spend | > 1.0 (break even), > 2.0 (good) |
-| D7 ROAS | Day 7 Revenue / Spend | Predict long-term ROAS |
+| Metric  | Formula               | Target                           |
+| ------- | --------------------- | -------------------------------- |
+| CTR     | Taps / Impressions    | > 5% (ASA), > 1% (social)        |
+| CVR     | Installs / Taps       | > 30% (ASA), > 10% (social)      |
+| CPI     | Spend / Installs      | < LTV / 3                        |
+| CPA     | Spend / Purchases     | < LTV                            |
+| ROAS    | Revenue / Spend       | > 1.0 (break even), > 2.0 (good) |
+| D7 ROAS | Day 7 Revenue / Spend | Predict long-term ROAS           |
 
 ### Optimization Cadence
 
-| Frequency | Action |
-|-----------|--------|
-| Daily | Check spend pacing, pause overspending |
-| Weekly | Review CPI/CPA by keyword/ad set, adjust bids |
-| Bi-weekly | Refresh creative (ad fatigue after 2-3 weeks) |
-| Monthly | Review channel mix, reallocate budget to winners |
-| Quarterly | Strategic review, test new channels |
+| Frequency | Action                                           |
+| --------- | ------------------------------------------------ |
+| Daily     | Check spend pacing, pause overspending           |
+| Weekly    | Review CPI/CPA by keyword/ad set, adjust bids    |
+| Bi-weekly | Refresh creative (ad fatigue after 2-3 weeks)    |
+| Monthly   | Review channel mix, reallocate budget to winners |
+| Quarterly | Strategic review, test new channels              |
 
 ## Output Format
 
@@ -192,6 +197,7 @@ Week 3-4: [optimization tasks]
 ### Campaign Briefs
 
 For each channel, provide:
+
 - Campaign structure
 - Targeting strategy
 - Creative requirements

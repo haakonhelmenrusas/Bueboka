@@ -21,32 +21,33 @@ You are an expert in mobile app analytics and measurement strategy. Your goal is
 
 ### Essential Tools
 
-| Tool | Purpose | Cost | Priority |
-|------|---------|------|----------|
-| **App Store Connect** | Store metrics, downloads, conversion | Free | Must have |
-| **Firebase Analytics** | In-app events, funnels, audiences | Free | Must have |
-| **Mixpanel / Amplitude** | Product analytics, cohorts, funnels | Free tier | Recommended |
-| **RevenueCat** | Subscription analytics, paywall testing | Free tier | If subscriptions |
-| **Adjust / AppsFlyer** | Attribution, UA measurement | Paid | If running ads |
-| **Crashlytics** | Crash reporting, stability | Free | Must have |
+| Tool                     | Purpose                                 | Cost      | Priority         |
+| ------------------------ | --------------------------------------- | --------- | ---------------- |
+| **App Store Connect**    | Store metrics, downloads, conversion    | Free      | Must have        |
+| **Firebase Analytics**   | In-app events, funnels, audiences       | Free      | Must have        |
+| **Mixpanel / Amplitude** | Product analytics, cohorts, funnels     | Free tier | Recommended      |
+| **RevenueCat**           | Subscription analytics, paywall testing | Free tier | If subscriptions |
+| **Adjust / AppsFlyer**   | Attribution, UA measurement             | Paid      | If running ads   |
+| **Crashlytics**          | Crash reporting, stability              | Free      | Must have        |
 
 ### App Store Connect Analytics
 
 **Key metrics available for free:**
 
-| Metric | What it tells you |
-|--------|------------------|
-| **Impressions** | How many times your app appeared in search/browse |
-| **Product Page Views** | How many users visited your product page |
-| **App Units** | First-time downloads |
-| **Conversion Rate** | Product Page Views → Downloads |
-| **Proceeds** | Revenue after Apple's cut |
-| **Sessions** | App opens |
-| **Active Devices** | Unique devices using the app |
-| **Retention** | Day 1, Day 7, Day 28 retention |
-| **Crash Rate** | Crashes per session |
+| Metric                 | What it tells you                                 |
+| ---------------------- | ------------------------------------------------- |
+| **Impressions**        | How many times your app appeared in search/browse |
+| **Product Page Views** | How many users visited your product page          |
+| **App Units**          | First-time downloads                              |
+| **Conversion Rate**    | Product Page Views → Downloads                    |
+| **Proceeds**           | Revenue after Apple's cut                         |
+| **Sessions**           | App opens                                         |
+| **Active Devices**     | Unique devices using the app                      |
+| **Retention**          | Day 1, Day 7, Day 28 retention                    |
+| **Crash Rate**         | Crashes per session                               |
 
 **Source types:**
+
 - App Store Search
 - App Store Browse
 - Web Referral
@@ -56,43 +57,43 @@ You are an expert in mobile app analytics and measurement strategy. Your goal is
 
 ### Acquisition Metrics
 
-| Metric | Formula | What it means |
-|--------|---------|--------------|
-| **Impressions** | — | Visibility in App Store |
-| **Tap-Through Rate** | Taps / Impressions | Icon + title effectiveness |
-| **Conversion Rate** | Downloads / Page Views | Product page effectiveness |
-| **CPI** | Ad Spend / Installs | Cost efficiency of paid UA |
-| **Organic %** | Organic / Total Installs | Health of organic growth |
+| Metric               | Formula                  | What it means              |
+| -------------------- | ------------------------ | -------------------------- |
+| **Impressions**      | —                        | Visibility in App Store    |
+| **Tap-Through Rate** | Taps / Impressions       | Icon + title effectiveness |
+| **Conversion Rate**  | Downloads / Page Views   | Product page effectiveness |
+| **CPI**              | Ad Spend / Installs      | Cost efficiency of paid UA |
+| **Organic %**        | Organic / Total Installs | Health of organic growth   |
 
 ### Engagement Metrics
 
-| Metric | Formula | What it means |
-|--------|---------|--------------|
-| **DAU** | Daily Active Users | Daily engagement |
-| **MAU** | Monthly Active Users | Monthly reach |
-| **DAU/MAU** | DAU / MAU | Stickiness (>20% is good) |
-| **Sessions/User** | Total Sessions / DAU | Engagement depth |
-| **Session Length** | Avg time per session | Value delivery |
+| Metric             | Formula              | What it means             |
+| ------------------ | -------------------- | ------------------------- |
+| **DAU**            | Daily Active Users   | Daily engagement          |
+| **MAU**            | Monthly Active Users | Monthly reach             |
+| **DAU/MAU**        | DAU / MAU            | Stickiness (>20% is good) |
+| **Sessions/User**  | Total Sessions / DAU | Engagement depth          |
+| **Session Length** | Avg time per session | Value delivery            |
 
 ### Retention Metrics
 
-| Metric | Formula | Benchmark |
-|--------|---------|-----------|
-| **Day 1** | Users Day 1 / Installs | 25-40% |
-| **Day 7** | Users Day 7 / Installs | 10-20% |
-| **Day 30** | Users Day 30 / Installs | 5-10% |
+| Metric         | Formula                  | Benchmark                    |
+| -------------- | ------------------------ | ---------------------------- |
+| **Day 1**      | Users Day 1 / Installs   | 25-40%                       |
+| **Day 7**      | Users Day 7 / Installs   | 10-20%                       |
+| **Day 30**     | Users Day 30 / Installs  | 5-10%                        |
 | **Churn Rate** | Lost Users / Start Users | < 5% monthly (subscriptions) |
 
 ### Revenue Metrics
 
-| Metric | Formula | What it means |
-|--------|---------|--------------|
-| **ARPU** | Revenue / All Users | Average revenue per user |
-| **ARPPU** | Revenue / Paying Users | Paying user value |
-| **LTV** | ARPU × Avg Lifetime | Total user value |
-| **Trial-to-Paid** | Conversions / Trial Starts | Paywall effectiveness |
-| **MRR** | Monthly Recurring Revenue | Subscription health |
-| **Churn Revenue** | Lost MRR / Start MRR | Revenue retention |
+| Metric            | Formula                    | What it means            |
+| ----------------- | -------------------------- | ------------------------ |
+| **ARPU**          | Revenue / All Users        | Average revenue per user |
+| **ARPPU**         | Revenue / Paying Users     | Paying user value        |
+| **LTV**           | ARPU × Avg Lifetime        | Total user value         |
+| **Trial-to-Paid** | Conversions / Trial Starts | Paywall effectiveness    |
+| **MRR**           | Monthly Recurring Revenue  | Subscription health      |
+| **Churn Revenue** | Lost MRR / Start MRR       | Revenue retention        |
 
 ## Event Tracking Plan
 
@@ -166,6 +167,7 @@ Impressions → Page Views → Downloads → Activation → Purchase
 ### Cohort Dashboard (check monthly)
 
 Retention curves by:
+
 - Install date cohort
 - Acquisition source
 - Country
@@ -190,6 +192,7 @@ Recommendations:
 ### Tracking Plan
 
 Provide a complete event tracking plan with:
+
 - Event name
 - When it fires
 - Properties to include
@@ -198,6 +201,7 @@ Provide a complete event tracking plan with:
 ### Metric Interpretation
 
 When the user shares data, provide:
+
 - How their metrics compare to benchmarks
 - What the trends indicate
 - Specific actions to take based on the data

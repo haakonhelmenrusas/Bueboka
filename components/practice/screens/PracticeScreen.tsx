@@ -112,7 +112,11 @@ export default function PracticeScreen() {
         <Text style={styles.title}>{t['practiceScreen.title']}</Text>
         {renderContent()}
         {user && (
-          <Button onPress={handleOpenModal} icon={<FontAwesomeIcon icon={faPlus} size={20} color={colors.white} />} label={t['practiceScreen.newPractice']} />
+          <Button
+            onPress={handleOpenModal}
+            icon={<FontAwesomeIcon icon={faPlus} size={20} color={colors.white} />}
+            label={t['practiceScreen.newPractice']}
+          />
         )}
         <CreatePracticeForm
           visible={modalVisible}

@@ -22,6 +22,7 @@ You are an expert in App Store creative optimization with deep knowledge of what
 Users spend **3-6 seconds** on a product page before deciding. The first 3 screenshots (visible without scrolling) determine 80% of the conversion decision.
 
 **What users look for:**
+
 1. "Does this solve my problem?" (first screenshot)
 2. "Is it easy to use?" (UI clarity)
 3. "Is it worth downloading?" (social proof, quality signals)
@@ -33,12 +34,14 @@ Users spend **3-6 seconds** on a product page before deciding. The first 3 scree
 The first screenshot is the most important. It should answer "What does this app do and why should I care?"
 
 **Effective patterns:**
+
 - **Benefit headline + key UI** — "Sleep Better Tonight" + sleep tracking screen
 - **Before/After** — Show the transformation
 - **Social proof + UI** — "5M+ users trust us" + main screen
 - **Problem statement** — "Tired of [problem]?" + solution screen
 
 **Avoid:**
+
 - Generic "Welcome to [App]" screens
 - Login/signup screens
 - Settings or menu screens
@@ -69,32 +72,34 @@ Each screenshot = one feature with a clear benefit headline.
 
 ### Text Overlays
 
-| Do | Don't |
-|----|-------|
-| Benefit-driven headlines | Feature names ("Push Notifications") |
-| 4-6 words per headline | Long paragraphs |
-| Large, readable font (min 60px) | Small text that's unreadable |
-| High contrast text | Text over busy backgrounds |
-| Consistent font and style | Mixed fonts and sizes |
+| Do                              | Don't                                |
+| ------------------------------- | ------------------------------------ |
+| Benefit-driven headlines        | Feature names ("Push Notifications") |
+| 4-6 words per headline          | Long paragraphs                      |
+| Large, readable font (min 60px) | Small text that's unreadable         |
+| High contrast text              | Text over busy backgrounds           |
+| Consistent font and style       | Mixed fonts and sizes                |
 
 ### Visual Design
 
-| Do | Don't |
-|----|-------|
-| Clean, uncluttered UI | Busy screens with too much data |
-| Consistent color scheme | Clashing colors |
-| Modern device frames (or frameless) | Outdated device frames |
-| Real app content (not lorem ipsum) | Placeholder or empty states |
-| Dark mode if your app supports it | Ignoring dark mode users |
+| Do                                  | Don't                           |
+| ----------------------------------- | ------------------------------- |
+| Clean, uncluttered UI               | Busy screens with too much data |
+| Consistent color scheme             | Clashing colors                 |
+| Modern device frames (or frameless) | Outdated device frames          |
+| Real app content (not lorem ipsum)  | Placeholder or empty states     |
+| Dark mode if your app supports it   | Ignoring dark mode users        |
 
 ### Layout Patterns
 
 **Portrait (recommended for most apps):**
+
 - Device centered with text above or below
 - Full-bleed UI with text overlay
 - Split layout: text left, device right
 
 **Landscape (games, video, productivity):**
+
 - Full-screen gameplay/content
 - Minimal text overlay
 - Action-focused moments
@@ -109,11 +114,13 @@ Each screenshot = one feature with a clear benefit headline.
 ## App Preview Video
 
 ### When to Use
+
 - Complex apps that need demonstration
 - Games (almost always beneficial)
 - Apps with unique interactions
 
 ### Best Practices
+
 - **Hook in first 3 seconds** — show the most impressive feature
 - **15-30 seconds** optimal length
 - **No sound dependency** — add captions/text overlays
@@ -121,6 +128,7 @@ Each screenshot = one feature with a clear benefit headline.
 - **End with CTA** — "Download Free" or key benefit
 
 ### When to Skip
+
 - Simple utility apps (screenshots are enough)
 - Apps where the value is in content, not UI
 
@@ -141,6 +149,7 @@ Slot [N]: [Headline]
 ### Design Brief
 
 If the user needs to brief a designer:
+
 - Color palette (from app brand)
 - Font recommendations
 - Layout template
@@ -150,14 +159,14 @@ If the user needs to brief a designer:
 
 ### Competitor Screenshot Audit
 
-| Element | Your App | Comp 1 | Comp 2 | Comp 3 |
-|---------|----------|--------|--------|--------|
-| # of screenshots | | | | |
-| Has video? | | | | |
-| First screenshot type | | | | |
-| Text overlay style | | | | |
-| Design quality (1-10) | | | | |
-| Unique angle | | | | |
+| Element               | Your App | Comp 1 | Comp 2 | Comp 3 |
+| --------------------- | -------- | ------ | ------ | ------ |
+| # of screenshots      |          |        |        |        |
+| Has video?            |          |        |        |        |
+| First screenshot type |          |        |        |        |
+| Text overlay style    |          |        |        |        |
+| Design quality (1-10) |          |        |        |        |
+| Unique angle          |          |        |        |        |
 
 ## Related Skills
 

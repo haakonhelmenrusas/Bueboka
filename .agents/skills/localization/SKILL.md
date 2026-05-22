@@ -21,18 +21,18 @@ You are an expert in App Store internationalization and localization strategy. Y
 
 ### Tier 1 Markets (highest ROI for most apps)
 
-| Market | Language | App Store Code | Notes |
-|--------|----------|---------------|-------|
-| United States | English | en-US | Largest market |
-| United Kingdom | English | en-GB | Easy win if US is done |
-| Germany | German | de-DE | Largest EU market |
-| Japan | Japanese | ja | High ARPU, competitive |
-| France | French | fr-FR | Large EU market |
-| South Korea | Korean | ko | High smartphone penetration |
-| China | Simplified Chinese | zh-Hans | Massive but complex (needs ICP) |
-| Brazil | Portuguese | pt-BR | Largest LATAM market |
-| Canada | English/French | en-CA/fr-CA | Easy win |
-| Australia | English | en-AU | Easy win |
+| Market         | Language           | App Store Code | Notes                           |
+| -------------- | ------------------ | -------------- | ------------------------------- |
+| United States  | English            | en-US          | Largest market                  |
+| United Kingdom | English            | en-GB          | Easy win if US is done          |
+| Germany        | German             | de-DE          | Largest EU market               |
+| Japan          | Japanese           | ja             | High ARPU, competitive          |
+| France         | French             | fr-FR          | Large EU market                 |
+| South Korea    | Korean             | ko             | High smartphone penetration     |
+| China          | Simplified Chinese | zh-Hans        | Massive but complex (needs ICP) |
+| Brazil         | Portuguese         | pt-BR          | Largest LATAM market            |
+| Canada         | English/French     | en-CA/fr-CA    | Easy win                        |
+| Australia      | English            | en-AU          | Easy win                        |
 
 ### Tier 2 Markets (good potential)
 
@@ -42,13 +42,13 @@ Spain (es-ES), Italy (it), Netherlands (nl), Sweden (sv), Russia (ru), Mexico (e
 
 Evaluate each market on:
 
-| Factor | Weight | How to assess |
-|--------|--------|--------------|
-| Market size | 30% | iPhone user base in country |
-| Competition | 25% | How many localized competitors? |
-| Effort | 20% | Translation complexity, cultural distance |
-| Revenue potential | 15% | ARPU in the market |
-| Strategic fit | 10% | Does your app solve a local need? |
+| Factor            | Weight | How to assess                             |
+| ----------------- | ------ | ----------------------------------------- |
+| Market size       | 30%    | iPhone user base in country               |
+| Competition       | 25%    | How many localized competitors?           |
+| Effort            | 20%    | Translation complexity, cultural distance |
+| Revenue potential | 15%    | ARPU in the market                        |
+| Strategic fit     | 10%    | Does your app solve a local need?         |
 
 ## Localization Checklist
 
@@ -70,12 +70,14 @@ For each target market:
 **The biggest localization mistake:** Translating English keywords directly.
 
 Instead:
+
 1. Run `keyword-research` for each target market separately
 2. Understand how locals search (different terms, different intent)
 3. Use local autocomplete suggestions
 4. Check what local competitors use in their metadata
 
 **Example:**
+
 - English keyword: "budget tracker"
 - German: "Haushaltsbuch" (household book) — NOT "Budget Tracker"
 - Japanese: "家計簿" (household ledger) — completely different concept
@@ -83,15 +85,15 @@ Instead:
 
 ### Cultural Adaptation
 
-| Element | What to check |
-|---------|--------------|
-| Screenshots | Currency symbols, date formats, number formats |
-| Colors | Cultural color associations (red = luck in China, danger in West) |
-| Imagery | Diverse representation, culturally appropriate |
-| Tone | Formal vs informal varies by culture |
-| Features | Highlight features relevant to local needs |
-| Social proof | Use local press, local user counts if possible |
-| Pricing | Local pricing expectations (purchasing power parity) |
+| Element      | What to check                                                     |
+| ------------ | ----------------------------------------------------------------- |
+| Screenshots  | Currency symbols, date formats, number formats                    |
+| Colors       | Cultural color associations (red = luck in China, danger in West) |
+| Imagery      | Diverse representation, culturally appropriate                    |
+| Tone         | Formal vs informal varies by culture                              |
+| Features     | Highlight features relevant to local needs                        |
+| Social proof | Use local press, local user counts if possible                    |
+| Pricing      | Local pricing expectations (purchasing power parity)              |
 
 ## Localization Workflow
 
@@ -105,16 +107,19 @@ Instead:
 ### Phase 2: Translation & Adaptation
 
 **For metadata (title, subtitle, keywords):**
+
 - Use native speakers with ASO knowledge (not just translators)
 - Provide context: "This is an App Store title, must include [keyword]"
 - Review with keyword data — does the translation include high-volume terms?
 
 **For description:**
+
 - Professional translation with cultural adaptation
 - Not word-for-word — adapt examples, references, humor
 - Maintain the same persuasive structure
 
 **For screenshots:**
+
 - Translate text overlays
 - Adjust UI language if app is localized
 - Consider local design preferences
@@ -155,7 +160,7 @@ Cultural notes:
 ### Market Prioritization Matrix
 
 | Market | Size | Competition | Effort | Revenue | Score | Priority |
-|--------|------|-------------|--------|---------|-------|----------|
+| ------ | ---- | ----------- | ------ | ------- | ----- | -------- |
 
 ## Related Skills
 

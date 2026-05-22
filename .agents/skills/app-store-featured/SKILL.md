@@ -23,29 +23,29 @@ You are an expert in Apple's App Store editorial process and featuring strategy.
 
 Apple's editorial team manually curates featured content. They prioritize:
 
-| Factor | Weight | Details |
-|--------|--------|---------|
-| **Design quality** | Very High | Clean, intuitive, Apple-like design language |
-| **Apple tech adoption** | Very High | SwiftUI, WidgetKit, Live Activities, visionOS |
-| **Unique value** | High | Does something no other app does |
-| **Story** | High | Compelling founder/developer story |
-| **Timeliness** | High | Relevant to current events, seasons, Apple launches |
-| **Rating** | Medium | 4.5+ stars strongly preferred |
-| **Stability** | Medium | No crashes, good performance |
-| **Accessibility** | Medium | VoiceOver, Dynamic Type, color contrast |
-| **Privacy** | Medium | App Tracking Transparency, minimal data collection |
+| Factor                  | Weight    | Details                                             |
+| ----------------------- | --------- | --------------------------------------------------- |
+| **Design quality**      | Very High | Clean, intuitive, Apple-like design language        |
+| **Apple tech adoption** | Very High | SwiftUI, WidgetKit, Live Activities, visionOS       |
+| **Unique value**        | High      | Does something no other app does                    |
+| **Story**               | High      | Compelling founder/developer story                  |
+| **Timeliness**          | High      | Relevant to current events, seasons, Apple launches |
+| **Rating**              | Medium    | 4.5+ stars strongly preferred                       |
+| **Stability**           | Medium    | No crashes, good performance                        |
+| **Accessibility**       | Medium    | VoiceOver, Dynamic Type, color contrast             |
+| **Privacy**             | Medium    | App Tracking Transparency, minimal data collection  |
 
 ### Types of Featuring
 
-| Placement | Visibility | How to Get It |
-|-----------|-----------|---------------|
-| **App of the Day** | Highest — Today tab hero | Exceptional design + story + timing |
-| **Game of the Day** | Highest — Today tab hero | Outstanding gameplay + Apple tech |
-| **Today Tab Story** | Very High — Editorial article | Unique angle, compelling narrative |
-| **Apps We Love** | High — Curated collection | Quality + category relevance |
-| **Category Feature** | Medium — Category page banner | Strong in specific category |
-| **Search Feature** | Medium — Search result highlight | Relevance + quality |
-| **In-App Events** | Medium — Today tab + search | Active events with good content |
+| Placement            | Visibility                       | How to Get It                       |
+| -------------------- | -------------------------------- | ----------------------------------- |
+| **App of the Day**   | Highest — Today tab hero         | Exceptional design + story + timing |
+| **Game of the Day**  | Highest — Today tab hero         | Outstanding gameplay + Apple tech   |
+| **Today Tab Story**  | Very High — Editorial article    | Unique angle, compelling narrative  |
+| **Apps We Love**     | High — Curated collection        | Quality + category relevance        |
+| **Category Feature** | Medium — Category page banner    | Strong in specific category         |
+| **Search Feature**   | Medium — Search result highlight | Relevance + quality                 |
+| **In-App Events**    | Medium — Today tab + search      | Active events with good content     |
 
 ## Featuring Optimization Checklist
 
@@ -109,6 +109,7 @@ Apple provides a self-nomination form for developers:
 ### Timing Your Pitch
 
 **Best times to pitch:**
+
 - 2-4 weeks before a major update
 - Around Apple events (WWDC, iPhone launch, etc.)
 - Seasonal moments (New Year, Back to School, Holiday)
@@ -116,6 +117,7 @@ Apple provides a self-nomination form for developers:
 - When you adopt new Apple technology (day of OS release)
 
 **Worst times:**
+
 - Right after submitting a buggy update
 - When your rating is below 4.0
 - Without any recent updates
@@ -157,15 +159,15 @@ In-App Events appear on the Today tab, search results, and your product page —
 
 ### Event Types
 
-| Type | Best For | Example |
-|------|----------|---------|
-| **Challenge** | Fitness, games, education | "30-Day Meditation Challenge" |
-| **Competition** | Games, social | "Weekly Leaderboard Tournament" |
-| **Live Event** | Streaming, sports, news | "Live Q&A with [Expert]" |
-| **Major Update** | Any app | "Introducing AI-Powered [Feature]" |
-| **New Season** | Games, content | "Summer Collection Now Available" |
-| **Premiere** | Content, media | "New Series: [Title]" |
-| **Special Event** | Any app | "Earth Day: Plant a Tree Challenge" |
+| Type              | Best For                  | Example                             |
+| ----------------- | ------------------------- | ----------------------------------- |
+| **Challenge**     | Fitness, games, education | "30-Day Meditation Challenge"       |
+| **Competition**   | Games, social             | "Weekly Leaderboard Tournament"     |
+| **Live Event**    | Streaming, sports, news   | "Live Q&A with [Expert]"            |
+| **Major Update**  | Any app                   | "Introducing AI-Powered [Feature]"  |
+| **New Season**    | Games, content            | "Summer Collection Now Available"   |
+| **Premiere**      | Content, media            | "New Series: [Title]"               |
+| **Special Event** | Any app                   | "Earth Day: Plant a Tree Challenge" |
 
 ### Event Best Practices
 
@@ -192,15 +194,18 @@ Rating:             [X]/10  ████████░░
 ### Action Plan
 
 **Before pitching (fix these first):**
+
 1. [critical gap to address]
 2. [critical gap to address]
 
 **Pitch strategy:**
+
 - Recommended timing: [when]
 - Story angle: [what angle to lead with]
 - Apple tech to highlight: [which technologies]
 
 **Ongoing featuring strategy:**
+
 - In-App Events calendar (next 3 months)
 - Technology adoption roadmap
 - Update cadence plan

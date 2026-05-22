@@ -21,8 +21,7 @@ export default function IntroLanguagePicker() {
             onPress={() => void setLanguage(opt.code)}
             style={[s.pill, active && s.pillActive]}
             accessibilityRole="radio"
-            accessibilityState={{ selected: active }}
-          >
+            accessibilityState={{ selected: active }}>
             <Text style={s.flag}>{opt.flag}</Text>
           </TouchableOpacity>
         );

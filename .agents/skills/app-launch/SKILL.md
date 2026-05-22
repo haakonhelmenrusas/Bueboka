@@ -23,6 +23,7 @@ You are an expert in mobile app launches with experience across indie apps and t
 ### 8 Weeks Before Launch
 
 **ASO Foundation:**
+
 - [ ] Run `keyword-research` to identify target keywords
 - [ ] Run `metadata-optimization` to craft title, subtitle, keyword field
 - [ ] Run `competitor-analysis` to understand the landscape
@@ -32,11 +33,13 @@ You are an expert in mobile app launches with experience across indie apps and t
 - [ ] Design a distinctive icon
 
 **Pre-launch Page (if new app):**
+
 - [ ] Set up App Store pre-order page
 - [ ] Enable pre-order notifications
 - [ ] Share pre-order link for early sign-ups
 
 **Press & Community:**
+
 - [ ] Build a press kit (screenshots, icon, description, founder story)
 - [ ] Identify 20-30 relevant journalists, bloggers, YouTubers
 - [ ] Draft personalized pitch emails
@@ -45,18 +48,21 @@ You are an expert in mobile app launches with experience across indie apps and t
 ### 4 Weeks Before Launch
 
 **Beta & Feedback:**
+
 - [ ] TestFlight beta with 50-200 users
 - [ ] Collect feedback and fix critical issues
 - [ ] Ask beta testers to be ready to review on launch day
 - [ ] Prepare FAQ and support documentation
 
 **Content:**
+
 - [ ] Write launch blog post
 - [ ] Prepare social media content (10+ posts for launch week)
 - [ ] Create demo video for social media
 - [ ] Draft Product Hunt listing (if applicable)
 
 **Technical:**
+
 - [ ] Set up analytics (run `app-analytics`)
 - [ ] Implement in-app rating prompt (show after positive experience)
 - [ ] Set up crash reporting
@@ -65,6 +71,7 @@ You are an expert in mobile app launches with experience across indie apps and t
 ### 1 Week Before Launch
 
 **Final Prep:**
+
 - [ ] Submit app for review (allow 2-3 days buffer)
 - [ ] Schedule press embargo lift for launch day
 - [ ] Prepare launch day social posts
@@ -75,6 +82,7 @@ You are an expert in mobile app launches with experience across indie apps and t
 ### Launch Day
 
 **Morning:**
+
 - [ ] Release the app (or confirm phased release started)
 - [ ] Send press emails with embargo lift
 - [ ] Post on social media (personal + app accounts)
@@ -83,6 +91,7 @@ You are an expert in mobile app launches with experience across indie apps and t
 - [ ] Email your list
 
 **Throughout the Day:**
+
 - [ ] Monitor App Store Connect for download numbers
 - [ ] Respond to every review (run `review-management`)
 - [ ] Engage with social media mentions
@@ -90,6 +99,7 @@ You are an expert in mobile app launches with experience across indie apps and t
 - [ ] Share milestones ("We hit #X in [category]!")
 
 **Evening:**
+
 - [ ] Thank early adopters publicly
 - [ ] Share day-one stats (if impressive)
 - [ ] Plan tomorrow's content
@@ -116,6 +126,7 @@ You are an expert in mobile app launches with experience across indie apps and t
 ## Launch Amplification Tactics
 
 ### Free Channels
+
 1. **Product Hunt** — Best for productivity, developer, and design tools
 2. **Hacker News (Show HN)** — Best for technical or innovative apps
 3. **Reddit** — Find 3-5 relevant subreddits, contribute before promoting
@@ -125,6 +136,7 @@ You are an expert in mobile app launches with experience across indie apps and t
 7. **App review sites** — AppAdvice, MacStories, 9to5Mac, etc.
 
 ### Paid Channels
+
 1. **Apple Search Ads** — Highest intent, start here
 2. **Meta (Facebook/Instagram)** — Best for consumer apps
 3. **TikTok** — Best for younger demographics
@@ -136,6 +148,7 @@ You are an expert in mobile app launches with experience across indie apps and t
 ### Launch Plan Document
 
 Provide a complete, dated checklist the user can follow. Include:
+
 1. Timeline with specific dates (based on their launch date)
 2. Prioritized task list for each phase
 3. Channel strategy with specific tactics

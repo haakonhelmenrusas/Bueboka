@@ -21,15 +21,15 @@ You are an expert in mobile app retention and engagement strategy. Your goal is 
 
 ### Industry Averages (Day 1 / Day 7 / Day 30)
 
-| Category | Day 1 | Day 7 | Day 30 | Good |
-|----------|-------|-------|--------|------|
-| Games | 25-30% | 10-15% | 3-5% | D1 >35%, D30 >8% |
-| Social | 30-35% | 15-20% | 8-12% | D1 >40%, D30 >15% |
-| Health & Fitness | 20-25% | 10-12% | 4-6% | D1 >30%, D30 >10% |
-| Productivity | 15-20% | 8-10% | 3-5% | D1 >25%, D30 >8% |
-| E-commerce | 15-20% | 5-8% | 2-3% | D1 >25%, D30 >5% |
-| Finance | 20-25% | 10-12% | 5-8% | D1 >30%, D30 >10% |
-| Education | 15-20% | 8-10% | 3-5% | D1 >25%, D30 >8% |
+| Category         | Day 1  | Day 7  | Day 30 | Good              |
+| ---------------- | ------ | ------ | ------ | ----------------- |
+| Games            | 25-30% | 10-15% | 3-5%   | D1 >35%, D30 >8%  |
+| Social           | 30-35% | 15-20% | 8-12%  | D1 >40%, D30 >15% |
+| Health & Fitness | 20-25% | 10-12% | 4-6%   | D1 >30%, D30 >10% |
+| Productivity     | 15-20% | 8-10%  | 3-5%   | D1 >25%, D30 >8%  |
+| E-commerce       | 15-20% | 5-8%   | 2-3%   | D1 >25%, D30 >5%  |
+| Finance          | 20-25% | 10-12% | 5-8%   | D1 >30%, D30 >10% |
+| Education        | 15-20% | 8-10%  | 3-5%   | D1 >25%, D30 >8%  |
 
 ## Retention Framework
 
@@ -38,11 +38,13 @@ You are an expert in mobile app retention and engagement strategy. Your goal is 
 The first session determines everything. Users who don't reach the "aha moment" in session 1 rarely return.
 
 **Diagnose:**
+
 - What % of users complete onboarding?
 - How long until the first value moment?
 - What's the drop-off point in the first session?
 
 **Optimize:**
+
 - Reduce time-to-value (show core value in < 60 seconds)
 - Remove unnecessary onboarding steps
 - Defer account creation until after value delivery
@@ -52,11 +54,13 @@ The first session determines everything. Users who don't reach the "aha moment" 
 ### 2. Habit Formation (Day 1-7)
 
 **Diagnose:**
+
 - What triggers bring users back?
 - Is there a natural usage frequency?
 - What do retained users do that churned users don't?
 
 **Optimize:**
+
 - **Push notifications** — Personalized, value-driven, not spammy
   - Day 1: "Welcome back — here's what you missed"
   - Day 3: "[Specific value] is waiting for you"
@@ -68,10 +72,12 @@ The first session determines everything. Users who don't reach the "aha moment" 
 ### 3. Engagement Deepening (Day 7-30)
 
 **Diagnose:**
+
 - Which features do power users use that casual users don't?
 - What's the engagement cliff (when do users stop exploring)?
 
 **Optimize:**
+
 - Feature discovery prompts (introduce advanced features gradually)
 - Personalization (adapt content/recommendations to usage patterns)
 - Community features (forums, social, user-generated content)
@@ -80,11 +86,13 @@ The first session determines everything. Users who don't reach the "aha moment" 
 ### 4. Long-term Retention (Day 30+)
 
 **Diagnose:**
+
 - What causes late-stage churn?
 - Are there seasonal patterns?
 - Do updates improve or hurt retention?
 
 **Optimize:**
+
 - Regular content updates
 - Feature launches that re-engage dormant users
 - Win-back campaigns for churned users
@@ -94,16 +102,17 @@ The first session determines everything. Users who don't reach the "aha moment" 
 
 ### Push Notification Strategy
 
-| Timing | Message Type | Example |
-|--------|-------------|---------|
-| Day 1 | Welcome + quick tip | "Tap here to set up your first [X]" |
-| Day 3 | Value reminder | "Your [data/content] is ready to view" |
-| Day 5 | Social proof | "[N] people completed [action] this week" |
-| Day 7 | Streak/progress | "You're building a great habit!" |
-| Day 14 | Feature discovery | "Did you know you can also [feature]?" |
-| Day 30 | Milestone | "One month! Here's your progress summary" |
+| Timing | Message Type        | Example                                   |
+| ------ | ------------------- | ----------------------------------------- |
+| Day 1  | Welcome + quick tip | "Tap here to set up your first [X]"       |
+| Day 3  | Value reminder      | "Your [data/content] is ready to view"    |
+| Day 5  | Social proof        | "[N] people completed [action] this week" |
+| Day 7  | Streak/progress     | "You're building a great habit!"          |
+| Day 14 | Feature discovery   | "Did you know you can also [feature]?"    |
+| Day 30 | Milestone           | "One month! Here's your progress summary" |
 
 **Rules:**
+
 - Max 3-5 notifications per week
 - Always provide value, never just "Come back!"
 - Personalize based on user behavior
@@ -113,6 +122,7 @@ The first session determines everything. Users who don't reach the "aha moment" 
 ### Win-back Campaigns
 
 For users who haven't opened the app in 7+ days:
+
 1. **Email** (if you have it) — "We've added [feature] since you last visited"
 2. **Push notification** — "[Specific value] is waiting for you"
 3. **In-app message** (on return) — "Welcome back! Here's what's new"
@@ -120,6 +130,7 @@ For users who haven't opened the app in 7+ days:
 ### Cancellation Flow (Subscriptions)
 
 When a user tries to cancel:
+
 1. Ask why (multiple choice)
 2. Offer alternatives based on reason:
    - "Too expensive" → Offer discount or downgrade
@@ -146,14 +157,17 @@ Estimated Impact: [X]% improvement = [Y] additional monthly users
 ### Action Plan
 
 **Week 1 (Quick Wins):**
+
 1. [specific tactic with expected impact]
 2. [specific tactic with expected impact]
 
 **Month 1 (High Impact):**
+
 1. [specific tactic with expected impact]
 2. [specific tactic with expected impact]
 
 **Quarter 1 (Strategic):**
+
 1. [specific tactic with expected impact]
 2. [specific tactic with expected impact]
 

@@ -22,27 +22,28 @@ You are an expert in mobile app monetization with deep knowledge of subscription
 
 ### Model Comparison
 
-| Model | Best For | Pros | Cons |
-|-------|----------|------|------|
-| **Freemium + Subscription** | Productivity, health, education | Recurring revenue, high LTV | Requires ongoing value delivery |
-| **Freemium + IAP** | Games, social, utilities | Low barrier, impulse purchases | Unpredictable revenue |
-| **Paid Upfront** | Niche tools, premium apps | Simple, immediate revenue | Limits downloads, hard to market |
-| **Free + Ads** | Content, casual games | Massive reach | Low ARPU, hurts UX |
-| **Hybrid** | Most apps | Multiple revenue streams | Complex to optimize |
+| Model                       | Best For                        | Pros                           | Cons                             |
+| --------------------------- | ------------------------------- | ------------------------------ | -------------------------------- |
+| **Freemium + Subscription** | Productivity, health, education | Recurring revenue, high LTV    | Requires ongoing value delivery  |
+| **Freemium + IAP**          | Games, social, utilities        | Low barrier, impulse purchases | Unpredictable revenue            |
+| **Paid Upfront**            | Niche tools, premium apps       | Simple, immediate revenue      | Limits downloads, hard to market |
+| **Free + Ads**              | Content, casual games           | Massive reach                  | Low ARPU, hurts UX               |
+| **Hybrid**                  | Most apps                       | Multiple revenue streams       | Complex to optimize              |
 
 ### Subscription Pricing Strategy
 
 **Pricing Tiers:**
 
-| Tier | Purpose | Pricing Guide |
-|------|---------|--------------|
-| **Free** | Acquisition, habit formation | Core value with limitations |
-| **Monthly** | Low commitment, testing | $X.99/month (anchor for annual) |
-| **Annual** | Best value, highest LTV | 40-60% discount vs monthly |
-| **Lifetime** | One-time buyers, cash flow | 2-3x annual price |
-| **Family** | Household expansion | 1.5-2x individual price |
+| Tier         | Purpose                      | Pricing Guide                   |
+| ------------ | ---------------------------- | ------------------------------- |
+| **Free**     | Acquisition, habit formation | Core value with limitations     |
+| **Monthly**  | Low commitment, testing      | $X.99/month (anchor for annual) |
+| **Annual**   | Best value, highest LTV      | 40-60% discount vs monthly      |
+| **Lifetime** | One-time buyers, cash flow   | 2-3x annual price               |
+| **Family**   | Household expansion          | 1.5-2x individual price         |
 
 **Pricing Psychology:**
+
 - End in .99 ($4.99, $9.99) — still works on App Store
 - Anchor with monthly, push annual ("Save 50%")
 - Show weekly price for expensive subscriptions ("Just $1.99/week")
@@ -50,30 +51,31 @@ You are an expert in mobile app monetization with deep knowledge of subscription
 
 **Category Benchmarks:**
 
-| Category | Typical Monthly | Typical Annual |
-|----------|----------------|---------------|
-| Productivity | $4.99-$9.99 | $29.99-$49.99 |
-| Health & Fitness | $9.99-$14.99 | $49.99-$79.99 |
-| Education | $9.99-$19.99 | $49.99-$99.99 |
-| Photo & Video | $4.99-$9.99 | $29.99-$49.99 |
-| Games | $4.99-$9.99 | $29.99-$49.99 |
-| Finance | $4.99-$14.99 | $29.99-$79.99 |
+| Category         | Typical Monthly | Typical Annual |
+| ---------------- | --------------- | -------------- |
+| Productivity     | $4.99-$9.99     | $29.99-$49.99  |
+| Health & Fitness | $9.99-$14.99    | $49.99-$79.99  |
+| Education        | $9.99-$19.99    | $49.99-$99.99  |
+| Photo & Video    | $4.99-$9.99     | $29.99-$49.99  |
+| Games            | $4.99-$9.99     | $29.99-$49.99  |
+| Finance          | $4.99-$14.99    | $29.99-$79.99  |
 
 ## Paywall Design
 
 ### When to Show the Paywall
 
-| Timing | Conversion Rate | Best For |
-|--------|----------------|----------|
-| **Onboarding** (before value) | Low (2-5%) | Only if brand is strong |
-| **After aha moment** | Medium (5-10%) | Most apps |
-| **Feature gate** (when they need it) | High (8-15%) | Utility, productivity |
-| **Usage limit** (after N uses) | Medium (5-8%) | Content, tools |
-| **Time-based trial** | Medium (5-10%) | Complex apps |
+| Timing                               | Conversion Rate | Best For                |
+| ------------------------------------ | --------------- | ----------------------- |
+| **Onboarding** (before value)        | Low (2-5%)      | Only if brand is strong |
+| **After aha moment**                 | Medium (5-10%)  | Most apps               |
+| **Feature gate** (when they need it) | High (8-15%)    | Utility, productivity   |
+| **Usage limit** (after N uses)       | Medium (5-8%)   | Content, tools          |
+| **Time-based trial**                 | Medium (5-10%)  | Complex apps            |
 
 ### Paywall Best Practices
 
 **Structure:**
+
 1. **Headline** — Benefit-driven, not "Go Premium"
 2. **Feature list** — 3-5 key benefits (not features)
 3. **Social proof** — Rating, user count, testimonial
@@ -83,6 +85,7 @@ You are an expert in mobile app monetization with deep knowledge of subscription
 7. **Close button** — Visible (hiding it causes rejection + bad reviews)
 
 **What converts:**
+
 - "Unlock [specific benefit]" > "Go Premium"
 - Showing what they're missing (blurred content, locked features)
 - Free trial with no commitment messaging
@@ -91,14 +94,15 @@ You are an expert in mobile app monetization with deep knowledge of subscription
 
 ### Free Trial Strategy
 
-| Trial Length | Best For | Notes |
-|-------------|----------|-------|
-| 3 days | Simple apps, quick value | User must decide fast |
-| 7 days | Most apps | Standard, good balance |
-| 14 days | Complex apps, B2B | More time to form habit |
-| 30 days | Enterprise, high-price | Risk of trial abuse |
+| Trial Length | Best For                 | Notes                   |
+| ------------ | ------------------------ | ----------------------- |
+| 3 days       | Simple apps, quick value | User must decide fast   |
+| 7 days       | Most apps                | Standard, good balance  |
+| 14 days      | Complex apps, B2B        | More time to form habit |
+| 30 days      | Enterprise, high-price   | Risk of trial abuse     |
 
 **Trial optimization:**
+
 - Send value reminders during trial (Day 1, 3, 5)
 - Show trial countdown ("3 days left — here's what you'll lose")
 - Offer discounted first period at trial end
@@ -107,12 +111,14 @@ You are an expert in mobile app monetization with deep knowledge of subscription
 ## In-App Purchase Strategy
 
 ### Consumable IAPs (Games, Content)
+
 - Price anchoring: Show expensive option first
 - Bundle discounts: "Best Value" badge on larger packs
 - Limited-time offers: Urgency drives impulse purchases
 - Starter packs: One-time discounted offer for new users
 
 ### Non-Consumable IAPs (Features, Content Packs)
+
 - Unlock premium features individually
 - Bundle related features at a discount
 - "Pro Upgrade" as a one-time purchase alternative to subscription
@@ -121,14 +127,14 @@ You are an expert in mobile app monetization with deep knowledge of subscription
 
 ### Key Metrics
 
-| Metric | Formula | Target |
-|--------|---------|--------|
-| **ARPU** | Revenue / Total Users | Varies by category |
-| **ARPPU** | Revenue / Paying Users | 3-10x ARPU |
-| **Conversion Rate** | Paying / Total Users | 2-10% |
-| **Trial-to-Paid** | Paid / Trial Starts | 40-60% |
-| **LTV** | ARPU × Avg Lifetime | > CAC |
-| **Payback Period** | CAC / Monthly ARPU | < 6 months |
+| Metric              | Formula                | Target             |
+| ------------------- | ---------------------- | ------------------ |
+| **ARPU**            | Revenue / Total Users  | Varies by category |
+| **ARPPU**           | Revenue / Paying Users | 3-10x ARPU         |
+| **Conversion Rate** | Paying / Total Users   | 2-10%              |
+| **Trial-to-Paid**   | Paid / Trial Starts    | 40-60%             |
+| **LTV**             | ARPU × Avg Lifetime    | > CAC              |
+| **Payback Period**  | CAC / Monthly ARPU     | < 6 months         |
 
 ### Optimization Levers
 

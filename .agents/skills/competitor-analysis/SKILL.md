@@ -32,16 +32,17 @@ Recommend analyzing 3-5 competitors: 2 direct competitors, 1-2 aspirational (lar
 
 ### 1. Metadata Comparison
 
-| Element | Your App | Competitor 1 | Competitor 2 | Competitor 3 |
-|---------|----------|-------------|-------------|-------------|
-| Title | | | | |
-| Subtitle | | | | |
-| Title keywords | | | | |
-| Char usage (title) | /30 | /30 | /30 | /30 |
-| Char usage (subtitle) | /30 | /30 | /30 | /30 |
-| Description hook | | | | |
+| Element               | Your App | Competitor 1 | Competitor 2 | Competitor 3 |
+| --------------------- | -------- | ------------ | ------------ | ------------ |
+| Title                 |          |              |              |              |
+| Subtitle              |          |              |              |              |
+| Title keywords        |          |              |              |              |
+| Char usage (title)    | /30      | /30          | /30          | /30          |
+| Char usage (subtitle) | /30      | /30          | /30          | /30          |
+| Description hook      |          |              |              |              |
 
 **Analyze:**
+
 - What keywords do competitors prioritize in their title?
 - How do they balance brand vs keywords?
 - What positioning angle does each take?
@@ -52,7 +53,7 @@ Recommend analyzing 3-5 competitors: 2 direct competitors, 1-2 aspirational (lar
 **Keywords only competitors rank for (you don't):**
 
 | Keyword | Volume | Difficulty | Comp 1 Rank | Comp 2 Rank | Your Rank | Priority |
-|---------|--------|------------|-------------|-------------|-----------|----------|
+| ------- | ------ | ---------- | ----------- | ----------- | --------- | -------- |
 
 **Keywords you rank for but competitors don't:**
 
@@ -61,11 +62,12 @@ These are your unique advantages — protect them.
 **Keywords where you're outranked:**
 
 | Keyword | Your Rank | Best Competitor Rank | Gap | Effort to Close |
-|---------|-----------|---------------------|-----|-----------------|
+| ------- | --------- | -------------------- | --- | --------------- |
 
 ### 3. Creative Strategy
 
 **Screenshots:**
+
 - How many do they use? (target: 10)
 - What's their first screenshot? (hook)
 - Do they use text overlays?
@@ -74,51 +76,54 @@ These are your unique advantages — protect them.
 - Do they use portrait or landscape?
 
 **App Preview Video:**
+
 - Do they have one?
 - What's the hook?
 - How long is it?
 
 **Icon:**
+
 - Color scheme and style
 - How does it stand out in search results?
 
 ### 4. Ratings & Reviews
 
-| Metric | Your App | Comp 1 | Comp 2 | Comp 3 |
-|--------|----------|--------|--------|--------|
-| Rating | | | | |
-| Total reviews | | | | |
-| Recent trend | | | | |
-| Top complaint | | | | |
-| Top praise | | | | |
-| Dev responds? | | | | |
+| Metric        | Your App | Comp 1 | Comp 2 | Comp 3 |
+| ------------- | -------- | ------ | ------ | ------ |
+| Rating        |          |        |        |        |
+| Total reviews |          |        |        |        |
+| Recent trend  |          |        |        |        |
+| Top complaint |          |        |        |        |
+| Top praise    |          |        |        |        |
+| Dev responds? |          |        |        |        |
 
 **Analyze:**
+
 - What do users love about competitors? (feature opportunities)
 - What do users hate? (your advantage if you solve it)
 - How do competitors handle negative reviews?
 
 ### 5. Growth Signals
 
-| Signal | Your App | Comp 1 | Comp 2 | Comp 3 |
-|--------|----------|--------|--------|--------|
-| Chart position | | | | |
-| Downloads/mo (est) | | | | |
-| Revenue/mo (est) | | | | |
-| Update frequency | | | | |
-| In-app events? | | | | |
-| Custom pages? | | | | |
-| Apple Search Ads? | | | | |
+| Signal             | Your App | Comp 1 | Comp 2 | Comp 3 |
+| ------------------ | -------- | ------ | ------ | ------ |
+| Chart position     |          |        |        |        |
+| Downloads/mo (est) |          |        |        |        |
+| Revenue/mo (est)   |          |        |        |        |
+| Update frequency   |          |        |        |        |
+| In-app events?     |          |        |        |        |
+| Custom pages?      |          |        |        |        |
+| Apple Search Ads?  |          |        |        |        |
 
 ### 6. Monetization Comparison
 
-| Aspect | Your App | Comp 1 | Comp 2 | Comp 3 |
-|--------|----------|--------|--------|--------|
-| Price model | | | | |
-| Subscription price | | | | |
-| Free trial length | | | | |
-| IAP count | | | | |
-| Paywall timing | | | | |
+| Aspect             | Your App | Comp 1 | Comp 2 | Comp 3 |
+| ------------------ | -------- | ------ | ------ | ------ |
+| Price model        |          |        |        |        |
+| Subscription price |          |        |        |        |
+| Free trial length  |          |        |        |        |
+| IAP count          |          |        |        |        |
+| Paywall timing     |          |        |        |        |
 
 ## Output Format
 
