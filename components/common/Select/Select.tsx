@@ -69,7 +69,7 @@ export const Select: React.FC<Props> = ({
   const toggleDropdown = () => {
     if (!open && Platform.OS === 'android') {
       // Measure the select box position for Android modal positioning
-      selectBoxRef.current?.measure((x, y, width, height, pageX, pageY) => {
+      selectBoxRef.current?.measure((x: number, y: number, width: number, height: number, pageX: number, pageY: number) => {
         setSelectBoxPosition({ x: pageX, y: pageY, width, height });
       });
     }

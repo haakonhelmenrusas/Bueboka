@@ -17,12 +17,15 @@ export default function AppLayout() {
   const { isAuthenticated, isLoading } = useAuth();
   const parentNavigation = useNavigation();
 
-  // Block navigating back to auth/intro screens via Android back button or iOS gesture
+  // Block navigating back to auth/intro screens via Android back button or iOS gesture,
+  // but allow programmatic redirects (e.g. logout → /auth)
   useEffect(() => {
     return parentNavigation.addListener('beforeRemove', (e) => {
-      e.preventDefault();
+      if (isAuthenticated) {
+        e.preventDefault();
+      }
     });
-  }, [parentNavigation]);
+  }, [parentNavigation, isAuthenticated]);
 
   if (isLoading) {
     return (
