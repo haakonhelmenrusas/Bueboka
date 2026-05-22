@@ -10,7 +10,7 @@ import { Arrows, Bow, Practice } from '@/types';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import SkeletonTrainingList from '@/components/practice/practiceCard/SkeletonTrainingList';
 import * as Sentry from '@sentry/react-native';
-import { useFocusEffect } from '@react-navigation/native';
+import { useFocusEffect } from "expo-router/react-navigation";
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useAuth } from '@/hooks';
 import { arrowsRepository, bowRepository, practiceRepository } from '@/services/repositories';

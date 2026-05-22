@@ -1,16 +1,10 @@
 {
   "compilerOptions": {
-    "module": "esnext",
-    "target": "esnext",
-    "allowJs": true,
-    "jsx": "react-native",
-    "esModuleInterop": true,
-    "skipLibCheck": true,
-    "sourceMap": true,
     "strictNullChecks": true,
-    "baseUrl": ".",
+    "sourceMap": true,
+    "types": ["jest"],
     "paths": {
-      "@/*": ["*", "./*"]
+      "@/*": ["./*"]
     }
   },
   "extends": "expo/tsconfig.base",
