@@ -6,18 +6,15 @@ import { End, Environment, Practice, PracticeCardsResponse, PracticeCategory, Pr
  * End creation data structure (for creating practice ends)
  */
 export interface CreateEndData {
-  arrows?: number;
+  numberArrows?: number;
   arrowsWithoutScore?: number;
-  /** Per-arrow breakdown – only accepted by the live-shooting endpoint, not by practice create/update. */
   scores?: number[];
   roundScore?: number;
   distanceMeters?: number;
   distanceFrom?: number;
   distanceTo?: number;
-  targetSizeCm?: number;
   targetType?: string;
   arrowsPerEnd?: number;
-  arrowCoordinates?: { x: number; y: number }[];
 }
 
 /**
