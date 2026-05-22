@@ -182,6 +182,7 @@ export const styles = StyleSheet.create({
   },
   roundFields: {
     flexDirection: 'row',
+    alignItems: 'flex-end',
     gap: 10,
     marginBottom: 4,
   },
