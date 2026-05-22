@@ -1,4 +1,4 @@
-import { Alert, ScrollView, Text, View } from 'react-native';
+import { Alert, Animated, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { styles } from '@/components/settings/SettingsStyles';
@@ -7,11 +7,12 @@ import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faRightFromBracket } from '@fortawesome/free-solid-svg-icons/faRightFromBracket';
 import { colors } from '@/styles/colors';
 import { useAuth } from '@/hooks';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import ConfirmModal from '@/components/home/DeleteArrowSetModal/ConfirmModal';
 import { userRepository } from '@/services/repositories';
 import { AppError } from '@/services';
-import { AccountSection, PublicProfileSection, PrivacySection, SponsorCard, LanguageSection } from '@/components/settings';
+import { AccountSection, PublicProfileSection, PrivacySection, SponsorCard, LanguageSection, FeedbackModal } from '@/components/settings';
+import { faComment } from '@fortawesome/free-solid-svg-icons/faComment';
 import { EmailVerificationBanner } from '@/components/auth';
 import { useTranslation } from '@/contexts';
 
@@ -23,6 +24,17 @@ export default function Settings() {
   const [isLoggingOut, setIsLoggingOut] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const [showFeedback, setShowFeedback] = useState(false);
+  const toastOpacity = useRef(new Animated.Value(0)).current;
+
+  const showFeedbackToast = useCallback(() => {
+    toastOpacity.setValue(0);
+    Animated.sequence([
+      Animated.timing(toastOpacity, { toValue: 1, duration: 300, useNativeDriver: true }),
+      Animated.delay(2500),
+      Animated.timing(toastOpacity, { toValue: 0, duration: 300, useNativeDriver: true }),
+    ]).start();
+  }, [toastOpacity]);
 
   useEffect(() => {
     refreshUser();
@@ -74,6 +86,17 @@ export default function Settings() {
           {user && <AccountSection user={user} onProfileUpdate={handleProfileUpdate} />}
           <PublicProfileSection user={user} />
           <LanguageSection />
+          <View style={styles.sectionCard}>
+            <Button
+              variant="tertiary"
+              label={t['settings.feedback']}
+              buttonStyle={styles.logoutButton}
+              textStyle={styles.logoutLabel}
+              iconPosition="right"
+              icon={<FontAwesomeIcon icon={faComment} size={16} color={colors.primary} />}
+              onPress={() => setShowFeedback(true)}
+            />
+          </View>
           <PrivacySection />
           <View style={styles.sectionCard}>
             <SponsorCard />
@@ -105,6 +128,10 @@ export default function Settings() {
         </ScrollView>
       </LinearGradient>
 
+      <Animated.View style={[toastStyles.toast, { opacity: toastOpacity, top: insets.top + 8 }]} pointerEvents="none">
+        <Text style={toastStyles.toastText}>{t['feedback.thanks']}</Text>
+      </Animated.View>
+      <FeedbackModal visible={showFeedback} onClose={() => setShowFeedback(false)} onSubmitted={showFeedbackToast} />
       <ConfirmModal
         visible={showDeleteConfirm}
         title={t['settings.confirmDeleteTitle']}
@@ -117,3 +144,20 @@ export default function Settings() {
     </View>
   );
 }
+
+const toastStyles = StyleSheet.create({
+  toast: {
+    position: 'absolute',
+    alignSelf: 'center',
+    backgroundColor: colors.primary,
+    paddingHorizontal: 20,
+    paddingVertical: 10,
+    borderRadius: 20,
+    zIndex: 100,
+  },
+  toastText: {
+    color: colors.white,
+    fontSize: 14,
+    fontWeight: '600',
+  },
+});

@@ -687,4 +687,17 @@ export const no: TranslationKeys = {
   'shareModal.share': 'Del',
   'shareModal.sharing': 'Deler…',
   'shareModal.shareError': 'Kunne ikke dele bildet. Prøv igjen.',
+
+  'feedback.title': 'Send tilbakemelding',
+  'feedback.ratingLabel': 'Vurdering',
+  'feedback.textLabel': 'Tilbakemelding',
+  'feedback.placeholder': 'Skriv din tilbakemelding her...',
+  'feedback.submit': 'Send',
+  'feedback.submitting': 'Sender...',
+  'feedback.cancel': 'Avbryt',
+  'feedback.errorNoRating': 'Du må gi en vurdering',
+  'feedback.errorNoText': 'Du må skrive en tilbakemelding',
+  'feedback.errorSend': 'Kunne ikke sende tilbakemelding',
+  'feedback.thanks': 'Takk for tilbakemeldingen!',
+  'settings.feedback': 'Send tilbakemelding',
 };

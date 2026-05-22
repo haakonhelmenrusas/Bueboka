@@ -687,4 +687,17 @@ export const en: TranslationKeys = {
   'shareModal.share': 'Share',
   'shareModal.sharing': 'Sharing…',
   'shareModal.shareError': 'Could not share the image. Please try again.',
+
+  'feedback.title': 'Send feedback',
+  'feedback.ratingLabel': 'Rating',
+  'feedback.textLabel': 'Feedback',
+  'feedback.placeholder': 'Write your feedback here...',
+  'feedback.submit': 'Send',
+  'feedback.submitting': 'Sending...',
+  'feedback.cancel': 'Cancel',
+  'feedback.errorNoRating': 'You must give a rating',
+  'feedback.errorNoText': 'You must write some feedback',
+  'feedback.errorSend': 'Could not send feedback',
+  'feedback.thanks': 'Thank you for your feedback!',
+  'settings.feedback': 'Send feedback',
 };
