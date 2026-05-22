@@ -33,7 +33,7 @@ Production/preview secrets live in EAS (see `docs/BUILD_ENVIRONMENT.md`).
 
 ## Architecture
 
-**Tech stack:** React Native, Expo SDK 55, TypeScript, Expo Router (file-based navigation).
+**Tech stack:** React Native 0.85, Expo SDK 56, TypeScript 6, Expo Router (file-based navigation).
 
 ### Navigation (`app/`)
 
