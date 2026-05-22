@@ -728,4 +728,18 @@ export interface TranslationKeys {
   'shareModal.share': string;
   'shareModal.sharing': string;
   'shareModal.shareError': string;
+
+  // Feedback modal
+  'feedback.title': string;
+  'feedback.ratingLabel': string;
+  'feedback.textLabel': string;
+  'feedback.placeholder': string;
+  'feedback.submit': string;
+  'feedback.submitting': string;
+  'feedback.cancel': string;
+  'feedback.errorNoRating': string;
+  'feedback.errorNoText': string;
+  'feedback.errorSend': string;
+  'feedback.thanks': string;
+  'settings.feedback': string;
 }
