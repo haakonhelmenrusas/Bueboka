@@ -1,0 +1,51 @@
+name: Build, Submit, and Sync Version
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  build_ios:
+    name: Build iOS
+    type: build
+    params:
+      platform: ios
+      profile: production
+
+  build_android:
+    name: Build Android
+    type: build
+    params:
+      platform: android
+      profile: production
+
+  submit_ios:
+    name: Submit to App Store
+    type: submit
+    needs: [build_ios]
+    params:
+      build_id: ${{ needs.build_ios.outputs.build_id }}
+      profile: production
+
+  submit_android:
+    name: Submit to Google Play
+    type: submit
+    needs: [build_android]
+    params:
+      build_id: ${{ needs.build_android.outputs.build_id }}
+      profile: production
+
+  sync_version:
+    name: Sync version to API
+    needs: [submit_ios, submit_android]
+    env:
+      BUEBOKA_API_URL: ${{ env.BUEBOKA_API_URL }}
+      APP_ADMIN_API_KEY: ${{ env.APP_ADMIN_API_KEY }}
+      APP_VERSION: ${{ needs.build_ios.outputs.app_version }}
+    steps:
+      - name: Update app version in database
+        run: |
+          curl -f -X PUT "$BUEBOKA_API_URL/api/app/version" \
+            -H "Authorization: Bearer $APP_ADMIN_API_KEY" \
+            -H "Content-Type: application/json" \
+            -d "{\"currentVersion\": \"$APP_VERSION\"}"
