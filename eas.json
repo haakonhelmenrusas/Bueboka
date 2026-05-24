@@ -61,8 +61,7 @@
     "preview": {
       "android": {
         "track": "internal",
-        "releaseStatus": "completed",
-        "serviceAccountKeyPath": "${process.env.GOOGLE_SERVICE_ACCOUNT_PATH}"
+        "releaseStatus": "completed"
       },
       "ios": {
         "ascAppId": "6448108838"
@@ -71,8 +70,7 @@
     "production": {
       "android": {
         "track": "production",
-        "releaseStatus": "completed",
-        "serviceAccountKeyPath": "${process.env.GOOGLE_SERVICE_ACCOUNT_PATH}"
+        "releaseStatus": "completed"
       },
       "ios": {
         "ascAppId": "6448108838"
