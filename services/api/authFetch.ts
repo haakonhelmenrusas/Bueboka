@@ -50,6 +50,16 @@ export async function authFetch<T = any>(endpoint: string, options: RequestInit 
   }
 }
 
+function buildBody(data: any): { body: any; headers: Record<string, string> } {
+  if (data instanceof FormData) {
+    return { body: data, headers: {} };
+  }
+  return {
+    body: JSON.stringify(data),
+    headers: { 'Content-Type': 'application/json' },
+  };
+}
+
 /**
  * Convenience methods matching axios API
  */
@@ -59,24 +69,26 @@ export const authFetchClient = {
   },
 
   async post<T = any>(url: string, data?: any, config?: RequestInit): Promise<{ data: T }> {
+    const { body, headers } = buildBody(data);
     return authFetch<T>(url, {
       ...config,
       method: 'POST',
-      body: JSON.stringify(data),
+      body,
       headers: {
-        'Content-Type': 'application/json',
+        ...headers,
         ...config?.headers,
       },
     });
   },
 
   async put<T = any>(url: string, data?: any, config?: RequestInit): Promise<{ data: T }> {
+    const { body, headers } = buildBody(data);
     return authFetch<T>(url, {
       ...config,
       method: 'PUT',
-      body: JSON.stringify(data),
+      body,
       headers: {
-        'Content-Type': 'application/json',
+        ...headers,
         ...config?.headers,
       },
     });
@@ -87,12 +99,13 @@ export const authFetchClient = {
   },
 
   async patch<T = any>(url: string, data?: any, config?: RequestInit): Promise<{ data: T }> {
+    const { body, headers } = buildBody(data);
     return authFetch<T>(url, {
       ...config,
       method: 'PATCH',
-      body: JSON.stringify(data),
+      body,
       headers: {
-        'Content-Type': 'application/json',
+        ...headers,
         ...config?.headers,
       },
     });

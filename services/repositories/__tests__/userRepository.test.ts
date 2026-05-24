@@ -130,13 +130,7 @@ describe('userRepository.updateAvatar', () => {
     const result = await userRepository.updateAvatar('file:///tmp/avatar.jpg');
 
     expect(result.image).toBe('https://cdn.example.com/avatar.jpg');
-    expect(mockClient.patch).toHaveBeenCalledWith(
-      '/users',
-      expect.any(FormData),
-      expect.objectContaining({
-        headers: expect.objectContaining({ 'Content-Type': 'multipart/form-data' }),
-      }),
-    );
+    expect(mockClient.patch).toHaveBeenCalledWith('/users', expect.any(FormData));
   });
 
   it('throws AppError on upload failure', async () => {

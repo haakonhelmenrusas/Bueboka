@@ -66,11 +66,7 @@ export const userRepository = {
         name: 'avatar.jpg',
       } as any);
 
-      const response = await client.patch<User>('/users', formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-      });
+      const response = await client.patch<User>('/users', formData);
       return response.data;
     } catch (error) {
       throw handleApiError(error);
