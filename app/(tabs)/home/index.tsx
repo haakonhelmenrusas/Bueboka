@@ -21,7 +21,6 @@ import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faChevronRight } from '@fortawesome/free-solid-svg-icons/faChevronRight';
 import { faTrophy } from '@fortawesome/free-solid-svg-icons/faTrophy';
 import ProfileImageManager from '@/components/home/profile/ProfileImageManager';
-import { AppError } from '@/services';
 import CreateCompetitionForm from '@/components/practice/competitionForm/CreateCompetitionForm';
 import { faUserGroup } from '@fortawesome/free-solid-svg-icons';
 import { PracticeDetailsModal } from '@/components/practice/practiceDetailsModal';
@@ -97,23 +96,13 @@ export default function HomeScreen() {
   };
 
   async function handleAvatarUpload(uri: string) {
-    try {
-      await userRepository.updateAvatar(uri);
-      await refreshUser();
-    } catch (err) {
-      const message = err instanceof AppError ? err.message : t['home.uploadAvatarError'];
-      Alert.alert(t['common.error'], message);
-    }
+    await userRepository.updateAvatar(uri);
+    await refreshUser();
   }
 
   async function handleAvatarRemove() {
-    try {
-      await userRepository.removeAvatar();
-      await refreshUser();
-    } catch (err) {
-      const message = err instanceof AppError ? err.message : t['home.removeAvatarError'];
-      Alert.alert(t['common.error'], message);
-    }
+    await userRepository.removeAvatar();
+    await refreshUser();
   }
 
   if (!user) {
