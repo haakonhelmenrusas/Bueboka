@@ -1,5 +1,6 @@
 import { authFetchClient as client } from '@/services/api/authFetch';
 import { handleApiError } from '@/services/api/errors';
+import { uploadAvatar } from '@/services/api/uploadAvatar';
 import { User } from '@/types';
 
 /**
@@ -59,15 +60,7 @@ export const userRepository = {
    */
   async updateAvatar(imageUri: string): Promise<User> {
     try {
-      const formData = new FormData();
-      formData.append('image', {
-        uri: imageUri,
-        type: 'image/jpeg',
-        name: 'avatar.jpg',
-      } as any);
-
-      const response = await client.patch<User>('/users', formData);
-      return response.data;
+      return await uploadAvatar(imageUri);
     } catch (error) {
       throw handleApiError(error);
     }
