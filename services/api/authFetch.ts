@@ -39,8 +39,6 @@ export async function authFetch<T = any>(endpoint: string, options: RequestInit 
 
     return { data: (data ?? null) as T };
   } catch (error: any) {
-    // 401/403 and network failures are expected and handled by callers — don't capture them.
-    // Everything else is unexpected and should be tracked in Sentry.
     const status = error?.status ?? error?.response?.status;
     const isExpected = status === 401 || status === 403 || error?.message?.includes('Network');
     if (!isExpected) {

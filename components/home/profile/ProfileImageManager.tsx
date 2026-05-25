@@ -57,7 +57,7 @@ export default function ProfileImageManager({ userName, avatarUrl, onUpload, onR
     try {
       setIsUploading(true);
       const result = await ImagePicker.launchImageLibraryAsync({
-        mediaTypes: ImagePicker.MediaTypeOptions.Images,
+        mediaTypes: ['images'],
         quality: 0.85,
         allowsEditing: true,
         aspect: [1, 1],
