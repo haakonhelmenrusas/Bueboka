@@ -1,4 +1,4 @@
-name: Build, Submit, and Sync Preview Version
+name: Build and Submit Preview
 
 on:
   push:
@@ -35,17 +35,3 @@ jobs:
       build_id: ${{ needs.build_android.outputs.build_id }}
       profile: preview
 
-  sync_version:
-    name: Sync preview version to API
-    needs: [submit_ios, submit_android]
-    env:
-      BUEBOKA_API_URL: ${{ env.BUEBOKA_API_URL }}
-      APP_ADMIN_API_KEY: ${{ env.APP_ADMIN_API_KEY }}
-      APP_VERSION: ${{ needs.build_ios.outputs.app_version }}
-    steps:
-      - name: Update preview app version in database
-        run: |
-          curl -f -X PUT "$BUEBOKA_API_URL/api/app/version" \
-            -H "Authorization: Bearer $APP_ADMIN_API_KEY" \
-            -H "Content-Type: application/json" \
-            -d "{\"currentVersion\": \"$APP_VERSION\"}"
