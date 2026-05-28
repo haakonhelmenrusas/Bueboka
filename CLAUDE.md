@@ -91,13 +91,16 @@ Domain discovery first — understand the ubiquitous language (see `docs/skills/
 
 ## Git workflow
 
-### Branching strategy
+### Branching model
 
-- **`dev`** is the default branch. All feature and fix branches are created from `dev` and merged back into `dev` via pull request.
-- **`main`** is the production branch. When a new version is ready to ship to users, `dev` is merged into `main` via pull request.
+`dev` is the default integration branch. `main` is production. Never push directly to either — all changes go through PRs. See `docs/skills/git-branching.md` for the full workflow.
+
+1. Branch from `dev` (e.g. `fix/short-description`, `feat/short-description`)
+2. Open a PR targeting `dev` — merge only after CI passes
+3. Promote `dev` → `main` via a separate PR — merge only after CI passes
+
 - Merging into `dev` triggers the **preview** EAS workflow — builds and submits to TestFlight (iOS) and Google Play internal track (Android) for beta testing.
 - Merging into `main` triggers the **production** EAS workflow — builds and submits to the App Store and Google Play production track.
-- Branch naming: `feat/<name>`, `fix/<name>`, `refactor/<name>`, `ci/<name>`, etc.
 
 ### Commit messages — Conventional Commits
 
