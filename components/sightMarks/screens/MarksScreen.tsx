@@ -182,7 +182,7 @@ export default function MarksScreen({ setScreen }: MarksScreenProps) {
   }
 
   const outlineWhite = {
-    buttonStyle: { borderColor: colors.white },
+    buttonStyle: { borderColor: colors.white, flex: 1 } as const,
     textStyle: { color: colors.white },
   };
 
@@ -213,18 +213,18 @@ export default function MarksScreen({ setScreen }: MarksScreenProps) {
           <View style={styles.buttons}>
             <Button
               type="outline"
-              buttonStyle={{ flex: 1 }}
+              size="small"
               iconPosition="left"
-              icon={<FontAwesomeIcon icon={faWind} size={20} color={colors.white} />}
+              icon={<FontAwesomeIcon icon={faWind} size={16} color={colors.white} />}
               label={t['sightMarks.showSpeed']}
               onPress={() => setShowSpeed(!showSpeed)}
               {...outlineWhite}
             />
             <Button
               type="outline"
-              buttonStyle={{ flex: 1 }}
+              size="small"
               iconPosition="left"
-              icon={<FontAwesomeIcon icon={faRotateRight} color={colors.white} />}
+              icon={<FontAwesomeIcon icon={faRotateRight} size={16} color={colors.white} />}
               label={t['sightMarks.recalculate']}
               onPress={handleRemoveMarks}
               {...outlineWhite}
