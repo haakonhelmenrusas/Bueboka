@@ -11,7 +11,6 @@ export type { PracticeFilter } from './Practice';
 export { Environment, WeatherCondition, PracticeCategory } from './Practice';
 export type { Competition, CompetitionRound } from './Competition';
 export type {
-  BowSpecification,
   SightMark,
   SightMarkResult,
   AimDistanceMark,

@@ -2,38 +2,17 @@
  * SightMarks feature types
  */
 
-export enum Placement {
-  BAK_LINJEN = 'BAK_LINJEN',
-  OVER_LINJEN = 'OVER_LINJEN',
-  ANNET = 'ANNET',
-}
-
-export interface BowSpecification {
-  id: string;
-  userId: string;
-  bowId: string;
-  intervalSightReal: number | null;
-  intervalSightMeasured: number | null;
-  placement: Placement | null;
-  createdAt: string;
-  updatedAt: string;
-}
-
 export interface SightMark {
   id: string;
   userId: string;
-  bowSpecificationId: string;
+  bowId: string;
   name: string | null;
   givenMarks: number[];
   givenDistances: number[];
   ballisticsParameters: any;
   createdAt: string;
   updatedAt: string;
-  /** Populated by the API when the relation is included */
-  bowSpec?: {
-    id: string;
-    bow?: { id: string; name: string };
-  };
+  bow?: { id: string; name: string; type?: string };
 }
 
 export interface SightMarkResult {

@@ -1,7 +1,7 @@
 import { AxiosError, AxiosHeaders } from 'axios';
 import { sightMarksRepository } from '@/services/repositories';
 import { authFetchClient } from '@/services/api/authFetch';
-import { BowSpecification, SightMark, SightMarkResult } from '@/types';
+import { SightMark, SightMarkResult } from '@/types';
 
 // ── Mocks ────────────────────────────────────────────────────────────────────
 
@@ -40,22 +40,11 @@ function makeAxiosError(status: number): AxiosError {
 const fakeSightMark: SightMark = {
   id: 'sm-1',
   userId: 'user-1',
-  bowSpecificationId: 'spec-1',
+  bowId: 'bow-1',
   name: 'Innendørs 18m',
   givenMarks: [120, 115, 112],
   givenDistances: [18, 25, 30],
   ballisticsParameters: null,
-  createdAt: '2024-01-01T00:00:00.000Z',
-  updatedAt: '2024-01-01T00:00:00.000Z',
-};
-
-const fakeBowSpec: BowSpecification = {
-  id: 'spec-1',
-  userId: 'user-1',
-  bowId: 'bow-1',
-  intervalSightReal: 4.2,
-  intervalSightMeasured: 4.0,
-  placement: null,
   createdAt: '2024-01-01T00:00:00.000Z',
   updatedAt: '2024-01-01T00:00:00.000Z',
 };
@@ -147,45 +136,6 @@ describe('sightMarksRepository.delete', () => {
     mockClient.delete.mockResolvedValueOnce({ data: undefined });
     await sightMarksRepository.delete('sm-1');
     expect(mockClient.delete).toHaveBeenCalledWith('/sight-marks/sm-1');
-  });
-});
-
-// ── getBowSpecificationByBowId ────────────────────────────────────────────────
-
-describe('sightMarksRepository.getBowSpecificationByBowId', () => {
-  it('unwraps the { bowSpecification } envelope and returns the spec', async () => {
-    mockClient.get.mockResolvedValueOnce({ data: { bowSpecification: fakeBowSpec } });
-    const result = await sightMarksRepository.getBowSpecificationByBowId('bow-1');
-    expect(result).toEqual(fakeBowSpec);
-    expect(mockClient.get).toHaveBeenCalledWith('/bow-specifications/by-bow/bow-1');
-  });
-
-  it('returns a flat BowSpecification when there is no wrapper', async () => {
-    mockClient.get.mockResolvedValueOnce({ data: fakeBowSpec });
-    const result = await sightMarksRepository.getBowSpecificationByBowId('bow-1');
-    expect(result.id).toBe('spec-1');
-  });
-
-  it('throws when the spec is missing the id field', async () => {
-    mockClient.get.mockResolvedValueOnce({ data: { bowSpecification: { bowId: 'bow-1' } } });
-    await expect(sightMarksRepository.getBowSpecificationByBowId('bow-1')).rejects.toThrow();
-  });
-});
-
-// ── createSpecification ───────────────────────────────────────────────────────
-
-describe('sightMarksRepository.createSpecification', () => {
-  it('sends POST to /bow-specifications and returns the spec', async () => {
-    mockClient.post.mockResolvedValueOnce({ data: fakeBowSpec });
-    const result = await sightMarksRepository.createSpecification({ bowId: 'bow-1' });
-    expect(result).toEqual(fakeBowSpec);
-    expect(mockClient.post).toHaveBeenCalledWith('/bow-specifications', { bowId: 'bow-1' });
-  });
-
-  it('re-throws errors without wrapping in AppError', async () => {
-    const rawError = makeAxiosError(400);
-    mockClient.post.mockRejectedValueOnce(rawError);
-    await expect(sightMarksRepository.createSpecification({ bowId: 'bow-1' })).rejects.toBe(rawError);
   });
 });
 

@@ -24,7 +24,7 @@ export default function SightMarkSetCard({ sightMark, onAddMark, onDeleteMark, o
 
   const ballistics = sightMark.ballisticsParameters as CalculatedMarks | null;
   const markCount = sightMark.givenMarks?.length ?? 0;
-  const displayName = sightMark.name ?? sightMark.bowSpec?.bow?.name ?? t['sightMarkCard.fallbackName'];
+  const displayName = sightMark.name ?? sightMark.bow?.name ?? t['sightMarkCard.fallbackName'];
 
   return (
     <View style={styles.card}>

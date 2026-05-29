@@ -1,6 +1,5 @@
 import { authFetchClient as client } from '@/services/api/authFetch';
-import { AimDistanceMark, BowSpecification, CalculatedMarks, MarksResult, SightMark, SightMarkCalc, SightMarkResult } from '@/types';
-import * as Sentry from '@sentry/react-native';
+import { AimDistanceMark, CalculatedMarks, MarksResult, SightMark, SightMarkCalc, SightMarkResult } from '@/types';
 
 export const sightMarksRepository = {
   async getAll(): Promise<SightMark[]> {
@@ -25,42 +24,6 @@ export const sightMarksRepository = {
   },
   async delete(id: string): Promise<void> {
     await client.delete(`/sight-marks/${id}`);
-  },
-
-  async getBowSpecificationByBowId(bowId: string): Promise<BowSpecification> {
-    const response = await client.get<{ bowSpecification: BowSpecification } | BowSpecification>(`/bow-specifications/by-bow/${bowId}`);
-
-    // Handle wrapped response { bowSpecification: {...} } or direct response
-    const spec = (response.data as any)?.bowSpecification || response.data;
-
-    if (!spec?.id) {
-      Sentry.captureMessage('Bow specification missing id field', {
-        level: 'error',
-        extra: { responseData: response.data, bowId },
-      });
-      throw new Error('Bow specification response is missing id field');
-    }
-
-    return spec;
-  },
-
-  async createSpecification(data: Partial<BowSpecification>): Promise<BowSpecification> {
-    try {
-      const response = await client.post<BowSpecification>('/bow-specifications', data);
-      return response.data;
-    } catch (error: any) {
-      // Log the error to Sentry with context
-      Sentry.captureException(error, {
-        tags: { type: 'bow_specification_create_error' },
-        extra: {
-          status: error.response?.status,
-          message: error.response?.data?.message || error.message,
-          bowId: data.bowId,
-        },
-      });
-
-      throw error;
-    }
   },
 
   async getResults(sightMarkId: string): Promise<SightMarkResult[]> {
