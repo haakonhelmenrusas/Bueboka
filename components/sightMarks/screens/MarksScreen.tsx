@@ -1,8 +1,8 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { ScrollView, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import * as Sentry from '@sentry/react-native';
-import { Button, Message } from '@/components/common';
+import { Button, Message, Select } from '@/components/common';
 import { CalculatedMarks, MarksResult, SightMark, SightMarkResult } from '@/types';
 import { CalculateMarksModal } from '@/components/sightMarks/calculateMarksModal/CalculateMarksModal';
 import CalculatedMarksTable from '@/components/sightMarks/calculatedMarksTable/CalculatedMarksTable';
@@ -29,38 +29,56 @@ export default function MarksScreen({ setScreen }: MarksScreenProps) {
   const insets = useSafeAreaInsets();
   const [showSpeed, setShowSpeed] = useState(false);
   // const [showGraph, setShowGraph] = useState(false);
+  const [sightMarks, setSightMarks] = useState<SightMark[]>([]);
   const [ballistics, setBallistics] = useState<CalculatedMarks | null>(null);
   const [calculatedMarks, setCalculatedMarks] = useState<MarksResult | null>(null);
   const [activeSightMark, setActiveSightMark] = useState<SightMark | null>(null);
   const [modalVisible, setModalVisible] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
 
+  const sightMarkOptions = useMemo(
+    () =>
+      sightMarks.map((sm) => ({
+        label: sm.name ?? sm.bow?.name ?? t['sightMarkCard.fallbackName'],
+        value: sm.id,
+      })),
+    [sightMarks, t],
+  );
+
+  const loadResultsForMark = useCallback(async (mark: SightMark) => {
+    setActiveSightMark(mark);
+    setBallistics((mark.ballisticsParameters as CalculatedMarks) ?? null);
+    try {
+      const results = await sightMarksRepository.getResults(mark.id);
+      const latest = results.sort((a, b) => new Date(b.createdAt ?? 0).getTime() - new Date(a.createdAt ?? 0).getTime())[0] ?? null;
+      setCalculatedMarks(latest ? mapResult(latest) : null);
+    } catch {
+      setCalculatedMarks(null);
+    }
+  }, []);
+
   const loadData = useCallback(async () => {
     setIsLoading(true);
     try {
       const marks = await sightMarksRepository.getAll();
       const sorted = marks.sort((a, b) => new Date(b.createdAt ?? 0).getTime() - new Date(a.createdAt ?? 0).getTime());
-      // Prefer the most recent collection that has 2+ calibration points; fall back to most recent
+      setSightMarks(sorted);
       const current = sorted.find((m) => (m.givenDistances?.length ?? 0) >= 2) ?? sorted[0] ?? null;
-      setActiveSightMark(current);
-      setBallistics((current?.ballisticsParameters as CalculatedMarks) ?? null);
 
       if (current) {
-        const results = await sightMarksRepository.getResults(current.id);
-        // Get newest result (most recent)
-        const latest = results.sort((a, b) => new Date(b.createdAt ?? 0).getTime() - new Date(a.createdAt ?? 0).getTime())[0] ?? null;
-        setCalculatedMarks(latest ? mapResult(latest) : null);
+        await loadResultsForMark(current);
       } else {
+        setActiveSightMark(null);
+        setBallistics(null);
         setCalculatedMarks(null);
       }
     } catch (error: any) {
-      // 404 is not an error - it just means no data exists yet
       if (error?.response?.status === 404) {
+        setSightMarks([]);
         setActiveSightMark(null);
         setBallistics(null);
         setCalculatedMarks(null);
       } else {
-        // Log actual errors to Sentry
         Sentry.captureException(error, {
           tags: { type: 'sight_marks_load_error' },
           extra: { message: error?.message, status: error?.response?.status },
@@ -69,7 +87,15 @@ export default function MarksScreen({ setScreen }: MarksScreenProps) {
     } finally {
       setIsLoading(false);
     }
-  }, []);
+  }, [loadResultsForMark]);
+
+  const handleSetChange = useCallback(
+    (sightMarkId: string) => {
+      const selected = sightMarks.find((sm) => sm.id === sightMarkId);
+      if (selected) loadResultsForMark(selected);
+    },
+    [sightMarks, loadResultsForMark],
+  );
 
   useEffect(() => {
     loadData();
@@ -166,7 +192,20 @@ export default function MarksScreen({ setScreen }: MarksScreenProps) {
       {/* {showGraph ? (
         <ChartScreen calculatedMarks={calculatedMarks} marks={ballistics} setModalVisible={setModalVisible} />
       ) : ( */}
-      <ScrollView style={styles.scrollView}>{renderContent()}</ScrollView>
+      <ScrollView style={styles.scrollView}>
+        {sightMarkOptions.length > 1 && (
+          <View style={styles.selectorContainer}>
+            <Select
+              label={t['sightMarks.selectSet']}
+              options={sightMarkOptions}
+              selectedValue={activeSightMark?.id}
+              onValueChange={handleSetChange}
+              zIndex={2000}
+            />
+          </View>
+        )}
+        {renderContent()}
+      </ScrollView>
       {/* )} */}
 
       {calculatedMarks && (

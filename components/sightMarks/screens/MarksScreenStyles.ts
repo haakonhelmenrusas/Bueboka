@@ -8,6 +8,11 @@ export const styles = StyleSheet.create({
     flex: 1,
     minHeight: '50%',
   },
+  selectorContainer: {
+    paddingHorizontal: 16,
+    paddingTop: 12,
+    zIndex: 2000,
+  },
   emptyState: {
     marginTop: 'auto',
     padding: 16,

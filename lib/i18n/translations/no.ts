@@ -472,6 +472,7 @@ export const no: TranslationKeys = {
   'sightMarks.noDataDescription': 'Legg inn dine merker for å beregne siktemerker.',
   'sightMarks.showSpeed': 'Vis hastigheter',
   'sightMarks.recalculate': 'Beregn på nytt',
+  'sightMarks.selectSet': 'Velg innskyting',
 
   'calcMarks.fromDistance': 'Fra avstand',
   'calcMarks.toDistance': 'Til avstand',
