@@ -481,6 +481,7 @@ export const no: TranslationKeys = {
   'calcMarks.angle': 'Vinkel',
   'calcMarks.ballisticsMissing': 'Ballistikkdata mangler. Legg inn et siktemerke først.',
   'calcMarks.calculate': 'Beregn',
+  'calcMarks.flatMark': 'Flatmark',
 
   'marksForm.nameLabel': 'Navn på innskyting (valgfritt)',
   'marksForm.namePlaceholder': 'F.eks. Utendørs 2025',

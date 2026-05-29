@@ -481,6 +481,7 @@ export const en: TranslationKeys = {
   'calcMarks.angle': 'Angle',
   'calcMarks.ballisticsMissing': 'Ballistics data missing. Add a sight mark first.',
   'calcMarks.calculate': 'Calculate',
+  'calcMarks.flatMark': 'Flat',
 
   'marksForm.nameLabel': 'Sighting name (optional)',
   'marksForm.namePlaceholder': 'e.g. Outdoor 2025',

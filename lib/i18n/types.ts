@@ -521,6 +521,7 @@ export interface TranslationKeys {
   'calcMarks.angle': string;
   'calcMarks.ballisticsMissing': string;
   'calcMarks.calculate': string;
+  'calcMarks.flatMark': string;
 
   // Marks form (sliding sheet)
   'marksForm.nameLabel': string;
