@@ -210,19 +210,19 @@ export default function MarksScreen({ setScreen }: MarksScreenProps) {
 
       {calculatedMarks && (
         <View style={[styles.actionBar, { paddingBottom: insets.bottom + 80 }]}>
-          {
+          <View style={styles.buttons}>
             <Button
               type="outline"
+              buttonStyle={{ flex: 1 }}
               iconPosition="left"
               icon={<FontAwesomeIcon icon={faWind} size={20} color={colors.white} />}
               label={t['sightMarks.showSpeed']}
               onPress={() => setShowSpeed(!showSpeed)}
               {...outlineWhite}
             />
-          }
-          <View style={styles.buttons}>
             <Button
               type="outline"
+              buttonStyle={{ flex: 1 }}
               iconPosition="left"
               icon={<FontAwesomeIcon icon={faRotateRight} color={colors.white} />}
               label={t['sightMarks.recalculate']}
