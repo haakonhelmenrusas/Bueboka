@@ -97,20 +97,20 @@ describe('userRepository.getCurrentUser', () => {
 // ── updateProfile ─────────────────────────────────────────────────────────────
 
 describe('userRepository.updateProfile', () => {
-  it('sends a PATCH to /profile and returns the updated user', async () => {
+  it('sends a PATCH to /users and returns the updated user', async () => {
     const updated = { ...fakeUser, name: 'Kari Nordmann' };
     mockClient.patch.mockResolvedValueOnce({ data: updated });
 
     const result = await userRepository.updateProfile({ name: 'Kari Nordmann' });
 
     expect(result.name).toBe('Kari Nordmann');
-    expect(mockClient.patch).toHaveBeenCalledWith('/profile', { name: 'Kari Nordmann' });
+    expect(mockClient.patch).toHaveBeenCalledWith('/users', { name: 'Kari Nordmann' });
   });
 
   it('can send club and skytternr together', async () => {
     mockClient.patch.mockResolvedValueOnce({ data: fakeUser });
     await userRepository.updateProfile({ name: 'Ola', club: 'Bergen BK', skytternr: '99' });
-    expect(mockClient.patch).toHaveBeenCalledWith('/profile', { name: 'Ola', club: 'Bergen BK', skytternr: '99' });
+    expect(mockClient.patch).toHaveBeenCalledWith('/users', { name: 'Ola', club: 'Bergen BK', skytternr: '99' });
   });
 
   it('throws AppError with BAD_REQUEST on 400', async () => {

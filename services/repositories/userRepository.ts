@@ -43,11 +43,11 @@ export const userRepository = {
 
   /**
    * Update current user profile
-   * PATCH /api/profile
+   * PATCH /api/users
    */
   async updateProfile(data: UpdateUserData): Promise<User> {
     try {
-      const response = await client.patch<User>('/profile', data);
+      const response = await client.patch<User>('/users', data);
       return response.data;
     } catch (error) {
       throw handleApiError(error);
