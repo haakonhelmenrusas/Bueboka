@@ -198,7 +198,8 @@ export const no: TranslationKeys = {
   'target.size80cm': '80 cm',
   'target.size122cm': '122 cm',
   'target.figure3D': '3D figur',
-  'target.field24cm': 'Felt 24 cm',
+  'target.field20cm': 'Felt 20 cm',
+  'target.field40cm': 'Felt 40 cm',
   'target.field60cm': 'Felt 60 cm',
   'target.other': 'Annet',
 
