@@ -4,7 +4,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter, useFocusEffect } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { StatsSummary, EquipmentSection, PracticesSection } from '@/components/home';
-import { useAuth } from '@/hooks';
+import { useAuth, useOnboarding } from '@/hooks';
 import { useTranslation } from '@/contexts';
 import { Message, Button, MobileActionButton } from '@/components/common';
 import { colors } from '@/styles/colors';
@@ -24,10 +24,12 @@ import ProfileImageManager from '@/components/home/profile/ProfileImageManager';
 import CreateCompetitionForm from '@/components/practice/competitionForm/CreateCompetitionForm';
 import { faUserGroup } from '@fortawesome/free-solid-svg-icons';
 import { PracticeDetailsModal } from '@/components/practice/practiceDetailsModal';
+import OnboardingModal from '@/components/onboarding/OnboardingModal';
 
 export default function HomeScreen() {
   const { user, refreshUser } = useAuth();
   const { t } = useTranslation();
+  const { hasSeenOnboarding, isLoading: onboardingLoading, markAsSeen } = useOnboarding();
   const router = useRouter();
   const insets = useSafeAreaInsets();
   const [refreshing, setRefreshing] = useState(false);
@@ -316,6 +318,9 @@ export default function HomeScreen() {
         editingCompetition={editingCompetition}
         onSaved={handlePracticesSaved}
       />
+      {!onboardingLoading && (
+        <OnboardingModal visible={!hasSeenOnboarding} onClose={markAsSeen} />
+      )}
     </View>
   );
 }
