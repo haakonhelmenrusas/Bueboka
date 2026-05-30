@@ -221,7 +221,8 @@ export interface TranslationKeys {
   'target.size80cm': string;
   'target.size122cm': string;
   'target.figure3D': string;
-  'target.field24cm': string;
+  'target.field20cm': string;
+  'target.field40cm': string;
   'target.field60cm': string;
   'target.other': string;
 

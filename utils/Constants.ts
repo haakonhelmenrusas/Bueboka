@@ -12,7 +12,8 @@ export const TARGET_TYPES: { value: string; key: keyof TranslationKeys; label: s
   { value: '80cm', key: 'target.size80cm', label: '80 cm' },
   { value: '122cm', key: 'target.size122cm', label: '122 cm' },
   { value: '3d', key: 'target.figure3D', label: '3D figur' },
-  { value: '24cm_felt', key: 'target.field24cm', label: 'Felt 24 cm' },
+  { value: '20cm_felt', key: 'target.field20cm', label: 'Felt 20 cm' },
+  { value: '40cm_felt', key: 'target.field40cm', label: 'Felt 40 cm' },
   { value: '60cm_felt', key: 'target.field60cm', label: 'Felt 60 cm' },
   { value: 'other', key: 'target.other', label: 'Annet' },
 ];
