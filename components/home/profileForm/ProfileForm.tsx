@@ -66,6 +66,7 @@ export default function ProfileForm({ modalVisible, setModalVisible, user, onSav
             selectedValue={club}
             onValueChange={setClub}
             searchable={true}
+            creatable={true}
             placeholder={t['profileForm.clubPlaceholder']}
           />
           <Input

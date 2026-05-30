@@ -137,7 +137,8 @@ export const Select: React.FC<Props> = ({
     outputRange: ['0deg', '180deg'],
   });
 
-  const selectedLabel = options.find((opt) => opt.value === selectedValue)?.label || resolvedPlaceholder;
+  const matchedLabel = options.find((opt) => opt.value === selectedValue)?.label;
+  const selectedLabel = matchedLabel || (creatable && selectedValue ? selectedValue : resolvedPlaceholder);
 
   const renderOption = (item: Option, index: number) => (
     <Pressable
