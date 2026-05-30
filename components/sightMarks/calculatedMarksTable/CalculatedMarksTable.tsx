@@ -1,6 +1,7 @@
 import { Text, View } from 'react-native';
 import { MarksResult } from '@/types';
 import { styles } from './CalculatedMarksTableStyles';
+import { useTranslation } from '@/contexts';
 
 interface CalculatedMarksProps {
   marksData: MarksResult | null;
@@ -8,6 +9,7 @@ interface CalculatedMarksProps {
 }
 
 export default function CalculatedMarksTable({ marksData, showSpeed }: Readonly<CalculatedMarksProps>) {
+  const { t } = useTranslation();
   const renderMarksResultTable = () => {
     if (marksData) {
       return marksData.distances.map((distance, index) => (
@@ -41,7 +43,7 @@ export default function CalculatedMarksTable({ marksData, showSpeed }: Readonly<
             .map((angle) => {
               return (
                 <Text key={angle} style={styles.angle}>
-                  {angle}°
+                  {parseFloat(angle) === 0 ? t['calcMarks.flatMark'] : `${angle}°`}
                 </Text>
               );
             })}

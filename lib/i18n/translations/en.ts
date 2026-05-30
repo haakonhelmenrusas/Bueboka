@@ -472,6 +472,7 @@ export const en: TranslationKeys = {
   'sightMarks.noDataDescription': 'Add your marks to calculate sight marks.',
   'sightMarks.showSpeed': 'Show speeds',
   'sightMarks.recalculate': 'Recalculate',
+  'sightMarks.selectSet': 'Select sighting',
 
   'calcMarks.fromDistance': 'From distance',
   'calcMarks.toDistance': 'To distance',
@@ -480,6 +481,7 @@ export const en: TranslationKeys = {
   'calcMarks.angle': 'Angle',
   'calcMarks.ballisticsMissing': 'Ballistics data missing. Add a sight mark first.',
   'calcMarks.calculate': 'Calculate',
+  'calcMarks.flatMark': 'Flat',
 
   'marksForm.nameLabel': 'Sighting name (optional)',
   'marksForm.namePlaceholder': 'e.g. Outdoor 2025',

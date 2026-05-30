@@ -511,6 +511,7 @@ export interface TranslationKeys {
   'sightMarks.noDataDescription': string;
   'sightMarks.showSpeed': string;
   'sightMarks.recalculate': string;
+  'sightMarks.selectSet': string;
 
   // Calculate marks modal
   'calcMarks.fromDistance': string;
@@ -520,6 +521,7 @@ export interface TranslationKeys {
   'calcMarks.angle': string;
   'calcMarks.ballisticsMissing': string;
   'calcMarks.calculate': string;
+  'calcMarks.flatMark': string;
 
   // Marks form (sliding sheet)
   'marksForm.nameLabel': string;

@@ -472,6 +472,7 @@ export const no: TranslationKeys = {
   'sightMarks.noDataDescription': 'Legg inn dine merker for å beregne siktemerker.',
   'sightMarks.showSpeed': 'Vis hastigheter',
   'sightMarks.recalculate': 'Beregn på nytt',
+  'sightMarks.selectSet': 'Velg innskyting',
 
   'calcMarks.fromDistance': 'Fra avstand',
   'calcMarks.toDistance': 'Til avstand',
@@ -480,6 +481,7 @@ export const no: TranslationKeys = {
   'calcMarks.angle': 'Vinkel',
   'calcMarks.ballisticsMissing': 'Ballistikkdata mangler. Legg inn et siktemerke først.',
   'calcMarks.calculate': 'Beregn',
+  'calcMarks.flatMark': 'Flatmark',
 
   'marksForm.nameLabel': 'Navn på innskyting (valgfritt)',
   'marksForm.namePlaceholder': 'F.eks. Utendørs 2025',
