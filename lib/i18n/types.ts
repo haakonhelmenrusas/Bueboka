@@ -745,4 +745,38 @@ export interface TranslationKeys {
   'feedback.errorSend': string;
   'feedback.thanks': string;
   'settings.feedback': string;
+
+  // Onboarding modal
+  'onboarding.welcomeTitle': string;
+  'onboarding.welcomeSubtitle': string;
+  'onboarding.welcomeBody': string;
+  'onboarding.feature1Title': string;
+  'onboarding.feature1Desc': string;
+  'onboarding.feature2Title': string;
+  'onboarding.feature2Desc': string;
+  'onboarding.feature3Title': string;
+  'onboarding.feature3Desc': string;
+  'onboarding.stepsTitle': string;
+  'onboarding.stepsSubtitle': string;
+  'onboarding.step1Title': string;
+  'onboarding.step1Desc': string;
+  'onboarding.step2Title': string;
+  'onboarding.step2Desc': string;
+  'onboarding.step3Title': string;
+  'onboarding.step3Desc': string;
+  'onboarding.tipsTitle': string;
+  'onboarding.tipsSubtitle': string;
+  'onboarding.tip1Title': string;
+  'onboarding.tip1Desc': string;
+  'onboarding.tip2Title': string;
+  'onboarding.tip2Desc': string;
+  'onboarding.tip3Title': string;
+  'onboarding.tip3Desc': string;
+  'onboarding.tip4Title': string;
+  'onboarding.tip4Desc': string;
+  'onboarding.skip': string;
+  'onboarding.previous': string;
+  'onboarding.next': string;
+  'onboarding.getStarted': string;
+  'onboarding.goToStep': string;
 }
