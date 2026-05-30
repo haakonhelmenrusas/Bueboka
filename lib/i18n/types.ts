@@ -556,6 +556,7 @@ export interface TranslationKeys {
   'common.favourite': string;
   'common.noResults': string;
   'common.chooseOption': string;
+  'common.create': string;
 
   // Settings screen
   'settings.title': string;
