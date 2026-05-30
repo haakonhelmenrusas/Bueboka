@@ -141,6 +141,22 @@ const styles = StyleSheet.create({
     flex: 1,
     marginRight: 8,
   },
+  createOption: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: 16,
+    backgroundColor: colors.bgGray50,
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    borderBottomColor: colors.dimmed,
+    minHeight: 50,
+    gap: 10,
+  },
+  createOptionText: {
+    fontSize: 14,
+    color: colors.secondary,
+    fontWeight: '500',
+    flex: 1,
+  },
 });
 
 export default styles;

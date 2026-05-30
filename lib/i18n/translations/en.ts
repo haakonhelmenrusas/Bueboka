@@ -512,6 +512,7 @@ export const en: TranslationKeys = {
   'common.favourite': 'Favourite',
   'common.noResults': 'No results',
   'common.chooseOption': 'Choose an option',
+  'common.create': 'Create',
 
   // Settings screen
   'settings.title': 'Settings',
