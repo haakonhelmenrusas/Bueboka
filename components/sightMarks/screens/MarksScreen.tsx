@@ -213,6 +213,7 @@ export default function MarksScreen({ setScreen }: MarksScreenProps) {
           <View style={styles.buttons}>
             <Button
               type="outline"
+              size="small"
               iconPosition="left"
               icon={<FontAwesomeIcon icon={faWind} size={16} color={colors.white} />}
               label={t['sightMarks.showSpeed']}
@@ -221,6 +222,7 @@ export default function MarksScreen({ setScreen }: MarksScreenProps) {
             />
             <Button
               type="outline"
+              size="small"
               iconPosition="left"
               icon={<FontAwesomeIcon icon={faRotateRight} size={16} color={colors.white} />}
               label={t['sightMarks.recalculate']}
