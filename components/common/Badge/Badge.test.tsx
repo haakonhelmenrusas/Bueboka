@@ -10,12 +10,6 @@ describe('Badge', () => {
     expect(getByText('Hello')).toBeTruthy();
   });
 
-  it('defaults to md size and default variant', () => {
-    const { getByText } = render(<Badge>Tag</Badge>);
-    const text = getByText('Tag');
-    expect(text).toBeTruthy();
-  });
-
   it('renders with icon', () => {
     const icon = <Text testID="star-icon">★</Text>;
     const { getByText, UNSAFE_getByProps } = render(<Badge icon={icon}>Star</Badge>);

@@ -112,6 +112,7 @@ Two locales: Norwegian (`no`, default) and English (`en`). Translations are plai
 - **Never hardcode hex values** — import from `styles/colors.ts`, which is the single source of truth.
 - Primary: `#053546` (dark navy), Secondary: `#227B9A` (teal).
 - Use React Native `StyleSheet.create()`. Icons are per-icon FontAwesome imports for tree-shaking.
+- **Separate style files** — keep styles in a dedicated `*Styles.ts` file next to the component (e.g. `Badge/BadgeStyles.ts`). Never define `StyleSheet.create()` in the same file as JSX markup. Export as `export const styles = StyleSheet.create({…})` (or `export const defaultStyles` for input-type components).
 
 ### Monitoring
 

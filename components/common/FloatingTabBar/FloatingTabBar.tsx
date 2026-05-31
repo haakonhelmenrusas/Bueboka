@@ -1,8 +1,8 @@
 import { useCallback, useRef } from 'react';
-import { Animated, Pressable, StyleSheet, View } from 'react-native';
+import { Animated, Pressable, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { colors } from '@/styles/colors';
 import type { BottomTabBarProps } from 'expo-router/build/react-navigation/bottom-tabs';
+import { styles } from './FloatingTabBarStyles';
 
 function TabButton({ onPress, children, isFocused }: { onPress: () => void; children: React.ReactNode; isFocused: boolean }) {
   const scale = useRef(new Animated.Value(1)).current;
@@ -58,25 +58,3 @@ export default function FloatingTabBar({ state, descriptors, navigation }: Botto
   );
 }
 
-const styles = StyleSheet.create({
-  bar: {
-    position: 'absolute',
-    flexDirection: 'row',
-    height: 60,
-    marginHorizontal: 16,
-    left: 0,
-    right: 0,
-    backgroundColor: colors.primary,
-    borderRadius: 30,
-    elevation: 8,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.2,
-    shadowRadius: 8,
-  },
-  tab: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-});

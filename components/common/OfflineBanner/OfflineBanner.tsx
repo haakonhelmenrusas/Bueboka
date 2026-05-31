@@ -1,9 +1,9 @@
 import React from 'react';
-import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { Pressable, Text, View } from 'react-native';
 import { useNetworkState } from '@/hooks/useNetworkState';
 import { useOfflineQueue } from '@/hooks/useOfflineQueue';
-import { colors } from '@/styles/colors';
 import { useTranslation } from '@/contexts';
+import { styles } from './OfflineBannerStyles';
 
 export function OfflineBanner() {
   const { isConnected } = useNetworkState();
@@ -34,18 +34,3 @@ export function OfflineBanner() {
 
   return null;
 }
-
-const styles = StyleSheet.create({
-  banner: {
-    backgroundColor: colors.tertiary,
-    paddingVertical: 8,
-    paddingHorizontal: 16,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  text: {
-    color: colors.white,
-    fontSize: 14,
-    fontWeight: '600',
-  },
-});

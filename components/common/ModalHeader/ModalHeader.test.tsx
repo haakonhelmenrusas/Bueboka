@@ -3,10 +3,11 @@ import React from 'react';
 
 import ModalHeader from './ModalHeader';
 
-jest.mock('@/components/sightMarks/calculateMarksModal/CalculateMarksModalStyles', () => ({
+jest.mock('./ModalHeaderStyles', () => ({
   styles: {
     header: {},
     title: {},
+    closeButton: {},
   },
 }));
 
