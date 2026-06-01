@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { Keyboard, Pressable, ScrollView, StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { AimDistanceMark, Arrows, Bow, BowSpecification, MarkValue, SightMark } from '@/types';
+import { AimDistanceMark, Arrows, Bow, MarkValue, SightMark } from '@/types';
 import { useSharedValue, withTiming } from 'react-native-reanimated';
 import { Ballistics } from '@/utils';
 import * as Sentry from '@sentry/react-native';
@@ -53,17 +53,15 @@ export default function CalculateScreen() {
 
   // ─── Bow / arrow helpers ────────────────────────────────────────────────────
 
-  async function ensureBowSpec(): Promise<{ bow: Bow; arrows: Arrows | null; spec: BowSpecification }> {
+  const getEquipment = useCallback(async (): Promise<{ bow: Bow; arrows: Arrows | null }> => {
     const [bowsData, arrowsData] = await Promise.all([bowRepository.getAll(), arrowsRepository.getAll()]);
     const bows = Array.isArray(bowsData) ? bowsData : [];
     const arrows = Array.isArray(arrowsData) ? arrowsData : [];
     const bow = bows.find((b) => b.isFavorite) ?? bows[0];
     if (!bow) throw new Error(t['sightMarks.loadError']);
     const arrowSet = arrows.find((a) => a.isFavorite) ?? arrows[0] ?? null;
-    const spec = await sightMarksRepository.getBowSpecificationByBowId(bow.id);
-    if (!spec?.id) throw new Error(t['sightMarks.loadError']);
-    return { bow, arrows: arrowSet, spec };
-  }
+    return { bow, arrows: arrowSet };
+  }, [t]);
 
   // ─── Form open helpers ──────────────────────────────────────────────────────
 
@@ -88,7 +86,7 @@ export default function CalculateScreen() {
       try {
         setStatus('pending');
         setError(null);
-        const { bow, arrows, spec } = await ensureBowSpec();
+        const { bow, arrows } = await getEquipment();
         const givenMarks = [...(activeSightMark?.givenMarks ?? []), newMark.aim];
         const givenDistances = [...(activeSightMark?.givenDistances ?? []), newMark.distance];
 
@@ -99,8 +97,7 @@ export default function CalculateScreen() {
           given_marks: givenMarks,
           given_distances: givenDistances,
           bow_category: bow.type,
-          interval_sight_real: bow.aimMeasure ?? 5,
-          interval_sight_measured: bow.aimMeasure ?? 5,
+          interval_sight_measured: bow.aimMeasure ?? Ballistics.interval_sight_measured,
           arrow_diameter_mm: arrows?.diameter ?? 5,
           arrow_mass_gram: arrows?.weight ?? 21.2,
           length_eye_sight_cm: bow.eyeToSight ?? 0,
@@ -124,7 +121,7 @@ export default function CalculateScreen() {
               type: 'sightMarks/createMark',
               payload: {
                 userId: user?.id,
-                bowSpecificationId: spec.id,
+                bowId: bow.id,
                 name: newMark.name,
                 givenMarks,
                 givenDistances,
@@ -134,7 +131,7 @@ export default function CalculateScreen() {
             () =>
               sightMarksRepository.create({
                 userId: user?.id,
-                bowSpecificationId: spec.id,
+                bowId: bow.id,
                 name: newMark.name,
                 givenMarks,
                 givenDistances,
@@ -153,7 +150,7 @@ export default function CalculateScreen() {
       }
       setStatus('idle');
     },
-    [ensureBowSpec, activeSightMark, loadData, user?.id, t],
+    [getEquipment, activeSightMark, loadData, user?.id, t],
   );
 
   // ─── Delete single mark from a set ─────────────────────────────────────────
@@ -173,7 +170,7 @@ export default function CalculateScreen() {
           user?.id,
         );
       } else {
-        const { bow, arrows } = await ensureBowSpec();
+        const { bow, arrows } = await getEquipment();
         const lastIdx = givenMarks.length - 1;
         const body: AimDistanceMark = {
           ...Ballistics,
@@ -182,8 +179,7 @@ export default function CalculateScreen() {
           given_marks: givenMarks,
           given_distances: givenDistances,
           bow_category: bow.type,
-          interval_sight_real: bow.aimMeasure ?? 5,
-          interval_sight_measured: bow.aimMeasure ?? 5,
+          interval_sight_measured: bow.aimMeasure ?? Ballistics.interval_sight_measured,
           arrow_diameter_mm: arrows?.diameter ?? 5,
           arrow_mass_gram: arrows?.weight ?? 21.2,
           length_eye_sight_cm: bow.eyeToSight ?? 0,

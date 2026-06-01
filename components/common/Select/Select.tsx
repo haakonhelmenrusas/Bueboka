@@ -18,6 +18,7 @@ import { colors } from '@/styles/colors';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faChevronDown } from '@fortawesome/free-solid-svg-icons/faChevronDown';
 import { faCheck } from '@fortawesome/free-solid-svg-icons/faCheck';
+import { faPlus } from '@fortawesome/free-solid-svg-icons/faPlus';
 import { useTranslation } from '@/contexts';
 
 type Option = {
@@ -37,6 +38,9 @@ type Props = {
   zIndex?: number;
   searchable?: boolean;
   placeholder?: string;
+  creatable?: boolean;
+  createLabel?: string;
+  onCreateOption?: (value: string) => void;
 };
 
 export const Select: React.FC<Props> = ({
@@ -51,6 +55,9 @@ export const Select: React.FC<Props> = ({
   zIndex = 1000,
   searchable = false,
   placeholder,
+  creatable = false,
+  createLabel,
+  onCreateOption,
 }) => {
   const { t } = useTranslation();
   const resolvedPlaceholder = placeholder ?? t['common.chooseOption'];
@@ -103,12 +110,33 @@ export const Select: React.FC<Props> = ({
     }).start();
   };
 
+  const handleCreate = () => {
+    const trimmed = searchQuery.trim();
+    if (!trimmed) return;
+    if (onCreateOption) {
+      onCreateOption(trimmed);
+    } else {
+      onValueChange(trimmed);
+    }
+    setOpen(false);
+    setSearchQuery('');
+    Animated.timing(rotateAnim, {
+      toValue: 0,
+      duration: 180,
+      useNativeDriver: true,
+    }).start();
+  };
+
+  const showCreateOption =
+    creatable && searchQuery.trim().length > 0 && !options.some((opt) => opt.label.toLowerCase() === searchQuery.trim().toLowerCase());
+
   const rotate = rotateAnim.interpolate({
     inputRange: [0, 1],
     outputRange: ['0deg', '180deg'],
   });
 
-  const selectedLabel = options.find((opt) => opt.value === selectedValue)?.label || resolvedPlaceholder;
+  const matchedLabel = options.find((opt) => opt.value === selectedValue)?.label;
+  const selectedLabel = matchedLabel || (creatable && selectedValue ? selectedValue : resolvedPlaceholder);
 
   const renderOption = (item: Option, index: number) => (
     <Pressable
@@ -123,6 +151,8 @@ export const Select: React.FC<Props> = ({
     </Pressable>
   );
 
+  const resolvedCreateLabel = createLabel ?? t['common.create'];
+
   const renderDropdownContent = () => (
     <ScrollView
       style={styles.optionsList}
@@ -130,13 +160,21 @@ export const Select: React.FC<Props> = ({
       showsVerticalScrollIndicator={true}
       keyboardShouldPersistTaps="handled"
       bounces={Platform.OS === 'ios'}>
-      {filteredOptions.length > 0 ? (
-        filteredOptions.map(renderOption)
-      ) : (
-        <View style={styles.option}>
-          <Text style={[styles.optionText, { color: colors.dimmed }]}>{t['common.noResults']}</Text>
-        </View>
+      {showCreateOption && (
+        <Pressable style={styles.createOption} onPress={handleCreate} android_ripple={{ color: colors.tertiary }}>
+          <FontAwesomeIcon icon={faPlus} size={14} color={colors.secondary} />
+          <Text style={styles.createOptionText}>
+            {resolvedCreateLabel} "{searchQuery.trim()}"
+          </Text>
+        </Pressable>
       )}
+      {filteredOptions.length > 0
+        ? filteredOptions.map(renderOption)
+        : !showCreateOption && (
+            <View style={styles.option}>
+              <Text style={[styles.optionText, { color: colors.dimmed }]}>{t['common.noResults']}</Text>
+            </View>
+          )}
     </ScrollView>
   );
 

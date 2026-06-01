@@ -1,6 +1,7 @@
 import { AxiosError, AxiosHeaders } from 'axios';
 import { userRepository } from '@/services';
 import { authFetchClient } from '@/services/api/authFetch';
+import { uploadAvatar } from '@/services/api/uploadAvatar';
 import { AppError } from '@/services/api/errors';
 import { User } from '@/types';
 
@@ -12,6 +13,10 @@ jest.mock('@/services/api/authFetch', () => ({
     patch: jest.fn(),
     delete: jest.fn(),
   },
+}));
+
+jest.mock('@/services/api/uploadAvatar', () => ({
+  uploadAvatar: jest.fn(),
 }));
 
 jest.mock('@sentry/react-native', () => ({
@@ -48,6 +53,7 @@ const fakeUser: User = {
   publicStats: false,
   publicSkytternr: false,
   publicAchievements: false,
+  locale: 'no',
   createdAt: '2024-01-01T00:00:00.000Z',
   updatedAt: '2024-01-01T00:00:00.000Z',
 };
@@ -91,20 +97,20 @@ describe('userRepository.getCurrentUser', () => {
 // ── updateProfile ─────────────────────────────────────────────────────────────
 
 describe('userRepository.updateProfile', () => {
-  it('sends a PATCH to /profile and returns the updated user', async () => {
+  it('sends a PATCH to /users and returns the updated user', async () => {
     const updated = { ...fakeUser, name: 'Kari Nordmann' };
     mockClient.patch.mockResolvedValueOnce({ data: updated });
 
     const result = await userRepository.updateProfile({ name: 'Kari Nordmann' });
 
     expect(result.name).toBe('Kari Nordmann');
-    expect(mockClient.patch).toHaveBeenCalledWith('/profile', { name: 'Kari Nordmann' });
+    expect(mockClient.patch).toHaveBeenCalledWith('/users', { name: 'Kari Nordmann' });
   });
 
   it('can send club and skytternr together', async () => {
     mockClient.patch.mockResolvedValueOnce({ data: fakeUser });
     await userRepository.updateProfile({ name: 'Ola', club: 'Bergen BK', skytternr: '99' });
-    expect(mockClient.patch).toHaveBeenCalledWith('/profile', { name: 'Ola', club: 'Bergen BK', skytternr: '99' });
+    expect(mockClient.patch).toHaveBeenCalledWith('/users', { name: 'Ola', club: 'Bergen BK', skytternr: '99' });
   });
 
   it('throws AppError with BAD_REQUEST on 400', async () => {
@@ -123,18 +129,21 @@ describe('userRepository.updateProfile', () => {
 
 // ── updateAvatar ──────────────────────────────────────────────────────────────
 
+const mockUploadAvatar = uploadAvatar as jest.MockedFunction<typeof uploadAvatar>;
+
 describe('userRepository.updateAvatar', () => {
-  it('sends a multipart/form-data PATCH to /users with the image file', async () => {
-    mockClient.patch.mockResolvedValueOnce({ data: { ...fakeUser, image: 'https://cdn.example.com/avatar.jpg' } });
+  it('delegates to uploadAvatar and returns the updated user', async () => {
+    const updatedUser = { ...fakeUser, image: 'https://cdn.example.com/avatar.jpg' };
+    mockUploadAvatar.mockResolvedValueOnce(updatedUser as User);
 
     const result = await userRepository.updateAvatar('file:///tmp/avatar.jpg');
 
     expect(result.image).toBe('https://cdn.example.com/avatar.jpg');
-    expect(mockClient.patch).toHaveBeenCalledWith('/users', expect.any(FormData));
+    expect(mockUploadAvatar).toHaveBeenCalledWith('file:///tmp/avatar.jpg');
   });
 
   it('throws AppError on upload failure', async () => {
-    mockClient.patch.mockRejectedValueOnce(makeAxiosError(500));
+    mockUploadAvatar.mockRejectedValueOnce(makeAxiosError(500));
     await expect(userRepository.updateAvatar('file:///tmp/avatar.jpg')).rejects.toBeInstanceOf(AppError);
   });
 });

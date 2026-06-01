@@ -35,8 +35,6 @@ export function registerOfflineHandlers() {
   syncManager.registerHandler('sightMarks/deleteMark', handleDeleteSightMark);
   syncManager.registerHandler('sightMarks/createResult', handleCreateSightMarkResult);
   syncManager.registerHandler('sightMarks/deleteResult', handleDeleteSightMarkResult);
-  syncManager.registerHandler('sightMarks/createSpec', handleCreateBowSpecification);
-
   // User handlers
   syncManager.registerHandler('user/update', handleUpdateUser);
 }
@@ -57,7 +55,7 @@ const handleDeleteBow: OperationHandler = async (op) => {
 
 const handleToggleFavoriteBow: OperationHandler = async (op) => {
   const { id, isFavorite } = op.payload;
-  await bowRepository.toggleFavorite(id, isFavorite);
+  await bowRepository.update(id, { isFavorite });
 };
 
 // Arrows handlers
@@ -129,10 +127,6 @@ const handleCreateSightMarkResult: OperationHandler = async (op) => {
 
 const handleDeleteSightMarkResult: OperationHandler = async (op) => {
   await sightMarksRepository.deleteResult(op.payload.id);
-};
-
-const handleCreateBowSpecification: OperationHandler = async (op) => {
-  await sightMarksRepository.createSpecification(op.payload);
 };
 
 // User handlers

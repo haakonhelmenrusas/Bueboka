@@ -162,7 +162,7 @@ Write a test for every invariant before adding the validation code.
 7. TEST (RED) – Write a failing component/acceptance test
 8. IMPLEMENT  – Wire up the screen/component
 9. REFACTOR   – Clean up all three layers; all tests must stay green
-10. COMMIT    – Follow commit message conventions in AGENTS.md
+10. COMMIT    – Follow commit message conventions in CLAUDE.md
 ```
 
 Never move to the next step until the current tests pass.

@@ -39,13 +39,13 @@ jobs:
     name: Sync version to API
     needs: [submit_ios, submit_android]
     env:
-      BUEBOKA_API_URL: ${{ env.BUEBOKA_API_URL }}
+      EXPO_PUBLIC_API_URL: ${{ env.EXPO_PUBLIC_API_URL }}
       APP_ADMIN_API_KEY: ${{ env.APP_ADMIN_API_KEY }}
       APP_VERSION: ${{ needs.build_ios.outputs.app_version }}
     steps:
       - name: Update app version in database
         run: |
-          curl -f -X PUT "$BUEBOKA_API_URL/api/app/version" \
+          curl -f -X PUT "$EXPO_PUBLIC_API_URL/app/version" \
             -H "Authorization: Bearer $APP_ADMIN_API_KEY" \
             -H "Content-Type: application/json" \
             -d "{\"currentVersion\": \"$APP_VERSION\"}"

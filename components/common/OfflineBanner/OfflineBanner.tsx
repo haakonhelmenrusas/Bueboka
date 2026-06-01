@@ -1,14 +1,16 @@
 import React from 'react';
-import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { Pressable, Text, View } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useNetworkState } from '@/hooks/useNetworkState';
 import { useOfflineQueue } from '@/hooks/useOfflineQueue';
-import { colors } from '@/styles/colors';
 import { useTranslation } from '@/contexts';
+import { styles } from './OfflineBannerStyles';
 
 export function OfflineBanner() {
   const { isConnected } = useNetworkState();
   const { queueLength, isSyncing, syncNow } = useOfflineQueue();
   const { t } = useTranslation();
+  const { top } = useSafeAreaInsets();
 
   if (isConnected && queueLength === 0) {
     return null;
@@ -16,7 +18,7 @@ export function OfflineBanner() {
 
   if (!isConnected) {
     return (
-      <View style={styles.banner}>
+      <View style={[styles.banner, { paddingTop: top + 8 }]}>
         <Text style={styles.text}>📴 {t['offline.disconnected']}</Text>
       </View>
     );
@@ -24,7 +26,7 @@ export function OfflineBanner() {
 
   if (queueLength > 0) {
     return (
-      <Pressable style={styles.banner} onPress={syncNow} disabled={isSyncing}>
+      <Pressable style={[styles.banner, { paddingTop: top + 8 }]} onPress={syncNow} disabled={isSyncing}>
         <Text style={styles.text}>
           {isSyncing ? `🔄 ${t['offline.syncing']}` : `⏳ ${t['offline.queued'].replace('{count}', String(queueLength))}`}
         </Text>
@@ -34,18 +36,3 @@ export function OfflineBanner() {
 
   return null;
 }
-
-const styles = StyleSheet.create({
-  banner: {
-    backgroundColor: colors.tertiary,
-    paddingVertical: 8,
-    paddingHorizontal: 16,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  text: {
-    color: colors.white,
-    fontSize: 14,
-    fontWeight: '600',
-  },
-});

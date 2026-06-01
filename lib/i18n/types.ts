@@ -217,12 +217,18 @@ export interface TranslationKeys {
 
   // Target type labels (used in the rounds step Target select)
   'target.size40cm': string;
+  'target.size40Triple': string;
   'target.size60cm': string;
+  'target.size60Triple': string;
   'target.size80cm': string;
+  'target.size80Centre6': string;
   'target.size122cm': string;
-  'target.figure3D': string;
-  'target.field24cm': string;
-  'target.field60cm': string;
+  'target.field20Triple': string;
+  'target.field40': string;
+  'target.field60': string;
+  'target.field80': string;
+  'target.bareMat': string;
+  'target.historicNLIndoor': string;
   'target.other': string;
 
   // Round card UI
@@ -511,6 +517,7 @@ export interface TranslationKeys {
   'sightMarks.noDataDescription': string;
   'sightMarks.showSpeed': string;
   'sightMarks.recalculate': string;
+  'sightMarks.selectSet': string;
 
   // Calculate marks modal
   'calcMarks.fromDistance': string;
@@ -520,6 +527,7 @@ export interface TranslationKeys {
   'calcMarks.angle': string;
   'calcMarks.ballisticsMissing': string;
   'calcMarks.calculate': string;
+  'calcMarks.flatMark': string;
 
   // Marks form (sliding sheet)
   'marksForm.nameLabel': string;
@@ -553,6 +561,7 @@ export interface TranslationKeys {
   'common.favourite': string;
   'common.noResults': string;
   'common.chooseOption': string;
+  'common.create': string;
 
   // Settings screen
   'settings.title': string;
@@ -742,4 +751,38 @@ export interface TranslationKeys {
   'feedback.errorSend': string;
   'feedback.thanks': string;
   'settings.feedback': string;
+
+  // Onboarding modal
+  'onboarding.welcomeTitle': string;
+  'onboarding.welcomeSubtitle': string;
+  'onboarding.welcomeBody': string;
+  'onboarding.feature1Title': string;
+  'onboarding.feature1Desc': string;
+  'onboarding.feature2Title': string;
+  'onboarding.feature2Desc': string;
+  'onboarding.feature3Title': string;
+  'onboarding.feature3Desc': string;
+  'onboarding.stepsTitle': string;
+  'onboarding.stepsSubtitle': string;
+  'onboarding.step1Title': string;
+  'onboarding.step1Desc': string;
+  'onboarding.step2Title': string;
+  'onboarding.step2Desc': string;
+  'onboarding.step3Title': string;
+  'onboarding.step3Desc': string;
+  'onboarding.tipsTitle': string;
+  'onboarding.tipsSubtitle': string;
+  'onboarding.tip1Title': string;
+  'onboarding.tip1Desc': string;
+  'onboarding.tip2Title': string;
+  'onboarding.tip2Desc': string;
+  'onboarding.tip3Title': string;
+  'onboarding.tip3Desc': string;
+  'onboarding.tip4Title': string;
+  'onboarding.tip4Desc': string;
+  'onboarding.skip': string;
+  'onboarding.previous': string;
+  'onboarding.next': string;
+  'onboarding.getStarted': string;
+  'onboarding.goToStep': string;
 }
