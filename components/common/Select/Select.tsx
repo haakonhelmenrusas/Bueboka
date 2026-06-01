@@ -128,9 +128,7 @@ export const Select: React.FC<Props> = ({
   };
 
   const showCreateOption =
-    creatable &&
-    searchQuery.trim().length > 0 &&
-    !options.some((opt) => opt.label.toLowerCase() === searchQuery.trim().toLowerCase());
+    creatable && searchQuery.trim().length > 0 && !options.some((opt) => opt.label.toLowerCase() === searchQuery.trim().toLowerCase());
 
   const rotate = rotateAnim.interpolate({
     inputRange: [0, 1],

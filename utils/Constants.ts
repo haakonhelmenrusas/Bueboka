@@ -8,13 +8,18 @@ import type { TranslationKeys } from '@/lib/i18n';
  */
 export const TARGET_TYPES: { value: string; key: keyof TranslationKeys; label: string }[] = [
   { value: '40cm', key: 'target.size40cm', label: '40 cm' },
+  { value: '40cm-trippel-vegas', key: 'target.size40Triple', label: '40cm Trippel/Vegas' },
   { value: '60cm', key: 'target.size60cm', label: '60 cm' },
+  { value: '60cm-trippel', key: 'target.size60Triple', label: '60cm Trippel' },
   { value: '80cm', key: 'target.size80cm', label: '80 cm' },
+  { value: '80cm-centre-6', key: 'target.size80Centre6', label: '80 cm Centre 6' },
   { value: '122cm', key: 'target.size122cm', label: '122 cm' },
-  { value: '3d', key: 'target.figure3D', label: '3D figur' },
-  { value: '20cm_felt', key: 'target.field20cm', label: 'Felt 20 cm' },
-  { value: '40cm_felt', key: 'target.field40cm', label: 'Felt 40 cm' },
-  { value: '60cm_felt', key: 'target.field60cm', label: 'Felt 60 cm' },
+  { value: 'felt-20-trippel', key: 'target.field20Triple', label: 'Felt 20 cm Trippel' },
+  { value: 'felt-40', key: 'target.field40', label: 'Felt 40 cm' },
+  { value: 'felt-60', key: 'target.field60', label: 'Felt 60 cm' },
+  { value: 'felt-80', key: 'target.field80', label: 'Felt 80 cm' },
+  { value: 'bar', key: 'target.bareMat', label: 'Barmatte uten blink' },
+  { value: 'historisk-nl-inne', key: 'target.historicNLIndoor', label: 'Historisk NL Inne' },
   { value: 'other', key: 'target.other', label: 'Annet' },
 ];
 
