@@ -40,7 +40,12 @@ Production/preview secrets live in EAS (see `docs/BUILD_ENVIRONMENT.md`).
 File-based routing via Expo Router:
 
 - `app/_layout.tsx` — root layout; wraps in `AuthProvider`, initialises Sentry, runs version check
+- `app/index.tsx` — entry redirect
+- `app/auth.tsx` — login/register screen
+- `app/intro.tsx` — first-launch intro/language picker
+- `app/achievements.tsx` — achievements screen
 - `app/(tabs)/` — main tab navigation (home, aktivitet, sightMarks, settings, skyttere[hidden])
+- `app/skyttere/` — public profile directory (list + `[id]` detail)
 - Auth guard in root layout redirects unauthenticated users to `/auth`
 
 ### State management (`contexts/`)
@@ -57,11 +62,46 @@ Three sub-layers:
 
 ### Components (`components/`)
 
-Organised by feature folder (`auth/`, `practice/`, `home/`, `skyttere/`, `sightMarks/`, `settings/`) plus `common/` for shared primitives (Button, Input, Select, Badge, etc.).
+Organised by feature folder (`auth/`, `practice/`, `home/`, `skyttere/`, `sightMarks/`, `settings/`, `onboarding/`, `intro/`, `achievements/`, `aktivitet/`) plus `common/` for shared primitives.
+
+#### Common components (`components/common/`)
+
+Reusable UI primitives used throughout the app. Each lives in its own folder with optional `*Styles.ts`:
+
+- **Badge** — variant-based label (`default`, `training`, `competition`, `primary`, `secondary`, `ghost`) with size presets and optional icon
+- **Button** — pressable with `filled`/`outline` types, `standard`/`warning`/`tertiary` variants, `small`/`normal` sizes, loading state
+- **Checkbox** — accessible checkbox with label, disabled state
+- **DataValue** — displays a value with optional suffix/capitalisation, or a "Ingen data" pill when empty
+- **DatePicker** — native date picker with iOS modal and Android native picker, Norwegian locale
+- **FloatingTabBar** — custom bottom tab bar with animated press feedback
+- **GoogleLogo** — SVG Google "G" logo
+- **Input** — text input with label, help text, error state, optional icon/addons, forwardRef
+- **Message** — info card with icon, title, description, and optional action button
+- **MobileActionButton** — FAB with animated expanding menu (practice, competition, bow, arrows)
+- **ModalHeader** — header with title and close (X) button
+- **ModalWrapper** — modal overlay with backdrop tap-to-close, optional full-screen mode
+- **Notch** — drag handle bar for bottom sheets
+- **OfflineBanner** — connectivity status bar using `useNetworkState` and `useOfflineQueue` hooks
+- **Select** — dropdown with optional search, creatable options, Android modal positioning
+- **Textarea** — multiline text input with label, help text, error state, forwardRef
+- **Toggle** — animated switch with accessibility role `switch`
+- **UpdateRequired** — full-screen forced update prompt with store link
+- **icons/ArcheryIcons** — SVG bow and arrow icons
 
 ### Hooks (`hooks/`)
 
-Custom hooks include `useAuth`, `useNetworkState`, `useOfflineQueue`. Tests live in `hooks/__tests__/`.
+Custom hooks include `useAuth`, `useNetworkState`, `useOfflineQueue`, `useOnboarding`. Tests live in `hooks/__tests__/`.
+
+### Internationalisation (`lib/i18n/`)
+
+Two locales: Norwegian (`no`, default) and English (`en`). Translations are plain TypeScript objects. `LanguageContext` exposes `useTranslation()` → `{ t, locale, setLanguage }`. Tests in `lib/i18n/__tests__/`.
+
+### Utilities (`utils/`)
+
+- `Ballistics.ts` — sight mark trajectory calculations
+- `Constants.ts` — app-wide constants
+- `NorwegianClubs.ts` — club directory
+- `helpers/` — pure functions: `capitalizeFirstLetter`, `hexToRgba`, `handleNumberChange`, `labelUtils`, `practiceHelpers`, `sortItems`
 
 ### Types (`types/`)
 
@@ -72,6 +112,7 @@ Custom hooks include `useAuth`, `useNetworkState`, `useOfflineQueue`. Tests live
 - **Never hardcode hex values** — import from `styles/colors.ts`, which is the single source of truth.
 - Primary: `#053546` (dark navy), Secondary: `#227B9A` (teal).
 - Use React Native `StyleSheet.create()`. Icons are per-icon FontAwesome imports for tree-shaking.
+- **Separate style files** — keep styles in a dedicated `*Styles.ts` file next to the component (e.g. `Badge/BadgeStyles.ts`). Never define `StyleSheet.create()` in the same file as JSX markup. Export as `export const styles = StyleSheet.create({…})` (or `export const defaultStyles` for input-type components).
 
 ### Monitoring
 
