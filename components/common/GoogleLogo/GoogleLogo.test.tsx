@@ -1,19 +1,20 @@
 import { render } from '@testing-library/react-native';
 import React from 'react';
 
+import { GoogleLogo } from './GoogleLogo';
+
+/* eslint-disable @typescript-eslint/no-require-imports */
 jest.mock('react-native-svg', () => {
-  const React = require('react');
+  const mockReact = require('react');
   const { View } = require('react-native');
   return {
     __esModule: true,
-    default: (props: any) => React.createElement(View, { ...props, testID: 'svg' }),
-    Svg: (props: any) => React.createElement(View, { ...props, testID: 'svg' }),
-    Path: (props: any) => React.createElement(View, { ...props, testID: 'path' }),
-    G: (props: any) => React.createElement(View, { ...props, testID: 'g' }),
+    default: (props: any) => mockReact.createElement(View, { ...props, testID: 'svg' }),
+    Path: (props: any) => mockReact.createElement(View, { ...props, testID: 'path' }),
+    G: (props: any) => mockReact.createElement(View, { ...props, testID: 'g' }),
   };
 });
-
-import { GoogleLogo } from './GoogleLogo';
+/* eslint-enable @typescript-eslint/no-require-imports */
 
 describe('GoogleLogo', () => {
   it('renders without crashing', () => {
