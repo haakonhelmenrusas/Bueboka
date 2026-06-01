@@ -217,13 +217,18 @@ export interface TranslationKeys {
 
   // Target type labels (used in the rounds step Target select)
   'target.size40cm': string;
+  'target.size40Triple': string;
   'target.size60cm': string;
+  'target.size60Triple': string;
   'target.size80cm': string;
+  'target.size80Centre6': string;
   'target.size122cm': string;
-  'target.figure3D': string;
-  'target.field20cm': string;
-  'target.field40cm': string;
-  'target.field60cm': string;
+  'target.field20Triple': string;
+  'target.field40': string;
+  'target.field60': string;
+  'target.field80': string;
+  'target.bareMat': string;
+  'target.historicNLIndoor': string;
   'target.other': string;
 
   // Round card UI
