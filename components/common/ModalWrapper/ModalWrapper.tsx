@@ -13,7 +13,7 @@ export default function ModalWrapper({ visible, onClose, children, fullScreen = 
   return (
     <Modal presentationStyle="overFullScreen" animationType="fade" transparent={true} visible={visible} onRequestClose={onClose}>
       <View style={styles.overlay}>
-        <Pressable style={StyleSheet.absoluteFill} onPress={onClose} />
+        {!fullScreen && <Pressable style={StyleSheet.absoluteFill} onPress={onClose} />}
         <View style={fullScreen ? styles.contentFullScreen : styles.content}>{children}</View>
       </View>
     </Modal>

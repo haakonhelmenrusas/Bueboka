@@ -139,6 +139,9 @@ export default function CreatePracticeForm({
   useEffect(() => {
     if (!visible) {
       setEditingId(null);
+      setCloseConfirmVisible(false);
+      setConfirmVisible(false);
+      setScoringRoundIndex(null);
       return;
     }
 
@@ -261,14 +264,12 @@ export default function CreatePracticeForm({
     if (hasChanges()) {
       setCloseConfirmVisible(true);
     } else {
-      resetForm();
       onClose();
     }
   };
 
   const handleConfirmClose = () => {
     setCloseConfirmVisible(false);
-    resetForm();
     onClose();
   };
 

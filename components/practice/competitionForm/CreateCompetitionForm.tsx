@@ -149,6 +149,8 @@ export default function CreateCompetitionForm({
   useEffect(() => {
     if (!visible) {
       setEditingId(null);
+      setCloseConfirmVisible(false);
+      setConfirmVisible(false);
       return;
     }
 
@@ -221,14 +223,12 @@ export default function CreateCompetitionForm({
     if (hasChanges()) {
       setCloseConfirmVisible(true);
     } else {
-      resetForm();
       onClose();
     }
   };
 
   const handleConfirmClose = () => {
     setCloseConfirmVisible(false);
-    resetForm();
     onClose();
   };
 
