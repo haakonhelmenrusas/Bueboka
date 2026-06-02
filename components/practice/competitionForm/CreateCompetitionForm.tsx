@@ -272,6 +272,8 @@ export default function CreateCompetitionForm({
 
   // ─── Save ──────────────────────────────────────────────────────────────────
   const handleSave = async () => {
+    Keyboard.dismiss();
+
     if (!name.trim()) {
       setError(t['competitionForm.nameRequired']);
       setStep(0);

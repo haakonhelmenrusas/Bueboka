@@ -371,6 +371,7 @@ export default function CreatePracticeForm({
 
   // ─── Save ────────────────────────────────────────────────────────────────────
   const handleSaveAndFinish = async () => {
+    Keyboard.dismiss();
     setSubmitting(true);
     setError(null);
     try {
