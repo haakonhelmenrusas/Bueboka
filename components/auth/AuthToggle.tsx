@@ -1,4 +1,5 @@
-import { View, Text, TouchableOpacity } from 'react-native';
+import { Text, View } from 'react-native';
+import { Button } from '@/components/common';
 import { useTranslation } from '@/contexts';
 import { styles } from './AuthStyles';
 
@@ -12,9 +13,15 @@ export default function AuthToggle({ isLogin, isLoading, onToggle }: AuthToggleP
   const { t } = useTranslation();
   return (
     <View style={styles.toggleContainer}>
-      <TouchableOpacity onPress={onToggle} disabled={isLoading}>
-        <Text style={styles.toggleLink}>{isLogin ? t['auth.toggleToRegister'] : t['auth.toggleToLogin']}</Text>
-      </TouchableOpacity>
+      <Text style={styles.togglePrompt}>{isLogin ? t['auth.noAccountPrompt'] : t['auth.hasAccountPrompt']}</Text>
+      <Button
+        label={isLogin ? t['auth.toggleToRegister'] : t['auth.toggleToLogin']}
+        onPress={onToggle}
+        disabled={isLoading}
+        type="outline"
+        buttonStyle={{ width: '100%' }}
+        variant="tertiary"
+      />
     </View>
   );
 }

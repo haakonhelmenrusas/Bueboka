@@ -9,10 +9,11 @@ interface CheckboxProps {
   value: boolean;
   onChange: (newValue: boolean) => void;
   label?: string;
+  helpText?: string;
   disabled?: boolean;
 }
 
-export default function Checkbox({ value, onChange, label, disabled }: CheckboxProps) {
+export default function Checkbox({ value, onChange, label, helpText, disabled }: CheckboxProps) {
   const accessibilityState: AccessibilityState = {
     checked: value,
     disabled,
@@ -28,7 +29,14 @@ export default function Checkbox({ value, onChange, label, disabled }: CheckboxP
       <View style={[styles.checkbox, value && styles.checkboxChecked]}>
         {value && <FontAwesomeIcon icon={faCheck} size={14} color={colors.white} />}
       </View>
-      {label ? <Text style={styles.label}>{label}</Text> : <View />}
+      {label ? (
+        <View style={styles.labelContainer}>
+          <Text style={styles.label}>{label}</Text>
+          {helpText ? <Text style={styles.helpText}>{helpText}</Text> : null}
+        </View>
+      ) : (
+        <View />
+      )}
     </Pressable>
   );
 }

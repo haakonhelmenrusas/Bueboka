@@ -29,6 +29,8 @@ export interface TranslationKeys {
   'auth.errorTitle': string;
   'auth.toggleToRegister': string;
   'auth.toggleToLogin': string;
+  'auth.noAccountPrompt': string;
+  'auth.hasAccountPrompt': string;
   'auth.divider': string;
 
   // Validation
@@ -559,6 +561,7 @@ export interface TranslationKeys {
   // Common additions
   'common.advanced': string;
   'common.favourite': string;
+  'common.favouriteHelpText': string;
   'common.noResults': string;
   'common.chooseOption': string;
   'common.create': string;
@@ -780,7 +783,6 @@ export interface TranslationKeys {
   'onboarding.tip3Desc': string;
   'onboarding.tip4Title': string;
   'onboarding.tip4Desc': string;
-  'onboarding.skip': string;
   'onboarding.previous': string;
   'onboarding.next': string;
   'onboarding.getStarted': string;
