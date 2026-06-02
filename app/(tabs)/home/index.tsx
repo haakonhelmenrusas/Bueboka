@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useRef } from 'react';
 import { Alert, View, Text, ScrollView, RefreshControl, TouchableOpacity } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter, useFocusEffect } from 'expo-router';
@@ -64,9 +64,12 @@ export default function HomeScreen() {
   const [selectedPracticeForDetails, setSelectedPracticeForDetails] = useState<Practice | null>(null);
   const [selectedCompetitionForDetails, setSelectedCompetitionForDetails] = useState<Competition | null>(null);
   const [unlockedAchievements, setUnlockedAchievements] = useState<Achievement[]>([]);
+  const [equipmentLoading, setEquipmentLoading] = useState(true);
+  const hasLoadedEquipment = useRef(false);
 
   const loadData = useCallback(async () => {
     if (!user) return;
+    if (!hasLoadedEquipment.current) setEquipmentLoading(true);
     try {
       const [statsResult, bowsResult, arrowsResult] = await Promise.allSettled([
         statsApi.getStats(),
@@ -83,10 +86,12 @@ export default function HomeScreen() {
       if (arrowsResult.status === 'fulfilled') {
         setArrows(arrowsResult.value || []);
       }
+      hasLoadedEquipment.current = true;
     } catch (_error) {
       console.error('[HomePage] Error loading data:', _error);
     } finally {
       setRefreshing(false);
+      setEquipmentLoading(false);
     }
   }, [user]);
 
@@ -203,6 +208,7 @@ export default function HomeScreen() {
           <EquipmentSection
             bows={bows}
             arrows={arrows}
+            loading={equipmentLoading}
             onSelectBow={(bow) => {
               setSelectedBowForDetails(bow);
               setSelectedBow(null);

@@ -78,10 +78,12 @@ export const no: TranslationKeys = {
   'recentActivity.seeAllAriaLabel': 'Se alle aktiviteter',
   'recentActivity.empty': 'Ingen treninger eller konkurranser ennå',
 
+  'equipment.title': 'Utstyr',
   'equipment.bows': 'Buer',
   'equipment.arrows': 'Piler',
   'equipment.noBows': 'Ingen buer lagt til ennå',
   'equipment.noArrows': 'Ingen piler lagt til ennå',
+  'equipment.noEquipment': 'Ingen utstyr lagt til ennå',
 
   'statsSummary.last7days': 'Siste 7 dager',
   'statsSummary.last30days': 'Siste 30 dager',

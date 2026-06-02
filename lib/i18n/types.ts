@@ -89,10 +89,12 @@ export interface TranslationKeys {
   'recentActivity.empty': string;
 
   // Equipment section
+  'equipment.title': string;
   'equipment.bows': string;
   'equipment.arrows': string;
   'equipment.noBows': string;
   'equipment.noArrows': string;
+  'equipment.noEquipment': string;
 
   // Stats summary
   'statsSummary.last7days': string;

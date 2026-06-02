@@ -78,10 +78,12 @@ export const en: TranslationKeys = {
   'recentActivity.seeAllAriaLabel': 'See all activities',
   'recentActivity.empty': 'No practices or competitions yet',
 
+  'equipment.title': 'Equipment',
   'equipment.bows': 'Bows',
   'equipment.arrows': 'Arrows',
   'equipment.noBows': 'No bows added yet',
   'equipment.noArrows': 'No arrows added yet',
+  'equipment.noEquipment': 'No equipment added yet',
 
   'statsSummary.last7days': 'Last 7 days',
   'statsSummary.last30days': 'Last 30 days',
