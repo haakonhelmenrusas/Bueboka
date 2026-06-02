@@ -193,7 +193,6 @@ export default function ArrowForm({ modalVisible, setArrowModalVisible, arrowSet
                   containerStyle={{ flex: 1 }}
                   label={t['arrowDetails.arrowCount']}
                   keyboardType="numeric"
-                  helpText={t['arrowForm.arrowCountHelpText']}
                   value={arrowsCount}
                   onChangeText={(value) => handleNumberChange(value, 'SET_ARROWS_COUNT', dispatch)}
                 />
@@ -202,6 +201,7 @@ export default function ArrowForm({ modalVisible, setArrowModalVisible, arrowSet
               <Checkbox
                 value={isFavorite}
                 label={t['common.favourite']}
+                helpText={t['common.favouriteHelpText']}
                 onChange={(newValue) => dispatch({ type: 'SET_FAVORITE', payload: newValue })}
               />
 

@@ -561,6 +561,7 @@ export interface TranslationKeys {
   // Common additions
   'common.advanced': string;
   'common.favourite': string;
+  'common.favouriteHelpText': string;
   'common.noResults': string;
   'common.chooseOption': string;
   'common.create': string;
