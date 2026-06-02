@@ -255,6 +255,7 @@ export const en: TranslationKeys = {
   'practiceForm.discardMessage': 'You have unsaved changes. Are you sure you want to close without saving?',
   'practiceForm.discardConfirm': 'Discard',
   'practiceForm.discardCancel': 'Continue editing',
+  'practiceForm.noArrowsError': 'You must record at least one arrow to save the practice.',
   'practiceForm.saveError': 'Could not save practice.',
   'practiceForm.startShootingError': 'Could not start the shooting session.',
 
@@ -715,8 +716,7 @@ export const en: TranslationKeys = {
 
   'onboarding.welcomeTitle': 'Welcome to Bueboka!',
   'onboarding.welcomeSubtitle': 'Your digital training diary for archery',
-  'onboarding.welcomeBody':
-    'Bueboka helps you keep track of your training sessions, follow your development, and improve your shooting.',
+  'onboarding.welcomeBody': 'Bueboka helps you keep track of your training sessions, follow your development, and improve your shooting.',
   'onboarding.feature1Title': 'Log training sessions',
   'onboarding.feature1Desc': 'Record all your sessions with details about bow, arrows, distance, and score',
   'onboarding.feature2Title': 'View statistics',
@@ -726,11 +726,9 @@ export const en: TranslationKeys = {
   'onboarding.stepsTitle': 'Get started in 3 steps',
   'onboarding.stepsSubtitle': 'How to set up Bueboka',
   'onboarding.step1Title': 'Add your equipment',
-  'onboarding.step1Desc':
-    'Tap the "+" button and add your bow and arrows. Mark favourites for faster registration!',
+  'onboarding.step1Desc': 'Tap the "+" button and add your bow and arrows. Mark favourites for faster registration!',
   'onboarding.step2Title': 'Log your first session',
-  'onboarding.step2Desc':
-    'Tap the "+" button and choose "New practice" to log your session with arrow count, score, and distance.',
+  'onboarding.step2Desc': 'Tap the "+" button and choose "New practice" to log your session with arrow count, score, and distance.',
   'onboarding.step3Title': 'Explore your statistics',
   'onboarding.step3Desc': 'Tap "View detailed statistics" to see your development over time.',
   'onboarding.tipsTitle': 'Tips for the best experience',

@@ -255,6 +255,7 @@ export const no: TranslationKeys = {
   'practiceForm.discardMessage': 'Du har ulagrede endringer. Er du sikker på at du vil lukke uten å lagre?',
   'practiceForm.discardConfirm': 'Forkast',
   'practiceForm.discardCancel': 'Fortsett redigering',
+  'practiceForm.noArrowsError': 'Du må registrere minst én pil for å lagre treningen.',
   'practiceForm.saveError': 'Kunne ikke lagre trening.',
   'practiceForm.startShootingError': 'Kunne ikke starte skyteøkten.',
 

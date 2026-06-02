@@ -281,6 +281,7 @@ export interface TranslationKeys {
   'practiceForm.discardMessage': string;
   'practiceForm.discardConfirm': string;
   'practiceForm.discardCancel': string;
+  'practiceForm.noArrowsError': string;
   'practiceForm.saveError': string;
   'practiceForm.startShootingError': string;
 
