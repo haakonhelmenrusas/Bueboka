@@ -44,6 +44,7 @@ export interface TranslationKeys {
   'common.error': string;
   'common.cancel': string;
   'common.delete': string;
+  'common.close': string;
   'common.tryAgain': string;
   'common.seeAll': string;
 
@@ -383,6 +384,14 @@ export interface TranslationKeys {
   'achievements.emptyTitle': string;
   'achievements.emptySubtitle': string;
   'achievements.unlockedBadge': string;
+
+  'achievementUnlock.titleSingle': string;
+  'achievementUnlock.titleMultiple': string;
+  'achievementUnlock.subtitleSingle': string;
+  'achievementUnlock.subtitleMultiple': string;
+  'achievementUnlock.points': string;
+  'achievementUnlock.totalPoints': string;
+  'achievementUnlock.viewAll': string;
 
   // Statistics screen
   'statistics.title': string;

@@ -9,8 +9,16 @@ import { useTranslation } from '@/contexts';
 import { Message, Button, MobileActionButton } from '@/components/common';
 import { colors } from '@/styles/colors';
 import { statsApi, StatsResponse } from '@/services/api/statsApi';
-import { arrowsRepository, bowRepository, competitionRepository, practiceRepository, userRepository } from '@/services/repositories';
+import {
+  achievementRepository,
+  arrowsRepository,
+  bowRepository,
+  competitionRepository,
+  practiceRepository,
+  userRepository,
+} from '@/services/repositories';
 import { Bow, Arrows, Practice, Competition } from '@/types';
+import { Achievement } from '@/types/Achievement';
 import BowForm from '@/components/home/bowForm/BowForm';
 import ArrowForm from '@/components/home/arrowForm/ArrowForm';
 import BowDetails from '@/components/home/bowDetails/BowDetails';
@@ -25,6 +33,7 @@ import CreateCompetitionForm from '@/components/practice/competitionForm/CreateC
 import { faUserGroup } from '@fortawesome/free-solid-svg-icons';
 import { PracticeDetailsModal } from '@/components/practice/practiceDetailsModal';
 import OnboardingModal from '@/components/onboarding/OnboardingModal';
+import { AchievementUnlockModal } from '@/components/achievements/AchievementUnlockModal';
 
 export default function HomeScreen() {
   const { user, refreshUser } = useAuth();
@@ -54,6 +63,7 @@ export default function HomeScreen() {
   const [editingCompetition, setEditingCompetition] = useState<Competition | null>(null);
   const [selectedPracticeForDetails, setSelectedPracticeForDetails] = useState<Practice | null>(null);
   const [selectedCompetitionForDetails, setSelectedCompetitionForDetails] = useState<Competition | null>(null);
+  const [unlockedAchievements, setUnlockedAchievements] = useState<Achievement[]>([]);
 
   const loadData = useCallback(async () => {
     if (!user) return;
@@ -93,9 +103,15 @@ export default function HomeScreen() {
     setPracticesRefreshKey((k) => k + 1);
   };
 
-  const handlePracticesSaved = () => {
+  const handlePracticesSaved = async () => {
     setPracticesRefreshKey((k) => k + 1);
     loadData();
+    try {
+      const result = await achievementRepository.check();
+      if (result.newAchievements?.length > 0) {
+        setUnlockedAchievements(result.newAchievements);
+      }
+    } catch {}
   };
 
   async function handleAvatarUpload(uri: string) {
@@ -214,6 +230,7 @@ export default function HomeScreen() {
         setArrowModalVisible={setArrowModalVisible}
         arrowSet={selectedArrowSet}
         existingArrowSets={arrows}
+        onSuccess={loadData}
       />
       {selectedBowForDetails && (
         <BowDetails
@@ -319,8 +336,16 @@ export default function HomeScreen() {
         editingCompetition={editingCompetition}
         onSaved={handlePracticesSaved}
       />
-      {!onboardingLoading && (
-        <OnboardingModal visible={!hasSeenOnboarding} onClose={markAsSeen} />
+      {!onboardingLoading && <OnboardingModal visible={!hasSeenOnboarding} onClose={markAsSeen} />}
+      {unlockedAchievements.length > 0 && (
+        <AchievementUnlockModal
+          achievements={unlockedAchievements}
+          onClose={() => setUnlockedAchievements([])}
+          onViewAll={() => {
+            setUnlockedAchievements([]);
+            router.push('/achievements');
+          }}
+        />
       )}
     </View>
   );

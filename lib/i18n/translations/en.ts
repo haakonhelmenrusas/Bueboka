@@ -37,6 +37,7 @@ export const en: TranslationKeys = {
   'common.error': 'Error',
   'common.cancel': 'Cancel',
   'common.delete': 'Delete',
+  'common.close': 'Close',
   'common.tryAgain': 'Please try again.',
   'common.seeAll': 'See all',
 
@@ -349,6 +350,14 @@ export const en: TranslationKeys = {
   'achievements.emptyTitle': 'No badges found',
   'achievements.emptySubtitle': 'Try changing your filters',
   'achievements.unlockedBadge': 'Unlocked!',
+
+  'achievementUnlock.titleSingle': 'New Achievement!',
+  'achievementUnlock.titleMultiple': 'New Achievements!',
+  'achievementUnlock.subtitleSingle': 'Congratulations! You have unlocked a new achievement',
+  'achievementUnlock.subtitleMultiple': 'Congratulations! You have unlocked new achievements',
+  'achievementUnlock.points': 'points',
+  'achievementUnlock.totalPoints': 'Total:',
+  'achievementUnlock.viewAll': 'View all achievements',
 
   'statistics.title': 'Statistics',
   'statistics.subtitle': 'Detailed overview of your shooting',

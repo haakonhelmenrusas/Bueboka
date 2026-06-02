@@ -2,10 +2,11 @@ import { useCallback, useEffect, useState } from 'react';
 import { Alert, ScrollView, View } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { useFocusEffect } from 'expo-router';
+import { useFocusEffect, useRouter } from 'expo-router';
 import { colors } from '@/styles/colors';
-import { arrowsRepository, bowRepository, competitionRepository, practiceRepository } from '@/services/repositories';
+import { achievementRepository, arrowsRepository, bowRepository, competitionRepository, practiceRepository } from '@/services/repositories';
 import { Arrows, Bow, Competition, Practice, PracticeCardItem, PracticeFilter } from '@/types';
+import { Achievement } from '@/types/Achievement';
 import CreatePracticeForm from '@/components/practice/practiceForm/CreatePracticeForm';
 import CreateCompetitionForm from '@/components/practice/competitionForm/CreateCompetitionForm';
 import BowForm from '@/components/home/bowForm/BowForm';
@@ -15,12 +16,14 @@ import { PracticeDetailsModal } from '@/components/practice/practiceDetailsModal
 import { AktivitetHeader, PracticeList } from '@/components/aktivitet';
 import { useTranslation } from '@/contexts';
 import { styles } from '@/components/aktivitet/AktivitetStyles';
+import { AchievementUnlockModal } from '@/components/achievements/AchievementUnlockModal';
 
 const PAGE_SIZE = 15;
 
 export default function AktivitetScreen() {
   const insets = useSafeAreaInsets();
   const { t } = useTranslation();
+  const router = useRouter();
 
   const [bows, setBows] = useState<Bow[]>([]);
   const [arrows, setArrows] = useState<Arrows[]>([]);
@@ -43,6 +46,7 @@ export default function AktivitetScreen() {
   const [selectedArrowSet, setSelectedArrowSet] = useState<Arrows | null>(null);
   const [selectedPracticeForDetails, setSelectedPracticeForDetails] = useState<Practice | null>(null);
   const [selectedCompetitionForDetails, setSelectedCompetitionForDetails] = useState<Competition | null>(null);
+  const [unlockedAchievements, setUnlockedAchievements] = useState<Achievement[]>([]);
 
   const fetchCards = useCallback(async (currentFilter: PracticeFilter, currentPage: number, append = false) => {
     if (currentPage === 1) setLoading(true);
@@ -118,8 +122,14 @@ export default function AktivitetScreen() {
     }
   };
 
-  const handleSaved = () => {
+  const handleSaved = async () => {
     setRefreshKey((k) => k + 1);
+    try {
+      const result = await achievementRepository.check();
+      if (result.newAchievements?.length > 0) {
+        setUnlockedAchievements(result.newAchievements);
+      }
+    } catch {}
   };
 
   const hasMore = cards.length < total;
@@ -210,6 +220,7 @@ export default function AktivitetScreen() {
         setArrowModalVisible={setArrowModalVisible}
         arrowSet={selectedArrowSet}
         existingArrowSets={arrows}
+        onSuccess={loadEquipment}
       />
       <MobileActionButton
         onCreatePractice={() => {
@@ -229,6 +240,16 @@ export default function AktivitetScreen() {
           setArrowModalVisible(true);
         }}
       />
+      {unlockedAchievements.length > 0 && (
+        <AchievementUnlockModal
+          achievements={unlockedAchievements}
+          onClose={() => setUnlockedAchievements([])}
+          onViewAll={() => {
+            setUnlockedAchievements([]);
+            router.push('/achievements');
+          }}
+        />
+      )}
     </View>
   );
 }

@@ -37,6 +37,7 @@ export const no: TranslationKeys = {
   'common.error': 'Feil',
   'common.cancel': 'Avbryt',
   'common.delete': 'Slett',
+  'common.close': 'Lukk',
   'common.tryAgain': 'Prøv igjen.',
   'common.seeAll': 'Se alle',
 
@@ -349,6 +350,14 @@ export const no: TranslationKeys = {
   'achievements.emptyTitle': 'Ingen merker funnet',
   'achievements.emptySubtitle': 'Prøv å endre filtrene dine',
   'achievements.unlockedBadge': 'Låst opp!',
+
+  'achievementUnlock.titleSingle': 'Nytt merke!',
+  'achievementUnlock.titleMultiple': 'nye merker!',
+  'achievementUnlock.subtitleSingle': 'Gratulerer! Du har låst opp et nytt merke',
+  'achievementUnlock.subtitleMultiple': 'Gratulerer! Du har låst opp nye merker',
+  'achievementUnlock.points': 'poeng',
+  'achievementUnlock.totalPoints': 'Totalt:',
+  'achievementUnlock.viewAll': 'Se alle merker',
 
   'statistics.title': 'Statistikk',
   'statistics.subtitle': 'Detaljert oversikt over din skyting',
