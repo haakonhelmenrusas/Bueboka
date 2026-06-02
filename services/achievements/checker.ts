@@ -35,7 +35,7 @@ export function calculateUserStats(practices: Practice[]): UserStats {
     let practiceArrows = 0;
 
     if (practice.ends && Array.isArray(practice.ends)) {
-      practiceArrows = practice.ends.reduce((sum, end) => sum + (end.arrows ?? 0), 0);
+      practiceArrows = practice.ends.reduce((sum, end) => sum + (end.arrows ?? 0) + (end.arrowsWithoutScore ?? 0), 0);
       stats.totalArrows += practiceArrows;
     }
 
@@ -143,7 +143,7 @@ function checkRequirement(
       break;
 
     case 'ARROWS_IN_SESSION': {
-      current = Math.max(...practices.map((p) => p.ends?.reduce((sum, end) => sum + (end.arrows ?? 0), 0) || 0), 0);
+      current = Math.max(...practices.map((p) => p.ends?.reduce((sum, end) => sum + (end.arrows ?? 0) + (end.arrowsWithoutScore ?? 0), 0) || 0), 0);
       required = value as number;
       isMet = compareValues(current, required, comparator);
       break;
