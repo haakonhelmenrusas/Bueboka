@@ -66,12 +66,12 @@ function makeBow(type: BowType) {
   };
 }
 
-function makeEnd(arrows: number, scores: number[] = []): Practice['ends'][number] {
+function makeEnd(arrows: number, scores: number[] = [], arrowsWithoutScore: number | null = null): Practice['ends'][number] {
   return {
     id: 'e1',
     practiceId: 'p1',
     arrows,
-    arrowsWithoutScore: null,
+    arrowsWithoutScore,
     scores,
     roundScore: scores.length > 0 ? scores.reduce((a, b) => a + b, 0) : null,
     distanceMeters: null,
@@ -106,6 +106,20 @@ describe('calculateUserStats – edge cases', () => {
     expect(stats.practicesByCategory['UNKNOWN_CAT']).toBeUndefined();
   });
 
+  it('includes arrowsWithoutScore in totalArrows', () => {
+    const practice = makePractice({ ends: [makeEnd(6, [], 4)] });
+    const stats = calculateUserStats([practice]);
+    expect(stats.totalArrows).toBe(10);
+  });
+
+  it('sums both scored and unscored arrows across multiple ends', () => {
+    const practice = makePractice({
+      ends: [makeEnd(3, [], 2), makeEnd(5, [], 3)],
+    });
+    const stats = calculateUserStats([practice]);
+    expect(stats.totalArrows).toBe(13);
+  });
+
   it('does not track bow type when bow is undefined', () => {
     const practice = makePractice({ bow: undefined });
     const stats = calculateUserStats([practice]);
@@ -119,6 +133,12 @@ describe('calculateUserStats – edge cases', () => {
     ];
     const stats = calculateUserStats(practices);
     expect(stats.arrowsByBowType['RECURVE']).toBe(50);
+  });
+
+  it('includes arrowsWithoutScore in arrowsByBowType', () => {
+    const practice = makePractice({ bow: makeBow(BowType.RECURVE), ends: [makeEnd(6, [], 4)] });
+    const stats = calculateUserStats([practice]);
+    expect(stats.arrowsByBowType['RECURVE']).toBe(10);
   });
 });
 
@@ -362,6 +382,34 @@ describe('checkAllAchievements – BOW_TYPE_COUNT increments', () => {
     const result = checkAllAchievements(practices, [], true);
     const entry = result.find((r) => r.achievement.id === 'master-of-all-bows')!;
     expect(entry.isUnlocked).toBe(false);
+  });
+});
+
+// ── Unscored arrows in achievements ─────────────────────────────────────────
+
+describe('checkAllAchievements – unscored arrows count towards totals', () => {
+  it('unlocks arrows-1000 when scored + unscored arrows reach threshold', () => {
+    const practice = makePractice({ ends: [makeEnd(600, [], 400)] });
+    const result = checkAllAchievements([practice], [], true);
+    const entry = result.find((r) => r.achievement.id === 'arrows-1000')!;
+    expect(entry.isUnlocked).toBe(true);
+    expect(entry.current).toBe(1000);
+  });
+
+  it('unlocks big-session when scored + unscored arrows reach 200 in one session', () => {
+    const practice = makePractice({ ends: [makeEnd(120, [], 80)] });
+    const result = checkAllAchievements([practice], [], true);
+    const entry = result.find((r) => r.achievement.id === 'big-session')!;
+    expect(entry.isUnlocked).toBe(true);
+    expect(entry.current).toBe(200);
+  });
+
+  it('unlocks recurve-dedicated when scored + unscored recurve arrows reach 10,000', () => {
+    const practice = makePractice({ bow: makeBow(BowType.RECURVE), ends: [makeEnd(6000, [], 4000)] });
+    const result = checkAllAchievements([practice], [], true);
+    const entry = result.find((r) => r.achievement.id === 'recurve-dedicated')!;
+    expect(entry.isUnlocked).toBe(true);
+    expect(entry.current).toBe(10000);
   });
 });
 
