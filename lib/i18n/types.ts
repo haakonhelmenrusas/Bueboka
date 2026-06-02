@@ -267,6 +267,8 @@ export interface TranslationKeys {
   'scoring.editScores': string;
   'scoring.continueScoring': string;
   'scoring.done': string;
+  'scoring.targetHint': string;
+  'scoring.undoLast': string;
 
   // Reflection step UI
   'reflection.ratingLabel': string;

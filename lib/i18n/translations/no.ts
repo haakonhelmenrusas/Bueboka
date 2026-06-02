@@ -243,6 +243,8 @@ export const no: TranslationKeys = {
   'scoring.editScores': 'Rediger score',
   'scoring.continueScoring': 'Fortsett scoring',
   'scoring.done': 'Ferdig',
+  'scoring.targetHint': 'Trykk for å plassere pil. Hold inne og dra for å zoome.',
+  'scoring.undoLast': 'Angre siste',
 
   'reflection.ratingLabel': 'Vurdering (valgfritt)',
   'reflection.ratingPromptPractice': 'Hvordan vil du vurdere treningen?',

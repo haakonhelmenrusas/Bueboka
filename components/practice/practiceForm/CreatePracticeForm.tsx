@@ -331,6 +331,18 @@ export default function CreatePracticeForm({
     });
   };
 
+  const removeLastArrowScore = (roundIndex: number) => {
+    const current = rounds[roundIndex].scores ?? [];
+    if (current.length === 0) return;
+    const newScores = current.slice(0, -1);
+    const newTotal = newScores.reduce((a, b) => a + b, 0);
+    setRounds((prev) => {
+      const next = [...prev];
+      next[roundIndex] = { ...next[roundIndex], scores: newScores, roundScore: newTotal };
+      return next;
+    });
+  };
+
   // ─── Persist last used ───────────────────────────────────────────────────────
   const persistLastUsed = async (validRounds: RoundInput[]) => {
     if (validRounds.length === 0) return;
@@ -534,6 +546,7 @@ export default function CreatePracticeForm({
           onSetEditingIndex={(idx) => setEditingIndex(scoringRoundIndex, idx)}
           onAddArrowScore={(score) => addArrowScore(scoringRoundIndex, score)}
           onUpdateArrowScore={(arrowIndex, score) => updateArrowScore(scoringRoundIndex, arrowIndex, score)}
+          onRemoveLastArrowScore={() => removeLastArrowScore(scoringRoundIndex)}
         />
       )}
     </ModalWrapper>

@@ -1,4 +1,5 @@
-import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { useState } from 'react';
+import { Pressable, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faChevronLeft } from '@fortawesome/free-solid-svg-icons/faChevronLeft';
@@ -13,7 +14,12 @@ import { colors } from '@/styles/colors';
 import { styles } from './CreatePracticeFormStyles';
 import { ArrowChips } from './ArrowChips';
 import { ScoreButtonGrid } from './ScoreButtonGrid';
+import { TargetScoring } from '@/components/practice/scoring/TargetScoring';
 import type { RoundInput } from './CreatePracticeForm';
+
+type ScoringMethod = 'buttons' | 'target';
+
+const NON_TARGET_SCORING_TYPES = ['bar', 'historisk-nl-inne', 'other'];
 
 interface ScoringModalProps {
   visible: boolean;
@@ -27,6 +33,7 @@ interface ScoringModalProps {
   onSetEditingIndex: (idx: number | null) => void;
   onAddArrowScore: (score: number) => void;
   onUpdateArrowScore: (arrowIndex: number, score: number) => void;
+  onRemoveLastArrowScore: () => void;
 }
 
 export function ScoringModal({
@@ -41,9 +48,13 @@ export function ScoringModal({
   onSetEditingIndex,
   onAddArrowScore,
   onUpdateArrowScore,
+  onRemoveLastArrowScore,
 }: ScoringModalProps) {
   const { t } = useTranslation();
   const insets = useSafeAreaInsets();
+  const [scoringMethod, setScoringMethod] = useState<ScoringMethod>('buttons');
+
+  const supportsTargetScoring = !NON_TARGET_SCORING_TYPES.includes(round.targetType);
 
   const maxArrows = round.numberArrows ?? 0;
   const hasManualScore = round.roundScore > 0 && (round.scores ?? []).length === 0;
@@ -73,7 +84,16 @@ export function ScoringModal({
 
   const editingIdx = editingIndex ?? null;
   const isEditingArrow = editingIdx !== null;
-  const showScoreButtons = (isActiveEnd && !isEndFilled) || isEditingArrow;
+  const showScoreInput = (isActiveEnd && !isEndFilled) || isEditingArrow;
+
+  const handleScorePress = (score: number) => {
+    if (isEditingArrow) {
+      onUpdateArrowScore(editingIdx!, score);
+      onSetEditingIndex(null);
+    } else {
+      onAddArrowScore(score);
+    }
+  };
 
   return (
     <ModalWrapper visible={visible} onClose={onClose} fullScreen>
@@ -102,6 +122,27 @@ export function ScoringModal({
             </View>
           ) : (
             <View style={{ gap: 16 }}>
+              {supportsTargetScoring && (
+                <View style={styles.scoringMethodSection}>
+                  <View style={styles.scoringMethodButtons}>
+                    <Pressable
+                      style={[styles.scoringMethodButton, scoringMethod === 'buttons' && styles.scoringMethodButtonActive]}
+                      onPress={() => setScoringMethod('buttons')}>
+                      <Text style={[styles.scoringMethodButtonText, scoringMethod === 'buttons' && styles.scoringMethodButtonTextActive]}>
+                        {t['scoring.methodButtons']}
+                      </Text>
+                    </Pressable>
+                    <Pressable
+                      style={[styles.scoringMethodButton, scoringMethod === 'target' && styles.scoringMethodButtonActive]}
+                      onPress={() => setScoringMethod('target')}>
+                      <Text style={[styles.scoringMethodButtonText, scoringMethod === 'target' && styles.scoringMethodButtonTextActive]}>
+                        {t['scoring.methodTarget']}
+                      </Text>
+                    </Pressable>
+                  </View>
+                </View>
+              )}
+
               {totalEnds > 1 && (
                 <View style={styles.endNav}>
                   <TouchableOpacity
@@ -137,22 +178,23 @@ export function ScoringModal({
                 {filledCount > 0 && <Text style={styles.scoringTotal}>{`${t['scoring.sum']} ${total}`}</Text>}
               </View>
 
-              {showScoreButtons && (
+              {showScoreInput && (
                 <>
                   {isEditingArrow && (
                     <Text style={styles.editingHint}>{`${t['scoring.editingArrowPrefix']} ${(editingIdx! % arrowsPerEnd) + 1}`}</Text>
                   )}
-                  <ScoreButtonGrid
-                    environment={environment}
-                    onScorePress={(score) => {
-                      if (isEditingArrow) {
-                        onUpdateArrowScore(editingIdx!, score);
-                        onSetEditingIndex(null);
-                      } else {
-                        onAddArrowScore(score);
-                      }
-                    }}
-                  />
+
+                  {scoringMethod === 'buttons' ? (
+                    <ScoreButtonGrid environment={environment} onScorePress={handleScorePress} />
+                  ) : (
+                    <TargetScoring
+                      onScorePress={handleScorePress}
+                      onUndoLast={onRemoveLastArrowScore}
+                      disabled={isFull}
+                      editingIdx={isEditingArrow ? editingIdx : null}
+                      targetType={round.targetType}
+                    />
+                  )}
                 </>
               )}
 
