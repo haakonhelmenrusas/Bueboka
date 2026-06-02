@@ -95,6 +95,7 @@ export default function HomeScreen() {
 
   const handlePracticesSaved = () => {
     setPracticesRefreshKey((k) => k + 1);
+    loadData();
   };
 
   async function handleAvatarUpload(uri: string) {
