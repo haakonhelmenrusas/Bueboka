@@ -24,6 +24,8 @@ export const en: TranslationKeys = {
   'auth.errorTitle': 'Error',
   'auth.toggleToRegister': 'Sign up',
   'auth.toggleToLogin': 'Log in',
+  'auth.noAccountPrompt': "Don't have an account?",
+  'auth.hasAccountPrompt': 'Already have an account?',
   'auth.divider': 'or',
 
   'validation.emailPasswordRequired': 'Email and password are required',
@@ -740,7 +742,6 @@ export const en: TranslationKeys = {
   'onboarding.tip3Desc': 'Log all your sessions for the best overview of your development',
   'onboarding.tip4Title': 'Set up sight marks',
   'onboarding.tip4Desc': 'Use the sight marks tab to calculate and save your sight marks for different distances',
-  'onboarding.skip': 'Skip',
   'onboarding.previous': 'Previous',
   'onboarding.next': 'Next',
   'onboarding.getStarted': 'Get started!',

@@ -26,25 +26,10 @@ export const styles = StyleSheet.create({
     paddingHorizontal: 28,
   },
 
-  // Skip button
-  skipButton: {
-    position: 'absolute',
-    top: 8,
-    right: 28,
-    zIndex: 1,
-    paddingVertical: 8,
-    paddingHorizontal: 4,
-  },
-  skipText: {
-    fontSize: 15,
-    color: colors.white50,
-    fontWeight: '500',
-  },
-
   // Header
   header: {
     alignItems: 'center',
-    paddingTop: 48,
+    paddingTop: 24,
     marginBottom: 32,
   },
   title: {
@@ -176,7 +161,7 @@ export const styles = StyleSheet.create({
 
   // Footer
   footer: {
-    paddingBottom: 40,
+    paddingBottom: 12,
     paddingTop: 16,
     gap: 20,
     alignItems: 'center',

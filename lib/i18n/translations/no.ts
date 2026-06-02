@@ -24,6 +24,8 @@ export const no: TranslationKeys = {
   'auth.errorTitle': 'Feil',
   'auth.toggleToRegister': 'Registrer deg',
   'auth.toggleToLogin': 'Logg inn',
+  'auth.noAccountPrompt': 'Har du ikke en konto?',
+  'auth.hasAccountPrompt': 'Har du allerede en konto?',
   'auth.divider': 'eller',
 
   'validation.emailPasswordRequired': 'E-post og passord er påkrevd',
@@ -648,7 +650,7 @@ export const no: TranslationKeys = {
     'Søk blant bueskyttere som har valgt å dele profilen sin med andre Bueboka-skyttere. Det er kun registrerte brukere som kan søke.',
   'skyttere.searchPlaceholder': 'Søk etter navn eller klubb…',
   'skyttere.searchIdle': 'Begynn å skrive for å søke',
-  'skyttere.backButton': 'Tilbake til søk',
+  'skyttere.backButton': 'Tilbake',
   'skyttere.loadingProfile': 'Laster profil...',
   'skyttere.searching': 'Søker...',
   'skyttere.noResults': 'Ingen resultater',
@@ -712,8 +714,7 @@ export const no: TranslationKeys = {
 
   'onboarding.welcomeTitle': 'Velkommen til Bueboka!',
   'onboarding.welcomeSubtitle': 'Din digitale treningsdagbok for bueskyting',
-  'onboarding.welcomeBody':
-    'Bueboka hjelper deg å holde oversikt over treningene dine, følge din utvikling og forbedre skytingen din.',
+  'onboarding.welcomeBody': 'Bueboka hjelper deg å holde oversikt over treningene dine, følge din utvikling og forbedre skytingen din.',
   'onboarding.feature1Title': 'Registrer treninger',
   'onboarding.feature1Desc': 'Logg alle treningene dine med detaljer om bue, piler, distanse og score',
   'onboarding.feature2Title': 'Se statistikk',
@@ -723,11 +724,9 @@ export const no: TranslationKeys = {
   'onboarding.stepsTitle': 'Kom i gang på 3 steg',
   'onboarding.stepsSubtitle': 'Slik setter du opp Bueboka',
   'onboarding.step1Title': 'Legg til utstyret ditt',
-  'onboarding.step1Desc':
-    'Trykk på «+»-knappen og legg til buen og pilene dine. Marker gjerne favoritter for raskere registrering!',
+  'onboarding.step1Desc': 'Trykk på «+»-knappen og legg til buen og pilene dine. Marker gjerne favoritter for raskere registrering!',
   'onboarding.step2Title': 'Registrer din første trening',
-  'onboarding.step2Desc':
-    'Trykk på «+»-knappen og velg «Ny trening» for å logge økten din med antall piler, score og distanse.',
+  'onboarding.step2Desc': 'Trykk på «+»-knappen og velg «Ny trening» for å logge økten din med antall piler, score og distanse.',
   'onboarding.step3Title': 'Utforsk statistikken din',
   'onboarding.step3Desc': 'Trykk på «Se detaljert statistikk» for å se din utvikling over tid.',
   'onboarding.tipsTitle': 'Tips for best opplevelse',
@@ -740,7 +739,6 @@ export const no: TranslationKeys = {
   'onboarding.tip3Desc': 'Logg alle treningene dine for å få best mulig oversikt over utviklingen',
   'onboarding.tip4Title': 'Sett opp siktmerker',
   'onboarding.tip4Desc': 'Bruk siktmerke-fanen til å beregne og lagre siktmerkene dine for ulike distanser',
-  'onboarding.skip': 'Hopp over',
   'onboarding.previous': 'Forrige',
   'onboarding.next': 'Neste',
   'onboarding.getStarted': 'Kom i gang!',
