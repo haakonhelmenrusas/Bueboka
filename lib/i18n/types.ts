@@ -44,6 +44,7 @@ export interface TranslationKeys {
   'common.error': string;
   'common.cancel': string;
   'common.delete': string;
+  'common.close': string;
   'common.tryAgain': string;
   'common.seeAll': string;
 
@@ -88,10 +89,12 @@ export interface TranslationKeys {
   'recentActivity.empty': string;
 
   // Equipment section
+  'equipment.title': string;
   'equipment.bows': string;
   'equipment.arrows': string;
   'equipment.noBows': string;
   'equipment.noArrows': string;
+  'equipment.noEquipment': string;
 
   // Stats summary
   'statsSummary.last7days': string;
@@ -281,6 +284,7 @@ export interface TranslationKeys {
   'practiceForm.discardMessage': string;
   'practiceForm.discardConfirm': string;
   'practiceForm.discardCancel': string;
+  'practiceForm.noArrowsError': string;
   'practiceForm.saveError': string;
   'practiceForm.startShootingError': string;
 
@@ -382,6 +386,14 @@ export interface TranslationKeys {
   'achievements.emptyTitle': string;
   'achievements.emptySubtitle': string;
   'achievements.unlockedBadge': string;
+
+  'achievementUnlock.titleSingle': string;
+  'achievementUnlock.titleMultiple': string;
+  'achievementUnlock.subtitleSingle': string;
+  'achievementUnlock.subtitleMultiple': string;
+  'achievementUnlock.points': string;
+  'achievementUnlock.totalPoints': string;
+  'achievementUnlock.viewAll': string;
 
   // Statistics screen
   'statistics.title': string;
@@ -615,9 +627,14 @@ export interface TranslationKeys {
   'settings.privacyMSPrivacy': string;
   'settings.privacyFooter': string;
 
-  // Settings — sponsor card
+  // Settings — sponsor & support
   'settings.sponsorLabel': string;
+  'settings.partnerLabel': string;
   'settings.sponsorVisitWebsite': string;
+  'settings.supportTitle': string;
+  'settings.supportDesc': string;
+  'settings.vippsLabel': string;
+  'settings.vippsButton': string;
 
   // Bow form
   'bowForm.editTitle': string;

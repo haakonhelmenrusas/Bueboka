@@ -19,9 +19,10 @@ interface Props {
   setArrowModalVisible: (visible: boolean) => void;
   arrowSet: Arrows | null;
   existingArrowSets: Arrows[];
+  onSuccess?: () => void;
 }
 
-export default function ArrowForm({ modalVisible, setArrowModalVisible, arrowSet, existingArrowSets }: Props) {
+export default function ArrowForm({ modalVisible, setArrowModalVisible, arrowSet, existingArrowSets, onSuccess }: Props) {
   const { t } = useTranslation();
   const [confirmVisible, setConfirmVisible] = useState(false);
   const [submitting, setSubmitting] = useState(false);
@@ -81,6 +82,7 @@ export default function ArrowForm({ modalVisible, setArrowModalVisible, arrowSet
       await arrowsRepository.delete(arrowSet.id);
       clearForm();
       setArrowModalVisible(false);
+      onSuccess?.();
     } catch (error) {
       console.error('Error deleting arrows:', error);
       alert(error instanceof AppError ? error.message : t['arrowForm.deleteError']);
@@ -134,6 +136,7 @@ export default function ArrowForm({ modalVisible, setArrowModalVisible, arrowSet
 
       clearForm();
       setArrowModalVisible(false);
+      onSuccess?.();
     } catch (error) {
       console.error('Error saving arrows:', error);
       alert(error instanceof AppError ? error.message : t['arrowForm.saveError']);

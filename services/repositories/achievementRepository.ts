@@ -1,17 +1,25 @@
 import { authFetchClient as client } from '@/services/api/authFetch';
 import { handleApiError } from '@/services/api/errors';
-import { AchievementData } from '@/types/Achievement';
+import { Achievement, AchievementData } from '@/types/Achievement';
 
-/**
- * Achievement repository — fetches achievement progress from the API
- */
+interface AchievementCheckResponse {
+  newAchievements: Achievement[];
+  totalNewlyUnlocked: number;
+}
+
 export const achievementRepository = {
-  /**
-   * Get all achievement progress for the current user
-   */
   async getAll(): Promise<AchievementData> {
     try {
       const response = await client.get<AchievementData>('/achievements');
+      return response.data;
+    } catch (error) {
+      throw handleApiError(error);
+    }
+  },
+
+  async check(): Promise<AchievementCheckResponse> {
+    try {
+      const response = await client.post<AchievementCheckResponse>('/achievements/check', {});
       return response.data;
     } catch (error) {
       throw handleApiError(error);

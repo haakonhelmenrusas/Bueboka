@@ -37,6 +37,7 @@ export const no: TranslationKeys = {
   'common.error': 'Feil',
   'common.cancel': 'Avbryt',
   'common.delete': 'Slett',
+  'common.close': 'Lukk',
   'common.tryAgain': 'Prøv igjen.',
   'common.seeAll': 'Se alle',
 
@@ -77,10 +78,12 @@ export const no: TranslationKeys = {
   'recentActivity.seeAllAriaLabel': 'Se alle aktiviteter',
   'recentActivity.empty': 'Ingen treninger eller konkurranser ennå',
 
+  'equipment.title': 'Utstyr',
   'equipment.bows': 'Buer',
   'equipment.arrows': 'Piler',
   'equipment.noBows': 'Ingen buer lagt til ennå',
   'equipment.noArrows': 'Ingen piler lagt til ennå',
+  'equipment.noEquipment': 'Ingen utstyr lagt til ennå',
 
   'statsSummary.last7days': 'Siste 7 dager',
   'statsSummary.last30days': 'Siste 30 dager',
@@ -255,6 +258,7 @@ export const no: TranslationKeys = {
   'practiceForm.discardMessage': 'Du har ulagrede endringer. Er du sikker på at du vil lukke uten å lagre?',
   'practiceForm.discardConfirm': 'Forkast',
   'practiceForm.discardCancel': 'Fortsett redigering',
+  'practiceForm.noArrowsError': 'Du må registrere minst én pil for å lagre treningen.',
   'practiceForm.saveError': 'Kunne ikke lagre trening.',
   'practiceForm.startShootingError': 'Kunne ikke starte skyteøkten.',
 
@@ -348,6 +352,14 @@ export const no: TranslationKeys = {
   'achievements.emptyTitle': 'Ingen merker funnet',
   'achievements.emptySubtitle': 'Prøv å endre filtrene dine',
   'achievements.unlockedBadge': 'Låst opp!',
+
+  'achievementUnlock.titleSingle': 'Nytt merke!',
+  'achievementUnlock.titleMultiple': 'nye merker!',
+  'achievementUnlock.subtitleSingle': 'Gratulerer! Du har låst opp et nytt merke',
+  'achievementUnlock.subtitleMultiple': 'Gratulerer! Du har låst opp nye merker',
+  'achievementUnlock.points': 'poeng',
+  'achievementUnlock.totalPoints': 'Totalt:',
+  'achievementUnlock.viewAll': 'Se alle merker',
 
   'statistics.title': 'Statistikk',
   'statistics.subtitle': 'Detaljert oversikt over din skyting',
@@ -573,9 +585,14 @@ export const no: TranslationKeys = {
   'settings.privacyMSPrivacy': 'Microsofts personvernerklæring',
   'settings.privacyFooter': 'Hvis du har spørsmål om hvordan vi håndterer dataene dine, ta gjerne kontakt med oss.',
 
-  // Settings — sponsor card
+  // Settings — sponsor & support
   'settings.sponsorLabel': 'Sponset av',
+  'settings.partnerLabel': 'I samarbeid med',
   'settings.sponsorVisitWebsite': 'Besøk nettsiden',
+  'settings.supportTitle': 'Støtt prosjektet',
+  'settings.supportDesc': 'Bueboka utvikles og driftes av frivillige på dugnad. Alle bidrag går direkte til drift og videreutvikling.',
+  'settings.vippsLabel': 'Vipps-nummer',
+  'settings.vippsButton': 'Åpne Vipps',
 
   // Bow form
   'bowForm.editTitle': 'Rediger bue',

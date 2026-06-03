@@ -139,6 +139,9 @@ export default function CreatePracticeForm({
   useEffect(() => {
     if (!visible) {
       setEditingId(null);
+      setCloseConfirmVisible(false);
+      setConfirmVisible(false);
+      setScoringRoundIndex(null);
       return;
     }
 
@@ -261,14 +264,12 @@ export default function CreatePracticeForm({
     if (hasChanges()) {
       setCloseConfirmVisible(true);
     } else {
-      resetForm();
       onClose();
     }
   };
 
   const handleConfirmClose = () => {
     setCloseConfirmVisible(false);
-    resetForm();
     onClose();
   };
 
@@ -368,8 +369,18 @@ export default function CreatePracticeForm({
         r.roundScore > 0,
     );
 
+  const hasArrows = () =>
+    rounds.some((r) => (r.numberArrows ?? 0) > 0 || (r.arrowsWithoutScore ?? 0) > 0 || (r.scores ?? []).length > 0 || r.roundScore > 0);
+
   // ─── Save ────────────────────────────────────────────────────────────────────
   const handleSaveAndFinish = async () => {
+    Keyboard.dismiss();
+
+    if (!hasArrows()) {
+      setError(t['practiceForm.noArrowsError']);
+      return;
+    }
+
     setSubmitting(true);
     setError(null);
     try {

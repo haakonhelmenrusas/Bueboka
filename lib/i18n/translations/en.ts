@@ -37,6 +37,7 @@ export const en: TranslationKeys = {
   'common.error': 'Error',
   'common.cancel': 'Cancel',
   'common.delete': 'Delete',
+  'common.close': 'Close',
   'common.tryAgain': 'Please try again.',
   'common.seeAll': 'See all',
 
@@ -77,10 +78,12 @@ export const en: TranslationKeys = {
   'recentActivity.seeAllAriaLabel': 'See all activities',
   'recentActivity.empty': 'No practices or competitions yet',
 
+  'equipment.title': 'Equipment',
   'equipment.bows': 'Bows',
   'equipment.arrows': 'Arrows',
   'equipment.noBows': 'No bows added yet',
   'equipment.noArrows': 'No arrows added yet',
+  'equipment.noEquipment': 'No equipment added yet',
 
   'statsSummary.last7days': 'Last 7 days',
   'statsSummary.last30days': 'Last 30 days',
@@ -255,6 +258,7 @@ export const en: TranslationKeys = {
   'practiceForm.discardMessage': 'You have unsaved changes. Are you sure you want to close without saving?',
   'practiceForm.discardConfirm': 'Discard',
   'practiceForm.discardCancel': 'Continue editing',
+  'practiceForm.noArrowsError': 'You must record at least one arrow to save the practice.',
   'practiceForm.saveError': 'Could not save practice.',
   'practiceForm.startShootingError': 'Could not start the shooting session.',
 
@@ -348,6 +352,14 @@ export const en: TranslationKeys = {
   'achievements.emptyTitle': 'No badges found',
   'achievements.emptySubtitle': 'Try changing your filters',
   'achievements.unlockedBadge': 'Unlocked!',
+
+  'achievementUnlock.titleSingle': 'New Achievement!',
+  'achievementUnlock.titleMultiple': 'New Achievements!',
+  'achievementUnlock.subtitleSingle': 'Congratulations! You have unlocked a new achievement',
+  'achievementUnlock.subtitleMultiple': 'Congratulations! You have unlocked new achievements',
+  'achievementUnlock.points': 'points',
+  'achievementUnlock.totalPoints': 'Total:',
+  'achievementUnlock.viewAll': 'View all achievements',
 
   'statistics.title': 'Statistics',
   'statistics.subtitle': 'Detailed overview of your shooting',
@@ -573,9 +585,14 @@ export const en: TranslationKeys = {
   'settings.privacyMSPrivacy': "Microsoft's privacy statement",
   'settings.privacyFooter': 'If you have questions about how we handle your data, please feel free to contact us.',
 
-  // Settings — sponsor card
+  // Settings — sponsor & support
   'settings.sponsorLabel': 'Sponsored by',
+  'settings.partnerLabel': 'In cooperation with',
   'settings.sponsorVisitWebsite': 'Visit website',
+  'settings.supportTitle': 'Support the project',
+  'settings.supportDesc': 'Bueboka is developed and maintained by volunteers. All contributions go directly to operations and further development.',
+  'settings.vippsLabel': 'Vipps number',
+  'settings.vippsButton': 'Open Vipps',
 
   // Bow form
   'bowForm.editTitle': 'Edit bow',
@@ -715,8 +732,7 @@ export const en: TranslationKeys = {
 
   'onboarding.welcomeTitle': 'Welcome to Bueboka!',
   'onboarding.welcomeSubtitle': 'Your digital training diary for archery',
-  'onboarding.welcomeBody':
-    'Bueboka helps you keep track of your training sessions, follow your development, and improve your shooting.',
+  'onboarding.welcomeBody': 'Bueboka helps you keep track of your training sessions, follow your development, and improve your shooting.',
   'onboarding.feature1Title': 'Log training sessions',
   'onboarding.feature1Desc': 'Record all your sessions with details about bow, arrows, distance, and score',
   'onboarding.feature2Title': 'View statistics',
@@ -726,11 +742,9 @@ export const en: TranslationKeys = {
   'onboarding.stepsTitle': 'Get started in 3 steps',
   'onboarding.stepsSubtitle': 'How to set up Bueboka',
   'onboarding.step1Title': 'Add your equipment',
-  'onboarding.step1Desc':
-    'Tap the "+" button and add your bow and arrows. Mark favourites for faster registration!',
+  'onboarding.step1Desc': 'Tap the "+" button and add your bow and arrows. Mark favourites for faster registration!',
   'onboarding.step2Title': 'Log your first session',
-  'onboarding.step2Desc':
-    'Tap the "+" button and choose "New practice" to log your session with arrow count, score, and distance.',
+  'onboarding.step2Desc': 'Tap the "+" button and choose "New practice" to log your session with arrow count, score, and distance.',
   'onboarding.step3Title': 'Explore your statistics',
   'onboarding.step3Desc': 'Tap "View detailed statistics" to see your development over time.',
   'onboarding.tipsTitle': 'Tips for the best experience',
