@@ -585,9 +585,14 @@ export const en: TranslationKeys = {
   'settings.privacyMSPrivacy': "Microsoft's privacy statement",
   'settings.privacyFooter': 'If you have questions about how we handle your data, please feel free to contact us.',
 
-  // Settings — sponsor card
+  // Settings — sponsor & support
   'settings.sponsorLabel': 'Sponsored by',
+  'settings.partnerLabel': 'In cooperation with',
   'settings.sponsorVisitWebsite': 'Visit website',
+  'settings.supportTitle': 'Support the project',
+  'settings.supportDesc': 'Bueboka is developed and maintained by volunteers. All contributions go directly to operations and further development.',
+  'settings.vippsLabel': 'Vipps number',
+  'settings.vippsButton': 'Open Vipps',
 
   // Bow form
   'bowForm.editTitle': 'Edit bow',

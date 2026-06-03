@@ -585,9 +585,14 @@ export const no: TranslationKeys = {
   'settings.privacyMSPrivacy': 'Microsofts personvernerklæring',
   'settings.privacyFooter': 'Hvis du har spørsmål om hvordan vi håndterer dataene dine, ta gjerne kontakt med oss.',
 
-  // Settings — sponsor card
+  // Settings — sponsor & support
   'settings.sponsorLabel': 'Sponset av',
+  'settings.partnerLabel': 'I samarbeid med',
   'settings.sponsorVisitWebsite': 'Besøk nettsiden',
+  'settings.supportTitle': 'Støtt prosjektet',
+  'settings.supportDesc': 'Bueboka utvikles og driftes av frivillige på dugnad. Alle bidrag går direkte til drift og videreutvikling.',
+  'settings.vippsLabel': 'Vipps-nummer',
+  'settings.vippsButton': 'Åpne Vipps',
 
   // Bow form
   'bowForm.editTitle': 'Rediger bue',

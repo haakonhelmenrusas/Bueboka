@@ -627,9 +627,14 @@ export interface TranslationKeys {
   'settings.privacyMSPrivacy': string;
   'settings.privacyFooter': string;
 
-  // Settings — sponsor card
+  // Settings — sponsor & support
   'settings.sponsorLabel': string;
+  'settings.partnerLabel': string;
   'settings.sponsorVisitWebsite': string;
+  'settings.supportTitle': string;
+  'settings.supportDesc': string;
+  'settings.vippsLabel': string;
+  'settings.vippsButton': string;
 
   // Bow form
   'bowForm.editTitle': string;
