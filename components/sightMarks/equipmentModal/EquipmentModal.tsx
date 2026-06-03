@@ -56,15 +56,40 @@ export default function EquipmentModal({ visible, onClose }: Props) {
       if (bow) {
         updates.push(
           bowRepository.update(bow.id, {
-            eyeToNock: eyeToNock ? parseFloat(eyeToNock) : undefined,
-            eyeToSight: eyeToSight ? parseFloat(eyeToSight) : undefined,
-            aimMeasure: aimMeasure ? parseFloat(aimMeasure) : undefined,
+            name: bow.name,
+            type: bow.type,
+            eyeToNock: eyeToNock ? parseFloat(eyeToNock) : null,
+            aimMeasure: aimMeasure ? parseFloat(aimMeasure) : null,
+            eyeToSight: eyeToSight ? parseFloat(eyeToSight) : null,
+            limbs: bow.limbs ?? undefined,
+            riser: bow.riser ?? undefined,
+            handOrientation: bow.handOrientation,
+            drawWeight: bow.drawWeight ?? undefined,
+            bowLength: bow.bowLength ?? undefined,
+            notes: bow.notes ?? undefined,
+            isFavorite: bow.isFavorite,
           }),
         );
       }
 
       if (arrows) {
-        updates.push(arrowsRepository.update(arrows.id, { weight: arrowWeight ? parseFloat(arrowWeight) : undefined }));
+        updates.push(
+          arrowsRepository.update(arrows.id, {
+            name: arrows.name,
+            material: arrows.material,
+            weight: arrowWeight ? parseFloat(arrowWeight) : null,
+            arrowsCount: arrows.arrowsCount ?? undefined,
+            diameter: arrows.diameter ?? undefined,
+            length: arrows.length ?? undefined,
+            spine: arrows.spine ?? undefined,
+            pointType: arrows.pointType ?? undefined,
+            pointWeight: arrows.pointWeight ?? undefined,
+            vanes: arrows.vanes ?? undefined,
+            nock: arrows.nock ?? undefined,
+            notes: arrows.notes ?? undefined,
+            isFavorite: arrows.isFavorite,
+          }),
+        );
       }
 
       await Promise.all(updates);
