@@ -243,7 +243,7 @@ export const en: TranslationKeys = {
   'scoring.editScores': 'Edit scores',
   'scoring.continueScoring': 'Continue scoring',
   'scoring.done': 'Done',
-  'scoring.targetHint': 'Tap to place arrow. Hold and drag to zoom.',
+  'scoring.targetHint': 'Tap to place arrow. Hold and drag to aim with the crosshair.',
   'scoring.undoLast': 'Undo last',
 
   'reflection.ratingLabel': 'Rating (optional)',

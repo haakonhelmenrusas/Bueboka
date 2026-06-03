@@ -10,6 +10,9 @@ import { styles } from './TargetScoringStyles';
 
 const SCREEN_WIDTH = Dimensions.get('window').width;
 const TARGET_SIZE = Math.min(SCREEN_WIDTH - 48, 340);
+const ZOOM_SCALE = 2.5;
+const FINGER_OFFSET = 30;
+const CROSSHAIR_SIZE = 30;
 
 interface ArrowPosition {
   x: number;
@@ -53,6 +56,10 @@ export function TargetScoring({ onScorePress, onUndoLast, disabled, editingIdx, 
   const focusX = useSharedValue(TARGET_SIZE / 2);
   const focusY = useSharedValue(TARGET_SIZE / 2);
   const isZoomed = useSharedValue(false);
+  const startAbsX = useSharedValue(0);
+  const startAbsY = useSharedValue(0);
+  const startFocusX = useSharedValue(0);
+  const startFocusY = useSharedValue(0);
 
   const handlePlaceArrow = useCallback(
     (x: number, y: number) => {
@@ -86,25 +93,29 @@ export function TargetScoring({ onScorePress, onUndoLast, disabled, editingIdx, 
     onUndoLast();
   }, [onUndoLast]);
 
-  const ZOOM_SCALE = 2.5;
-
   const pan = Gesture.Pan()
     .activateAfterLongPress(200)
     .onStart((event) => {
       'worklet';
       isZoomed.value = true;
+      startAbsX.value = event.absoluteX;
+      startAbsY.value = event.absoluteY;
+      startFocusX.value = event.x;
+      startFocusY.value = event.y;
       focusX.value = event.x;
       focusY.value = event.y;
       scale.value = withSpring(ZOOM_SCALE, { damping: 15, stiffness: 150 });
     })
     .onUpdate((event) => {
       'worklet';
-      focusX.value = event.x;
-      focusY.value = event.y;
+      const dx = event.absoluteX - startAbsX.value;
+      const dy = event.absoluteY - startAbsY.value;
+      focusX.value = Math.max(0, Math.min(TARGET_SIZE, startFocusX.value + dx / ZOOM_SCALE));
+      focusY.value = Math.max(0, Math.min(TARGET_SIZE, startFocusY.value + dy / ZOOM_SCALE));
     })
-    .onEnd((event) => {
+    .onEnd(() => {
       'worklet';
-      runOnJS(handlePlaceArrow)(event.x, event.y);
+      runOnJS(handlePlaceArrow)(focusX.value, focusY.value);
     })
     .onFinalize(() => {
       'worklet';
@@ -124,18 +135,23 @@ export function TargetScoring({ onScorePress, onUndoLast, disabled, editingIdx, 
 
   const animatedTargetStyle = useAnimatedStyle(() => {
     const s = scale.value;
+    const zoomProgress = Math.min(1, Math.max(0, (s - 1) / (ZOOM_SCALE - 1)));
+    const offset = FINGER_OFFSET * zoomProgress;
     const tx = TARGET_SIZE / 2 - focusX.value * s;
-    const ty = TARGET_SIZE / 2 - focusY.value * s;
+    const ty = TARGET_SIZE / 2 - offset - focusY.value * s;
     return {
       transform: [{ translateX: tx }, { translateY: ty }, { scale: s }],
     };
   });
 
-  const previewStyle = useAnimatedStyle(() => ({
-    opacity: isZoomed.value ? 1 : 0,
-    left: focusX.value - 6,
-    top: focusY.value - 6,
-  }));
+  const crosshairStyle = useAnimatedStyle(() => {
+    const zoomProgress = Math.min(1, Math.max(0, (scale.value - 1) / (ZOOM_SCALE - 1)));
+    const offset = FINGER_OFFSET * zoomProgress;
+    return {
+      opacity: isZoomed.value ? 1 : 0,
+      top: TARGET_SIZE / 2 - offset - CROSSHAIR_SIZE / 2,
+    };
+  });
 
   return (
     <View style={styles.container}>
@@ -158,9 +174,25 @@ export function TargetScoring({ onScorePress, onUndoLast, disabled, editingIdx, 
                   ]}
                 />
               ))}
-              <Animated.View style={[styles.previewDot, previewStyle]} />
             </Animated.View>
           </GestureDetector>
+          <Animated.View
+            style={[
+              styles.crosshair,
+              {
+                left: TARGET_SIZE / 2 - CROSSHAIR_SIZE / 2,
+                width: CROSSHAIR_SIZE,
+                height: CROSSHAIR_SIZE,
+              },
+              crosshairStyle,
+            ]}
+            pointerEvents="none">
+            <View style={styles.crosshairShadowH} />
+            <View style={styles.crosshairShadowV} />
+            <View style={styles.crosshairLineH} />
+            <View style={styles.crosshairLineV} />
+            <View style={styles.crosshairDot} />
+          </Animated.View>
         </View>
       </GestureHandlerRootView>
 
