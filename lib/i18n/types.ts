@@ -634,7 +634,6 @@ export interface TranslationKeys {
   'settings.supportTitle': string;
   'settings.supportDesc': string;
   'settings.vippsLabel': string;
-  'settings.vippsButton': string;
 
   // Bow form
   'bowForm.editTitle': string;

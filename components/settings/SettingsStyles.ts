@@ -241,11 +241,6 @@ export const styles = StyleSheet.create({
     fontWeight: '800',
     color: '#ff5b24',
   },
-  vippsButton: {
-    minHeight: 48,
-    width: '100%',
-    borderRadius: 12,
-  },
   // ── Logout ─────────────────────────────────────────────────────────────────
   logoutButton: {
     minHeight: 52,

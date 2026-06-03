@@ -592,7 +592,6 @@ export const no: TranslationKeys = {
   'settings.supportTitle': 'Støtt prosjektet',
   'settings.supportDesc': 'Bueboka utvikles og driftes av frivillige på dugnad. Alle bidrag går direkte til drift og videreutvikling.',
   'settings.vippsLabel': 'Vipps-nummer',
-  'settings.vippsButton': 'Åpne Vipps',
 
   // Bow form
   'bowForm.editTitle': 'Rediger bue',
