@@ -532,6 +532,12 @@ export interface TranslationKeys {
   'sightMarks.showSpeed': string;
   'sightMarks.recalculate': string;
   'sightMarks.selectSet': string;
+  'sightMarks.selectSetHint': string;
+  'sightMarks.markCount': string;
+  'sightMarks.unknownBow': string;
+  'sightMarks.equipmentTitle': string;
+  'sightMarks.equipmentArrows': string;
+  'sightMarks.equipmentButton': string;
 
   // Calculate marks modal
   'calcMarks.fromDistance': string;
@@ -634,7 +640,6 @@ export interface TranslationKeys {
   'settings.supportTitle': string;
   'settings.supportDesc': string;
   'settings.vippsLabel': string;
-  'settings.vippsButton': string;
 
   // Bow form
   'bowForm.editTitle': string;
