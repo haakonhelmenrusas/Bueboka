@@ -105,7 +105,7 @@ export default function EquipmentModal({ visible, onClose }: Props) {
     <ModalWrapper visible={visible} onClose={onClose}>
       <KeyboardAvoidingView
         keyboardVerticalOffset={Platform.OS === 'ios' ? 100 : undefined}
-        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
+        behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
         <ScrollView style={styles.modal} keyboardShouldPersistTaps="handled" showsVerticalScrollIndicator={false} bounces={false}>
           <ModalHeader onPress={onClose} title={t['sightMarks.equipmentTitle']} />
 

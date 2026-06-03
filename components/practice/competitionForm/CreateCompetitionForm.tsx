@@ -546,7 +546,7 @@ export default function CreateCompetitionForm({
   return (
     <ModalWrapper visible={visible} onClose={handleClose} fullScreen>
       <SafeAreaView style={styles.container} edges={['top', 'bottom']}>
-        <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
+        <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
           <Pressable onPress={Keyboard.dismiss}>
             <ModalHeader title={isEditing ? t['competitionForm.editTitle'] : t['competitionForm.newTitle']} onPress={handleClose} />
           </Pressable>

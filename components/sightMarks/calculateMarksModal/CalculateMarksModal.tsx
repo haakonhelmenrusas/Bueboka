@@ -159,7 +159,7 @@ export const CalculateMarksModal = ({
       visible={modalVisible}>
       <KeyboardAvoidingView
         keyboardVerticalOffset={Platform.OS === 'ios' ? 100 : undefined}
-        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
+        behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
         <ScrollView style={styles.modal} keyboardShouldPersistTaps="handled" showsVerticalScrollIndicator={false} bounces={false}>
           <ModalHeader onPress={handleCloseModal} title={t['sightMarks.calculateButton']} />
           <View style={styles.inputs}>

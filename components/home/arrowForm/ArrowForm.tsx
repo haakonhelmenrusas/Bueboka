@@ -168,7 +168,7 @@ export default function ArrowForm({ modalVisible, setArrowModalVisible, arrowSet
         clearForm();
         setArrowModalVisible(false);
       }}>
-      <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={styles.modal}>
+      <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : undefined} style={styles.modal}>
         <ModalHeader onPress={handleCloseModal} title={arrowSet ? t['arrowForm.editTitle'] : t['arrowForm.newTitle']} />
         <ScrollView keyboardShouldPersistTaps="handled" showsVerticalScrollIndicator={false} contentContainerStyle={styles.scrollContent}>
           <Pressable onPress={() => Keyboard.dismiss()}>
