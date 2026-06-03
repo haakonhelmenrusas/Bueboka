@@ -1,5 +1,6 @@
 import React, { FC, useEffect, useRef, useState } from 'react';
 import { Keyboard, Platform, TextInput, View } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Button, Input, Notch } from '@/components/common';
 import { MarkValue } from '@/types';
 import { faRulerHorizontal } from '@fortawesome/free-solid-svg-icons/faRulerHorizontal';
@@ -23,6 +24,7 @@ interface MarksFormProps {
 
 const MarksForm: FC<MarksFormProps> = ({ sendMarks, status, setIsFormVisible, translateY, isNewSet = false }) => {
   const { t } = useTranslation();
+  const insets = useSafeAreaInsets();
   const [aimValue, setAimValue] = useState('');
   const [distanceValue, setDistance] = useState('');
   const [nameValue, setNameValue] = useState('');
@@ -59,7 +61,8 @@ const MarksForm: FC<MarksFormProps> = ({ sendMarks, status, setIsFormVisible, tr
     const hideEvent = Platform.OS === 'ios' ? 'keyboardWillHide' : 'keyboardDidHide';
 
     const showSub = Keyboard.addListener(showEvent, (e) => {
-      keyboardHeight.value = withTiming(e.endCoordinates.height, {
+      const height = Platform.OS === 'android' ? e.endCoordinates.height + insets.bottom : e.endCoordinates.height;
+      keyboardHeight.value = withTiming(height, {
         duration: Platform.OS === 'ios' ? (e.duration ?? 250) : 200,
       });
     });
