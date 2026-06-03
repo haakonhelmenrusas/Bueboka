@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Modal, Pressable, ScrollView, Text, View } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faBullseye } from '@fortawesome/free-solid-svg-icons/faBullseye';
@@ -21,6 +21,7 @@ interface OnboardingModalProps {
 
 export default function OnboardingModal({ visible, onClose }: OnboardingModalProps) {
   const { t } = useTranslation();
+  const insets = useSafeAreaInsets();
   const [currentStep, setCurrentStep] = useState(0);
 
   useEffect(() => {
@@ -170,12 +171,8 @@ export default function OnboardingModal({ visible, onClose }: OnboardingModalPro
         <View style={[styles.ring, styles.ring3]} />
         <View style={[styles.ring, styles.ring4]} />
 
-        <SafeAreaView style={styles.safeArea}>
+        <View style={[styles.safeArea, { paddingTop: insets.top, paddingBottom: insets.bottom }]}>
           <View style={styles.container}>
-            <Pressable style={styles.skipButton} onPress={onClose}>
-              <Text style={styles.skipText}>{t['onboarding.skip']}</Text>
-            </Pressable>
-
             <View style={styles.header}>
               <Text style={styles.title}>{currentStepData.title}</Text>
               <Text style={styles.subtitle}>{currentStepData.subtitle}</Text>
@@ -220,7 +217,7 @@ export default function OnboardingModal({ visible, onClose }: OnboardingModalPro
               </View>
             </View>
           </View>
-        </SafeAreaView>
+        </View>
       </LinearGradient>
     </Modal>
   );

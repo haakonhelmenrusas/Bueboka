@@ -174,12 +174,15 @@ export const styles = StyleSheet.create({
   },
 
   // ── Sponsor ────────────────────────────────────────────────────────────────
+  sponsorSection: {
+    gap: 14,
+  },
   sponsorContent: {
     alignItems: 'center',
     gap: 8,
   },
   sponsorLabel: {
-    fontSize: 14,
+    fontSize: 12,
     fontWeight: '700',
     color: colors.inactive,
     textTransform: 'uppercase',
@@ -189,6 +192,10 @@ export const styles = StyleSheet.create({
     height: 64,
     width: 200,
   },
+  partnerLogo: {
+    height: 80,
+    width: 120,
+  },
   sponsorLink: {
     display: 'flex',
     alignItems: 'center',
@@ -196,6 +203,48 @@ export const styles = StyleSheet.create({
     fontWeight: '500',
     color: colors.primaryDark,
     textDecorationLine: 'underline',
+  },
+
+  // ── Support / Vipps ───────────────────────────────────────────────────────
+  supportContent: {
+    alignItems: 'center',
+    gap: 12,
+  },
+  supportTitle: {
+    fontSize: 18,
+    fontWeight: '800',
+    color: colors.primaryDark,
+  },
+  supportDesc: {
+    fontSize: 14,
+    lineHeight: 21,
+    color: colors.textGray700,
+    textAlign: 'center',
+  },
+  vippsBox: {
+    alignItems: 'center',
+    backgroundColor: colors.bgGray100,
+    borderRadius: 12,
+    paddingVertical: 12,
+    paddingHorizontal: 24,
+    gap: 2,
+  },
+  vippsLabel: {
+    fontSize: 11,
+    fontWeight: '700',
+    color: colors.inactive,
+    textTransform: 'uppercase',
+    letterSpacing: 0.5,
+  },
+  vippsNumber: {
+    fontSize: 28,
+    fontWeight: '800',
+    color: '#ff5b24',
+  },
+  vippsButton: {
+    minHeight: 48,
+    width: '100%',
+    borderRadius: 12,
   },
   // ── Logout ─────────────────────────────────────────────────────────────────
   logoutButton: {

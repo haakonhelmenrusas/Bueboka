@@ -11,7 +11,15 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import ConfirmModal from '@/components/home/DeleteArrowSetModal/ConfirmModal';
 import { userRepository } from '@/services/repositories';
 import { AppError } from '@/services';
-import { AccountSection, PublicProfileSection, PrivacySection, SponsorCard, LanguageSection, FeedbackModal } from '@/components/settings';
+import {
+  AccountSection,
+  PublicProfileSection,
+  PrivacySection,
+  SponsorCard,
+  SupportCard,
+  LanguageSection,
+  FeedbackModal,
+} from '@/components/settings';
 import { faComment } from '@fortawesome/free-solid-svg-icons/faComment';
 import { EmailVerificationBanner } from '@/components/auth';
 import { useTranslation } from '@/contexts';
@@ -98,6 +106,9 @@ export default function Settings() {
             />
           </View>
           <PrivacySection />
+          <View style={styles.sectionCard}>
+            <SupportCard />
+          </View>
           <View style={styles.sectionCard}>
             <SponsorCard />
             <View style={styles.cardDivider} />

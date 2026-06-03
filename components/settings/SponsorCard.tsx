@@ -10,24 +10,46 @@ export default function SponsorCard() {
   const { t } = useTranslation();
 
   return (
-    <View style={styles.sponsorContent}>
-      <Text style={styles.sponsorLabel}>{t['settings.sponsorLabel']}</Text>
-      <Image
-        style={styles.sponsorLogo}
-        contentFit="contain"
-        source={require('../../assets/images/arcticBueLogo.png')}
-        transition={200}
-        accessibilityLabel="Arctic Buesport AS"
-      />
-      <TouchableOpacity
-        activeOpacity={0.75}
-        onPress={() => Linking.openURL('https://www.arcticbuesport.no?utm_source=bueboka&utm_medium=bueboka&utm_campaign=bueboka2026')}>
-        <View style={styles.sponsorLink}>
-          <Text>
-            {t['settings.sponsorVisitWebsite']} <FontAwesomeIcon icon={faExternalLink} size={14} color={colors.primary} />
-          </Text>
-        </View>
-      </TouchableOpacity>
+    <View style={styles.sponsorSection}>
+      <View style={styles.sponsorContent}>
+        <Text style={styles.sponsorLabel}>{t['settings.sponsorLabel']}</Text>
+        <Image
+          style={styles.sponsorLogo}
+          contentFit="contain"
+          source={require('../../assets/images/arcticBueLogo.png')}
+          transition={200}
+          accessibilityLabel="Arctic Buesport AS"
+        />
+        <TouchableOpacity
+          activeOpacity={0.75}
+          onPress={() => Linking.openURL('https://www.arcticbuesport.no?utm_source=bueboka&utm_medium=bueboka&utm_campaign=bueboka2026')}>
+          <View style={styles.sponsorLink}>
+            <Text>
+              {t['settings.sponsorVisitWebsite']} <FontAwesomeIcon icon={faExternalLink} size={14} color={colors.primary} />
+            </Text>
+          </View>
+        </TouchableOpacity>
+      </View>
+
+      <View style={styles.cardDivider} />
+
+      <View style={styles.sponsorContent}>
+        <Text style={styles.sponsorLabel}>{t['settings.partnerLabel']}</Text>
+        <Image
+          style={styles.partnerLogo}
+          contentFit="contain"
+          source={require('../../assets/images/norgesbueskytterforbund.png')}
+          transition={200}
+          accessibilityLabel="Norges Bueskytterforbund"
+        />
+        <TouchableOpacity activeOpacity={0.75} onPress={() => Linking.openURL('https://www.bueskyting.no/')}>
+          <View style={styles.sponsorLink}>
+            <Text>
+              {t['settings.sponsorVisitWebsite']} <FontAwesomeIcon icon={faExternalLink} size={14} color={colors.primary} />
+            </Text>
+          </View>
+        </TouchableOpacity>
+      </View>
     </View>
   );
 }

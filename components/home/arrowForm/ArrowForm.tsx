@@ -19,9 +19,10 @@ interface Props {
   setArrowModalVisible: (visible: boolean) => void;
   arrowSet: Arrows | null;
   existingArrowSets: Arrows[];
+  onSuccess?: () => void;
 }
 
-export default function ArrowForm({ modalVisible, setArrowModalVisible, arrowSet, existingArrowSets }: Props) {
+export default function ArrowForm({ modalVisible, setArrowModalVisible, arrowSet, existingArrowSets, onSuccess }: Props) {
   const { t } = useTranslation();
   const [confirmVisible, setConfirmVisible] = useState(false);
   const [submitting, setSubmitting] = useState(false);
@@ -81,6 +82,7 @@ export default function ArrowForm({ modalVisible, setArrowModalVisible, arrowSet
       await arrowsRepository.delete(arrowSet.id);
       clearForm();
       setArrowModalVisible(false);
+      onSuccess?.();
     } catch (error) {
       console.error('Error deleting arrows:', error);
       alert(error instanceof AppError ? error.message : t['arrowForm.deleteError']);
@@ -134,6 +136,7 @@ export default function ArrowForm({ modalVisible, setArrowModalVisible, arrowSet
 
       clearForm();
       setArrowModalVisible(false);
+      onSuccess?.();
     } catch (error) {
       console.error('Error saving arrows:', error);
       alert(error instanceof AppError ? error.message : t['arrowForm.saveError']);
@@ -193,7 +196,6 @@ export default function ArrowForm({ modalVisible, setArrowModalVisible, arrowSet
                   containerStyle={{ flex: 1 }}
                   label={t['arrowDetails.arrowCount']}
                   keyboardType="numeric"
-                  helpText={t['arrowForm.arrowCountHelpText']}
                   value={arrowsCount}
                   onChangeText={(value) => handleNumberChange(value, 'SET_ARROWS_COUNT', dispatch)}
                 />
@@ -202,6 +204,7 @@ export default function ArrowForm({ modalVisible, setArrowModalVisible, arrowSet
               <Checkbox
                 value={isFavorite}
                 label={t['common.favourite']}
+                helpText={t['common.favouriteHelpText']}
                 onChange={(newValue) => dispatch({ type: 'SET_FAVORITE', payload: newValue })}
               />
 

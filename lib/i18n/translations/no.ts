@@ -24,6 +24,8 @@ export const no: TranslationKeys = {
   'auth.errorTitle': 'Feil',
   'auth.toggleToRegister': 'Registrer deg',
   'auth.toggleToLogin': 'Logg inn',
+  'auth.noAccountPrompt': 'Har du ikke en konto?',
+  'auth.hasAccountPrompt': 'Har du allerede en konto?',
   'auth.divider': 'eller',
 
   'validation.emailPasswordRequired': 'E-post og passord er påkrevd',
@@ -35,6 +37,7 @@ export const no: TranslationKeys = {
   'common.error': 'Feil',
   'common.cancel': 'Avbryt',
   'common.delete': 'Slett',
+  'common.close': 'Lukk',
   'common.tryAgain': 'Prøv igjen.',
   'common.seeAll': 'Se alle',
 
@@ -75,10 +78,12 @@ export const no: TranslationKeys = {
   'recentActivity.seeAllAriaLabel': 'Se alle aktiviteter',
   'recentActivity.empty': 'Ingen treninger eller konkurranser ennå',
 
+  'equipment.title': 'Utstyr',
   'equipment.bows': 'Buer',
   'equipment.arrows': 'Piler',
   'equipment.noBows': 'Ingen buer lagt til ennå',
   'equipment.noArrows': 'Ingen piler lagt til ennå',
+  'equipment.noEquipment': 'Ingen utstyr lagt til ennå',
 
   'statsSummary.last7days': 'Siste 7 dager',
   'statsSummary.last30days': 'Siste 30 dager',
@@ -253,6 +258,7 @@ export const no: TranslationKeys = {
   'practiceForm.discardMessage': 'Du har ulagrede endringer. Er du sikker på at du vil lukke uten å lagre?',
   'practiceForm.discardConfirm': 'Forkast',
   'practiceForm.discardCancel': 'Fortsett redigering',
+  'practiceForm.noArrowsError': 'Du må registrere minst én pil for å lagre treningen.',
   'practiceForm.saveError': 'Kunne ikke lagre trening.',
   'practiceForm.startShootingError': 'Kunne ikke starte skyteøkten.',
 
@@ -346,6 +352,14 @@ export const no: TranslationKeys = {
   'achievements.emptyTitle': 'Ingen merker funnet',
   'achievements.emptySubtitle': 'Prøv å endre filtrene dine',
   'achievements.unlockedBadge': 'Låst opp!',
+
+  'achievementUnlock.titleSingle': 'Nytt merke!',
+  'achievementUnlock.titleMultiple': 'nye merker!',
+  'achievementUnlock.subtitleSingle': 'Gratulerer! Du har låst opp et nytt merke',
+  'achievementUnlock.subtitleMultiple': 'Gratulerer! Du har låst opp nye merker',
+  'achievementUnlock.points': 'poeng',
+  'achievementUnlock.totalPoints': 'Totalt:',
+  'achievementUnlock.viewAll': 'Se alle merker',
 
   'statistics.title': 'Statistikk',
   'statistics.subtitle': 'Detaljert oversikt over din skyting',
@@ -515,6 +529,7 @@ export const no: TranslationKeys = {
   // Common additions
   'common.advanced': 'Avansert',
   'common.favourite': 'Favoritt',
+  'common.favouriteHelpText': 'Favoritter velges automatisk når du oppretter en ny trening',
   'common.noResults': 'Ingen treff',
   'common.chooseOption': 'Velg et alternativ',
   'common.create': 'Opprett',
@@ -570,9 +585,14 @@ export const no: TranslationKeys = {
   'settings.privacyMSPrivacy': 'Microsofts personvernerklæring',
   'settings.privacyFooter': 'Hvis du har spørsmål om hvordan vi håndterer dataene dine, ta gjerne kontakt med oss.',
 
-  // Settings — sponsor card
+  // Settings — sponsor & support
   'settings.sponsorLabel': 'Sponset av',
+  'settings.partnerLabel': 'I samarbeid med',
   'settings.sponsorVisitWebsite': 'Besøk nettsiden',
+  'settings.supportTitle': 'Støtt prosjektet',
+  'settings.supportDesc': 'Bueboka utvikles og driftes av frivillige på dugnad. Alle bidrag går direkte til drift og videreutvikling.',
+  'settings.vippsLabel': 'Vipps-nummer',
+  'settings.vippsButton': 'Åpne Vipps',
 
   // Bow form
   'bowForm.editTitle': 'Rediger bue',
@@ -600,10 +620,10 @@ export const no: TranslationKeys = {
   'arrowForm.nameHelpText': 'F.eks. Carbon X23',
   'arrowForm.nameInfo': '(obligatorisk)',
   'arrowForm.arrowCountHelpText': 'F.eks. 12',
-  'arrowForm.grainSuffix': '(grain)',
+  'arrowForm.grainSuffix': '(gram)',
   'arrowForm.mmSuffix': '(mm)',
   'arrowForm.lengthHelpText': 'F.eks. 31',
-  'arrowForm.weightHelpText': 'F.eks. 400',
+  'arrowForm.weightHelpText': 'F.eks. 20',
   'arrowForm.spineHelpText': 'F.eks. 500',
   'arrowForm.diameterHelpText': 'F.eks. 5.2',
   'arrowForm.pointTypeHelpText': 'F.eks. Bullet',
@@ -648,7 +668,7 @@ export const no: TranslationKeys = {
     'Søk blant bueskyttere som har valgt å dele profilen sin med andre Bueboka-skyttere. Det er kun registrerte brukere som kan søke.',
   'skyttere.searchPlaceholder': 'Søk etter navn eller klubb…',
   'skyttere.searchIdle': 'Begynn å skrive for å søke',
-  'skyttere.backButton': 'Tilbake til søk',
+  'skyttere.backButton': 'Tilbake',
   'skyttere.loadingProfile': 'Laster profil...',
   'skyttere.searching': 'Søker...',
   'skyttere.noResults': 'Ingen resultater',
@@ -712,8 +732,7 @@ export const no: TranslationKeys = {
 
   'onboarding.welcomeTitle': 'Velkommen til Bueboka!',
   'onboarding.welcomeSubtitle': 'Din digitale treningsdagbok for bueskyting',
-  'onboarding.welcomeBody':
-    'Bueboka hjelper deg å holde oversikt over treningene dine, følge din utvikling og forbedre skytingen din.',
+  'onboarding.welcomeBody': 'Bueboka hjelper deg å holde oversikt over treningene dine, følge din utvikling og forbedre skytingen din.',
   'onboarding.feature1Title': 'Registrer treninger',
   'onboarding.feature1Desc': 'Logg alle treningene dine med detaljer om bue, piler, distanse og score',
   'onboarding.feature2Title': 'Se statistikk',
@@ -723,11 +742,9 @@ export const no: TranslationKeys = {
   'onboarding.stepsTitle': 'Kom i gang på 3 steg',
   'onboarding.stepsSubtitle': 'Slik setter du opp Bueboka',
   'onboarding.step1Title': 'Legg til utstyret ditt',
-  'onboarding.step1Desc':
-    'Trykk på «+»-knappen og legg til buen og pilene dine. Marker gjerne favoritter for raskere registrering!',
+  'onboarding.step1Desc': 'Trykk på «+»-knappen og legg til buen og pilene dine. Marker gjerne favoritter for raskere registrering!',
   'onboarding.step2Title': 'Registrer din første trening',
-  'onboarding.step2Desc':
-    'Trykk på «+»-knappen og velg «Ny trening» for å logge økten din med antall piler, score og distanse.',
+  'onboarding.step2Desc': 'Trykk på «+»-knappen og velg «Ny trening» for å logge økten din med antall piler, score og distanse.',
   'onboarding.step3Title': 'Utforsk statistikken din',
   'onboarding.step3Desc': 'Trykk på «Se detaljert statistikk» for å se din utvikling over tid.',
   'onboarding.tipsTitle': 'Tips for best opplevelse',
@@ -740,7 +757,6 @@ export const no: TranslationKeys = {
   'onboarding.tip3Desc': 'Logg alle treningene dine for å få best mulig oversikt over utviklingen',
   'onboarding.tip4Title': 'Sett opp siktmerker',
   'onboarding.tip4Desc': 'Bruk siktmerke-fanen til å beregne og lagre siktmerkene dine for ulike distanser',
-  'onboarding.skip': 'Hopp over',
   'onboarding.previous': 'Forrige',
   'onboarding.next': 'Neste',
   'onboarding.getStarted': 'Kom i gang!',

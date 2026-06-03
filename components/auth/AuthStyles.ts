@@ -48,10 +48,13 @@ export const styles = StyleSheet.create({
     color: colors.white,
   },
   toggleContainer: {
-    flexDirection: 'row',
-    justifyContent: 'center',
     alignItems: 'center',
-    marginTop: 30,
+    marginTop: 48,
+    gap: 12,
+  },
+  togglePrompt: {
+    fontSize: 14,
+    color: colors.white50,
   },
   toggleText: {
     color: colors.primary,

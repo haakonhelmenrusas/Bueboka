@@ -3,13 +3,12 @@ import { colors } from '@/styles/colors';
 
 export const styles = StyleSheet.create({
   container: {
-    gap: 24,
+    gap: 12,
   },
   header: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: 12,
   },
   title: {
     fontSize: 18,

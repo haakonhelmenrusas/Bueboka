@@ -185,6 +185,7 @@ const BowForm = ({ modalVisible, setModalVisible, bow, existingBows = [], onSucc
               <Checkbox
                 value={isFavorite}
                 label={t['common.favourite']}
+                helpText={t['common.favouriteHelpText']}
                 onChange={(newValue) => dispatch({ type: 'SET_IS_FAVORITE', payload: newValue })}
               />
               <TouchableOpacity activeOpacity={0.7} style={styles.advancedToggle} onPress={() => setAdvancedOpen((prev) => !prev)}>
