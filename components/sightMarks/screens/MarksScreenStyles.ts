@@ -20,6 +20,15 @@ export const styles = StyleSheet.create({
     zIndex: 2000,
     gap: 8,
   },
+  selectorHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  selectorHeaderText: {
+    flex: 1,
+    gap: 2,
+  },
   selectorTitle: {
     fontSize: 16,
     fontWeight: '700',
@@ -46,8 +55,8 @@ export const styles = StyleSheet.create({
   },
   actionBar: {
     paddingHorizontal: 16,
-    paddingTop: 8,
-    paddingBottom: 16,
+    paddingTop: 16,
+    paddingBottom: 24,
     gap: 8,
   },
   buttons: {

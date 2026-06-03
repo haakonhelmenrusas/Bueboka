@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { ScrollView, Text, View } from 'react-native';
+import { Pressable, ScrollView, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import * as Sentry from '@sentry/react-native';
 import { Button, Message, Select } from '@/components/common';
@@ -7,6 +7,7 @@ import { CalculatedMarks, MarksResult, SightMark, SightMarkResult } from '@/type
 import { CalculateMarksModal } from '@/components/sightMarks/calculateMarksModal/CalculateMarksModal';
 import CalculatedMarksTable from '@/components/sightMarks/calculatedMarksTable/CalculatedMarksTable';
 // import { faChartLine } from '@fortawesome/free-solid-svg-icons/faChartLine';
+import { faChevronDown } from '@fortawesome/free-solid-svg-icons/faChevronDown';
 import { faSliders } from '@fortawesome/free-solid-svg-icons/faSliders';
 import { faWind } from '@fortawesome/free-solid-svg-icons/faWind';
 import { faRotateRight } from '@fortawesome/free-solid-svg-icons/faRotateRight';
@@ -37,6 +38,7 @@ export default function MarksScreen({ setScreen }: MarksScreenProps) {
   const [activeSightMark, setActiveSightMark] = useState<SightMark | null>(null);
   const [modalVisible, setModalVisible] = useState(false);
   const [equipmentVisible, setEquipmentVisible] = useState(false);
+  const [cardExpanded, setCardExpanded] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
 
   const sightMarkOptions = useMemo(
@@ -198,34 +200,55 @@ export default function MarksScreen({ setScreen }: MarksScreenProps) {
       <ScrollView style={styles.scrollView}>
         {sightMarkOptions.length > 0 && (
           <View style={styles.selectorCard}>
-            <Text style={styles.selectorTitle}>{t['sightMarks.selectSet']}</Text>
-            <Text style={styles.selectorHint}>{t['sightMarks.selectSetHint']}</Text>
-            {sightMarkOptions.length > 1 && (
-              <Select
-                label=""
-                options={sightMarkOptions}
-                selectedValue={activeSightMark?.id}
-                onValueChange={handleSetChange}
-                zIndex={2000}
-              />
-            )}
-            {activeSightMark && (
-              <View style={styles.selectorMeta}>
-                <Text style={styles.selectorMetaText}>
-                  {activeSightMark.bow?.name ?? t['sightMarks.unknownBow']}
-                  {' · '}
-                  {activeSightMark.givenDistances.length} {t['sightMarks.markCount']}
-                </Text>
+            <Pressable style={styles.selectorHeader} onPress={() => setCardExpanded(!cardExpanded)}>
+              <View style={styles.selectorHeaderText}>
+                <Text style={styles.selectorTitle}>{t['sightMarks.selectSet']}</Text>
+                {!cardExpanded && activeSightMark && (
+                  <Text style={styles.selectorMetaText}>
+                    {activeSightMark.bow?.name ?? t['sightMarks.unknownBow']}
+                    {' · '}
+                    {activeSightMark.givenDistances.length} {t['sightMarks.markCount']}
+                  </Text>
+                )}
               </View>
+              <FontAwesomeIcon
+                icon={faChevronDown}
+                size={12}
+                color={colors.textSecondary}
+                style={{ transform: [{ rotate: cardExpanded ? '180deg' : '0deg' }] }}
+              />
+            </Pressable>
+            {cardExpanded && (
+              <>
+                <Text style={styles.selectorHint}>{t['sightMarks.selectSetHint']}</Text>
+                {sightMarkOptions.length > 1 && (
+                  <Select
+                    label=""
+                    options={sightMarkOptions}
+                    selectedValue={activeSightMark?.id}
+                    onValueChange={handleSetChange}
+                    zIndex={2000}
+                  />
+                )}
+                {activeSightMark && (
+                  <View style={styles.selectorMeta}>
+                    <Text style={styles.selectorMetaText}>
+                      {activeSightMark.bow?.name ?? t['sightMarks.unknownBow']}
+                      {' · '}
+                      {activeSightMark.givenDistances.length} {t['sightMarks.markCount']}
+                    </Text>
+                  </View>
+                )}
+                <Button
+                  type="outline"
+                  size="small"
+                  iconPosition="left"
+                  icon={<FontAwesomeIcon icon={faSliders} size={14} color={colors.primary} />}
+                  label={t['sightMarks.equipmentButton']}
+                  onPress={() => setEquipmentVisible(true)}
+                />
+              </>
             )}
-            <Button
-              type="outline"
-              size="small"
-              iconPosition="left"
-              icon={<FontAwesomeIcon icon={faSliders} size={14} color={colors.primary} />}
-              label={t['sightMarks.equipmentButton']}
-              onPress={() => setEquipmentVisible(true)}
-            />
           </View>
         )}
         {renderContent()}
@@ -233,7 +256,7 @@ export default function MarksScreen({ setScreen }: MarksScreenProps) {
       {/* )} */}
 
       {calculatedMarks && (
-        <View style={[styles.actionBar, { paddingBottom: insets.bottom + 80 }]}>
+        <View style={[styles.actionBar, { paddingBottom: insets.bottom + 100 }]}>
           <View style={styles.buttons}>
             <Button
               type="outline"
