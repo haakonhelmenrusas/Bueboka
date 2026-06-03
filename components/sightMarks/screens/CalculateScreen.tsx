@@ -256,7 +256,7 @@ export default function CalculateScreen() {
         </ScrollView>
       </Pressable>
 
-      <View style={[styles.bottomBar, { paddingBottom: insets.bottom + 80 }]}>
+      <View style={[styles.bottomBar, { bottom: insets.bottom + 80 }]}>
         <Button
           icon={<FontAwesomeIcon icon={faPlus} color={colors.tertiary} />}
           iconPosition="left"
@@ -283,7 +283,7 @@ export default function CalculateScreen() {
 
 const styles = StyleSheet.create({
   page: { flex: 1 },
-  list: { paddingHorizontal: 12, paddingTop: 12, paddingBottom: 80 },
-  bottomBar: { paddingHorizontal: 16, paddingTop: 8 },
+  list: { paddingHorizontal: 12, paddingTop: 12, paddingBottom: 160 },
+  bottomBar: { position: 'absolute', left: 0, right: 0, paddingHorizontal: 16, paddingTop: 8, paddingBottom: 12 },
   newSetButton: { width: '100%' },
 });

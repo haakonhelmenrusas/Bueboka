@@ -493,6 +493,12 @@ export const en: TranslationKeys = {
   'sightMarks.showSpeed': 'Show speeds',
   'sightMarks.recalculate': 'Recalculate',
   'sightMarks.selectSet': 'Select sighting',
+  'sightMarks.selectSetHint': 'Choose which calibration set to use as the basis for calculation.',
+  'sightMarks.markCount': 'marks',
+  'sightMarks.unknownBow': 'Unknown bow',
+  'sightMarks.equipmentTitle': 'Equipment settings',
+  'sightMarks.equipmentArrows': 'Arrows',
+  'sightMarks.equipmentButton': 'Equipment',
 
   'calcMarks.fromDistance': 'From distance',
   'calcMarks.toDistance': 'To distance',
@@ -592,7 +598,6 @@ export const en: TranslationKeys = {
   'settings.supportTitle': 'Support the project',
   'settings.supportDesc': 'Bueboka is developed and maintained by volunteers. All contributions go directly to operations and further development.',
   'settings.vippsLabel': 'Vipps number',
-  'settings.vippsButton': 'Open Vipps',
 
   // Bow form
   'bowForm.editTitle': 'Edit bow',

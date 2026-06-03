@@ -493,6 +493,12 @@ export const no: TranslationKeys = {
   'sightMarks.showSpeed': 'Vis hastigheter',
   'sightMarks.recalculate': 'Beregn på nytt',
   'sightMarks.selectSet': 'Velg innskyting',
+  'sightMarks.selectSetHint': 'Velg hvilket sett med innskytingsmerker som skal brukes som grunnlag for beregningen.',
+  'sightMarks.markCount': 'merker',
+  'sightMarks.unknownBow': 'Ukjent bue',
+  'sightMarks.equipmentTitle': 'Utstyrsinnstillinger',
+  'sightMarks.equipmentArrows': 'Piler',
+  'sightMarks.equipmentButton': 'Utstyr',
 
   'calcMarks.fromDistance': 'Fra avstand',
   'calcMarks.toDistance': 'Til avstand',
@@ -592,7 +598,6 @@ export const no: TranslationKeys = {
   'settings.supportTitle': 'Støtt prosjektet',
   'settings.supportDesc': 'Bueboka utvikles og driftes av frivillige på dugnad. Alle bidrag går direkte til drift og videreutvikling.',
   'settings.vippsLabel': 'Vipps-nummer',
-  'settings.vippsButton': 'Åpne Vipps',
 
   // Bow form
   'bowForm.editTitle': 'Rediger bue',
