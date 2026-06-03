@@ -493,6 +493,9 @@ export const en: TranslationKeys = {
   'sightMarks.showSpeed': 'Show speeds',
   'sightMarks.recalculate': 'Recalculate',
   'sightMarks.selectSet': 'Select sighting',
+  'sightMarks.selectSetHint': 'Choose which calibration set to use as the basis for calculation.',
+  'sightMarks.markCount': 'marks',
+  'sightMarks.unknownBow': 'Unknown bow',
 
   'calcMarks.fromDistance': 'From distance',
   'calcMarks.toDistance': 'To distance',

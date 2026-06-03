@@ -532,6 +532,9 @@ export interface TranslationKeys {
   'sightMarks.showSpeed': string;
   'sightMarks.recalculate': string;
   'sightMarks.selectSet': string;
+  'sightMarks.selectSetHint': string;
+  'sightMarks.markCount': string;
+  'sightMarks.unknownBow': string;
 
   // Calculate marks modal
   'calcMarks.fromDistance': string;

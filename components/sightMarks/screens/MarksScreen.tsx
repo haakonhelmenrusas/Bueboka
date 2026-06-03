@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { ScrollView, View } from 'react-native';
+import { ScrollView, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import * as Sentry from '@sentry/react-native';
 import { Button, Message, Select } from '@/components/common';
@@ -193,15 +193,28 @@ export default function MarksScreen({ setScreen }: MarksScreenProps) {
         <ChartScreen calculatedMarks={calculatedMarks} marks={ballistics} setModalVisible={setModalVisible} />
       ) : ( */}
       <ScrollView style={styles.scrollView}>
-        {sightMarkOptions.length > 1 && (
-          <View style={styles.selectorContainer}>
-            <Select
-              label={t['sightMarks.selectSet']}
-              options={sightMarkOptions}
-              selectedValue={activeSightMark?.id}
-              onValueChange={handleSetChange}
-              zIndex={2000}
-            />
+        {sightMarkOptions.length > 0 && (
+          <View style={styles.selectorCard}>
+            <Text style={styles.selectorTitle}>{t['sightMarks.selectSet']}</Text>
+            <Text style={styles.selectorHint}>{t['sightMarks.selectSetHint']}</Text>
+            {sightMarkOptions.length > 1 && (
+              <Select
+                label=""
+                options={sightMarkOptions}
+                selectedValue={activeSightMark?.id}
+                onValueChange={handleSetChange}
+                zIndex={2000}
+              />
+            )}
+            {activeSightMark && (
+              <View style={styles.selectorMeta}>
+                <Text style={styles.selectorMetaText}>
+                  {activeSightMark.bow?.name ?? t['sightMarks.unknownBow']}
+                  {' · '}
+                  {activeSightMark.givenDistances.length} {t['sightMarks.markCount']}
+                </Text>
+              </View>
+            )}
           </View>
         )}
         {renderContent()}

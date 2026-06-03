@@ -493,6 +493,9 @@ export const no: TranslationKeys = {
   'sightMarks.showSpeed': 'Vis hastigheter',
   'sightMarks.recalculate': 'Beregn på nytt',
   'sightMarks.selectSet': 'Velg innskyting',
+  'sightMarks.selectSetHint': 'Velg hvilket sett med innskytingsmerker som skal brukes som grunnlag for beregningen.',
+  'sightMarks.markCount': 'merker',
+  'sightMarks.unknownBow': 'Ukjent bue',
 
   'calcMarks.fromDistance': 'Fra avstand',
   'calcMarks.toDistance': 'Til avstand',
