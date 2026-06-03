@@ -496,6 +496,9 @@ export const no: TranslationKeys = {
   'sightMarks.selectSetHint': 'Velg hvilket sett med innskytingsmerker som skal brukes som grunnlag for beregningen.',
   'sightMarks.markCount': 'merker',
   'sightMarks.unknownBow': 'Ukjent bue',
+  'sightMarks.equipmentTitle': 'Utstyrsinnstillinger',
+  'sightMarks.equipmentArrows': 'Piler',
+  'sightMarks.equipmentButton': 'Utstyr',
 
   'calcMarks.fromDistance': 'Fra avstand',
   'calcMarks.toDistance': 'Til avstand',

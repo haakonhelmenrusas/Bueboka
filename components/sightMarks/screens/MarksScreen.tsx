@@ -7,6 +7,7 @@ import { CalculatedMarks, MarksResult, SightMark, SightMarkResult } from '@/type
 import { CalculateMarksModal } from '@/components/sightMarks/calculateMarksModal/CalculateMarksModal';
 import CalculatedMarksTable from '@/components/sightMarks/calculatedMarksTable/CalculatedMarksTable';
 // import { faChartLine } from '@fortawesome/free-solid-svg-icons/faChartLine';
+import { faSliders } from '@fortawesome/free-solid-svg-icons/faSliders';
 import { faWind } from '@fortawesome/free-solid-svg-icons/faWind';
 import { faRotateRight } from '@fortawesome/free-solid-svg-icons/faRotateRight';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
@@ -18,6 +19,7 @@ import { sightMarksRepository } from '@/services/repositories';
 import { offlineMutation } from '@/services/offline/mutationHelper';
 import { useAuth } from '@/contexts/AuthContext';
 import { useTranslation } from '@/contexts';
+import EquipmentModal from '@/components/sightMarks/equipmentModal/EquipmentModal';
 
 interface MarksScreenProps {
   setScreen: (screen: string) => void;
@@ -34,6 +36,7 @@ export default function MarksScreen({ setScreen }: MarksScreenProps) {
   const [calculatedMarks, setCalculatedMarks] = useState<MarksResult | null>(null);
   const [activeSightMark, setActiveSightMark] = useState<SightMark | null>(null);
   const [modalVisible, setModalVisible] = useState(false);
+  const [equipmentVisible, setEquipmentVisible] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
 
   const sightMarkOptions = useMemo(
@@ -215,6 +218,14 @@ export default function MarksScreen({ setScreen }: MarksScreenProps) {
                 </Text>
               </View>
             )}
+            <Button
+              type="outline"
+              size="small"
+              iconPosition="left"
+              icon={<FontAwesomeIcon icon={faSliders} size={14} color={colors.primary} />}
+              label={t['sightMarks.equipmentButton']}
+              onPress={() => setEquipmentVisible(true)}
+            />
           </View>
         )}
         {renderContent()}
@@ -264,6 +275,8 @@ export default function MarksScreen({ setScreen }: MarksScreenProps) {
         sightMarkId={activeSightMark?.id ?? null}
         onResultCreated={() => loadData()}
       />
+
+      <EquipmentModal visible={equipmentVisible} onClose={() => setEquipmentVisible(false)} />
     </View>
   );
 }

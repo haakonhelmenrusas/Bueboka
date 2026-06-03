@@ -535,6 +535,9 @@ export interface TranslationKeys {
   'sightMarks.selectSetHint': string;
   'sightMarks.markCount': string;
   'sightMarks.unknownBow': string;
+  'sightMarks.equipmentTitle': string;
+  'sightMarks.equipmentArrows': string;
+  'sightMarks.equipmentButton': string;
 
   // Calculate marks modal
   'calcMarks.fromDistance': string;

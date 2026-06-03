@@ -496,6 +496,9 @@ export const en: TranslationKeys = {
   'sightMarks.selectSetHint': 'Choose which calibration set to use as the basis for calculation.',
   'sightMarks.markCount': 'marks',
   'sightMarks.unknownBow': 'Unknown bow',
+  'sightMarks.equipmentTitle': 'Equipment settings',
+  'sightMarks.equipmentArrows': 'Arrows',
+  'sightMarks.equipmentButton': 'Equipment',
 
   'calcMarks.fromDistance': 'From distance',
   'calcMarks.toDistance': 'To distance',
