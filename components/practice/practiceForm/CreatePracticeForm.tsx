@@ -277,6 +277,7 @@ export default function CreatePracticeForm({
   const handleCategoryChange = (cat: PracticeCategory) => {
     setPracticeCategory(cat);
     setRounds([emptyRound(cat)]);
+    setEnvironment(cat === PracticeCategory.SKIVE_INDOOR ? Environment.INDOOR : Environment.OUTDOOR);
   };
 
   // ─── Rounds ──────────────────────────────────────────────────────────────────

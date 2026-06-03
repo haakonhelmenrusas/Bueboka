@@ -236,6 +236,7 @@ export default function CreateCompetitionForm({
   const handleCategoryChange = (cat: PracticeCategory) => {
     setPracticeCategory(cat);
     setRounds([emptyRound(1, cat)]);
+    setEnvironment(cat === PracticeCategory.SKIVE_INDOOR ? Environment.INDOOR : Environment.OUTDOOR);
   };
 
   // ─── Rounds ────────────────────────────────────────────────────────────────
