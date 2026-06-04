@@ -46,16 +46,16 @@ export function NavigationFooter({
             onPress={onPrev}
             disabled={isFirstStep}
             accessibilityLabel={t['form.prevStep']}>
-            <FontAwesomeIcon icon={faChevronLeft} size={18} color={isFirstStep ? colors.dimmed : colors.primary} />
+            <FontAwesomeIcon icon={faChevronLeft} size={18} color={isFirstStep ? colors.dimmed : colors.white} />
           </TouchableOpacity>
 
           <Text style={styles.navStepName}>{stepLabels[currentStep]}</Text>
 
           {isLastStep ? (
-            <View style={styles.navArrow} />
+            <View style={styles.navArrowSpacer} />
           ) : (
             <TouchableOpacity style={styles.navArrow} onPress={onNext} accessibilityLabel={t['form.nextStep']}>
-              <FontAwesomeIcon icon={faChevronRight} size={18} color={colors.primary} />
+              <FontAwesomeIcon icon={faChevronRight} size={18} color={colors.white} />
             </TouchableOpacity>
           )}
         </View>
@@ -116,7 +116,11 @@ const styles = StyleSheet.create({
     borderRadius: 18,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: colors.bgGray50,
+    backgroundColor: colors.primary,
+  },
+  navArrowSpacer: {
+    width: 36,
+    height: 36,
   },
   navArrowDisabled: {
     opacity: 0.3,

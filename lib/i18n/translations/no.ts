@@ -499,6 +499,8 @@ export const no: TranslationKeys = {
   'sightMarks.equipmentTitle': 'Utstyrsinnstillinger',
   'sightMarks.equipmentArrows': 'Piler',
   'sightMarks.equipmentButton': 'Utstyr',
+  'sightMarks.equipmentAimMeasure': 'Målt 5 cm på siktet',
+  'sightMarks.equipmentArrowWeight': 'Tyngde pil (gram)',
 
   'calcMarks.fromDistance': 'Fra avstand',
   'calcMarks.toDistance': 'Til avstand',
