@@ -277,6 +277,7 @@ export default function CreatePracticeForm({
   const handleCategoryChange = (cat: PracticeCategory) => {
     setPracticeCategory(cat);
     setRounds([emptyRound(cat)]);
+    setEnvironment(cat === PracticeCategory.SKIVE_INDOOR ? Environment.INDOOR : Environment.OUTDOOR);
   };
 
   // ─── Rounds ──────────────────────────────────────────────────────────────────
@@ -436,7 +437,7 @@ export default function CreatePracticeForm({
   return (
     <ModalWrapper visible={visible} onClose={handleClose} fullScreen>
       <View style={[styles.safeArea, { paddingTop: insets.top, paddingBottom: insets.bottom }]}>
-        <KeyboardAvoidingView style={styles.container} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
+        <KeyboardAvoidingView style={styles.container} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
           <Pressable onPress={Keyboard.dismiss}>
             <ModalHeader title={isEditing ? t['practiceForm.editTitle'] : t['practiceForm.newTitle']} onPress={handleClose} />
           </Pressable>

@@ -155,7 +155,7 @@ const BowForm = ({ modalVisible, setModalVisible, bow, existingBows = [], onSucc
         clearForm();
         setModalVisible(false);
       }}>
-      <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={styles.modal}>
+      <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : undefined} style={styles.modal}>
         <ModalHeader onPress={handleCloseModal} title={bow ? t['bowForm.editTitle'] : t['bowForm.newTitle']} />
         <ScrollView keyboardShouldPersistTaps="handled" showsVerticalScrollIndicator={false} contentContainerStyle={styles.scrollContent}>
           <Pressable onPress={() => Keyboard.dismiss()}>

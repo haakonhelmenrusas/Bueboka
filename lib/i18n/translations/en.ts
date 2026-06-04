@@ -499,6 +499,8 @@ export const en: TranslationKeys = {
   'sightMarks.equipmentTitle': 'Equipment settings',
   'sightMarks.equipmentArrows': 'Arrows',
   'sightMarks.equipmentButton': 'Equipment',
+  'sightMarks.equipmentAimMeasure': 'Measured 5 cm on sight',
+  'sightMarks.equipmentArrowWeight': 'Arrow weight (grams)',
 
   'calcMarks.fromDistance': 'From distance',
   'calcMarks.toDistance': 'To distance',
