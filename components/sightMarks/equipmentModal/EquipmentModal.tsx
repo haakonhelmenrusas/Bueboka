@@ -105,7 +105,7 @@ export default function EquipmentModal({ visible, onClose }: Props) {
     <ModalWrapper visible={visible} onClose={onClose}>
       <KeyboardAvoidingView
         keyboardVerticalOffset={Platform.OS === 'ios' ? 100 : undefined}
-        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
+        behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
         <ScrollView style={styles.modal} keyboardShouldPersistTaps="handled" showsVerticalScrollIndicator={false} bounces={false}>
           <ModalHeader onPress={onClose} title={t['sightMarks.equipmentTitle']} />
 
@@ -128,7 +128,7 @@ export default function EquipmentModal({ visible, onClose }: Props) {
               />
             </View>
             <Input
-              label={t['bowDetails.aimMeasure']}
+              label={t['sightMarks.equipmentAimMeasure']}
               keyboardType="numeric"
               value={aimMeasure}
               onChangeText={(v) => handleNumberInput(v, setAimMeasure)}
@@ -138,7 +138,7 @@ export default function EquipmentModal({ visible, onClose }: Props) {
           <View style={styles.section}>
             <Text style={styles.sectionTitle}>{arrows?.name ?? t['sightMarks.equipmentArrows']}</Text>
             <Input
-              label={t['arrowDetails.weight']}
+              label={t['sightMarks.equipmentArrowWeight']}
               keyboardType="numeric"
               value={arrowWeight}
               helpText={t['arrowForm.weightHelpText']}

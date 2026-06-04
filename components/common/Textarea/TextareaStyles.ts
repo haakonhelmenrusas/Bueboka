@@ -35,7 +35,7 @@ export const defaultStyles = StyleSheet.create({
     backgroundColor: colors.white,
     paddingHorizontal: 12,
     paddingVertical: 12,
-    minHeight: 80,
+    minHeight: 120,
     width: '100%',
     fontSize: 14,
     borderColor: colors.dimmed,

@@ -540,6 +540,8 @@ export interface TranslationKeys {
   'sightMarks.equipmentTitle': string;
   'sightMarks.equipmentArrows': string;
   'sightMarks.equipmentButton': string;
+  'sightMarks.equipmentAimMeasure': string;
+  'sightMarks.equipmentArrowWeight': string;
 
   // Calculate marks modal
   'calcMarks.fromDistance': string;

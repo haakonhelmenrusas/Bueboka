@@ -236,6 +236,7 @@ export default function CreateCompetitionForm({
   const handleCategoryChange = (cat: PracticeCategory) => {
     setPracticeCategory(cat);
     setRounds([emptyRound(1, cat)]);
+    setEnvironment(cat === PracticeCategory.SKIVE_INDOOR ? Environment.INDOOR : Environment.OUTDOOR);
   };
 
   // ─── Rounds ────────────────────────────────────────────────────────────────
@@ -546,7 +547,7 @@ export default function CreateCompetitionForm({
   return (
     <ModalWrapper visible={visible} onClose={handleClose} fullScreen>
       <SafeAreaView style={styles.container} edges={['top', 'bottom']}>
-        <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
+        <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
           <Pressable onPress={Keyboard.dismiss}>
             <ModalHeader title={isEditing ? t['competitionForm.editTitle'] : t['competitionForm.newTitle']} onPress={handleClose} />
           </Pressable>

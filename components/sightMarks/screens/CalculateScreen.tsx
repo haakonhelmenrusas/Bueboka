@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { Keyboard, Pressable, ScrollView, StyleSheet, View } from 'react-native';
+import { Keyboard, Pressable, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { AimDistanceMark, Arrows, Bow, MarkValue, SightMark } from '@/types';
 import { useSharedValue, withTiming } from 'react-native-reanimated';
@@ -12,12 +12,14 @@ import ConfirmRemoveMarks from '@/components/sightMarks/confirmRemoveMarks/Confi
 import { Button, Message } from '@/components/common';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { faPlus } from '@fortawesome/free-solid-svg-icons/faPlus';
+import { faSliders } from '@fortawesome/free-solid-svg-icons/faSliders';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { arrowsRepository, bowRepository, sightMarksRepository } from '@/services/repositories';
 import { offlineMutation } from '@/services/offline/mutationHelper';
 import { useAuth } from '@/contexts/AuthContext';
 import { useTranslation } from '@/contexts';
 import { AppError } from '@/services';
+import EquipmentModal from '@/components/sightMarks/equipmentModal/EquipmentModal';
 
 export default function CalculateScreen() {
   const { user } = useAuth();
@@ -33,6 +35,7 @@ export default function CalculateScreen() {
   const [status, setStatus] = useState<'idle' | 'pending' | 'error'>('idle');
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [equipmentVisible, setEquipmentVisible] = useState(false);
 
   const loadData = useCallback(async () => {
     setIsLoading(true);
@@ -230,6 +233,11 @@ export default function CalculateScreen() {
     <GestureHandlerRootView style={styles.page}>
       <Pressable style={{ flex: 1 }} onPress={Keyboard.dismiss}>
         <ScrollView contentContainerStyle={styles.list}>
+          <TouchableOpacity style={styles.equipmentButton} onPress={() => setEquipmentVisible(true)} activeOpacity={0.7}>
+            <FontAwesomeIcon icon={faSliders} size={13} color={colors.white} />
+            <Text style={styles.equipmentButtonText}>{t['sightMarks.equipmentButton']}</Text>
+          </TouchableOpacity>
+
           {error && (
             <Message
               title={t['sightMarks.errorTitle']}
@@ -277,6 +285,8 @@ export default function CalculateScreen() {
       )}
 
       <ConfirmRemoveMarks modalVisible={confirmDeleteId !== null} onConfirm={handleDeleteSet} closeModal={() => setConfirmDeleteId(null)} />
+
+      <EquipmentModal visible={equipmentVisible} onClose={() => setEquipmentVisible(false)} />
     </GestureHandlerRootView>
   );
 }
@@ -286,4 +296,22 @@ const styles = StyleSheet.create({
   list: { paddingHorizontal: 12, paddingTop: 12, paddingBottom: 160 },
   bottomBar: { position: 'absolute', left: 0, right: 0, paddingHorizontal: 16, paddingTop: 8, paddingBottom: 12 },
   newSetButton: { width: '100%' },
+  equipmentButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    alignSelf: 'flex-end',
+    gap: 6,
+    paddingVertical: 6,
+    paddingHorizontal: 12,
+    borderRadius: 16,
+    borderWidth: 1,
+    borderColor: 'rgba(255,255,255,0.3)',
+    backgroundColor: 'rgba(255,255,255,0.1)',
+    marginBottom: 8,
+  },
+  equipmentButtonText: {
+    fontSize: 13,
+    fontWeight: '500',
+    color: colors.white,
+  },
 });
