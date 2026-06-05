@@ -659,11 +659,6 @@ export const en: TranslationKeys = {
   'offline.syncing': 'Working...',
   'offline.queued': '{count} queued — tap to sync',
 
-  // Update required screen
-  'update.title': 'Update required',
-  'update.button': 'Update now',
-  'update.subtext': 'You must update the app to continue using Bueboka',
-
   // Skyttere (public profile search + detail)
   'skyttere.notLoggedInTitle': 'Not logged in',
   'skyttere.notLoggedInDesc': 'Please log in to search for archers.',
