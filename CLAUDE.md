@@ -142,6 +142,17 @@ Domain discovery first — understand the ubiquitous language (see `docs/skills/
 - Merging into `dev` triggers the **preview** EAS workflow — builds and submits to TestFlight (iOS) and Google Play internal track (Android) for beta testing.
 - Merging into `main` triggers the **production** EAS workflow — builds and submits to the App Store and Google Play production track.
 
+### Version bumps
+
+EAS auto-increments **build numbers** on every build (`autoIncrement: true` + `appVersionSource: "remote"` in `eas.json`) — never touch these manually.
+
+The **marketing version** in `app.json` → `"version"` is user-facing (what appears in the store listing). Bump it when merging to `main` with user-visible changes:
+
+- **Bump** for: new features (`feat`), significant bug fixes (`fix`), UI changes users will notice
+- **Skip** for: refactors, test-only changes, docs, internal cleanup, dependency bumps
+
+When bumping, create a `chore: bump version to X.Y.Z` commit on the PR branch before merging to `main`. Follow semver: bump patch for fixes, minor for features, major for breaking changes.
+
 ### Commit messages — Conventional Commits
 
 All commits follow the [Conventional Commits](https://www.conventionalcommits.org/) spec. Format:
