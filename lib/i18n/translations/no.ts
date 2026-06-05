@@ -659,11 +659,6 @@ export const no: TranslationKeys = {
   'offline.syncing': 'Jobber...',
   'offline.queued': '{count} i kø – trykk for å synkronisere',
 
-  // Update required screen
-  'update.title': 'Oppdatering påkrevd',
-  'update.button': 'Oppdater nå',
-  'update.subtext': 'Du må oppdatere appen for å fortsette å bruke Bueboka',
-
   // Skyttere (public profile search + detail)
   'skyttere.notLoggedInTitle': 'Ikke innlogget',
   'skyttere.notLoggedInDesc': 'Vennligst logg inn for å søke etter bueskyttere.',

@@ -18,6 +18,3 @@ export * from './offline/operationQueue';
 export { syncManager } from './offline/syncManager';
 export * from './offline/mutationHelper';
 export { registerOfflineHandlers } from './offline/handlers';
-
-// Version exports
-export { VersionService } from './versionService';
