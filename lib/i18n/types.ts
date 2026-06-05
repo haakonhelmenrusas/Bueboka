@@ -701,11 +701,6 @@ export interface TranslationKeys {
   'offline.syncing': string;
   'offline.queued': string;
 
-  // Update required screen
-  'update.title': string;
-  'update.button': string;
-  'update.subtext': string;
-
   // Skyttere (public profile search + detail)
   'skyttere.notLoggedInTitle': string;
   'skyttere.notLoggedInDesc': string;

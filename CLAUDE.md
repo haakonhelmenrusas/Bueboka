@@ -39,7 +39,7 @@ Production/preview secrets live in EAS (see `docs/BUILD_ENVIRONMENT.md`).
 
 File-based routing via Expo Router:
 
-- `app/_layout.tsx` — root layout; wraps in `AuthProvider`, initialises Sentry, runs version check
+- `app/_layout.tsx` — root layout; wraps in `AuthProvider`, initialises Sentry
 - `app/index.tsx` — entry redirect
 - `app/auth.tsx` — login/register screen
 - `app/intro.tsx` — first-launch intro/language picker
@@ -85,7 +85,6 @@ Reusable UI primitives used throughout the app. Each lives in its own folder wit
 - **Select** — dropdown with optional search, creatable options, Android modal positioning
 - **Textarea** — multiline text input with label, help text, error state, forwardRef
 - **Toggle** — animated switch with accessibility role `switch`
-- **UpdateRequired** — full-screen forced update prompt with store link
 - **icons/ArcheryIcons** — SVG bow and arrow icons
 
 ### Hooks (`hooks/`)
