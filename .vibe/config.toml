@@ -1,0 +1,70 @@
+# Project-specific Vibe configuration for Bueboka
+# This file extends the global Vibe configuration
+
+# Enable project context to include VIBE.md in conversations
+[project_context]
+# Include the project-specific VIBE.md file
+extra_files = ["VIBE.md", "CLAUDE.md", "README.md"]
+# Increase context to include more recent commits
+commit_count = 10
+timeout_seconds = 3.0
+
+# Enable skills for project-specific guidance
+[skills]
+# Path to project-specific skills
+skill_paths = [".agents/skills"]
+# Enable all project skills by default
+enabled_skills = ["bueboka-context"]
+
+# Tool permissions for this project
+[tools.read]
+# Allow reading all project files except env files
+max_read_bytes = 100000
+
+[tools.grep]
+# Allow searching the entire project
+max_output_bytes = 100000
+default_max_matches = 200
+
+[tools.edit]
+# Allow editing project files
+permission = "always"
+
+[tools.write_file]
+# Allow creating new files in project
+permission = "always"
+create_parent_dirs = true
+
+[tools.bash]
+# Allow common development commands
+permission = "always"
+allowlist = [
+    "npm",
+    "npx",
+    "yarn",
+    "jest",
+    "git",
+    "eas",
+    "expo",
+    "ls",
+    "cat",
+    "find",
+    "grep",
+    "head",
+    "tail",
+    "wc",
+    "echo",
+    "pwd",
+    "cd",
+]
+
+# Project-specific AGENTS.md files
+[agents]
+# Path to project AGENTS.md files
+agent_paths = [".agents"]
+
+# Enable project-specific context in all conversations
+[context]
+include_project_readme = true
+include_git_status = true
+include_recent_commits = 10

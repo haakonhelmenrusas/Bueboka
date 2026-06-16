@@ -1,0 +1,68 @@
+# Vibe Ignore File for Bueboka
+# Files and directories that Vibe should ignore when indexing
+
+# Node modules
+node_modules/
+
+# Build outputs
+dist/
+web-build/
+
+# Expo cache
+.expo/
+
+# Native builds
+android/
+ios/
+
+# Git
+.git/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# DS_Store and other macOS files
+.DS_Store
+__MACOSX
+
+# Environment files
+.env
+.env.*
+!.env.example
+
+# Logs
+*.log
+logs/
+
+# Cache directories
+.cache/
+.parcel-cache/
+metro.config.js
+
+# Test coverage
+coverage/
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+
+# Local EAS
+.eas/
+
+# Local Claude
+.claude/
+
+# GitHub assets
+github_assets/
+
+# Assets that don't need indexing
+assets/images/
+assets/fonts/
+
+# Generated files
+declaration.d.ts
