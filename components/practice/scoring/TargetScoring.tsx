@@ -1,4 +1,4 @@
-import React, { useCallback, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { Dimensions, Pressable, Text, View } from 'react-native';
 import { GestureDetector, Gesture, GestureHandlerRootView } from 'react-native-gesture-handler';
 import Animated, { useSharedValue, useAnimatedStyle, withSpring, withTiming, runOnJS } from 'react-native-reanimated';
@@ -59,11 +59,16 @@ export function TargetScoring({ onScorePress, onUndoLast, disabled, editingIdx, 
   const focusX = useSharedValue(TARGET_SIZE / 2);
   const focusY = useSharedValue(TARGET_SIZE / 2);
   const isZoomed = useSharedValue(false);
-  const keepZoomActive = useSharedValue(false);
+  const keepZoomActive = useSharedValue(endComplete);
   const startAbsX = useSharedValue(0);
   const startAbsY = useSharedValue(0);
   const startFocusX = useSharedValue(0);
   const startFocusY = useSharedValue(0);
+
+  // Update keepZoomActive when endComplete prop changes
+  useEffect(() => {
+    keepZoomActive.value = endComplete;
+  }, [endComplete, keepZoomActive]);
 
   const handlePlaceArrow = useCallback(
     (x: number, y: number) => {
@@ -120,7 +125,6 @@ export function TargetScoring({ onScorePress, onUndoLast, disabled, editingIdx, 
     .onEnd(() => {
       'worklet';
       runOnJS(handlePlaceArrow)(focusX.value, focusY.value);
-      keepZoomActive.value = true;
     })
     .onFinalize(() => {
       'worklet';
