@@ -58,7 +58,7 @@ export async function clearTokens(): Promise<void> {
  * Check if the current token is expired
  */
 export async function isTokenExpired(): Promise<boolean> {
-  const expiresAt = await SecureStore.getItemAsync(EXPIRES_KEY);
+  const expiresAt = await SecureStore.getItemAsync(EXPIRES);
   if (!expiresAt) {
     return true;
   }

@@ -7,6 +7,7 @@ interface AchievementCheckResponse {
   totalNewlyUnlocked: number;
 }
 
+/** Achievement repository */
 export const achievementRepository = {
   async getAll(): Promise<AchievementData> {
     try {

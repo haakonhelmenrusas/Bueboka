@@ -1,7 +1,7 @@
 import { createAuthClient } from 'better-auth/react';
 import { expoClient } from '@better-auth/expo/client';
 import { authStorage } from './authStorage';
-import { API_BASE_URL, AUTH_BASE_URL, API_ORIGIN } from '../api/constants';
+import { AUTH_BASE_URL, API_ORIGIN } from '../api/constants';
 
 /**
  * Better Auth client for Expo with SecureStore and OAuth support
