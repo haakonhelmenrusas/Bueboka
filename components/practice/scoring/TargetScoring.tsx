@@ -5,6 +5,7 @@ import Animated, { useSharedValue, useAnimatedStyle, withSpring, withTiming, run
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faRotateLeft } from '@fortawesome/free-solid-svg-icons/faRotateLeft';
 import { useTranslation } from '@/contexts';
+import { Button } from '@/components/common';
 import { TargetFace } from './TargetFace';
 import { styles } from './TargetScoringStyles';
 
@@ -26,6 +27,8 @@ interface TargetScoringProps {
   disabled?: boolean;
   editingIdx: number | null;
   targetType?: string;
+  endComplete?: boolean; // Whether all arrows for this end have been placed
+  onNext?: () => void; // Callback for next button
 }
 
 function calculateScore(x: number, y: number): number {
@@ -47,7 +50,7 @@ function getArrowColor(score: number): string {
   return '#999';
 }
 
-export function TargetScoring({ onScorePress, onUndoLast, disabled, editingIdx, targetType }: TargetScoringProps) {
+export function TargetScoring({ onScorePress, onUndoLast, disabled, editingIdx, targetType, endComplete = false, onNext }: TargetScoringProps) {
   const { t } = useTranslation();
   const [arrows, setArrows] = useState<ArrowPosition[]>([]);
   const arrowsRef = useRef<ArrowPosition[]>([]);
@@ -56,6 +59,7 @@ export function TargetScoring({ onScorePress, onUndoLast, disabled, editingIdx, 
   const focusX = useSharedValue(TARGET_SIZE / 2);
   const focusY = useSharedValue(TARGET_SIZE / 2);
   const isZoomed = useSharedValue(false);
+  const keepZoomActive = useSharedValue(false);
   const startAbsX = useSharedValue(0);
   const startAbsY = useSharedValue(0);
   const startFocusX = useSharedValue(0);
@@ -116,19 +120,34 @@ export function TargetScoring({ onScorePress, onUndoLast, disabled, editingIdx, 
     .onEnd(() => {
       'worklet';
       runOnJS(handlePlaceArrow)(focusX.value, focusY.value);
+      keepZoomActive.value = true;
     })
     .onFinalize(() => {
       'worklet';
-      isZoomed.value = false;
-      scale.value = withTiming(1, { duration: 200 });
-      focusX.value = withTiming(TARGET_SIZE / 2, { duration: 200 });
-      focusY.value = withTiming(TARGET_SIZE / 2, { duration: 200 });
+      if (!keepZoomActive.value) {
+        isZoomed.value = false;
+        scale.value = withTiming(1, { duration: 200 });
+        focusX.value = withTiming(TARGET_SIZE / 2, { duration: 200 });
+        focusY.value = withTiming(TARGET_SIZE / 2, { duration: 200 });
+      }
     });
 
   const tap = Gesture.Tap()
     .runOnJS(true)
     .onEnd((event) => {
       handlePlaceArrow(event.x, event.y);
+    });
+
+  const resetZoomTap = Gesture.Tap()
+    .runOnJS(true)
+    .onEnd(() => {
+      if (keepZoomActive.value) {
+        keepZoomActive.value = false;
+        isZoomed.value = false;
+        scale.value = withTiming(1, { duration: 200 });
+        focusX.value = withTiming(TARGET_SIZE / 2, { duration: 200 });
+        focusY.value = withTiming(TARGET_SIZE / 2, { duration: 200 });
+      }
     });
 
   const gesture = Gesture.Exclusive(pan, tap);
@@ -148,7 +167,7 @@ export function TargetScoring({ onScorePress, onUndoLast, disabled, editingIdx, 
     const zoomProgress = Math.min(1, Math.max(0, (scale.value - 1) / (ZOOM_SCALE - 1)));
     const offset = FINGER_OFFSET * zoomProgress;
     return {
-      opacity: isZoomed.value ? 1 : 0,
+      opacity: (isZoomed.value || keepZoomActive.value) ? 1 : 0,
       top: TARGET_SIZE / 2 - offset - CROSSHAIR_SIZE / 2,
     };
   });
@@ -204,6 +223,23 @@ export function TargetScoring({ onScorePress, onUndoLast, disabled, editingIdx, 
             <FontAwesomeIcon icon={faRotateLeft} size={14} color="#DD0000" />
             <Text style={styles.undoText}>{t['scoring.undoLast']}</Text>
           </Pressable>
+        </View>
+      )}
+
+      {endComplete && (
+        <View style={styles.nextRow}>
+          <Button
+            label={t['scoring.nextEnd']}
+            onPress={() => {
+              keepZoomActive.value = false;
+              isZoomed.value = false;
+              scale.value = withTiming(1, { duration: 200 });
+              focusX.value = withTiming(TARGET_SIZE / 2, { duration: 200 });
+              focusY.value = withTiming(TARGET_SIZE / 2, { duration: 200 });
+              onNext?.();
+            }}
+            buttonStyle={{ width: '100%' }}
+          />
         </View>
       )}
     </View>

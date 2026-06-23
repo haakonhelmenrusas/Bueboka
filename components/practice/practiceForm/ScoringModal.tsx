@@ -178,7 +178,7 @@ export function ScoringModal({
                 {filledCount > 0 && <Text style={styles.scoringTotal}>{`${t['scoring.sum']} ${total}`}</Text>}
               </View>
 
-              {showScoreInput && (
+              {(showScoreInput || endComplete) && (
                 <>
                   {isEditingArrow && (
                     <Text style={styles.editingHint}>{`${t['scoring.editingArrowPrefix']} ${(editingIdx! % arrowsPerEnd) + 1}`}</Text>
@@ -193,6 +193,8 @@ export function ScoringModal({
                       disabled={isFull}
                       editingIdx={isEditingArrow ? editingIdx : null}
                       targetType={round.targetType}
+                      endComplete={endComplete}
+                      onNext={() => onSetEndPage(currentEndPage + 1)}
                     />
                   )}
                 </>

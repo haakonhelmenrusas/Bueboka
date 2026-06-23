@@ -94,4 +94,10 @@ export const styles = StyleSheet.create({
     marginTop: 8,
     lineHeight: 16,
   },
+  nextRow: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    marginTop: 16,
+    gap: 12,
+  },
 });
