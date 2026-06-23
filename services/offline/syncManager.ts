@@ -11,6 +11,7 @@ import {
   removeOperation,
   updateOperation,
 } from '@/services/offline/operationQueue';
+import { OFFLINE_CONFIG } from '../api/constants';
 
 export type OperationHandler = (operation: QueuedOperation) => Promise<void>;
 
@@ -23,8 +24,7 @@ export interface SyncStatus {
 
 type Listener = (status: SyncStatus) => void;
 
-const BASE_BACKOFF_MS = 1000;
-const MAX_BACKOFF_MS = 15000;
+const { BASE_BACKOFF_MS, MAX_BACKOFF_MS } = OFFLINE_CONFIG;
 
 class SyncManager {
   private handlers = new Map<string, OperationHandler>();

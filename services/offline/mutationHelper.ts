@@ -16,7 +16,6 @@ export async function offlineMutation<T>(
   try {
     return await onlineFn();
   } catch (error) {
-    // If it's a network error, enqueue for later
     if (error instanceof AppError && error.code === 'NETWORK_ERROR') {
       Sentry.addBreadcrumb({
         category: 'offline',
@@ -25,9 +24,7 @@ export async function offlineMutation<T>(
         data: { operationType: operation.type },
       });
       await syncManager.enqueue(operation, userId);
-      throw error;
     }
-    // For other errors, just throw
     throw error;
   }
 }

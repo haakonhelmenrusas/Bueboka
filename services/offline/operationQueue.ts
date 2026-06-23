@@ -1,5 +1,6 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as Sentry from '@sentry/react-native';
+import { OFFLINE_CONFIG } from '../api/constants';
 
 export type OperationType = string;
 
@@ -12,9 +13,9 @@ export interface QueuedOperation {
   lastError?: string;
 }
 
-const QUEUE_KEY_PREFIX = 'offline_queue';
-const MAX_QUEUE_LENGTH = 100;
-export const MAX_RETRIES = 5;
+const { QUEUE_KEY_PREFIX, MAX_QUEUE_LENGTH, MAX_RETRIES } = OFFLINE_CONFIG;
+
+export { MAX_RETRIES };
 
 function storageKey(userId?: string) {
   return `${QUEUE_KEY_PREFIX}:${userId || 'anonymous'}`;
