@@ -138,18 +138,6 @@ export function TargetScoring({ onScorePress, onUndoLast, disabled, editingIdx, 
       handlePlaceArrow(event.x, event.y);
     });
 
-  const resetZoomTap = Gesture.Tap()
-    .runOnJS(true)
-    .onEnd(() => {
-      if (keepZoomActive.value) {
-        keepZoomActive.value = false;
-        isZoomed.value = false;
-        scale.value = withTiming(1, { duration: 200 });
-        focusX.value = withTiming(TARGET_SIZE / 2, { duration: 200 });
-        focusY.value = withTiming(TARGET_SIZE / 2, { duration: 200 });
-      }
-    });
-
   const gesture = Gesture.Exclusive(pan, tap);
 
   const animatedTargetStyle = useAnimatedStyle(() => {

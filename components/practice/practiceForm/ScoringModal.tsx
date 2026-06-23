@@ -79,11 +79,13 @@ export function ScoringModal({
   const isActiveEnd = !isFull && currentEndPage === activeEndPage;
   const isEndFilled = endScores.length >= arrowsInThisEnd;
 
+  const editingIdx = editingIndex ?? null;
+  const isEditingArrow = editingIdx !== null;
+  const endComplete = isEndFilled && isActiveEnd && !isEditingArrow;
+
   const canGoPrev = currentEndPage > 0;
   const canGoNext = currentEndPage < activeEndPage;
 
-  const editingIdx = editingIndex ?? null;
-  const isEditingArrow = editingIdx !== null;
   const showScoreInput = (isActiveEnd && !isEndFilled) || isEditingArrow;
 
   const handleScorePress = (score: number) => {
@@ -204,10 +206,6 @@ export function ScoringModal({
                 <View style={styles.scoringComplete}>
                   <Text style={styles.scoringCompleteText}>{`${t['scoring.allRegistered']} ${t['scoring.scoreSuffix']} ${total}`}</Text>
                 </View>
-              )}
-
-              {!isFull && isEndFilled && !isActiveEnd && !isEditingArrow && canGoNext && (
-                <Button label={t['scoring.nextEnd']} onPress={() => onSetEndPage(currentEndPage + 1)} buttonStyle={{ width: '100%' }} />
               )}
             </View>
           )}
