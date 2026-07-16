@@ -8,6 +8,7 @@ import { useTranslation } from '@/contexts';
 import { Button } from '@/components/common';
 import { TargetFace } from './TargetFace';
 import { styles } from './TargetScoringStyles';
+import { useFingerSlipDetection } from '@/hooks/useFingerSlipDetection';
 
 const SCREEN_WIDTH = Dimensions.get('window').width;
 const TARGET_SIZE = Math.min(SCREEN_WIDTH - 48, 340);
@@ -50,10 +51,19 @@ function getArrowColor(score: number): string {
   return '#999';
 }
 
-export function TargetScoring({ onScorePress, onUndoLast, disabled, editingIdx, targetType, endComplete = false, onNext }: TargetScoringProps) {
+export function TargetScoring({
+  onScorePress,
+  onUndoLast,
+  disabled,
+  editingIdx,
+  targetType,
+  endComplete = false,
+  onNext,
+}: TargetScoringProps) {
   const { t } = useTranslation();
   const [arrows, setArrows] = useState<ArrowPosition[]>([]);
   const arrowsRef = useRef<ArrowPosition[]>([]);
+  const { addPoint, getFinalPosition, reset: resetSlipDetection } = useFingerSlipDetection();
 
   const scale = useSharedValue(1);
   const focusX = useSharedValue(TARGET_SIZE / 2);
@@ -94,6 +104,13 @@ export function TargetScoring({ onScorePress, onUndoLast, disabled, editingIdx, 
     [onScorePress, disabled, editingIdx],
   );
 
+  const handlePlaceArrowWithSlipDetection = useCallback(() => {
+    const finalPos = getFinalPosition();
+    if (finalPos) {
+      handlePlaceArrow(finalPos.x, finalPos.y);
+    }
+  }, [getFinalPosition, handlePlaceArrow]);
+
   const handleUndo = useCallback(() => {
     if (arrowsRef.current.length === 0) return;
     const updated = arrowsRef.current.slice(0, -1);
@@ -114,6 +131,8 @@ export function TargetScoring({ onScorePress, onUndoLast, disabled, editingIdx, 
       focusX.value = event.x;
       focusY.value = event.y;
       scale.value = withSpring(ZOOM_SCALE, { damping: 15, stiffness: 150 });
+      runOnJS(resetSlipDetection)();
+      runOnJS(addPoint)(event.x, event.y);
     })
     .onUpdate((event) => {
       'worklet';
@@ -121,10 +140,11 @@ export function TargetScoring({ onScorePress, onUndoLast, disabled, editingIdx, 
       const dy = event.absoluteY - startAbsY.value;
       focusX.value = Math.max(0, Math.min(TARGET_SIZE, startFocusX.value + dx / ZOOM_SCALE));
       focusY.value = Math.max(0, Math.min(TARGET_SIZE, startFocusY.value + dy / ZOOM_SCALE));
+      runOnJS(addPoint)(focusX.value, focusY.value);
     })
     .onEnd(() => {
       'worklet';
-      runOnJS(handlePlaceArrow)(focusX.value, focusY.value);
+      runOnJS(handlePlaceArrowWithSlipDetection)();
     })
     .onFinalize(() => {
       'worklet';
@@ -138,8 +158,17 @@ export function TargetScoring({ onScorePress, onUndoLast, disabled, editingIdx, 
 
   const tap = Gesture.Tap()
     .runOnJS(true)
+    .onStart(() => {
+      resetSlipDetection();
+    })
     .onEnd((event) => {
-      handlePlaceArrow(event.x, event.y);
+      addPoint(event.x, event.y);
+      const finalPos = getFinalPosition();
+      if (finalPos) {
+        handlePlaceArrow(finalPos.x, finalPos.y);
+      } else {
+        handlePlaceArrow(event.x, event.y);
+      }
     });
 
   const gesture = Gesture.Exclusive(pan, tap);
@@ -159,7 +188,7 @@ export function TargetScoring({ onScorePress, onUndoLast, disabled, editingIdx, 
     const zoomProgress = Math.min(1, Math.max(0, (scale.value - 1) / (ZOOM_SCALE - 1)));
     const offset = FINGER_OFFSET * zoomProgress;
     return {
-      opacity: (isZoomed.value || keepZoomActive.value) ? 1 : 0,
+      opacity: isZoomed.value || keepZoomActive.value ? 1 : 0,
       top: TARGET_SIZE / 2 - offset - CROSSHAIR_SIZE / 2,
     };
   });
