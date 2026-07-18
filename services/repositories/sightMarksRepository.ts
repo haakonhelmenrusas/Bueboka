@@ -52,9 +52,7 @@ export const sightMarksRepository = {
 
   async getResults(sightMarkId: string): Promise<SightMarkResult[]> {
     try {
-      const response = await client.get<SightMarkResult[] | { sightMarkResults: SightMarkResult[] }>(
-        `/sight-marks/${sightMarkId}/results`,
-      );
+      const response = await client.get<SightMarkResult[] | { sightMarkResults: SightMarkResult[] }>(`/sight-marks/${sightMarkId}/results`);
       const raw = response.data as any;
       return Array.isArray(raw) ? raw : (raw?.sightMarkResults ?? raw?.results ?? []);
     } catch (error) {

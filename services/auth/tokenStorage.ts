@@ -15,20 +15,14 @@ const { AUTH_TOKEN, EXPIRES } = TOKEN_STORAGE_KEYS;
  * Save authentication token securely
  */
 export async function saveTokens(tokens: TokenPair): Promise<void> {
-  await Promise.all([
-    SecureStore.setItemAsync(AUTH_TOKEN, tokens.accessToken),
-    SecureStore.setItemAsync(EXPIRES, tokens.expiresAt),
-  ]);
+  await Promise.all([SecureStore.setItemAsync(AUTH_TOKEN, tokens.accessToken), SecureStore.setItemAsync(EXPIRES, tokens.expiresAt)]);
 }
 
 /**
  * Get stored authentication tokens
  */
 export async function getTokens(): Promise<TokenPair | null> {
-  const [accessToken, expiresAt] = await Promise.all([
-    SecureStore.getItemAsync(AUTH_TOKEN),
-    SecureStore.getItemAsync(EXPIRES),
-  ]);
+  const [accessToken, expiresAt] = await Promise.all([SecureStore.getItemAsync(AUTH_TOKEN), SecureStore.getItemAsync(EXPIRES)]);
 
   if (!accessToken || !expiresAt) {
     return null;
@@ -48,10 +42,7 @@ export async function getAccessToken(): Promise<string | null> {
  * Clear all stored tokens
  */
 export async function clearTokens(): Promise<void> {
-  await Promise.all([
-    SecureStore.deleteItemAsync(AUTH_TOKEN).catch(() => {}),
-    SecureStore.deleteItemAsync(EXPIRES).catch(() => {}),
-  ]);
+  await Promise.all([SecureStore.deleteItemAsync(AUTH_TOKEN).catch(() => {}), SecureStore.deleteItemAsync(EXPIRES).catch(() => {})]);
 }
 
 /**

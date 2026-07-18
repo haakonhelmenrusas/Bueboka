@@ -286,7 +286,6 @@ export default function MarksScreen({ setScreen }: MarksScreenProps) {
         sightMarkId={activeSightMark?.id ?? null}
         onResultCreated={() => loadData()}
       />
-
     </View>
   );
 }

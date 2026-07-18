@@ -30,6 +30,7 @@ npm run format:check   # Check formatting without writing
 ```
 
 Run a single test file:
+
 ```bash
 npx jest services/repositories/__tests__/practiceRepository.test.ts
 ```
@@ -37,6 +38,7 @@ npx jest services/repositories/__tests__/practiceRepository.test.ts
 ## Environment
 
 Requires `.env` with:
+
 - `EXPO_PUBLIC_API_URL` — backend base URL including `/api` (e.g., `http://localhost:3000/api`)
 - `EXPO_PUBLIC_CLARITY_KEY` — Microsoft Clarity key (leave empty to disable)
 
@@ -45,6 +47,7 @@ Production/preview secrets live in EAS (see `docs/BUILD_ENVIRONMENT.md`).
 ## Architecture
 
 ### Tech Stack
+
 - **Framework:** React Native 0.85, Expo SDK 56
 - **Language:** TypeScript 6
 - **Navigation:** Expo Router (file-based navigation)
@@ -183,6 +186,7 @@ Bueboka-app/
 ### Navigation (Expo Router)
 
 File-based routing via Expo Router:
+
 - Auth guard in root layout redirects unauthenticated users to `/auth`
 - Main tabs: home, aktivitet, sightMarks, settings, skyttere (hidden)
 - Public profile directory at `/skyttere/`
@@ -190,12 +194,14 @@ File-based routing via Expo Router:
 ### State Management
 
 Context API only — no Redux or Zustand:
+
 - `AuthContext` (667 lines) owns auth state and exposes login, register, logout, and OAuth flows
 - Tokens stored in SecureStore (`auth_token`, `bueboka.session_token`)
 
 ### Data Layer
 
 Three sub-layers:
+
 1. **HTTP** — `services/api/authFetch.ts` exports `authFetchClient` (better-auth `$fetch` with SecureStore credentials). This is the canonical HTTP client.
 2. **Repositories** — 9 repositories in `services/repositories/` each use `authFetchClient` and wrap errors with `handleApiError()`, which maps API errors to an `AppError` with Norwegian user-facing messages.
 3. **Offline** — `offlineMutation()` wraps any repository call and enqueues it on `NETWORK_ERROR`. `syncManager` drains the queue (keyed `offline_queue:{userId}` in AsyncStorage) when connectivity returns. Handlers registered via `registerOfflineHandlers()` inside `AuthContext`.
@@ -211,31 +217,34 @@ Three sub-layers:
 
 ### Archery Concepts
 
-| Concept | Description |
-|---------|-------------|
-| **Bue** | Bow (equipment) |
-| **Pilsett** | Arrow set |
-| **Økt** | Practice session |
-| **Skytter** | Shooter/Archer |
-| **Bane** | Range/Track |
-| **Skive** | Indoor target shooting (SKIVE_INDOOR, SKIVE_OUTDOOR) |
-| **Jakt 3D** | 3D hunting archery |
-| **Felt** | Field archery |
-| **Siktemerking** | Sight mark |
-| **Merkverdi** | Mark value (score for hitting a ring) |
-| **Konkurranse** | Competition |
+| Concept          | Description                                          |
+| ---------------- | ---------------------------------------------------- |
+| **Bue**          | Bow (equipment)                                      |
+| **Pilsett**      | Arrow set                                            |
+| **Økt**          | Practice session                                     |
+| **Skytter**      | Shooter/Archer                                       |
+| **Bane**         | Range/Track                                          |
+| **Skive**        | Indoor target shooting (SKIVE_INDOOR, SKIVE_OUTDOOR) |
+| **Jakt 3D**      | 3D hunting archery                                   |
+| **Felt**         | Field archery                                        |
+| **Siktemerking** | Sight mark                                           |
+| **Merkverdi**    | Mark value (score for hitting a ring)                |
+| **Konkurranse**  | Competition                                          |
 
 ### Practice Categories (PracticeCategory enum)
+
 - SKIVE_INDOOR - Indoor target shooting
-- SKIVE_OUTDOOR - Outdoor target shooting  
+- SKIVE_OUTDOOR - Outdoor target shooting
 - JAKT_3D - 3D hunting archery
 - FELT - Field archery
 
 ### Environment (Environment enum)
+
 - INDOOR
 - OUTDOOR
 
 ### Bow Types (BowType enum)
+
 - RECURVE
 - COMPOUND
 - BAREBOW
@@ -243,6 +252,7 @@ Three sub-layers:
 - TRADITIONAL
 
 ### Weather Conditions (WeatherCondition enum)
+
 - SUNNY
 - CLOUDY
 - RAIN
@@ -251,17 +261,20 @@ Three sub-layers:
 - FOG
 
 ### Scoring
+
 - FITA standard: 0-10 points
 - Scores tracked per arrow, aggregated per end (series of arrows), and per practice session
 
 ## Development Workflow
 
 ### Domain Discovery First
+
 Understand the ubiquitous language (see `docs/skills/domain-discovery.md`) before implementing. The full TDD/DDD workflow is in `docs/skills/tdd-ddd.md`.
 
 **Write tests before implementation** — repositories are the mock boundary.
 
 ### TDD/DDD Cycle
+
 ```
 DISCOVER  → ask questions (domain-discovery)
 MODEL     → types/ entities
@@ -276,11 +289,13 @@ COMMIT    → follow conventions below
 ```
 
 ### Testing Conventions
+
 - Mock at boundaries only: mock `authFetchClient` when testing repositories; mock repositories when testing hooks or screens
 - Test locations mirror source: `services/repositories/__tests__/`, `hooks/__tests__/`, `components/<folder>/__tests__/`
 - Framework: Jest + jest-expo, jsdom environment
 
 ### File Structure for New Features
+
 1. Create domain types in `types/`
 2. Create repository interface and tests in `services/repositories/__tests__/`
 3. Implement repository in `services/repositories/`
@@ -293,16 +308,19 @@ COMMIT    → follow conventions below
 ## Git Workflow
 
 ### Branching Model
+
 - `dev` is the default integration branch
 - `main` is production
 - Never push directly to either — all changes go through PRs
 
 Steps:
+
 1. Branch from `dev` (e.g., `fix/short-description`, `feat/short-description`)
 2. Open a PR targeting `dev` — merge only after CI passes
 3. Promote `dev` → `main` via a separate PR — merge only after CI passes
 
 ### CI/CD
+
 - Merging into `dev` triggers **preview** EAS workflow → TestFlight (iOS) and Google Play internal track (Android)
 - Merging into `main` triggers **production** EAS workflow → App Store and Google Play production
 
@@ -320,6 +338,7 @@ Co-Authored-By: Mistral Vibe <vibe@mistral.ai>
 ```
 
 **Types:**
+
 - `feat` — new feature visible to the user
 - `fix` — bug fix
 - `refactor` — internal change with no behavioural difference
@@ -333,6 +352,7 @@ Co-Authored-By: Mistral Vibe <vibe@mistral.ai>
 Keep the summary under 70 chars. Use the body for the "why" — what was the user-visible problem, what constraint forced this approach, what alternatives were rejected.
 
 **Examples:**
+
 ```
 fix: handle 404 from version endpoint without blocking startup
 refactor(auth): split AuthContext into login and session hooks
@@ -342,12 +362,14 @@ chore(deps): pin react-native-reanimated to 4.2.1 for SDK 55
 ### Co-Author Trailer
 
 Every commit Vibe helps write must end with:
+
 ```
 Generated by Mistral Vibe.
 Co-Authored-By: Mistral Vibe <vibe@mistral.ai>
 ```
 
 Use a HEREDOC when committing to preserve the trailing newline:
+
 ```bash
 git commit -m "$(cat <<'EOF'
 fix: short summary
@@ -363,6 +385,7 @@ EOF
 ## Quality Standards
 
 ### Testing
+
 - **No implementation file without a test file**
 - **Red → Green → Refactor** — always
 - **One test = one behaviour** — name it in plain language
@@ -372,6 +395,7 @@ EOF
 - **Invariants are named functions** with their own tests
 
 ### Code Style
+
 - **Never hardcode hex color values** — import from `styles/colors.ts`
 - **Primary color:** `#053546` (dark navy)
 - **Secondary color:** `#227B9A` (teal)
@@ -381,6 +405,7 @@ EOF
 - **TypeScript strict mode** — all code is typed
 
 ### Error Handling
+
 - All API errors wrapped with `handleApiError()` → returns `AppError` with Norwegian user-facing messages
 - User messages are always in **Norwegian**
 - Error handling centralized in `services/api/errors.ts`
@@ -400,24 +425,25 @@ EOF
 
 ## Key Files Reference
 
-| Purpose | File | Description |
-|---------|------|-------------|
-| Entry | `index.js` | Expo entry point |
-| App Entry | `app/index.tsx` | Redirects to auth or home |
-| Auth | `app/auth.tsx` | Login/register screen |
-| Root Layout | `app/_layout.tsx` | AuthProvider, Sentry, version check |
-| Main Tabs | `app/(tabs)/_layout.tsx` | Tab navigation |
-| HTTP Client | `services/api/authFetch.ts` | better-auth wrapper with SecureStore |
-| Error Handling | `services/api/errors.ts` | Maps API errors to AppError |
-| Types | `types/index.ts` | Type exports |
-| Colors | `styles/colors.ts` | Color palette |
-| i18n | `lib/i18n/index.ts` | Translation context |
-| Offline | `services/offline/mutationHelper.ts` | Offline mutation queue |
-| Sync | `services/offline/syncManager.ts` | Sync queue when online |
+| Purpose        | File                                 | Description                          |
+| -------------- | ------------------------------------ | ------------------------------------ |
+| Entry          | `index.js`                           | Expo entry point                     |
+| App Entry      | `app/index.tsx`                      | Redirects to auth or home            |
+| Auth           | `app/auth.tsx`                       | Login/register screen                |
+| Root Layout    | `app/_layout.tsx`                    | AuthProvider, Sentry, version check  |
+| Main Tabs      | `app/(tabs)/_layout.tsx`             | Tab navigation                       |
+| HTTP Client    | `services/api/authFetch.ts`          | better-auth wrapper with SecureStore |
+| Error Handling | `services/api/errors.ts`             | Maps API errors to AppError          |
+| Types          | `types/index.ts`                     | Type exports                         |
+| Colors         | `styles/colors.ts`                   | Color palette                        |
+| i18n           | `lib/i18n/index.ts`                  | Translation context                  |
+| Offline        | `services/offline/mutationHelper.ts` | Offline mutation queue               |
+| Sync           | `services/offline/syncManager.ts`    | Sync queue when online               |
 
 ## Common Patterns
 
 ### Repository Method
+
 ```typescript
 import { authFetchClient as client } from '@/services/api/authFetch';
 import { handleApiError } from '@/services/api/errors';
@@ -436,6 +462,7 @@ export const practiceRepository = {
 ```
 
 ### Component Structure
+
 ```
 components/practice/ScoreInput/
 ├── ScoreInput.tsx          # Component logic
@@ -445,6 +472,7 @@ components/practice/ScoreInput/
 ```
 
 ### Hook Structure
+
 ```
 hooks/usePractice.ts          # Hook implementation
 hooks/__tests__/
@@ -454,21 +482,25 @@ hooks/__tests__/
 ## Useful Queries
 
 Find all repositories:
+
 ```bash
 grep -r "Repository" services/repositories/ --include="*.ts"
 ```
 
 Find all types:
+
 ```bash
 ls -la types/*.ts
 ```
 
 Find all hooks:
+
 ```bash
 ls -la hooks/*.ts
 ```
 
 Find all screens:
+
 ```bash
 find app/ -name "*.tsx" -type f | grep -v _layout | grep -v index
 ```
