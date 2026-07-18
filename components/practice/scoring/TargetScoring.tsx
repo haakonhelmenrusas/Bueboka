@@ -15,6 +15,16 @@ const ZOOM_SCALE = 2.5;
 const FINGER_OFFSET = 30;
 const CROSSHAIR_SIZE = 30;
 
+// Finger slip detection constants
+const SLIP_TIME_WINDOW_MS = 100; // Ignore last 100ms of movement (finger slip)
+const MAX_POSITION_HISTORY = 50; // Maximum number of positions to track
+
+interface TimedPosition {
+  x: number;
+  y: number;
+  time: number;
+}
+
 interface ArrowPosition {
   x: number;
   y: number;
@@ -41,6 +51,37 @@ function calculateScore(x: number, y: number): number {
   return Math.min(score, 10);
 }
 
+/**
+ * Gets the mature position from the history, ignoring the last 100ms of movement (finger slip).
+ * This prevents arrows from being placed at the slipped position when the user lifts their finger.
+ * Note: This is designed to be called from a worklet, so it uses the last timestamp in history as reference.
+ */
+function getMaturePosition(history: TimedPosition[]): { x: number; y: number } | null {
+  if (history.length === 0) {
+    return null;
+  }
+
+  // Use the last recorded time as reference (when finger was lifted)
+  const lastTime = history[history.length - 1].time;
+  const cutoff = lastTime - SLIP_TIME_WINDOW_MS;
+
+  // Find the most recent position that is at least 100ms old
+  // This gives us the stable position before the slip started
+  for (let i = history.length - 1; i >= 0; i--) {
+    if (history[i].time <= cutoff) {
+      return { x: history[i].x, y: history[i].y };
+    }
+  }
+
+  // If all positions are within the 100ms window (very quick tap),
+  // return the first position which is the most stable
+  if (history.length > 0) {
+    return { x: history[0].x, y: history[0].y };
+  }
+
+  return null;
+}
+
 function getArrowColor(score: number): string {
   if (score >= 9) return '#F5C542';
   if (score >= 7) return '#E74C3C';
@@ -62,6 +103,10 @@ export function TargetScoring({
   const { t } = useTranslation();
   const [arrows, setArrows] = useState<ArrowPosition[]>([]);
   const arrowsRef = useRef<ArrowPosition[]>([]);
+
+  // Finger slip detection: track position history during drag
+  // This allows us to use the "mature" position (before slip) when placing the arrow
+  const positionHistoryRef = useRef<TimedPosition[]>([]);
 
   // Zoom and position state
   // focusX and focusY represent the point in the target coordinate system (0-TARGET_SIZE)
@@ -117,12 +162,27 @@ export function TargetScoring({
     onUndoLast();
   }, [onUndoLast]);
 
+  // Helper to record position with timestamp (called from JS side)
+  const recordPosition = useCallback((x: number, y: number) => {
+    const now = Date.now();
+    positionHistoryRef.current.push({ x, y, time: now });
+    if (positionHistoryRef.current.length > MAX_POSITION_HISTORY) {
+      positionHistoryRef.current.shift();
+    }
+  }, []);
+
   // Pan gesture for zoom and placement
   // Long press to activate, then drag to position the crosshair
+  // Uses finger slip detection to place arrow at the stable position (before slip)
   const pan = Gesture.Pan()
     .activateAfterLongPress(200)
     .onStart((event) => {
       'worklet';
+      // Clear previous position history for new gesture
+      runOnJS(() => {
+        positionHistoryRef.current = [];
+      })();
+      
       // Store the starting positions
       // event.x/y are where the finger touched (in target wrapper coordinates)
       startX.value = event.x;
@@ -130,6 +190,9 @@ export function TargetScoring({
       // Store the current focus point (in target coordinates)
       startFocusX.value = focusX.value;
       startFocusY.value = focusY.value;
+
+      // Record initial position
+      runOnJS(recordPosition)(focusX.value, focusY.value);
 
       // Zoom in
       isZoomed.value = true;
@@ -146,13 +209,21 @@ export function TargetScoring({
       // so finger movement translates to smaller movement in target coordinates
       focusX.value = Math.max(0, Math.min(TARGET_SIZE, startFocusX.value + dx / ZOOM_SCALE));
       focusY.value = Math.max(0, Math.min(TARGET_SIZE, startFocusY.value + dy / ZOOM_SCALE));
+
+      // Record position for slip detection on JS thread
+      runOnJS(recordPosition)(focusX.value, focusY.value);
     })
     .onEnd(() => {
       'worklet';
-      // When finger is lifted, place the arrow at the current focus position
-      // focusX and focusY are in target coordinates (0-TARGET_SIZE)
-      // This is exactly where the crosshair is pointing
-      runOnJS(handlePlaceArrow)(focusX.value, focusY.value);
+      // When finger is lifted, use the mature position (before slip) for placement
+      // This prevents the arrow from being placed at the slipped position
+      const maturePos = getMaturePosition(positionHistoryRef.current);
+      if (maturePos) {
+        runOnJS(handlePlaceArrow)(maturePos.x, maturePos.y);
+      } else {
+        // Fallback: use current focus position if no mature position available
+        runOnJS(handlePlaceArrow)(focusX.value, focusY.value);
+      }
     })
     .onFinalize(() => {
       'worklet';
@@ -170,6 +241,8 @@ export function TargetScoring({
     .runOnJS(true)
     .onEnd((event) => {
       // For quick taps, place arrow directly at tap position
+      // Clear history since this is a new gesture
+      positionHistoryRef.current = [];
       handlePlaceArrow(event.x, event.y);
     });
 
