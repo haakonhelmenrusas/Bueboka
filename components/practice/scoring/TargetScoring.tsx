@@ -8,7 +8,6 @@ import { useTranslation } from '@/contexts';
 import { Button } from '@/components/common';
 import { TargetFace } from './TargetFace';
 import { styles } from './TargetScoringStyles';
-import { useFingerSlipDetection } from '@/hooks/useFingerSlipDetection';
 
 const SCREEN_WIDTH = Dimensions.get('window').width;
 const TARGET_SIZE = Math.min(SCREEN_WIDTH - 48, 340);
@@ -28,8 +27,8 @@ interface TargetScoringProps {
   disabled?: boolean;
   editingIdx: number | null;
   targetType?: string;
-  endComplete?: boolean; // Whether all arrows for this end have been placed
-  onNext?: () => void; // Callback for next button
+  endComplete?: boolean;
+  onNext?: () => void;
 }
 
 function calculateScore(x: number, y: number): number {
@@ -63,15 +62,21 @@ export function TargetScoring({
   const { t } = useTranslation();
   const [arrows, setArrows] = useState<ArrowPosition[]>([]);
   const arrowsRef = useRef<ArrowPosition[]>([]);
-  const { addPoint, getFinalPosition, reset: resetSlipDetection } = useFingerSlipDetection();
 
+  // Zoom and position state
+  // focusX and focusY represent the point in the target coordinate system (0-TARGET_SIZE)
+  // that is currently at the center of the screen when zoomed
   const scale = useSharedValue(1);
   const focusX = useSharedValue(TARGET_SIZE / 2);
   const focusY = useSharedValue(TARGET_SIZE / 2);
   const isZoomed = useSharedValue(false);
   const keepZoomActive = useSharedValue(endComplete);
-  const startAbsX = useSharedValue(0);
-  const startAbsY = useSharedValue(0);
+
+  // Track the starting touch position for drag calculations
+  // startX/Y are in screen coordinates (relative to target wrapper)
+  // startFocusX/Y are in target coordinates
+  const startX = useSharedValue(0);
+  const startY = useSharedValue(0);
   const startFocusX = useSharedValue(0);
   const startFocusY = useSharedValue(0);
 
@@ -104,13 +109,6 @@ export function TargetScoring({
     [onScorePress, disabled, editingIdx],
   );
 
-  const handlePlaceArrowWithSlipDetection = useCallback(() => {
-    const finalPos = getFinalPosition();
-    if (finalPos) {
-      handlePlaceArrow(finalPos.x, finalPos.y);
-    }
-  }, [getFinalPosition, handlePlaceArrow]);
-
   const handleUndo = useCallback(() => {
     if (arrowsRef.current.length === 0) return;
     const updated = arrowsRef.current.slice(0, -1);
@@ -119,36 +117,47 @@ export function TargetScoring({
     onUndoLast();
   }, [onUndoLast]);
 
+  // Pan gesture for zoom and placement
+  // Long press to activate, then drag to position the crosshair
   const pan = Gesture.Pan()
     .activateAfterLongPress(200)
     .onStart((event) => {
       'worklet';
+      // Store the starting positions
+      // event.x/y are where the finger touched (in target wrapper coordinates)
+      startX.value = event.x;
+      startY.value = event.y;
+      // Store the current focus point (in target coordinates)
+      startFocusX.value = focusX.value;
+      startFocusY.value = focusY.value;
+
+      // Zoom in
       isZoomed.value = true;
-      startAbsX.value = event.absoluteX;
-      startAbsY.value = event.absoluteY;
-      startFocusX.value = event.x;
-      startFocusY.value = event.y;
-      focusX.value = event.x;
-      focusY.value = event.y;
       scale.value = withSpring(ZOOM_SCALE, { damping: 15, stiffness: 150 });
-      runOnJS(resetSlipDetection)();
-      runOnJS(addPoint)(event.x, event.y);
     })
     .onUpdate((event) => {
       'worklet';
-      const dx = event.absoluteX - startAbsX.value;
-      const dy = event.absoluteY - startAbsY.value;
+      // Calculate how much the finger has moved in screen coordinates
+      const dx = event.x - startX.value;
+      const dy = event.y - startY.value;
+
+      // Update focus position based on drag
+      // We divide by ZOOM_SCALE because the target is zoomed in,
+      // so finger movement translates to smaller movement in target coordinates
       focusX.value = Math.max(0, Math.min(TARGET_SIZE, startFocusX.value + dx / ZOOM_SCALE));
       focusY.value = Math.max(0, Math.min(TARGET_SIZE, startFocusY.value + dy / ZOOM_SCALE));
-      runOnJS(addPoint)(focusX.value, focusY.value);
     })
     .onEnd(() => {
       'worklet';
-      runOnJS(handlePlaceArrowWithSlipDetection)();
+      // When finger is lifted, place the arrow at the current focus position
+      // focusX and focusY are in target coordinates (0-TARGET_SIZE)
+      // This is exactly where the crosshair is pointing
+      runOnJS(handlePlaceArrow)(focusX.value, focusY.value);
     })
     .onFinalize(() => {
       'worklet';
       if (!keepZoomActive.value) {
+        // Reset zoom if not keeping it active (when endComplete is false)
         isZoomed.value = false;
         scale.value = withTiming(1, { duration: 200 });
         focusX.value = withTiming(TARGET_SIZE / 2, { duration: 200 });
@@ -156,40 +165,41 @@ export function TargetScoring({
       }
     });
 
+  // Tap gesture for quick placement without zoom
   const tap = Gesture.Tap()
     .runOnJS(true)
-    .onStart(() => {
-      resetSlipDetection();
-    })
     .onEnd((event) => {
-      addPoint(event.x, event.y);
-      const finalPos = getFinalPosition();
-      if (finalPos) {
-        handlePlaceArrow(finalPos.x, finalPos.y);
-      } else {
-        handlePlaceArrow(event.x, event.y);
-      }
+      // For quick taps, place arrow directly at tap position
+      handlePlaceArrow(event.x, event.y);
     });
 
   const gesture = Gesture.Exclusive(pan, tap);
 
+  // Animated style for the target during zoom
   const animatedTargetStyle = useAnimatedStyle(() => {
     const s = scale.value;
     const zoomProgress = Math.min(1, Math.max(0, (s - 1) / (ZOOM_SCALE - 1)));
     const offset = FINGER_OFFSET * zoomProgress;
+
+    // Calculate translation to center the zoom on the focus point
+    // When zoomed in, we want the focus point to be at the center of the screen
     const tx = TARGET_SIZE / 2 - focusX.value * s;
     const ty = TARGET_SIZE / 2 - offset - focusY.value * s;
+
     return {
       transform: [{ translateX: tx }, { translateY: ty }, { scale: s }],
     };
   });
 
+  // Animated style for crosshair
+  // Crosshair is always at the center when visible
   const crosshairStyle = useAnimatedStyle(() => {
     const zoomProgress = Math.min(1, Math.max(0, (scale.value - 1) / (ZOOM_SCALE - 1)));
     const offset = FINGER_OFFSET * zoomProgress;
     return {
-      opacity: isZoomed.value || keepZoomActive.value ? 1 : 0,
+      opacity: (isZoomed.value || keepZoomActive.value) ? 1 : 0,
       top: TARGET_SIZE / 2 - offset - CROSSHAIR_SIZE / 2,
+      left: TARGET_SIZE / 2 - CROSSHAIR_SIZE / 2,
     };
   });
 
@@ -216,11 +226,11 @@ export function TargetScoring({
               ))}
             </Animated.View>
           </GestureDetector>
+          {/* Crosshair shows where the arrow will be placed (center of screen when zoomed) */}
           <Animated.View
             style={[
               styles.crosshair,
               {
-                left: TARGET_SIZE / 2 - CROSSHAIR_SIZE / 2,
                 width: CROSSHAIR_SIZE,
                 height: CROSSHAIR_SIZE,
               },
