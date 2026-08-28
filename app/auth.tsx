@@ -77,9 +77,18 @@ function AuthScreen({ onAuthSuccess }: AuthScreenProps) {
     }
 
     try {
-      await register(email, password, '');
-      setEmail('');
+      const { requiresEmailVerification } = await register(email, password, '');
       setPassword('');
+
+      // The backend issues no session until the address is verified, so show
+      // the verification screen instead of navigating into the app.
+      if (requiresEmailVerification) {
+        setRegisteredEmail(email);
+        setShowVerification(true);
+        return;
+      }
+
+      setEmail('');
       onAuthSuccess?.();
     } catch (error) {
       handleAuthError(error);
@@ -105,16 +114,17 @@ function AuthScreen({ onAuthSuccess }: AuthScreenProps) {
     }
   };
 
-  const handleVerificationComplete = () => {
+  const handleBackToLogin = () => {
     setShowVerification(false);
-    setEmail('');
+    setIsLogin(true);
     setRegisteredEmail('');
-    onAuthSuccess?.();
+    clearAuthErrors();
   };
 
-  // If showing verification screen, render it instead
+  // The verification screen is only reached from a sign-up that returned no
+  // session, so the only way forward is back to the login form.
   if (showVerification) {
-    return <EmailVerification email={registeredEmail} onVerified={handleVerificationComplete} />;
+    return <EmailVerification email={registeredEmail} onBackToLogin={handleBackToLogin} />;
   }
 
   return (

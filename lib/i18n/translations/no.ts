@@ -45,6 +45,9 @@ export const no: TranslationKeys = {
   'emailVerification.sentTo': 'Vi har sendt en bekreftelseslenke til',
   'emailVerification.instructions':
     'Klikk på lenken i e-posten for å bekrefte kontoen din. Når du har bekreftet, kan du komme tilbake hit og trykke på "Jeg har bekreftet".',
+  'emailVerification.instructionsSignIn':
+    'Klikk på lenken i e-posten for å bekrefte kontoen din. Når du har bekreftet, kan du logge inn med e-postadressen og passordet ditt.',
+  'emailVerification.backToLogin': 'Tilbake til innlogging',
   'emailVerification.checkButton': 'Jeg har bekreftet',
   'emailVerification.resendButton': 'Send e-post på nytt',
   'emailVerification.resendCooldown': 'Send på nytt',

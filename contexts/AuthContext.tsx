@@ -51,11 +51,22 @@ export interface AuthState {
 }
 
 /**
+ * Outcome of a registration attempt.
+ *
+ * `requiresEmailVerification` is true when the backend issued no session for
+ * the new account — the user must confirm their email address before they can
+ * sign in.
+ */
+export interface RegisterOutcome {
+  requiresEmailVerification: boolean;
+}
+
+/**
  * Authentication context value interface
  */
 export interface AuthContextValue extends AuthState {
   login: (email: string, password: string) => Promise<void>;
-  register: (email: string, password: string, name: string, club?: string) => Promise<void>;
+  register: (email: string, password: string, name: string, club?: string) => Promise<RegisterOutcome>;
   logout: () => Promise<void>;
   refreshUser: () => Promise<void>;
   clearError: () => void;
@@ -221,11 +232,22 @@ export function AuthProvider({ children }: AuthProviderProps) {
   /**
    * Register new user
    */
-  async function register(email: string, password: string, name: string, club?: string): Promise<void> {
+  async function register(email: string, password: string, name: string, club?: string): Promise<RegisterOutcome> {
     try {
       setState((prev) => ({ ...prev, isLoading: true, error: null }));
-      const { user } = await authService.register({ email, password, name, club });
+      const { user, requiresEmailVerification } = await authService.register({ email, password, name, club });
+
+      // No session token means the backend requires the address to be verified
+      // first. Treating the user as authenticated here would drop them into a
+      // UI where every request 401s, so stay signed out and let the caller show
+      // the verification screen instead.
+      if (requiresEmailVerification) {
+        setState({ user: null, isAuthenticated: false, isLoading: false, error: null });
+        return { requiresEmailVerification: true };
+      }
+
       setAuthenticatedUser(user);
+      return { requiresEmailVerification: false };
     } catch (error: any) {
       setState((prev) => ({
         ...prev,
