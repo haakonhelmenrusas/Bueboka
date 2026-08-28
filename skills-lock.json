@@ -102,6 +102,12 @@
       "sourceType": "github",
       "skillPath": "skills/ua-campaign/SKILL.md",
       "computedHash": "fd7e9079c30e86943060ab7da00d3ef36034b9c318820d28dd53b8424fc7b96d"
+    },
+    "bueboka-context": {
+      "source": "local",
+      "sourceType": "local",
+      "skillPath": ".agents/skills/bueboka-context/SKILL.md",
+      "computedHash": ""
     }
   }
 }
