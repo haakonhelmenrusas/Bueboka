@@ -15,23 +15,10 @@
       }
     },
     "android": {
-      "package": "com.aaronshade.bueboka",
-      "splash": {
-        "image": "./assets/images/splash.png",
-        "resizeMode": "contain",
-        "backgroundColor": "#29B6F6"
-      }
-    },
-    "androidStatusBar": {
-      "barStyle": "light-content"
+      "package": "com.aaronshade.bueboka"
     },
     "ios": {
       "bundleIdentifier": "com.aaronshade.bueboka",
-      "splash": {
-        "image": "./assets/images/splash.png",
-        "resizeMode": "contain",
-        "backgroundColor": "#29B6F6"
-      },
       "infoPlist": {
         "CFBundleShortVersionString": "2.0.2",
         "CFBundleIconName": "./assets/images/ipad.png",
@@ -39,7 +26,9 @@
         "NSPhotoLibraryUsageDescription": "Bueboka trenger tilgang til bilder for at du skal kunne velge profilbilde.",
         "CFBundleURLTypes": [
           {
-            "CFBundleURLSchemes": ["bueboka"]
+            "CFBundleURLSchemes": [
+              "bueboka"
+            ]
           }
         ]
       }
@@ -61,8 +50,7 @@
         {
           "android": {
             "compileSdkVersion": 36,
-            "targetSdkVersion": 36,
-            "buildToolsVersion": "34.0.0"
+            "targetSdkVersion": 36
           },
           "ios": {
             "deploymentTarget": "16.4"
@@ -75,6 +63,12 @@
           "image": "./assets/images/splash.png",
           "backgroundColor": "#29B6F6",
           "resizeMode": "contain"
+        }
+      ],
+      [
+        "expo-status-bar",
+        {
+          "style": "light"
         }
       ],
       [
