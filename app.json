@@ -17,9 +17,6 @@
     "android": {
       "package": "com.aaronshade.bueboka"
     },
-    "androidStatusBar": {
-      "barStyle": "light-content"
-    },
     "ios": {
       "bundleIdentifier": "com.aaronshade.bueboka",
       "infoPlist": {
@@ -53,8 +50,7 @@
         {
           "android": {
             "compileSdkVersion": 36,
-            "targetSdkVersion": 36,
-            "buildToolsVersion": "34.0.0"
+            "targetSdkVersion": 36
           },
           "ios": {
             "deploymentTarget": "16.4"
@@ -67,6 +63,12 @@
           "image": "./assets/images/splash.png",
           "backgroundColor": "#29B6F6",
           "resizeMode": "contain"
+        }
+      ],
+      [
+        "expo-status-bar",
+        {
+          "style": "light"
         }
       ],
       [
