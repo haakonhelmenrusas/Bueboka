@@ -190,8 +190,12 @@ export function TargetScoring({
       const dx = event.x - startX.value;
       const dy = event.y - startY.value;
 
-      const nextX = clampToTarget(startFocusX.value + dx / ZOOM_SCALE, TARGET_SIZE);
-      const nextY = clampToTarget(startFocusY.value + dy / ZOOM_SCALE, TARGET_SIZE);
+      // Divide by the live scale, not the constant: while the zoom springs up
+      // the face is not yet at ZOOM_SCALE, and using the target value there
+      // makes the first moments of a drag lag behind the finger.
+      const s = Math.max(1, scale.value);
+      const nextX = clampToTarget(startFocusX.value + dx / s, TARGET_SIZE);
+      const nextY = clampToTarget(startFocusY.value + dy / s, TARGET_SIZE);
 
       focusX.value = nextX;
       focusY.value = nextY;
@@ -227,14 +231,21 @@ export function TargetScoring({
 
   const gesture = Gesture.Exclusive(pan, tap);
 
+  // Every shared value must be read directly in this worklet. Reanimated
+  // subscribes a style to the shared values it finds in the worklet's own
+  // closure, so routing the reads through a helper such as currentView() leaves
+  // the style with no dependencies: it runs once at mount and then never again,
+  // which froze the face while the crosshair — which does read scale.value
+  // directly — kept animating.
   const animatedTargetStyle = useAnimatedStyle(() => {
-    const view = currentView();
+    const s = scale.value;
+    const fx = focusX.value;
+    const fy = focusY.value;
+    const zoomProgress = Math.min(1, Math.max(0, (s - 1) / (ZOOM_SCALE - 1)));
+    const offset = FINGER_OFFSET * zoomProgress;
+
     return {
-      transform: [
-        { translateX: TARGET_SIZE / 2 - view.focusX * view.scale },
-        { translateY: TARGET_SIZE / 2 - view.offset - view.focusY * view.scale },
-        { scale: view.scale },
-      ],
+      transform: [{ translateX: TARGET_SIZE / 2 - fx * s }, { translateY: TARGET_SIZE / 2 - offset - fy * s }, { scale: s }],
     };
   });
 
