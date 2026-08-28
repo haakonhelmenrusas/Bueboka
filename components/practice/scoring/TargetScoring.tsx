@@ -1,12 +1,13 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { Dimensions, Pressable, Text, View } from 'react-native';
-import { GestureDetector, Gesture, GestureHandlerRootView } from 'react-native-gesture-handler';
-import Animated, { useSharedValue, useAnimatedStyle, withSpring, withTiming, runOnJS } from 'react-native-reanimated';
+import { Gesture, GestureDetector, GestureHandlerRootView } from 'react-native-gesture-handler';
+import Animated, { runOnJS, useAnimatedStyle, useSharedValue, withSpring, withTiming } from 'react-native-reanimated';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faRotateLeft } from '@fortawesome/free-solid-svg-icons/faRotateLeft';
 import { useTranslation } from '@/contexts';
 import { Button } from '@/components/common';
 import { TargetFace } from './TargetFace';
+import { clampToTarget, maturePosition, scoreAt, screenToTarget, SLIP_WINDOW_MS, TimedPosition } from './targetGeometry';
 import { styles } from './TargetScoringStyles';
 
 const SCREEN_WIDTH = Dimensions.get('window').width;
@@ -14,16 +15,13 @@ const TARGET_SIZE = Math.min(SCREEN_WIDTH - 48, 340);
 const ZOOM_SCALE = 2.5;
 const FINGER_OFFSET = 30;
 const CROSSHAIR_SIZE = 30;
+const LONG_PRESS_MS = 200;
 
-// Finger slip detection constants
-const SLIP_TIME_WINDOW_MS = 100; // Ignore last 100ms of movement (finger slip)
-const MAX_POSITION_HISTORY = 50; // Maximum number of positions to track
-
-interface TimedPosition {
-  x: number;
-  y: number;
-  time: number;
-}
+/**
+ * Position samples kept per gesture. At 60fps this covers ~330ms, comfortably
+ * more than the slip window needs while keeping the per-frame copy cheap.
+ */
+const MAX_POSITION_HISTORY = 20;
 
 interface ArrowPosition {
   x: number;
@@ -35,51 +33,13 @@ interface TargetScoringProps {
   onScorePress: (score: number) => void;
   onUndoLast: () => void;
   disabled?: boolean;
+  /** Index of the arrow being edited within the current end, or null when adding. */
   editingIdx: number | null;
   targetType?: string;
   endComplete?: boolean;
   onNext?: () => void;
-}
-
-function calculateScore(x: number, y: number): number {
-  const center = TARGET_SIZE / 2;
-  const dx = x - center;
-  const dy = y - center;
-  const distance = Math.sqrt(dx * dx + dy * dy);
-  const unit = TARGET_SIZE / 22;
-  const score = Math.max(0, 11 - Math.ceil(distance / unit));
-  return Math.min(score, 10);
-}
-
-/**
- * Gets the mature position from the history, ignoring the last 100ms of movement (finger slip).
- * This prevents arrows from being placed at the slipped position when the user lifts their finger.
- * Note: This is designed to be called from a worklet, so it uses the last timestamp in history as reference.
- */
-function getMaturePosition(history: TimedPosition[]): { x: number; y: number } | null {
-  if (history.length === 0) {
-    return null;
-  }
-
-  // Use the last recorded time as reference (when finger was lifted)
-  const lastTime = history[history.length - 1].time;
-  const cutoff = lastTime - SLIP_TIME_WINDOW_MS;
-
-  // Find the most recent position that is at least 100ms old
-  // This gives us the stable position before the slip started
-  for (let i = history.length - 1; i >= 0; i--) {
-    if (history[i].time <= cutoff) {
-      return { x: history[i].x, y: history[i].y };
-    }
-  }
-
-  // If all positions are within the 100ms window (very quick tap),
-  // return the first position which is the most stable
-  if (history.length > 0) {
-    return { x: history[0].x, y: history[0].y };
-  }
-
-  return null;
+  /** Changes whenever a different end is shown; clears the arrows drawn on the face. */
+  endKey?: string;
 }
 
 function getArrowColor(score: number): string {
@@ -99,33 +59,38 @@ export function TargetScoring({
   targetType,
   endComplete = false,
   onNext,
+  endKey,
 }: TargetScoringProps) {
   const { t } = useTranslation();
   const [arrows, setArrows] = useState<ArrowPosition[]>([]);
   const arrowsRef = useRef<ArrowPosition[]>([]);
 
-  // Finger slip detection: track position history during drag
-  // This allows us to use the "mature" position (before slip) when placing the arrow
-  const positionHistoryRef = useRef<TimedPosition[]>([]);
-
-  // Zoom and position state
-  // focusX and focusY represent the point in the target coordinate system (0-TARGET_SIZE)
-  // that is currently at the center of the screen when zoomed
+  // Zoom and focus state. focusX/focusY are the point in target coordinates
+  // (0..TARGET_SIZE) currently sitting under the crosshair.
   const scale = useSharedValue(1);
   const focusX = useSharedValue(TARGET_SIZE / 2);
   const focusY = useSharedValue(TARGET_SIZE / 2);
   const isZoomed = useSharedValue(false);
   const keepZoomActive = useSharedValue(endComplete);
 
-  // Track the starting touch position for drag calculations
-  // startX/Y are in screen coordinates (relative to target wrapper)
-  // startFocusX/Y are in target coordinates
+  // Where the finger first landed, in wrapper coordinates, and the focus point
+  // it mapped to, so drag deltas can be applied from a fixed origin.
   const startX = useSharedValue(0);
   const startY = useSharedValue(0);
   const startFocusX = useSharedValue(0);
   const startFocusY = useSharedValue(0);
 
-  // Update keepZoomActive when endComplete prop changes
+  // Slip-detection samples. Held in a shared value so the gesture worklets can
+  // both write and read them on the UI thread; a React ref would only ever be
+  // visible to the JS thread and the worklet would read a stale snapshot.
+  const positionHistory = useSharedValue<TimedPosition[]>([]);
+
+  // Arrows are drawn per end, so a different end starts from an empty face.
+  useEffect(() => {
+    arrowsRef.current = [];
+    setArrows([]);
+  }, [endKey]);
+
   useEffect(() => {
     keepZoomActive.value = endComplete;
   }, [endComplete, keepZoomActive]);
@@ -133,8 +98,8 @@ export function TargetScoring({
   const handlePlaceArrow = useCallback(
     (x: number, y: number) => {
       if (disabled && editingIdx === null) return;
-      const score = calculateScore(x, y);
-      const arrow: ArrowPosition = { x, y, score };
+
+      const arrow: ArrowPosition = { x, y, score: scoreAt(x, y, TARGET_SIZE, targetType) };
 
       if (editingIdx !== null) {
         const updated = [...arrowsRef.current];
@@ -149,9 +114,9 @@ export function TargetScoring({
         setArrows(updated);
       }
 
-      onScorePress(score);
+      onScorePress(arrow.score);
     },
-    [onScorePress, disabled, editingIdx],
+    [onScorePress, disabled, editingIdx, targetType],
   );
 
   const handleUndo = useCallback(() => {
@@ -162,115 +127,113 @@ export function TargetScoring({
     onUndoLast();
   }, [onUndoLast]);
 
-  // Helper to record position with timestamp (called from JS side)
-  const recordPosition = useCallback((x: number, y: number) => {
-    const now = Date.now();
-    positionHistoryRef.current.push({ x, y, time: now });
-    if (positionHistoryRef.current.length > MAX_POSITION_HISTORY) {
-      positionHistoryRef.current.shift();
-    }
-  }, []);
+  const resetZoom = useCallback(() => {
+    'worklet';
+    isZoomed.value = false;
+    scale.value = withTiming(1, { duration: 200 });
+    focusX.value = withTiming(TARGET_SIZE / 2, { duration: 200 });
+    focusY.value = withTiming(TARGET_SIZE / 2, { duration: 200 });
+  }, [isZoomed, scale, focusX, focusY]);
 
-  // Pan gesture for zoom and placement
-  // Long press to activate, then drag to position the crosshair
-  // Uses finger slip detection to place arrow at the stable position (before slip)
+  /** Current view transform, for mapping a touch back into target coordinates. */
+  const currentView = useCallback(() => {
+    'worklet';
+    const s = scale.value;
+    const zoomProgress = Math.min(1, Math.max(0, (s - 1) / (ZOOM_SCALE - 1)));
+    return {
+      scale: s,
+      focusX: focusX.value,
+      focusY: focusY.value,
+      offset: FINGER_OFFSET * zoomProgress,
+      size: TARGET_SIZE,
+    };
+  }, [scale, focusX, focusY]);
+
+  // Long-press to zoom, then drag to fine-tune. The crosshair starts on the
+  // point that was pressed, so releasing without dragging places the arrow there.
   const pan = Gesture.Pan()
-    .activateAfterLongPress(200)
+    .activateAfterLongPress(LONG_PRESS_MS)
     .onStart((event) => {
       'worklet';
-      // Clear previous position history for new gesture
-      runOnJS(() => {
-        positionHistoryRef.current = [];
-      })();
-      
-      // Store the starting positions
-      // event.x/y are where the finger touched (in target wrapper coordinates)
+      const touch = screenToTarget(event.x, event.y, currentView());
+      const targetX = clampToTarget(touch.x, TARGET_SIZE);
+      const targetY = clampToTarget(touch.y, TARGET_SIZE);
+
       startX.value = event.x;
       startY.value = event.y;
-      // Store the current focus point (in target coordinates)
-      startFocusX.value = focusX.value;
-      startFocusY.value = focusY.value;
+      startFocusX.value = targetX;
+      startFocusY.value = targetY;
 
-      // Record initial position
-      runOnJS(recordPosition)(focusX.value, focusY.value);
+      focusX.value = targetX;
+      focusY.value = targetY;
 
-      // Zoom in
+      positionHistory.value = [{ x: targetX, y: targetY, time: Date.now() }];
+
       isZoomed.value = true;
       scale.value = withSpring(ZOOM_SCALE, { damping: 15, stiffness: 150 });
     })
     .onUpdate((event) => {
       'worklet';
-      // Calculate how much the finger has moved in screen coordinates
+      // Finger travel is divided by the zoom so a screen pixel moves the
+      // crosshair by less than a pixel on the face, which is what makes the
+      // zoomed view worth having.
       const dx = event.x - startX.value;
       const dy = event.y - startY.value;
 
-      // Update focus position based on drag
-      // We divide by ZOOM_SCALE because the target is zoomed in,
-      // so finger movement translates to smaller movement in target coordinates
-      focusX.value = Math.max(0, Math.min(TARGET_SIZE, startFocusX.value + dx / ZOOM_SCALE));
-      focusY.value = Math.max(0, Math.min(TARGET_SIZE, startFocusY.value + dy / ZOOM_SCALE));
+      const nextX = clampToTarget(startFocusX.value + dx / ZOOM_SCALE, TARGET_SIZE);
+      const nextY = clampToTarget(startFocusY.value + dy / ZOOM_SCALE, TARGET_SIZE);
 
-      // Record position for slip detection on JS thread
-      runOnJS(recordPosition)(focusX.value, focusY.value);
+      focusX.value = nextX;
+      focusY.value = nextY;
+
+      const history = positionHistory.value;
+      const next = [...history, { x: nextX, y: nextY, time: Date.now() }];
+      positionHistory.value = next.length > MAX_POSITION_HISTORY ? next.slice(next.length - MAX_POSITION_HISTORY) : next;
     })
     .onEnd(() => {
       'worklet';
-      // When finger is lifted, use the mature position (before slip) for placement
-      // This prevents the arrow from being placed at the slipped position
-      const maturePos = getMaturePosition(positionHistoryRef.current);
-      if (maturePos) {
-        runOnJS(handlePlaceArrow)(maturePos.x, maturePos.y);
-      } else {
-        // Fallback: use current focus position if no mature position available
-        runOnJS(handlePlaceArrow)(focusX.value, focusY.value);
+      const placement = maturePosition(positionHistory.value, Date.now(), SLIP_WINDOW_MS);
+      if (placement) {
+        runOnJS(handlePlaceArrow)(placement.x, placement.y);
       }
     })
     .onFinalize(() => {
       'worklet';
+      positionHistory.value = [];
       if (!keepZoomActive.value) {
-        // Reset zoom if not keeping it active (when endComplete is false)
-        isZoomed.value = false;
-        scale.value = withTiming(1, { duration: 200 });
-        focusX.value = withTiming(TARGET_SIZE / 2, { duration: 200 });
-        focusY.value = withTiming(TARGET_SIZE / 2, { duration: 200 });
+        resetZoom();
       }
     });
 
-  // Tap gesture for quick placement without zoom
+  // A quick tap places an arrow without zooming.
   const tap = Gesture.Tap()
-    .runOnJS(true)
+    .maxDuration(LONG_PRESS_MS)
     .onEnd((event) => {
-      // For quick taps, place arrow directly at tap position
-      // Clear history since this is a new gesture
-      positionHistoryRef.current = [];
-      handlePlaceArrow(event.x, event.y);
+      'worklet';
+      const touch = screenToTarget(event.x, event.y, currentView());
+      runOnJS(handlePlaceArrow)(clampToTarget(touch.x, TARGET_SIZE), clampToTarget(touch.y, TARGET_SIZE));
     });
 
   const gesture = Gesture.Exclusive(pan, tap);
 
-  // Animated style for the target during zoom
   const animatedTargetStyle = useAnimatedStyle(() => {
-    const s = scale.value;
-    const zoomProgress = Math.min(1, Math.max(0, (s - 1) / (ZOOM_SCALE - 1)));
-    const offset = FINGER_OFFSET * zoomProgress;
-
-    // Calculate translation to center the zoom on the focus point
-    // When zoomed in, we want the focus point to be at the center of the screen
-    const tx = TARGET_SIZE / 2 - focusX.value * s;
-    const ty = TARGET_SIZE / 2 - offset - focusY.value * s;
-
+    const view = currentView();
     return {
-      transform: [{ translateX: tx }, { translateY: ty }, { scale: s }],
+      transform: [
+        { translateX: TARGET_SIZE / 2 - view.focusX * view.scale },
+        { translateY: TARGET_SIZE / 2 - view.offset - view.focusY * view.scale },
+        { scale: view.scale },
+      ],
     };
   });
 
-  // Animated style for crosshair
-  // Crosshair is always at the center when visible
+  // The crosshair is fixed at the centre of the wrapper, lifted clear of the
+  // fingertip; the face moves underneath it.
   const crosshairStyle = useAnimatedStyle(() => {
     const zoomProgress = Math.min(1, Math.max(0, (scale.value - 1) / (ZOOM_SCALE - 1)));
     const offset = FINGER_OFFSET * zoomProgress;
     return {
-      opacity: (isZoomed.value || keepZoomActive.value) ? 1 : 0,
+      opacity: isZoomed.value || keepZoomActive.value ? 1 : 0,
       top: TARGET_SIZE / 2 - offset - CROSSHAIR_SIZE / 2,
       left: TARGET_SIZE / 2 - CROSSHAIR_SIZE / 2,
     };
@@ -299,17 +262,7 @@ export function TargetScoring({
               ))}
             </Animated.View>
           </GestureDetector>
-          {/* Crosshair shows where the arrow will be placed (center of screen when zoomed) */}
-          <Animated.View
-            style={[
-              styles.crosshair,
-              {
-                width: CROSSHAIR_SIZE,
-                height: CROSSHAIR_SIZE,
-              },
-              crosshairStyle,
-            ]}
-            pointerEvents="none">
+          <Animated.View style={[styles.crosshair, { width: CROSSHAIR_SIZE, height: CROSSHAIR_SIZE }, crosshairStyle]} pointerEvents="none">
             <View style={styles.crosshairShadowH} />
             <View style={styles.crosshairShadowV} />
             <View style={styles.crosshairLineH} />
@@ -336,10 +289,7 @@ export function TargetScoring({
             label={t['scoring.nextEnd']}
             onPress={() => {
               keepZoomActive.value = false;
-              isZoomed.value = false;
-              scale.value = withTiming(1, { duration: 200 });
-              focusX.value = withTiming(TARGET_SIZE / 2, { duration: 200 });
-              focusY.value = withTiming(TARGET_SIZE / 2, { duration: 200 });
+              resetZoom();
               onNext?.();
             }}
             buttonStyle={{ width: '100%' }}

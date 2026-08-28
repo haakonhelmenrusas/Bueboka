@@ -193,10 +193,12 @@ export function ScoringModal({
                       onScorePress={handleScorePress}
                       onUndoLast={onRemoveLastArrowScore}
                       disabled={isFull}
-                      editingIdx={isEditingArrow ? editingIdx : null}
+                      // editingIdx is absolute across the round; TargetScoring draws one end at a time.
+                      editingIdx={isEditingArrow ? editingIdx! - startIdx : null}
                       targetType={round.targetType}
                       endComplete={endComplete}
                       onNext={() => onSetEndPage(currentEndPage + 1)}
+                      endKey={`${roundIndex}-${currentEndPage}`}
                     />
                   )}
                 </>
