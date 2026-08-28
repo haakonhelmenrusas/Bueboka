@@ -10,7 +10,7 @@ import { Arrows, Bow, Practice } from '@/types';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import SkeletonTrainingList from '@/components/practice/practiceCard/SkeletonTrainingList';
 import * as Sentry from '@sentry/react-native';
-import { useFocusEffect } from "expo-router/react-navigation";
+import { useFocusEffect } from 'expo-router/react-navigation';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useAuth } from '@/hooks';
 import { arrowsRepository, bowRepository, practiceRepository } from '@/services/repositories';
@@ -19,7 +19,7 @@ import CreatePracticeForm from '@/components/practice/practiceForm/CreatePractic
 import { useTranslation } from '@/contexts';
 
 export default function PracticeScreen() {
-  const t = useTranslation();
+  const { t } = useTranslation();
   const { user, isLoading: authLoading } = useAuth();
   const [modalVisible, setModalVisible] = useState(false);
   const [practices, setPractices] = useState<Practice[]>([]);
@@ -63,7 +63,7 @@ export default function PracticeScreen() {
     } finally {
       setIsLoading(false);
     }
-  }, [user]);
+  }, [user, t]);
 
   useFocusEffect(
     useCallback(() => {

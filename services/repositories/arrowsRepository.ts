@@ -2,7 +2,7 @@ import { authFetchClient as client } from '@/services/api/authFetch';
 import { handleApiError } from '@/services/api/errors';
 import { Arrows, Material } from '@/types';
 
-/** Fields for creating or updating an arrow set. Required fields (name, material) are only enforced on create. */
+/** Arrow set creation/update data */
 export interface ArrowsData {
   name: string;
   material: Material;
@@ -19,24 +19,18 @@ export interface ArrowsData {
   isFavorite?: boolean;
 }
 
-/**
- * Arrows repository - handles all arrows-related API operations
- */
+/** Arrows repository */
 export const arrowsRepository = {
   async getAll(): Promise<Arrows[]> {
     try {
       const response = await client.get<{ arrows: Arrows[] } | Arrows[]>('/arrows');
       if (!response.data) return [];
-      // Handle both wrapped {arrows: [...]} and direct array responses
       return Array.isArray(response.data) ? response.data : ((response.data as { arrows: Arrows[] }).arrows ?? []);
     } catch (error) {
       throw handleApiError(error);
     }
   },
 
-  /**
-   * Create a new arrow set
-   */
   async create(data: ArrowsData): Promise<Arrows> {
     try {
       const response = await client.post<Arrows>('/arrows', data);
@@ -46,9 +40,6 @@ export const arrowsRepository = {
     }
   },
 
-  /**
-   * Update an existing arrow set
-   */
   async update(id: string, data: Partial<ArrowsData>): Promise<Arrows> {
     try {
       const response = await client.patch<Arrows>(`/arrows/${id}`, data);
@@ -58,9 +49,6 @@ export const arrowsRepository = {
     }
   },
 
-  /**
-   * Delete an arrow set
-   */
   async delete(id: string): Promise<void> {
     try {
       await client.delete(`/arrows/${id}`);
@@ -69,9 +57,6 @@ export const arrowsRepository = {
     }
   },
 
-  /**
-   * Toggle favorite status of an arrow set
-   */
   async toggleFavorite(id: string, isFavorite: boolean): Promise<Arrows> {
     try {
       const response = await client.patch<Arrows>(`/arrows/${id}`, { isFavorite });

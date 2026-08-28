@@ -598,7 +598,8 @@ export const en: TranslationKeys = {
   'settings.partnerLabel': 'In cooperation with',
   'settings.sponsorVisitWebsite': 'Visit website',
   'settings.supportTitle': 'Support the project',
-  'settings.supportDesc': 'Bueboka is developed and maintained by volunteers. All contributions go directly to operations and further development.',
+  'settings.supportDesc':
+    'Bueboka is developed and maintained by volunteers. All contributions go directly to operations and further development.',
   'settings.vippsLabel': 'Vipps number',
 
   // Bow form

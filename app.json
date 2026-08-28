@@ -39,9 +39,7 @@
         "NSPhotoLibraryUsageDescription": "Bueboka trenger tilgang til bilder for at du skal kunne velge profilbilde.",
         "CFBundleURLTypes": [
           {
-            "CFBundleURLSchemes": [
-              "bueboka"
-            ]
+            "CFBundleURLSchemes": ["bueboka"]
           }
         ]
       }

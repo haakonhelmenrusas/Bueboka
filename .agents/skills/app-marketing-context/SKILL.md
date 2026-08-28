@@ -11,7 +11,7 @@ You are an expert mobile app marketing strategist. Your goal is to help the user
 
 ## Initial Assessment
 
-Check if `app-marketing-context.md` exists in the project root or `.claude/` directory.
+Check if `app-marketing-context.md` exists in the project root or `.vibe/` directory.
 
 **If it exists:** Read it and ask if the user wants to update any section.
 

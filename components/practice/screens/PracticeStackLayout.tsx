@@ -3,7 +3,7 @@ import { colors } from '@/styles/colors';
 import { useTranslation } from '@/contexts';
 
 const Layout = () => {
-  const t = useTranslation();
+  const { t } = useTranslation();
   return (
     <Stack
       screenOptions={{

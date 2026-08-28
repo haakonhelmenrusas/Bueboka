@@ -24,11 +24,9 @@ export function handleApiError(error: unknown): AppError {
   const hasResponse = error && typeof error === 'object' && 'response' in error;
   const errorResponse = hasResponse ? (error as any).response : null;
   const statusCode = errorResponse?.status || (error as any)?.status;
+  const apiError = errorResponse?.data as ApiError;
 
   if (error instanceof AxiosError || errorResponse) {
-    const apiError = errorResponse?.data as ApiError;
-
-    // Handle specific HTTP status codes
     if (statusCode === 401) {
       const message = apiError?.message?.toLowerCase();
       if (message?.includes('invalid') || message?.includes('credential') || message?.includes('user')) {
@@ -59,7 +57,6 @@ export function handleApiError(error: unknown): AppError {
         extra: {
           status: statusCode,
           url: (error as any).config?.url,
-          data: errorResponse?.data,
         },
       });
       return new AppError('SERVER_ERROR', 'Serverfeil. Vennligst prøv igjen senere.', error);
@@ -79,12 +76,10 @@ export function handleApiError(error: unknown): AppError {
   }
 
   if (error instanceof Error) {
-    // Specifically handle "Cannot read property 'user' of null/undefined" – bad credentials
     if (error.message?.includes("property 'user' of null") || error.message?.includes("property 'user' of undefined")) {
       return new AppError('UNAUTHORIZED', 'Feil e-post eller passord. Vennligst prøv igjen.', error);
     }
 
-    // Handle network-related error messages
     if (error.message?.includes('Network') || error.message?.includes('Failed to fetch')) {
       return new AppError('NETWORK_ERROR', 'Nettverksfeil. Sjekk internettforbindelsen din.', error);
     }

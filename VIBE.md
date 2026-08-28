@@ -172,7 +172,7 @@ bueboka-app/
   - achievementRepository.ts
   - competitionRepository.ts
   - roundTypeRepository.ts
-  - publicProfileRepository.ts
+  (public profiles and stats are not repositories: see services/api/publicProfilesApi.ts and statsApi.ts)
 - **`services/offline/`**: 
   - `mutationHelper.ts`: `offlineMutation()` wraps repository calls, queues on NETWORK_ERROR
   - `syncManager.ts`: Drains queue when connectivity returns, keyed `offline_queue:{userId}` in AsyncStorage

@@ -2,215 +2,109 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+## Project
+
+**Bueboka** — archery tracking app for iOS, Android and Web. React Native 0.85 / Expo SDK 56 / TypeScript / Expo Router. The backend is a separate Next.js server (not in this repo); the app talks to it over `EXPO_PUBLIC_API_URL` (must include the `/api` suffix).
+
+UI copy is Norwegian and English (see i18n below). Code, identifiers and comments are English.
+
 ## Commands
 
 ```bash
-npm start              # Start Expo dev server
-npm run ios            # Run on iOS simulator
-npm run android        # Run on Android emulator
-npm run web            # Run in browser
-npm test               # Run Jest tests (CI mode)
-npm run test:watch     # Run tests in watch mode
-npm run lint           # Lint with Expo linter
-npm run format         # Format with Prettier
-npm run format:check   # Check formatting without writing
+npm start              # Expo dev server
+npm run ios            # expo run:ios (dev build, not Expo Go)
+npm run android        # expo run:android
+npm run web            # expo start --web
+
+npm test               # jest --ci  (also runs on pre-push via husky)
+npm run test:watch
+npm run lint           # expo lint
+npm run format         # prettier --write .
 ```
 
-Run a single test file:
+Single test file / single test:
 
 ```bash
-npx jest services/repositories/__tests__/practiceRepository.test.ts
+npx jest services/repositories/__tests__/bowRepository.test.ts
+npx jest -t "returns AppError when the request fails"
 ```
 
-## Environment
-
-Requires `.env` with:
-
-- `EXPO_PUBLIC_API_URL` — backend base URL including `/api` (e.g. `http://localhost:3000/api`)
-- `EXPO_PUBLIC_CLARITY_KEY` — Microsoft Clarity key (leave empty to disable)
-
-Production/preview secrets live in EAS (see `docs/BUILD_ENVIRONMENT.md`).
+`.env` needs `EXPO_PUBLIC_API_URL` (e.g. `http://localhost:3000/api` — use your LAN IP, not `localhost`, when testing on a device) and optionally `EXPO_PUBLIC_CLARITY_KEY`. Build-time values come from EAS env vars, see `docs/BUILD_ENVIRONMENT.md`.
 
 ## Architecture
 
-**Tech stack:** React Native 0.85, Expo SDK 56, TypeScript 6, Expo Router (file-based navigation).
+### Layering
 
-### Navigation (`app/`)
+Screens/components → hooks → **repositories** → `authFetchClient` → backend. Never call `fetch`/`axios` from a component; go through a repository.
 
-File-based routing via Expo Router:
+1. **HTTP** — `services/api/authFetch.ts` exports `authFetchClient`, an axios-shaped wrapper (`get/post/put/patch/delete`) around better-auth's `$fetch`. It unwraps better-auth's `{data, error}` envelope and reports unexpected failures to Sentry. This is the only HTTP client; axios remains a dependency solely because `handleApiError()` still narrows on `AxiosError`.
+2. **Repositories** — `services/repositories/*.ts`, one object literal per entity (`bowRepository`, `practiceRepository`, `arrowsRepository`, `userRepository`, `sightMarksRepository`, `achievementRepository`, `competitionRepository`, `roundTypeRepository`). Every method wraps its call in `try/catch` and rethrows `handleApiError(error)`. `services/repositories/README.md` documents each method with examples. Public profiles and stats live outside this pattern in `services/api/publicProfilesApi.ts` and `statsApi.ts`.
+3. **Errors** — `services/api/errors.ts`. `handleApiError()` maps status codes to an `AppError(code, norwegianMessage)`. User-facing error text is Norwegian and belongs here, not at the call site.
 
-- `app/_layout.tsx` — root layout; wraps in `AuthProvider`, initialises Sentry
-- `app/index.tsx` — entry redirect
-- `app/auth.tsx` — login/register screen
-- `app/intro.tsx` — first-launch intro/language picker
-- `app/achievements.tsx` — achievements screen
-- `app/(tabs)/` — main tab navigation (home, aktivitet, sightMarks, settings, skyttere[hidden])
-- `app/skyttere/` — public profile directory (list + `[id]` detail)
-- Auth guard in root layout redirects unauthenticated users to `/auth`
+### Auth
 
-### State management (`contexts/`)
+`services/auth/authClient.ts` builds a better-auth client with the `expoClient` plugin (scheme `bueboka`, SecureStore-backed `authStorage`). `contexts/AuthContext.tsx` (~670 lines) owns all auth state and exposes login/register/logout/OAuth via the `useAuth` hook. It also calls `registerOfflineHandlers()` on mount.
 
-Context API only — no Redux or Zustand. A single `AuthContext` (667 lines) owns the auth state and exposes login, register, logout, and OAuth flows. Tokens are stored in SecureStore (`auth_token`, `bueboka.session_token`).
+Route guarding is layout-based, not middleware: `app/index.tsx` redirects to `/intro`, `/auth` or `/(tabs)/home`; `app/(tabs)/_layout.tsx` redirects to `/auth` when unauthenticated and blocks the hardware back gesture while authenticated.
 
-### Data layer (`services/`)
+### Offline queue
 
-Three sub-layers:
+Mutations that fail with `AppError.code === 'NETWORK_ERROR'` are enqueued and replayed later:
 
-1. **HTTP** — `services/api/authFetch.ts` exports `authFetchClient` (better-auth `$fetch` with SecureStore credentials). This is the canonical HTTP client; the legacy axios client in `services/api/client.ts` is not used in new code.
-2. **Repositories** (`services/repositories/`) — 9 repositories (practice, bow, arrows, user, sightMarks, achievement, competition, roundType, publicProfile). Each uses `authFetchClient` and wraps errors with `handleApiError()`, which maps API errors to an `AppError` with Norwegian user-facing messages.
-3. **Offline** (`services/offline/`) — `offlineMutation()` wraps any repository call and enqueues it on `NETWORK_ERROR`. `syncManager` drains the queue (keyed `offline_queue:{userId}` in AsyncStorage) when connectivity returns. Handlers are registered via `registerOfflineHandlers()` inside `AuthContext`.
+- `offlineMutation({ type, payload }, () => repo.create(data), userId)` — call this at the screen/component level, wrapping the repository call. `type` must match a handler name.
+- `services/offline/handlers.ts` registers every handler name (`bows/create`, `practices/addEnd`, …). **Adding a new offline-capable mutation means adding a handler here**, otherwise queued operations are dropped.
+- `services/offline/syncManager.ts` drains the queue with retry/backoff when connectivity returns; the queue lives in AsyncStorage under `offline_queue:{userId}` (config in `services/api/constants.ts`).
+- `useOfflineQueue()` starts/stops the sync manager and exposes status for UI.
 
-### Components (`components/`)
+### i18n
 
-Organised by feature folder (`auth/`, `practice/`, `home/`, `skyttere/`, `sightMarks/`, `settings/`, `onboarding/`, `intro/`, `achievements/`, `aktivitet/`) plus `common/` for shared primitives.
+`lib/i18n/` holds a flat-key `TranslationKeys` interface plus `translations/no.ts` and `translations/en.ts` — both must stay in sync with the interface or TypeScript fails. `contexts/LanguageContext.tsx` resolves the locale from AsyncStorage (`bueboka_language`) → OS locale → `no`, and reconciles with the server profile once per user. Components read copy via `const { t } = useTranslation()` then `t['practice.saveButton']`.
 
-#### Common components (`components/common/`)
+Note: `jestSetup.ts` globally mocks `@/contexts/LanguageContext` to return the Norwegian bundle, so component tests assert against Norwegian strings without wrapping in a provider.
 
-Reusable UI primitives used throughout the app. Each lives in its own folder with optional `*Styles.ts`:
+### Other conventions
 
-- **Badge** — variant-based label (`default`, `training`, `competition`, `primary`, `secondary`, `ghost`) with size presets and optional icon
-- **Button** — pressable with `filled`/`outline` types, `standard`/`warning`/`tertiary` variants, `small`/`normal` sizes, loading state
-- **Checkbox** — accessible checkbox with label, disabled state
-- **DataValue** — displays a value with optional suffix/capitalisation, or a "Ingen data" pill when empty
-- **DatePicker** — native date picker with iOS modal and Android native picker, Norwegian locale
-- **FloatingTabBar** — custom bottom tab bar with animated press feedback
-- **GoogleLogo** — SVG Google "G" logo
-- **Input** — text input with label, help text, error state, optional icon/addons, forwardRef
-- **Message** — info card with icon, title, description, and optional action button
-- **MobileActionButton** — FAB with animated expanding menu (practice, competition, bow, arrows)
-- **ModalHeader** — header with title and close (X) button
-- **ModalWrapper** — modal overlay with backdrop tap-to-close, optional full-screen mode
-- **Notch** — drag handle bar for bottom sheets
-- **OfflineBanner** — connectivity status bar using `useNetworkState` and `useOfflineQueue` hooks
-- **Select** — dropdown with optional search, creatable options, Android modal positioning
-- **Textarea** — multiline text input with label, help text, error state, forwardRef
-- **Toggle** — animated switch with accessibility role `switch`
-- **icons/ArcheryIcons** — SVG bow and arrow icons
+- Path alias `@/*` maps to the repo root.
+- **Never hardcode hex colors** — import from `styles/colors.ts` (single source of truth, aligned with the web design tokens).
+- Styles go in a sibling `*Styles.ts` file using `StyleSheet.create()`, not inline in the component.
+- Import FontAwesome icons individually (`@fortawesome/free-solid-svg-icons/faHome`) so they tree-shake.
+- Feature components live in `components/<feature>/`, shared primitives in `components/common/<Name>/`, each with its own folder + styles + test.
+- Sentry initialises in `app/_layout.tsx` only when `EXPO_PUBLIC_APP_ENV !== 'development'`.
 
-### Hooks (`hooks/`)
+## Testing
 
-Custom hooks include `useAuth`, `useNetworkState`, `useOfflineQueue`, `useOnboarding`. Tests live in `hooks/__tests__/`.
+Jest + `jest-expo` in a jsdom environment; `clearMocks`/`restoreMocks` are on. Tests live in `__tests__/` next to the code (a few older ones sit alongside the source — either is accepted).
 
-### Internationalisation (`lib/i18n/`)
+Mock at boundaries only:
 
-Two locales: Norwegian (`no`, default) and English (`en`). Translations are plain TypeScript objects. `LanguageContext` exposes `useTranslation()` → `{ t, locale, setLanguage }`. Tests in `lib/i18n/__tests__/`.
+- repository tests mock `@/services/api/authFetch`
+- hook and component tests mock the repositories
+- pure utilities (`utils/Ballistics.ts`, `utils/helpers/*`) get plain unit tests, no mocks
 
-### Utilities (`utils/`)
+`jestSetup.ts` already mocks AsyncStorage, FontAwesome, safe-area-context, better-auth, expo-router and the language context — check it before adding a local mock.
 
-- `Ballistics.ts` — sight mark trajectory calculations
-- `Constants.ts` — app-wide constants
-- `NorwegianClubs.ts` — club directory
-- `helpers/` — pure functions: `capitalizeFirstLetter`, `hexToRgba`, `handleNumberChange`, `labelUtils`, `practiceHelpers`, `sortItems`
+The project follows TDD/DDD: write the failing test first, one behaviour per `it()`, named in plain language. Full workflow in `docs/skills/tdd-ddd.md`, domain vocabulary discovery in `docs/skills/domain-discovery.md`.
 
-### Types (`types/`)
+## Domain vocabulary
 
-13 domain interfaces. Key enums: `Environment` (INDOOR/OUTDOOR), `PracticeCategory` (Norwegian archery styles: SKIVE_INDOOR, SKIVE_OUTDOOR, JAKT_3D, FELT), `WeatherCondition`, `BowType`, `Material`.
+Norwegian domain terms appear in routes and UI: **bue** (bow), **pilsett** (arrow set), **økt** (practice session), **skytter** (archer — `/skyttere` is the public profile directory), **siktemerke** (sight mark), **konkurranse** (competition). Practice categories are `SKIVE_INDOOR`, `SKIVE_OUTDOOR`, `JAKT_3D` (3D hunting), `FELT` (field). Scoring is FITA 0–10 per arrow, aggregated per end ("round") and per session.
 
-### Styling
-
-- **Never hardcode hex values** — import from `styles/colors.ts`, which is the single source of truth.
-- Primary: `#053546` (dark navy), Secondary: `#227B9A` (teal).
-- Use React Native `StyleSheet.create()`. Icons are per-icon FontAwesome imports for tree-shaking.
-- **Separate style files** — keep styles in a dedicated `*Styles.ts` file next to the component (e.g. `Badge/BadgeStyles.ts`). Never define `StyleSheet.create()` in the same file as JSX markup. Export as `export const styles = StyleSheet.create({…})` (or `export const defaultStyles` for input-type components).
-
-### Monitoring
-
-- **Sentry** — crash reporting and breadcrumbs, initialised in root layout.
-- **Microsoft Clarity** — session recording, lazy-initialised after Sentry to prevent crash conflicts.
-- Both are disabled in development.
-
-## Testing conventions
-
-- Mock at boundaries only: mock `authFetchClient` when testing repositories; mock repositories when testing hooks or screens.
-- Test locations mirror source: `services/repositories/__tests__/`, `hooks/__tests__/`, `components/<folder>/__tests__/`.
-- Framework: Jest + jest-expo, jsdom environment.
-
-## Development workflow
-
-Domain discovery first — understand the ubiquitous language (see `docs/skills/domain-discovery.md`) before implementing. The full TDD/DDD workflow is in `docs/skills/tdd-ddd.md`. Write tests before implementation; repositories are the mock boundary.
+`utils/Ballistics.ts` computes sight marks from measured reference marks — pure math, well covered by tests, treat carefully.
 
 ## Git workflow
 
-### Branching model
+`dev` is the integration branch, `main` is production. **Never push directly to either.**
 
-`dev` is the default integration branch. `main` is production. Never push directly to either — all changes go through PRs. See `docs/skills/git-branching.md` for the full workflow.
+1. Branch from an up-to-date `dev`, prefixed with the Conventional Commits type: `feat/`, `fix/`, `refactor/`, `chore/`, `ci/`, `test/`, `docs/`.
+2. PR into `dev`; merge only when CI (`.github/workflows/test.yml` — runs `npm test`) is green.
+3. Promote with a separate `dev` → `main` PR.
 
-1. Branch from `dev` (e.g. `fix/short-description`, `feat/short-description`)
-2. Open a PR targeting `dev` — merge only after CI passes
-3. Promote `dev` → `main` via a separate PR — merge only after CI passes
-
-- Merging into `dev` triggers the **preview** EAS workflow — builds and submits to TestFlight (iOS) and Google Play internal track (Android) for beta testing.
-- Merging into `main` triggers the **production** EAS workflow — builds and submits to the App Store and Google Play production track.
+Commits use Conventional Commits, summary under ~70 chars, body explains _why_. Merging into `dev` triggers the EAS preview workflow (TestFlight + Play internal); merging into `main` triggers production submission. See `docs/skills/git-branching.md`.
 
 ### Version bumps
 
-EAS auto-increments **build numbers** on every build (`autoIncrement: true` + `appVersionSource: "remote"` in `eas.json`) — never touch these manually.
+When bumping the app version, update **both** `expo.version` and `expo.ios.infoPlist.CFBundleShortVersionString` in `app.json` — they must match. Build numbers auto-increment on EAS (`appVersionSource: "remote"`).
 
-The **marketing version** in `app.json` → `"version"` is user-facing (what appears in the store listing). Bump it when merging to `main` with user-visible changes:
+## Related files
 
-- **Bump** for: new features (`feat`), significant bug fixes (`fix`), UI changes users will notice
-- **Skip** for: refactors, test-only changes, docs, internal cleanup, dependency bumps
-
-When bumping, create a `chore: bump version to X.Y.Z` commit on the PR branch before merging to `main`. Follow semver: bump patch for fixes, minor for features, major for breaking changes.
-
-### Commit messages — Conventional Commits
-
-All commits follow the [Conventional Commits](https://www.conventionalcommits.org/) spec. Format:
-
-```
-<type>(<optional scope>): <short summary in present tense, lowercase>
-
-<optional body — wrap at 72 chars, explain *why* not *what*>
-
-Co-Authored-By: Claude Sonnet 4.6 <noreply@anthropic.com>
-```
-
-**Types:**
-
-- `feat` — new feature visible to the user
-- `fix` — bug fix
-- `refactor` — internal change with no behavioural difference
-- `perf` — performance improvement
-- `test` — adding or fixing tests only
-- `docs` — documentation only
-- `style` — formatting, whitespace, missing semicolons (no logic change)
-- `chore` — build config, dependency bumps, tooling
-- `ci` — changes to CI/EAS workflows or configuration
-
-Keep the summary under 70 chars. Use the body for the "why" — what was the user-visible problem, what constraint forced this approach, what alternatives were rejected.
-
-**Examples:**
-
-```
-fix: handle 404 from version endpoint without blocking startup
-refactor(auth): split AuthContext into login and session hooks
-chore(deps): pin react-native-reanimated to 4.2.1 for SDK 55
-```
-
-### Co-Author trailer
-
-Every commit Claude helps write must end with:
-
-```
-Co-Authored-By: Claude Sonnet 4.6 <noreply@anthropic.com>
-```
-
-Use a HEREDOC when committing to preserve the trailing newline:
-
-```bash
-git commit -m "$(cat <<'EOF'
-fix: short summary
-
-Optional body explaining why.
-
-Co-Authored-By: Claude Sonnet 4.6 <noreply@anthropic.com>
-EOF
-)"
-```
-
-### Other rules
-
-- Only commit when explicitly asked.
-- Prefer new commits over amending — never amend a pushed commit.
-- Stage specific files by name; avoid `git add -A` so secrets (`.env`, keys) don't slip in.
-- Never use `--no-verify` or `--no-gpg-sign` unless explicitly requested.
+`VIBE.md` is the equivalent config for Mistral Vibe and covers the same ground in more detail (domain vocabulary tables, TDD cycle, commit conventions). Keep the two in sync when architecture changes.

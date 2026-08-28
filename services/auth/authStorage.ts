@@ -1,37 +1,21 @@
 import * as SecureStore from 'expo-secure-store';
 
 /**
- * Synchronous in-memory storage adapter backed by chunked SecureStore persistence.
- *
- * @better-auth/expo v1.5.5 requires a *synchronous* storage interface
- * { getItem(key): string|null, setItem(key, value): any }
- * because the expoClient plugin reads cookies synchronously inside every
- * fetch request's init hook.
- *
- * We satisfy this with a module-level Map (sync reads/writes) and fire-and-
- * forget SecureStore persistence in the background.  Large values are split
- * into 1 800-byte chunks to stay under SecureStore's 2 048-byte limit.
- *
- * Keys written by expoClient({ storagePrefix: 'bueboka' }):
- *   bueboka_cookie        – serialised session cookie string
- *   bueboka_session_data  – cached /get-session JSON
+ * Synchronous in-memory storage adapter for @better-auth/expo.
+ * Uses chunked SecureStore persistence to handle size limits.
  */
 
 const CHUNK_SIZE = 1800;
 const META_SUFFIX = '__meta';
 const CHUNK_SUFFIX = '__c';
 
-/** Keys that expoClient writes; pre-loaded on startup so the cache is warm. */
 const KNOWN_KEYS = ['bueboka_cookie', 'bueboka_session_data'];
 
-// ─── Module-level state (avoids class / prototype issues under Babel) ────────
-// Attach to globalThis so the cache survives Fast Refresh module re-evaluation.
-// When Metro re-evaluates this file, `const _cache = new Map()` would wipe the
-// session cookies, causing the user to appear logged out on every code change.
+// Module-level cache survives Fast Refresh via globalThis
 const CACHE_KEY = '__bueboka_authStorage_cache';
 const _cache: Map<string, string> = (globalThis as any)[CACHE_KEY] ?? ((globalThis as any)[CACHE_KEY] = new Map<string, string>());
 
-// ─── Chunked async helpers ───────────────────────────────────────────────────
+// Chunked async helpers for SecureStore
 
 async function _read(key: string): Promise<string | null> {
   const meta = await SecureStore.getItemAsync(key + META_SUFFIX).catch(() => null);
@@ -81,9 +65,7 @@ async function _clearChunks(key: string): Promise<void> {
 
 export const authStorage = {
   /**
-   * Pre-load the known expoClient keys from SecureStore into the in-memory
-   * cache. Call once early in AuthContext before any API requests fire so
-   * that the session cookie is available synchronously on the first request.
+   * Pre-load known keys from SecureStore into cache
    */
   async initialize(): Promise<void> {
     const values = await Promise.all(KNOWN_KEYS.map(_read));
@@ -93,18 +75,15 @@ export const authStorage = {
     });
   },
 
-  /** Synchronous read – satisfies ExpoClientOptions.storage */
   getItem(key: string): string | null {
     return _cache.get(key) ?? null;
   },
 
-  /** Synchronous write – satisfies ExpoClientOptions.storage */
   setItem(key: string, value: string): void {
     _cache.set(key, value);
     _write(key, value).catch(() => {});
   },
 
-  /** Convenience delete (not required by expoClient but useful elsewhere) */
   deleteItem(key: string): void {
     _cache.delete(key);
     _clearChunks(key)

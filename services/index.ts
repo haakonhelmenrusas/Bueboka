@@ -1,5 +1,4 @@
-// API Client exports
-export { default as apiClient } from './api/client';
+// API exports
 export * from './api/types';
 export * from './api/errors';
 export * from './api/publicProfilesApi';

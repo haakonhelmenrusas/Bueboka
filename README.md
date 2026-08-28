@@ -18,11 +18,11 @@
 
 ## Tech Stack
 
-Built with **React Native**, **Expo SDK 55**, **TypeScript**, and **Expo Router**.
+Built with **React Native**, **Expo SDK 56**, **TypeScript**, and **Expo Router**.
 
 ## Prerequisites
 
-- Node.js (v18+)
+- Node.js (v20+; CI runs v22)
 - Expo CLI
 - Android Studio or Xcode for native development
 
@@ -35,7 +35,7 @@ cd Bueboka-app
 npm install
 
 # Configure environment
-echo "API_URL=your_api_url_here" > .env
+cp .env.example .env   # then set EXPO_PUBLIC_API_URL (must include /api)
 
 # Start development
 npm start

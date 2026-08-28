@@ -22,6 +22,18 @@ export interface LoginData {
   password: string;
 }
 
+/**
+ * Normalize an email before it reaches the backend.
+ *
+ * A user row is looked up by an exact string match, so an address that picked
+ * up a trailing space from keyboard autocomplete, or a capital from autofill
+ * (which bypasses autoCapitalize="none" on the input), fails to match an
+ * account that plainly exists and better-auth reports "User not found".
+ */
+export function normalizeEmail(email: string): string {
+  return email.trim().toLowerCase();
+}
+
 function ensureExpiryString(expiresAt?: string): string | undefined {
   if (!expiresAt) return undefined;
   try {
@@ -42,7 +54,10 @@ export const authService = {
    */
   async register(data: RegisterData): Promise<{ user: User }> {
     try {
-      const response = await client.post<{ user: User; token?: string; expiresAt?: string }>('/auth/sign-up/email', data);
+      const response = await client.post<{ user: User; token?: string; expiresAt?: string }>('/auth/sign-up/email', {
+        ...data,
+        email: normalizeEmail(data.email),
+      });
       const { user, token, expiresAt } = response.data;
 
       if (token) {
@@ -61,7 +76,10 @@ export const authService = {
    */
   async login(data: LoginData): Promise<{ user: User }> {
     try {
-      const response = await client.post<{ user: User; token?: string; expiresAt?: string }>('/auth/sign-in/email', data);
+      const response = await client.post<{ user: User; token?: string; expiresAt?: string }>('/auth/sign-in/email', {
+        ...data,
+        email: normalizeEmail(data.email),
+      });
       const { user, token, expiresAt } = response.data;
 
       if (token) {
@@ -97,7 +115,7 @@ export const authService = {
    */
   async sendVerificationEmail(email: string): Promise<void> {
     try {
-      await client.post('/auth/send-verification-email', { email });
+      await client.post('/auth/send-verification-email', { email: normalizeEmail(email) });
     } catch (error) {
       throw handleApiError(error);
     }
@@ -144,7 +162,7 @@ export const authService = {
    */
   async requestPasswordReset(email: string): Promise<void> {
     try {
-      await client.post('/auth/forget-password', { email });
+      await client.post('/auth/forget-password', { email: normalizeEmail(email) });
     } catch (error) {
       throw handleApiError(error);
     }

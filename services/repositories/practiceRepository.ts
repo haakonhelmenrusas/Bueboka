@@ -2,9 +2,7 @@ import { authFetchClient as client } from '@/services/api/authFetch';
 import { handleApiError } from '@/services/api/errors';
 import { End, Environment, Practice, PracticeCardsResponse, PracticeCategory, PracticeFilter, WeatherCondition } from '@/types';
 
-/**
- * End creation data structure (for creating practice ends)
- */
+/** End creation data */
 export interface CreateEndData {
   numberArrows?: number;
   arrowsWithoutScore?: number;
@@ -17,9 +15,7 @@ export interface CreateEndData {
   arrowsPerEnd?: number;
 }
 
-/**
- * Practice creation data structure
- */
+/** Practice creation data */
 export interface CreatePracticeData {
   date: Date | string;
   environment: Environment;
@@ -34,9 +30,7 @@ export interface CreatePracticeData {
   rounds: CreateEndData[];
 }
 
-/**
- * Practice update data structure (matches API updatePracticeSchema)
- */
+/** Practice update data */
 export interface UpdatePracticeData {
   date?: Date | string;
   environment?: Environment;
@@ -50,9 +44,7 @@ export interface UpdatePracticeData {
   rounds?: CreateEndData[];
 }
 
-/**
- * Practice query parameters
- */
+/** Practice query parameters */
 export interface PracticeQueryParams {
   page?: number;
   limit?: number;
@@ -60,30 +52,20 @@ export interface PracticeQueryParams {
   endDate?: Date;
 }
 
-/**
- * Query parameters for the unified practice+competition cards endpoint
- */
+/** Practice cards query parameters */
 export interface PracticeCardsQueryParams {
   page?: number;
   pageSize?: number;
   filter?: PracticeFilter;
 }
 
-/**
- * Practice list response structure (actual API response)
- */
+/** Practice list response */
 export interface PracticeListResponse {
   practices: Practice[];
 }
 
-/**
- * Practice repository - handles all practice-related API operations
- */
+/** Practice repository */
 export const practiceRepository = {
-  /**
-   * Get paginated combined practice + competition cards for the current user.
-   * Calls the /practices/cards endpoint which returns both TRENING and KONKURRANSE items.
-   */
   async getCards(params?: PracticeCardsQueryParams): Promise<PracticeCardsResponse> {
     try {
       const queryParams = new URLSearchParams();
@@ -103,12 +85,10 @@ export const practiceRepository = {
   async getAll(params?: PracticeQueryParams): Promise<PracticeListResponse> {
     try {
       const queryParams = new URLSearchParams();
-
       if (params?.page) queryParams.append('page', params.page.toString());
       if (params?.limit) queryParams.append('limit', params.limit.toString());
       if (params?.startDate) queryParams.append('startDate', params.startDate.toISOString());
       if (params?.endDate) queryParams.append('endDate', params.endDate.toISOString());
-
       const response = await client.get<PracticeListResponse>(`/practices?${queryParams.toString()}`);
       return response.data;
     } catch (error) {
@@ -116,22 +96,15 @@ export const practiceRepository = {
     }
   },
 
-  /**
-   * Get a specific practice by ID (includes ends)
-   */
   async getById(id: string): Promise<Practice> {
     try {
       const response = await client.get<{ practice: Practice }>(`/practices/${id}/details`);
-      // API returns { practice: {...} }, unwrap it
       return (response.data as any).practice || response.data;
     } catch (error) {
       throw handleApiError(error);
     }
   },
 
-  /**
-   * Create a new practice session
-   */
   async create(data: CreatePracticeData): Promise<Practice> {
     try {
       const response = await client.post<Practice>('/practices', data);
@@ -141,9 +114,6 @@ export const practiceRepository = {
     }
   },
 
-  /**
-   * Update an existing practice
-   */
   async update(id: string, data: UpdatePracticeData): Promise<Practice> {
     try {
       const response = await client.patch<Practice>(`/practices/${id}`, data);
@@ -153,9 +123,6 @@ export const practiceRepository = {
     }
   },
 
-  /**
-   * Delete a practice
-   */
   async delete(id: string): Promise<void> {
     try {
       await client.delete(`/practices/${id}`);
@@ -164,9 +131,6 @@ export const practiceRepository = {
     }
   },
 
-  /**
-   * Add an end to a practice session
-   */
   async addEnd(practiceId: string, data: CreateEndData): Promise<End> {
     try {
       const response = await client.post<End>(`/practices/${practiceId}/ends`, data);
@@ -176,9 +140,6 @@ export const practiceRepository = {
     }
   },
 
-  /**
-   * Update a specific end
-   */
   async updateEnd(practiceId: string, endId: string, data: Partial<CreateEndData>): Promise<End> {
     try {
       const response = await client.put<End>(`/practices/${practiceId}/ends/${endId}`, data);
@@ -188,9 +149,6 @@ export const practiceRepository = {
     }
   },
 
-  /**
-   * Delete a specific end
-   */
   async deleteEnd(practiceId: string, endId: string): Promise<void> {
     try {
       await client.delete(`/practices/${practiceId}/ends/${endId}`);
