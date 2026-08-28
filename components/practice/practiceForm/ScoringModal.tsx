@@ -1,5 +1,4 @@
-import { useState } from 'react';
-import { Pressable, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faChevronLeft } from '@fortawesome/free-solid-svg-icons/faChevronLeft';
@@ -14,12 +13,7 @@ import { colors } from '@/styles/colors';
 import { styles } from './CreatePracticeFormStyles';
 import { ArrowChips } from './ArrowChips';
 import { ScoreButtonGrid } from './ScoreButtonGrid';
-import { TargetScoring } from '@/components/practice/scoring/TargetScoring';
 import type { RoundInput } from './CreatePracticeForm';
-
-type ScoringMethod = 'buttons' | 'target';
-
-const NON_TARGET_SCORING_TYPES = ['bar', 'historisk-nl-inne', 'other'];
 
 interface ScoringModalProps {
   visible: boolean;
@@ -33,7 +27,6 @@ interface ScoringModalProps {
   onSetEditingIndex: (idx: number | null) => void;
   onAddArrowScore: (score: number) => void;
   onUpdateArrowScore: (arrowIndex: number, score: number) => void;
-  onRemoveLastArrowScore: () => void;
 }
 
 export function ScoringModal({
@@ -48,16 +41,9 @@ export function ScoringModal({
   onSetEditingIndex,
   onAddArrowScore,
   onUpdateArrowScore,
-  onRemoveLastArrowScore,
 }: ScoringModalProps) {
   const { t } = useTranslation();
   const insets = useSafeAreaInsets();
-  const [scoringMethod, setScoringMethod] = useState<ScoringMethod>('buttons');
-  // The target's press-and-hold competes with this screen's ScrollView for the
-  // touch, so scrolling is suspended for as long as the archer is aiming.
-  const [isAiming, setIsAiming] = useState(false);
-
-  const supportsTargetScoring = !NON_TARGET_SCORING_TYPES.includes(round.targetType);
 
   const maxArrows = round.numberArrows ?? 0;
   const hasManualScore = round.roundScore > 0 && (round.scores ?? []).length === 0;
@@ -79,29 +65,15 @@ export function ScoringModal({
   const arrowsInThisEnd = endIdx - startIdx;
   const endScores = currentScores.slice(startIdx, endIdx);
 
+  const isActiveEnd = !isFull && currentEndPage === activeEndPage;
   const isEndFilled = endScores.length >= arrowsInThisEnd;
-
-  const editingIdx = editingIndex ?? null;
-  const isEditingArrow = editingIdx !== null;
-
-  // Both of these describe the end currently on screen. Keying them off
-  // isActiveEnd instead made them unreachable: scoring the last arrow of an end
-  // advances activeEndPage while the user is still looking at the end they just
-  // shot, so the target unmounted the moment the end was completed.
-  const endComplete = isEndFilled && !isEditingArrow;
-  const showScoreInput = !isEndFilled || isEditingArrow;
 
   const canGoPrev = currentEndPage > 0;
   const canGoNext = currentEndPage < activeEndPage;
 
-  const handleScorePress = (score: number) => {
-    if (isEditingArrow) {
-      onUpdateArrowScore(editingIdx!, score);
-      onSetEditingIndex(null);
-    } else {
-      onAddArrowScore(score);
-    }
-  };
+  const editingIdx = editingIndex ?? null;
+  const isEditingArrow = editingIdx !== null;
+  const showScoreButtons = (isActiveEnd && !isEndFilled) || isEditingArrow;
 
   return (
     <ModalWrapper visible={visible} onClose={onClose} fullScreen>
@@ -117,7 +89,6 @@ export function ScoringModal({
           style={{ flex: 1 }}
           contentContainerStyle={scoringModalStyles.content}
           keyboardShouldPersistTaps="handled"
-          scrollEnabled={!isAiming}
           showsVerticalScrollIndicator={false}>
           {hasManualScore ? (
             <View style={styles.manualScoreNotice}>
@@ -131,27 +102,6 @@ export function ScoringModal({
             </View>
           ) : (
             <View style={{ gap: 16 }}>
-              {supportsTargetScoring && (
-                <View style={styles.scoringMethodSection}>
-                  <View style={styles.scoringMethodButtons}>
-                    <Pressable
-                      style={[styles.scoringMethodButton, scoringMethod === 'buttons' && styles.scoringMethodButtonActive]}
-                      onPress={() => setScoringMethod('buttons')}>
-                      <Text style={[styles.scoringMethodButtonText, scoringMethod === 'buttons' && styles.scoringMethodButtonTextActive]}>
-                        {t['scoring.methodButtons']}
-                      </Text>
-                    </Pressable>
-                    <Pressable
-                      style={[styles.scoringMethodButton, scoringMethod === 'target' && styles.scoringMethodButtonActive]}
-                      onPress={() => setScoringMethod('target')}>
-                      <Text style={[styles.scoringMethodButtonText, scoringMethod === 'target' && styles.scoringMethodButtonTextActive]}>
-                        {t['scoring.methodTarget']}
-                      </Text>
-                    </Pressable>
-                  </View>
-                </View>
-              )}
-
               {totalEnds > 1 && (
                 <View style={styles.endNav}>
                   <TouchableOpacity
@@ -187,29 +137,22 @@ export function ScoringModal({
                 {filledCount > 0 && <Text style={styles.scoringTotal}>{`${t['scoring.sum']} ${total}`}</Text>}
               </View>
 
-              {(showScoreInput || endComplete) && (
+              {showScoreButtons && (
                 <>
                   {isEditingArrow && (
                     <Text style={styles.editingHint}>{`${t['scoring.editingArrowPrefix']} ${(editingIdx! % arrowsPerEnd) + 1}`}</Text>
                   )}
-
-                  {scoringMethod === 'buttons' ? (
-                    showScoreInput && <ScoreButtonGrid environment={environment} onScorePress={handleScorePress} />
-                  ) : (
-                    <TargetScoring
-                      onScorePress={handleScorePress}
-                      onUndoLast={onRemoveLastArrowScore}
-                      // A completed end stays on screen to be reviewed, but must not take more arrows.
-                      disabled={isFull || endComplete}
-                      // editingIdx is absolute across the round; TargetScoring draws one end at a time.
-                      editingIdx={isEditingArrow ? editingIdx! - startIdx : null}
-                      targetType={round.targetType}
-                      endComplete={endComplete}
-                      onNext={canGoNext ? () => onSetEndPage(currentEndPage + 1) : undefined}
-                      endKey={`${roundIndex}-${currentEndPage}`}
-                      onAimingChange={setIsAiming}
-                    />
-                  )}
+                  <ScoreButtonGrid
+                    environment={environment}
+                    onScorePress={(score) => {
+                      if (isEditingArrow) {
+                        onUpdateArrowScore(editingIdx!, score);
+                        onSetEditingIndex(null);
+                      } else {
+                        onAddArrowScore(score);
+                      }
+                    }}
+                  />
                 </>
               )}
 
@@ -217,6 +160,10 @@ export function ScoringModal({
                 <View style={styles.scoringComplete}>
                   <Text style={styles.scoringCompleteText}>{`${t['scoring.allRegistered']} ${t['scoring.scoreSuffix']} ${total}`}</Text>
                 </View>
+              )}
+
+              {!isFull && isEndFilled && !isActiveEnd && !isEditingArrow && canGoNext && (
+                <Button label={t['scoring.nextEnd']} onPress={() => onSetEndPage(currentEndPage + 1)} buttonStyle={{ width: '100%' }} />
               )}
             </View>
           )}
