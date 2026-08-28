@@ -53,6 +53,9 @@ export function ScoringModal({
   const { t } = useTranslation();
   const insets = useSafeAreaInsets();
   const [scoringMethod, setScoringMethod] = useState<ScoringMethod>('buttons');
+  // The target's press-and-hold competes with this screen's ScrollView for the
+  // touch, so scrolling is suspended for as long as the archer is aiming.
+  const [isAiming, setIsAiming] = useState(false);
 
   const supportsTargetScoring = !NON_TARGET_SCORING_TYPES.includes(round.targetType);
 
@@ -114,6 +117,7 @@ export function ScoringModal({
           style={{ flex: 1 }}
           contentContainerStyle={scoringModalStyles.content}
           keyboardShouldPersistTaps="handled"
+          scrollEnabled={!isAiming}
           showsVerticalScrollIndicator={false}>
           {hasManualScore ? (
             <View style={styles.manualScoreNotice}>
@@ -203,6 +207,7 @@ export function ScoringModal({
                       endComplete={endComplete}
                       onNext={canGoNext ? () => onSetEndPage(currentEndPage + 1) : undefined}
                       endKey={`${roundIndex}-${currentEndPage}`}
+                      onAimingChange={setIsAiming}
                     />
                   )}
                 </>

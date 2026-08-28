@@ -40,6 +40,12 @@ interface TargetScoringProps {
   onNext?: () => void;
   /** Changes whenever a different end is shown; clears the arrows drawn on the face. */
   endKey?: string;
+  /**
+   * Fired while the archer is aiming. The parent must stop any enclosing
+   * ScrollView from scrolling, or the scroll view claims the touch and the
+   * press-and-hold never gets to track the finger.
+   */
+  onAimingChange?: (aiming: boolean) => void;
 }
 
 function getArrowColor(score: number): string {
@@ -60,6 +66,7 @@ export function TargetScoring({
   endComplete = false,
   onNext,
   endKey,
+  onAimingChange,
 }: TargetScoringProps) {
   const { t } = useTranslation();
   const [arrows, setArrows] = useState<ArrowPosition[]>([]);
@@ -153,8 +160,11 @@ export function TargetScoring({
   // point that was pressed, so releasing without dragging places the arrow there.
   const pan = Gesture.Pan()
     .activateAfterLongPress(LONG_PRESS_MS)
+    // Dragging past the edge of the face should clamp, not abandon the shot.
+    .shouldCancelWhenOutside(false)
     .onStart((event) => {
       'worklet';
+      if (onAimingChange) runOnJS(onAimingChange)(true);
       const touch = screenToTarget(event.x, event.y, currentView());
       const targetX = clampToTarget(touch.x, TARGET_SIZE);
       const targetY = clampToTarget(touch.y, TARGET_SIZE);
@@ -199,6 +209,7 @@ export function TargetScoring({
     })
     .onFinalize(() => {
       'worklet';
+      if (onAimingChange) runOnJS(onAimingChange)(false);
       positionHistory.value = [];
       if (!keepZoomActive.value) {
         resetZoom();
