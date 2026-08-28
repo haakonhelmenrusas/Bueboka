@@ -63,17 +63,16 @@ Production/preview secrets live in EAS (see `docs/BUILD_ENVIRONMENT.md`).
 ```
 Bueboka-app/
 ├── app/                      # Screens & Navigation (Expo Router)
-│   ├── _layout.tsx           # Root layout with AuthProvider, Sentry, version check
-│   ├── index.tsx             # Entry redirect
+│   ├── _layout.tsx           # Root layout with AuthProvider, LanguageProvider, Sentry
+│   ├── index.tsx             # Entry redirect (intro / auth / tabs)
 │   ├── auth.tsx              # Login/register screen
 │   ├── intro.tsx             # First-launch intro/language picker
 │   ├── achievements.tsx      # Achievements screen
 │   ├── (tabs)/               # Main tab navigation
-│   │   ├── index.tsx         # Home tab
-│   │   ├── aktivitet/        # Activity/Statistics
+│   │   ├── home/             # Home tab (+ statistics screen)
+│   │   ├── aktivitet/        # Activity/Practice list
 │   │   ├── sightMarks/       # Sight marks management
-│   │   ├── settings/         # App settings
-│   │   └── skyttere/         # Shooters directory (hidden tab)
+│   │   └── settings/         # App settings
 │   └── skyttere/             # Public profile directory (list + [id] detail)
 │
 ├── components/               # React Components
@@ -89,8 +88,9 @@ Bueboka-app/
 │   │   ├── ModalWrapper/     # Modal overlay
 │   │   ├── OfflineBanner/    # Connectivity status
 │   │   ├── Select/           # Dropdown with search
+│   │   ├── Textarea/         # Multiline text input
 │   │   ├── Toggle/           # Animated switch
-│   │   └── UpdateRequired/   # Forced update prompt
+│   │   └── MobileActionButton/ # Floating action button
 │   │
 │   └── [feature]/            # Feature-specific components
 │       ├── auth/
@@ -112,13 +112,19 @@ Bueboka-app/
 │   ├── useAuth.ts
 │   ├── useNetworkState.ts
 │   ├── useOfflineQueue.ts
-│   └── useOnboarding.ts
+│   ├── useOnboarding.ts
+│   └── useFingerSlipDetection.ts
 │
 ├── services/                 # Business Logic & Data Layer
 │   ├── api/                  # HTTP clients
-│   │   ├── authFetch.ts      # Main HTTP client (better-auth wrapper)
-│   │   ├── client.ts         # Legacy axios client (deprecated)
-│   │   └── errors.ts         # Error handling utilities
+│   │   ├── authFetch.ts      # The HTTP client (better-auth wrapper)
+│   │   ├── constants.ts      # API URLs, storage keys, queue config
+│   │   ├── errors.ts         # Error handling utilities
+│   │   ├── publicProfilesApi.ts # Public shooter profiles (not a repository)
+│   │   ├── statsApi.ts       # Statistics endpoints (not a repository)
+│   │   └── uploadAvatar.ts   # Avatar multipart upload
+│   │
+│   ├── auth/                 # better-auth client, storage, token helpers
 │   │
 │   ├── repositories/         # Repository pattern (data access)
 │   │   ├── practiceRepository.ts
@@ -128,12 +134,13 @@ Bueboka-app/
 │   │   ├── sightMarksRepository.ts
 │   │   ├── achievementRepository.ts
 │   │   ├── competitionRepository.ts
-│   │   ├── roundTypeRepository.ts
-│   │   └── publicProfileRepository.ts
+│   │   └── roundTypeRepository.ts
 │   │
 │   ├── offline/              # Offline-first support
-│   │   ├── mutationHelper.ts # Offline mutation queue
-│   │   └── syncManager.ts    # Sync queue when online
+│   │   ├── mutationHelper.ts # offlineMutation() wrapper
+│   │   ├── operationQueue.ts # AsyncStorage-backed queue
+│   │   ├── handlers.ts       # Operation type → repository handler map
+│   │   └── syncManager.ts    # Drains the queue when online
 │   │
 │   └── index.ts              # Service exports
 │
@@ -162,6 +169,7 @@ Bueboka-app/
 │       ├── handleNumberChange.ts
 │       ├── labelUtils.ts
 │       ├── practiceHelpers.ts
+│       ├── achievementLabels.ts
 │       └── sortItems.ts
 │
 ├── styles/                   # Styling
@@ -169,9 +177,11 @@ Bueboka-app/
 │
 ├── lib/                      # Libraries & i18n
 │   └── i18n/                 # Internationalization
-│       ├── index.ts
-│       ├── no.ts            # Norwegian translations
-│       └── en.ts            # English translations
+│       ├── index.ts          # getTranslations(), isLocale(), DEFAULT_LOCALE
+│       ├── types.ts          # Locale + flat TranslationKeys interface
+│       └── translations/
+│           ├── no.ts         # Norwegian translations
+│           └── en.ts         # English translations
 │
 ├── docs/                     # Documentation
 │   └── skills/               # Agent skills documentation
@@ -185,11 +195,12 @@ Bueboka-app/
 
 ### Navigation (Expo Router)
 
-File-based routing via Expo Router:
+File-based routing via Expo Router. Guarding is layout-based, not middleware:
 
-- Auth guard in root layout redirects unauthenticated users to `/auth`
-- Main tabs: home, aktivitet, sightMarks, settings, skyttere (hidden)
-- Public profile directory at `/skyttere/`
+- `app/index.tsx` redirects to `/intro` (first launch), `/auth`, or `/(tabs)/home`
+- `app/(tabs)/_layout.tsx` redirects to `/auth` when unauthenticated and blocks the back gesture while authenticated
+- Main tabs: home, aktivitet, sightMarks, settings — rendered through the custom `FloatingTabBar`
+- Public profile directory at `/skyttere/` (top-level stack, not a tab)
 
 ### State Management
 
@@ -203,8 +214,8 @@ Context API only — no Redux or Zustand:
 Three sub-layers:
 
 1. **HTTP** — `services/api/authFetch.ts` exports `authFetchClient` (better-auth `$fetch` with SecureStore credentials). This is the canonical HTTP client.
-2. **Repositories** — 9 repositories in `services/repositories/` each use `authFetchClient` and wrap errors with `handleApiError()`, which maps API errors to an `AppError` with Norwegian user-facing messages.
-3. **Offline** — `offlineMutation()` wraps any repository call and enqueues it on `NETWORK_ERROR`. `syncManager` drains the queue (keyed `offline_queue:{userId}` in AsyncStorage) when connectivity returns. Handlers registered via `registerOfflineHandlers()` inside `AuthContext`.
+2. **Repositories** — 8 repositories in `services/repositories/` each use `authFetchClient` and wrap errors with `handleApiError()`, which maps API errors to an `AppError` with Norwegian user-facing messages. Public profiles and statistics are the exceptions: they live in `services/api/publicProfilesApi.ts` and `services/api/statsApi.ts`.
+3. **Offline** — `offlineMutation()` wraps a repository call at the call site (screen/component level, not inside the repository) and enqueues it on `NETWORK_ERROR`. `syncManager` drains the queue (keyed `offline_queue:{userId}` in AsyncStorage) when connectivity returns. Handlers registered via `registerOfflineHandlers()` inside `AuthContext`. **A new offline-capable mutation needs a matching handler in `services/offline/handlers.ts`** — queued operations with an unregistered `type` are dropped.
 
 ### Component Philosophy
 
@@ -212,6 +223,14 @@ Three sub-layers:
 - **Feature-specific** components in `components/[feature]/`
 - **Separate style files** — keep styles in dedicated `*Styles.ts` next to component
 - **Never hardcode colors** — always import from `styles/colors.ts`
+
+### Internationalization
+
+The app ships Norwegian and English. Never hardcode user-facing copy in a component.
+
+- `lib/i18n/types.ts` defines a flat `TranslationKeys` interface (`'practice.saveButton'` style keys). `translations/no.ts` and `translations/en.ts` must both implement it in full — a missing key is a TypeScript error.
+- `contexts/LanguageContext.tsx` resolves the locale from AsyncStorage (`bueboka_language`) → OS locale → `no`, and reconciles once per user with the server profile.
+- Read copy with `const { t } = useTranslation()` then `t['practice.saveButton']`.
 
 ## Domain Knowledge
 
@@ -292,7 +311,8 @@ COMMIT    → follow conventions below
 
 - Mock at boundaries only: mock `authFetchClient` when testing repositories; mock repositories when testing hooks or screens
 - Test locations mirror source: `services/repositories/__tests__/`, `hooks/__tests__/`, `components/<folder>/__tests__/`
-- Framework: Jest + jest-expo, jsdom environment
+- Framework: Jest + jest-expo, jsdom environment, `clearMocks`/`restoreMocks` enabled
+- `jestSetup.ts` already mocks AsyncStorage, FontAwesome, safe-area-context, better-auth, expo-router and `@/contexts/LanguageContext` — check it before adding a local mock. Because the language context is globally mocked to the Norwegian bundle, component tests assert Norwegian copy without wrapping in a provider.
 
 ### File Structure for New Features
 
@@ -356,7 +376,7 @@ Keep the summary under 70 chars. Use the body for the "why" — what was the use
 ```
 fix: handle 404 from version endpoint without blocking startup
 refactor(auth): split AuthContext into login and session hooks
-chore(deps): pin react-native-reanimated to 4.2.1 for SDK 55
+chore(deps): pin react-native-reanimated to 4.3.1 for SDK 56
 ```
 
 ### Co-Author Trailer
@@ -391,7 +411,7 @@ EOF
 - **One test = one behaviour** — name it in plain language
 - **Tests mock at the boundary** (network, storage) — not internal details
 - **Domain types first**, then repository, then hook, then UI
-- **Ubiquitous language in code** — Norwegian only in user-facing strings
+- **Ubiquitous language in code** — code and identifiers in English; user-facing copy goes through the i18n bundles, never inline strings
 - **Invariants are named functions** with their own tests
 
 ### Code Style
@@ -425,20 +445,25 @@ EOF
 
 ## Key Files Reference
 
-| Purpose        | File                                 | Description                          |
-| -------------- | ------------------------------------ | ------------------------------------ |
-| Entry          | `index.js`                           | Expo entry point                     |
-| App Entry      | `app/index.tsx`                      | Redirects to auth or home            |
-| Auth           | `app/auth.tsx`                       | Login/register screen                |
-| Root Layout    | `app/_layout.tsx`                    | AuthProvider, Sentry, version check  |
-| Main Tabs      | `app/(tabs)/_layout.tsx`             | Tab navigation                       |
-| HTTP Client    | `services/api/authFetch.ts`          | better-auth wrapper with SecureStore |
-| Error Handling | `services/api/errors.ts`             | Maps API errors to AppError          |
-| Types          | `types/index.ts`                     | Type exports                         |
-| Colors         | `styles/colors.ts`                   | Color palette                        |
-| i18n           | `lib/i18n/index.ts`                  | Translation context                  |
-| Offline        | `services/offline/mutationHelper.ts` | Offline mutation queue               |
-| Sync           | `services/offline/syncManager.ts`    | Sync queue when online               |
+| Purpose          | File                                 | Description                            |
+| ---------------- | ------------------------------------ | -------------------------------------- |
+| Entry            | `index.js`                           | Expo entry point                       |
+| App Entry        | `app/index.tsx`                      | Redirects to auth or home              |
+| Auth             | `app/auth.tsx`                       | Login/register screen                  |
+| Root Layout      | `app/_layout.tsx`                    | AuthProvider, LanguageProvider, Sentry |
+| Main Tabs        | `app/(tabs)/_layout.tsx`             | Tab navigation + auth guard            |
+| HTTP Client      | `services/api/authFetch.ts`          | better-auth wrapper with SecureStore   |
+| Auth Client      | `services/auth/authClient.ts`        | better-auth + expoClient plugin        |
+| Error Handling   | `services/api/errors.ts`             | Maps API errors to AppError            |
+| API Config       | `services/api/constants.ts`          | Base URLs, storage keys, queue config  |
+| Types            | `types/index.ts`                     | Type exports                           |
+| Colors           | `styles/colors.ts`                   | Color palette                          |
+| i18n             | `lib/i18n/index.ts`                  | Translation lookup                     |
+| i18n Context     | `contexts/LanguageContext.tsx`       | `useTranslation()` provider            |
+| Offline          | `services/offline/mutationHelper.ts` | `offlineMutation()` wrapper            |
+| Offline Handlers | `services/offline/handlers.ts`       | Operation type → repository handler    |
+| Sync             | `services/offline/syncManager.ts`    | Sync queue when online                 |
+| Test Setup       | `jestSetup.ts`                       | Global mocks for all test suites       |
 
 ## Common Patterns
 
