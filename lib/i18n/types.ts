@@ -52,6 +52,8 @@ export interface TranslationKeys {
   'emailVerification.title': string;
   'emailVerification.sentTo': string;
   'emailVerification.instructions': string;
+  'emailVerification.instructionsSignIn': string;
+  'emailVerification.backToLogin': string;
   'emailVerification.checkButton': string;
   'emailVerification.resendButton': string;
   'emailVerification.resendCooldown': string;

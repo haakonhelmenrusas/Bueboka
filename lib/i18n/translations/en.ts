@@ -45,6 +45,9 @@ export const en: TranslationKeys = {
   'emailVerification.sentTo': "We've sent a verification link to",
   'emailVerification.instructions':
     'Click the link in the email to verify your account. Once verified, come back here and tap "I have verified".',
+  'emailVerification.instructionsSignIn':
+    'Click the link in the email to verify your account. Once verified, you can sign in with your email address and password.',
+  'emailVerification.backToLogin': 'Back to sign in',
   'emailVerification.checkButton': 'I have verified',
   'emailVerification.resendButton': 'Resend email',
   'emailVerification.resendCooldown': 'Resend',

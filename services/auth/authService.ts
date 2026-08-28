@@ -46,13 +46,26 @@ function ensureExpiryString(expiresAt?: string): string | undefined {
 }
 
 /**
+ * Result of a sign-up attempt.
+ *
+ * When the backend runs better-auth with `requireEmailVerification`, a
+ * successful sign-up deliberately returns no session token — the address must
+ * be verified before a session is issued. `requiresEmailVerification` reflects
+ * that: it is true exactly when no token came back.
+ */
+export interface RegisterResult {
+  user: User;
+  requiresEmailVerification: boolean;
+}
+
+/**
  * Authentication service for all auth-related API calls
  */
 export const authService = {
   /**
    * Register a new user with email and password
    */
-  async register(data: RegisterData): Promise<{ user: User }> {
+  async register(data: RegisterData): Promise<RegisterResult> {
     try {
       const response = await client.post<{ user: User; token?: string; expiresAt?: string }>('/auth/sign-up/email', {
         ...data,
@@ -65,7 +78,7 @@ export const authService = {
         await saveTokens({ accessToken: token, expiresAt: normalized ?? '' });
       }
 
-      return { user };
+      return { user, requiresEmailVerification: !token };
     } catch (error) {
       throw handleApiError(error);
     }
