@@ -76,17 +76,20 @@ export function ScoringModal({
   const arrowsInThisEnd = endIdx - startIdx;
   const endScores = currentScores.slice(startIdx, endIdx);
 
-  const isActiveEnd = !isFull && currentEndPage === activeEndPage;
   const isEndFilled = endScores.length >= arrowsInThisEnd;
 
   const editingIdx = editingIndex ?? null;
   const isEditingArrow = editingIdx !== null;
-  const endComplete = isEndFilled && isActiveEnd && !isEditingArrow;
+
+  // Both of these describe the end currently on screen. Keying them off
+  // isActiveEnd instead made them unreachable: scoring the last arrow of an end
+  // advances activeEndPage while the user is still looking at the end they just
+  // shot, so the target unmounted the moment the end was completed.
+  const endComplete = isEndFilled && !isEditingArrow;
+  const showScoreInput = !isEndFilled || isEditingArrow;
 
   const canGoPrev = currentEndPage > 0;
   const canGoNext = currentEndPage < activeEndPage;
-
-  const showScoreInput = (isActiveEnd && !isEndFilled) || isEditingArrow;
 
   const handleScorePress = (score: number) => {
     if (isEditingArrow) {
@@ -187,17 +190,18 @@ export function ScoringModal({
                   )}
 
                   {scoringMethod === 'buttons' ? (
-                    <ScoreButtonGrid environment={environment} onScorePress={handleScorePress} />
+                    showScoreInput && <ScoreButtonGrid environment={environment} onScorePress={handleScorePress} />
                   ) : (
                     <TargetScoring
                       onScorePress={handleScorePress}
                       onUndoLast={onRemoveLastArrowScore}
-                      disabled={isFull}
+                      // A completed end stays on screen to be reviewed, but must not take more arrows.
+                      disabled={isFull || endComplete}
                       // editingIdx is absolute across the round; TargetScoring draws one end at a time.
                       editingIdx={isEditingArrow ? editingIdx! - startIdx : null}
                       targetType={round.targetType}
                       endComplete={endComplete}
-                      onNext={() => onSetEndPage(currentEndPage + 1)}
+                      onNext={canGoNext ? () => onSetEndPage(currentEndPage + 1) : undefined}
                       endKey={`${roundIndex}-${currentEndPage}`}
                     />
                   )}

@@ -242,8 +242,10 @@ export function TargetScoring({
   return (
     <View style={styles.container}>
       <GestureHandlerRootView>
-        <View style={[styles.targetWrapper, { width: TARGET_SIZE, height: TARGET_SIZE }]}>
-          <GestureDetector gesture={gesture}>
+        {/* The detector sits on the untransformed wrapper: gesture coordinates
+            must stay in a fixed space, or the zoom would rescale them mid-drag. */}
+        <GestureDetector gesture={gesture}>
+          <View style={[styles.targetWrapper, { width: TARGET_SIZE, height: TARGET_SIZE }]}>
             <Animated.View style={[styles.targetContent, { width: TARGET_SIZE, height: TARGET_SIZE }, animatedTargetStyle]}>
               <TargetFace size={TARGET_SIZE} targetType={targetType} />
               {arrows.map((arrow, index) => (
@@ -261,15 +263,17 @@ export function TargetScoring({
                 />
               ))}
             </Animated.View>
-          </GestureDetector>
-          <Animated.View style={[styles.crosshair, { width: CROSSHAIR_SIZE, height: CROSSHAIR_SIZE }, crosshairStyle]} pointerEvents="none">
-            <View style={styles.crosshairShadowH} />
-            <View style={styles.crosshairShadowV} />
-            <View style={styles.crosshairLineH} />
-            <View style={styles.crosshairLineV} />
-            <View style={styles.crosshairDot} />
-          </Animated.View>
-        </View>
+            <Animated.View
+              style={[styles.crosshair, { width: CROSSHAIR_SIZE, height: CROSSHAIR_SIZE }, crosshairStyle]}
+              pointerEvents="none">
+              <View style={styles.crosshairShadowH} />
+              <View style={styles.crosshairShadowV} />
+              <View style={styles.crosshairLineH} />
+              <View style={styles.crosshairLineV} />
+              <View style={styles.crosshairDot} />
+            </Animated.View>
+          </View>
+        </GestureDetector>
       </GestureHandlerRootView>
 
       <Text style={styles.hint}>{t['scoring.targetHint']}</Text>
@@ -283,7 +287,7 @@ export function TargetScoring({
         </View>
       )}
 
-      {endComplete && (
+      {endComplete && onNext && (
         <View style={styles.nextRow}>
           <Button
             label={t['scoring.nextEnd']}
