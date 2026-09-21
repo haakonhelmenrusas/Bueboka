@@ -693,8 +693,7 @@ Translations are in `lib/i18n/translations/`:
 
 ### Documentation
 - `README.md` - Project overview and setup
-- `CLAUDE.md` - Claude Code context (similar to this file)
-- `VIBE.md` - Vibe context (this file)
+- `VIBE.md` - Vibe context (project context and best practices)
 - `docs/BUILD_ENVIRONMENT.md` - EAS build configuration
 - `docs/skills/domain-discovery.md` - Domain discovery workflow
 - `docs/skills/tdd-ddd.md` - TDD + DDD workflow

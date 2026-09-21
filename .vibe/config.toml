@@ -5,7 +5,6 @@ applied_migrations = [
 [project_context]
 extra_files = [
     "VIBE.md",
-    "CLAUDE.md",
     "README.md",
 ]
 commit_count = 10
@@ -18,9 +17,6 @@ skill_paths = [
 enabled_skills = [
     "bueboka-context",
 ]
-
-[tools.read]
-max_read_bytes = 100000
 
 [tools.grep]
 max_output_bytes = 100000
@@ -83,6 +79,9 @@ allowlist = [
     "which",
     "yarn",
 ]
+
+[tools.read_file]
+max_read_bytes = 100000
 
 [agents]
 agent_paths = [

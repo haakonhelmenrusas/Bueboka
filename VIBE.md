@@ -2,9 +2,31 @@
 
 This file provides project-specific context to Mistral Vibe when working with the Bueboka codebase.
 
+## Table of Contents
+
+1. [Project Overview](#project-overview)
+2. [Quick Start](#quick-start)
+3. [Architecture](#architecture)
+4. [Security Best Practices](#security-best-practices)
+5. [Performance Optimization](#performance-optimization)
+6. [Accessibility Guidelines](#accessibility-guidelines)
+7. [Internationalization (i18n)](#internationalization-i18n)
+8. [Expo Router Best Practices](#expo-router-best-practices)
+9. [Development Workflow](#development-workflow)
+10. [Testing](#testing)
+11. [Git Workflow](#git-workflow)
+12. [Code Quality](#code-quality)
+13. [Common Commands](#common-commands)
+14. [Important Patterns](#important-patterns)
+15. [Code Review Checklist](#code-review-checklist)
+16. [Common Pitfalls](#common-pitfalls)
+17. [Resources](#resources)
+
+---
+
 ## Project Overview
 
-**Bueboka** is a comprehensive archery tracking application for iOS, Android, and Web. Built with **React Native**, **Expo SDK 56**, **TypeScript**, and **Expo Router**.
+**Bueboka** is a comprehensive archery tracking application for iOS, Android, and Web. Built with **React Native**, **Expo SDK 57**, **TypeScript**, and **Expo Router**.
 
 - **App Stores**: [Google Play](https://play.google.com/store/apps/details?id=com.aaronshade.bueboka) | [App Store](https://apps.apple.com/no/app/bueboka/id6448108838)
 - **Web Version**: [bueboka.no](https://bueboka.no)
@@ -52,7 +74,7 @@ npm run format
 ## Architecture
 
 ### Tech Stack
-- **Framework**: React Native 0.85, Expo SDK 56
+- **Framework**: React Native 0.86, Expo SDK 57
 - **Language**: TypeScript 6
 - **Navigation**: Expo Router (file-based)
 - **State Management**: React Context API (no Redux/Zustand)
@@ -140,6 +162,213 @@ bueboka-app/
 | Merke | mark | MarkValue |
 | Rundetype | roundType | RoundType |
 | Bueskyting | archery | - |
+
+---
+
+## Security Best Practices
+
+### Authentication & Authorization
+- **Always use `authFetchClient`** from `services/api/authFetch.ts` for API calls
+- **Never use deprecated axios client** in `services/api/client.ts`
+- **Token storage**: Use `expo-secure-store` for sensitive data (auth tokens)
+- **Never store tokens in AsyncStorage** - use SecureStore only
+- **OAuth flows**: Use better-auth with expo-client plugin for Google/Apple auth
+
+### Data Protection
+- **Sensitive data**: Always encrypt in SecureStore, never in plain text
+- **API endpoints**: Use HTTPS only, never HTTP
+- **Input validation**: Validate all user inputs on both client and server
+- **Error handling**: Never expose sensitive error details to users
+
+### Secure Coding Standards
+- **No hardcoded secrets**: API keys, tokens, passwords must use environment variables
+- **Environment variables**: Use `EXPO_PUBLIC_` prefix for client-side variables
+- **Sentry**: Only enabled in non-development environments
+- **Network requests**: Always include proper headers (Content-Type, Authorization)
+- **CORS**: Backend must have proper CORS configuration
+
+### Implementation Guidelines
+```typescript
+// GOOD - Secure token handling
+import * as SecureStore from 'expo-secure-store';
+await SecureStore.setItemAsync('access_token', token);
+
+// BAD - Insecure storage
+import AsyncStorage from '@react-native-async-storage/async-storage';
+await AsyncStorage.setItem('access_token', token); // NEVER DO THIS
+
+// GOOD - Using authFetchClient
+await authFetchClient.get('/practice');
+
+// BAD - Direct fetch calls
+fetch('/api/practice', { headers: { Authorization: `Bearer ${token}` } });
+```
+
+---
+
+## Performance Optimization
+
+### React Native Performance
+- **Memoization**: Use `React.memo` for pure components, `useMemo`/`useCallback` for expensive calculations
+- **FlatList**: Always use `FlatList` or `SectionList` for long lists (not `ScrollView` with mapped children)
+- **Images**: Use `expo-image` with proper sizing and caching
+- **Avoid inline functions**: Don't create functions in render methods
+- **Key prop**: Always provide stable `key` prop for list items
+
+### Expo-Specific Optimizations
+- **Dev vs Prod**: Disable debugging tools in production builds
+- **Hermes engine**: Enabled by default in Expo for better JS performance
+- **Offline caching**: Use `expo-updates` for OTA updates
+- **Bundle size**: Monitor with `expo build` analytics
+
+### Code-Level Optimizations
+```typescript
+// GOOD - Memoized component
+const MemoizedComponent = React.memo(PracticeItem);
+
+// GOOD - useCallback for event handlers
+const handlePress = useCallback(() => {
+  navigation.navigate('details');
+}, [navigation]);
+
+// GOOD - FlatList for long lists
+<FlatList
+  data={practices}
+  renderItem={({ item }) => <PracticeItem item={item} />}
+  keyExtractor={(item) => item.id}
+/>
+
+// BAD - ScrollView with mapped children (performance issue)
+<ScrollView>
+  {practices.map(practice => <PracticeItem key={practice.id} practice={practice} />)}
+</ScrollView>
+```
+
+### Ballistics Calculation
+- Heavy computations in `utils/Ballistics.ts` should be memoized
+- Consider using `react-native-worklets` for complex calculations
+- Avoid recalculating on every render
+
+---
+
+## Accessibility Guidelines
+
+### Screen Reader Support
+- Use `accessible={true}` on touchable elements
+- Provide `accessibilityLabel` for icons and images
+- Use `accessibilityHint` to describe actions
+- Ensure proper heading hierarchy (h1, h2, h3)
+
+### Touch Targets
+- Minimum touch target size: 44x44 points (iOS) / 48x48 dp (Android)
+- Provide sufficient spacing between interactive elements
+- Ensure all interactive elements are focusable
+
+### Color Contrast
+- Maintain minimum contrast ratio of 4.5:1 for normal text
+- Use color schemes that work in both light and dark modes
+- Never rely solely on color to convey information
+
+### Implementation Examples
+```typescript
+// GOOD - Accessible button
+<Button
+  accessible={true}
+  accessibilityLabel="Legg til økt"
+  accessibilityHint="Dobbeltrykk for å legge til en ny treningsøkt"
+  onPress={handleAddPractice}
+/>
+
+// GOOD - Accessible icon
+<Icon
+  accessible={true}
+  accessibilityLabel="Innstillinger"
+  name="cog"
+/>
+
+// BAD - Missing accessibility props
+<TouchableOpacity onPress={handlePress}>
+  <Icon name="add" />
+</TouchableOpacity>
+```
+
+---
+
+## Internationalization (i18n)
+
+### Language Support
+- **Primary language**: Norwegian (no)
+- **Secondary language**: English (en)
+- **Translation files**: `lib/i18n/translations/no.ts` and `lib/i18n/translations/en.ts`
+
+### Usage
+```typescript
+// Import translations
+import { useTranslation } from '@/lib/i18n';
+
+// In component
+const { t } = useTranslation();
+
+// Use in JSX
+<Text>{t.practice.saveButton}</Text>
+```
+
+### Adding New Translations
+1. Add new key to `TranslationKeys` interface in `lib/i18n/translations.ts`
+2. Add Norwegian translation in `no.ts`
+3. Add English translation in `en.ts`
+4. Verify TypeScript compilation succeeds
+
+### Best Practices
+- Always use translation keys, never hardcode UI text
+- Keep translations in sync between languages
+- Use descriptive keys that indicate context
+- Test UI in both languages
+
+---
+
+## Expo Router Best Practices
+
+### File-based Routing
+- Screens are automatically created based on files in `app/` directory
+- Folder structure determines URL structure
+- Use `(group)` folders for organization (not in URL)
+- Use `__tests__` folders for screen tests
+
+### Navigation Patterns
+```typescript
+// GOOD - Linking to screens
+import { Link } from 'expo-router';
+
+<Link href="/practice/details">View Details</Link>
+
+// GOOD - Programmatic navigation
+import { router } from 'expo-router';
+
+router.push('/practice/details');
+router.back();
+router.replace('/home');
+
+// GOOD - Passing parameters
+<Link href={{ 
+  pathname: '/practice/[id]',
+  params: { id: '123' }
+}}>
+  View Practice
+</Link>
+```
+
+### Dynamic Routes
+- Use `[param]` syntax for dynamic segments
+- Access params via `useLocalSearchParams` hook
+- Validate params before using them
+
+### Authentication Guarding
+- Route guarding is layout-based, not middleware
+- `app/index.tsx` redirects based on auth state
+- `app/(tabs)/_layout.tsx` redirects to `/auth` when unauthenticated
+
+---
 
 ## Key Files & Their Purpose
 
@@ -405,6 +634,60 @@ offlineMutation(async () => {
 4. **Skipping tests** - Always write tests first (TDD)
 5. **Direct pushes to protected branches** - Always use PRs
 6. **Forgetting offline support** - Most mutations should use `offlineMutation()`
+7. **Not using FlatList** - Use FlatList for long lists, not ScrollView with mapped children
+8. **Inline styles** - Always use StyleSheet.create in separate files
+9. **No key prop** - Always provide stable keys for list items
+10. **Sensitive data in AsyncStorage** - Use SecureStore for tokens and sensitive data
+
+---
+
+## Code Review Checklist
+
+Before submitting a PR, verify:
+
+### Security
+- [ ] No hardcoded secrets or API keys
+- [ ] Uses `authFetchClient` for API calls
+- [ ] Sensitive data uses SecureStore
+- [ ] No sensitive data in logs or error messages
+
+### Code Quality
+- [ ] Follows existing code style and conventions
+- [ ] TypeScript types are properly defined
+- [ ] No `any` types used
+- [ ] Colors imported from `styles/colors.ts`
+- [ ] Styles in separate `*Styles.ts` files
+- [ ] Proper error handling with `AppError`
+
+### Testing
+- [ ] All new code has corresponding tests
+- [ ] Tests follow TDD principles
+- [ ] Mocking at boundaries only
+- [ ] All tests pass (`npm test`)
+
+### Performance
+- [ ] Uses FlatList for long lists
+- [ ] No inline functions in render methods
+- [ ] Proper memoization where needed
+- [ ] No unnecessary re-renders
+
+### Offline Support
+- [ ] Mutations use `offlineMutation()` where applicable
+- [ ] Offline handlers registered in `handlers.ts`
+- [ ] Proper error handling for network failures
+
+### Documentation
+- [ ] New domain terms added to glossary
+- [ ] Complex logic has comments
+- [ ] Breaking changes documented in PR description
+
+### Git
+- [ ] Follows conventional commit messages
+- [ ] Branch name follows convention (feat/fix/refactor/)
+- [ ] PR title is clear and descriptive
+- [ ] PR description explains the *why*
+
+---
 
 ## Resources
 
@@ -422,3 +705,5 @@ offlineMutation(async () => {
 ---
 
 *Generated for Mistral Vibe - Project Context Document*
+*Last Updated: 2026-09-21*
+*Enhanced with Security, Performance, Accessibility, i18n, and Expo Router best practices*

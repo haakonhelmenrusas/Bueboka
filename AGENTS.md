@@ -14,7 +14,6 @@ This file provides instructions for AI agents (Mistral Vibe, Claude Code, etc.) 
 
 ### 1. Always Reference Project Documentation
 - Read `VIBE.md` for complete project context
-- Read `CLAUDE.md` for development workflow and conventions
 - Check `docs/skills/` for specific workflow guides
 
 ### 2. Follow Existing Patterns
@@ -190,7 +189,7 @@ describe('repository', () => {
 ## When in Doubt
 
 1. Check existing similar code in the codebase
-2. Read `VIBE.md` and `CLAUDE.md`
+2. Read `VIBE.md`
 3. Follow the patterns established in existing files
 4. Ask for clarification if the requirement is ambiguous
 
