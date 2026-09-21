@@ -18,9 +18,11 @@ This file provides project-specific context to Mistral Vibe when working with th
 12. [Code Quality](#code-quality)
 13. [Common Commands](#common-commands)
 14. [Important Patterns](#important-patterns)
-15. [Code Review Checklist](#code-review-checklist)
-16. [Common Pitfalls](#common-pitfalls)
-17. [Resources](#resources)
+15. [Common Pitfalls](#common-pitfalls)
+16. [Quick Reference: Do Not](#quick-reference-do-not)
+17. [Quick Reference: Always](#quick-reference-always)
+18. [Code Review Checklist](#code-review-checklist)
+19. [Resources](#resources)
 
 ---
 
@@ -147,21 +149,30 @@ bueboka-app/
 
 ### Domain Glossary (Ubiquitous Language)
 
-| Norwegian (UI) | English (Code) | Type/Entity |
-|---------------|----------------|-------------|
-| Økt / Trening | practice | Practice |
-| Konkurranse | competition | Competition |
-| Bue | bow | Bow |
-| Pil / Pilsett | arrow / arrowSet | ArrowSet |
-| Siktmerke | sightMark | SightMark |
-| Skytter | archer / user | User / PublicProfile |
-| Avstand | distance | number (metres) |
-| Målskive | target | string (face type) |
-| Poeng | score / points | number |
-| Bane | range / lane | string |
-| Merke | mark | MarkValue |
-| Rundetype | roundType | RoundType |
-| Bueskyting | archery | - |
+| Norwegian (UI) | English (Code) | Type/Entity | Notes |
+|---------------|----------------|-------------|-------|
+| Økt / Trening | practice | Practice | Training session |
+| Konkurranse | competition | Competition | |
+| Bue | bow | Bow | Bow equipment |
+| Pil | arrow | Arrow | Single arrow |
+| Pilsett | arrowSet | ArrowSet | Set of arrows |
+| Siktmerke | sightMark | SightMark | Sight mark |
+| Skytter | archer / user | User / PublicProfile | Archer |
+| Avstand | distance | number (metres) | In metres |
+| Målskive | target | string | Target face |
+| Poeng | score / points | number | Points |
+| Merke | mark | MarkValue | Mark value |
+| Bane | range / lane | string | Shooting range |
+| Rundetype | roundType | RoundType | |
+| Bueskyting | archery | - | |
+
+### Core Entities
+- **Practice**: Training session with scores, distance, weather
+- **Bow**: Bow equipment with specifications
+- **ArrowSet**: Set of arrows
+- **SightMark**: Sight mark configuration
+- **Competition**: Competition tracking
+- **Achievement**: User achievements
 
 ---
 
@@ -638,6 +649,30 @@ offlineMutation(async () => {
 8. **Inline styles** - Always use StyleSheet.create in separate files
 9. **No key prop** - Always provide stable keys for list items
 10. **Sensitive data in AsyncStorage** - Use SecureStore for tokens and sensitive data
+
+---
+
+## Quick Reference: Do Not
+
+- ❌ Use deprecated axios client
+- ❌ Hardcode colors
+- ❌ Mix Norwegian/English in code
+- ❌ Skip tests
+- ❌ Push directly to main/dev
+- ❌ Forget offline support for mutations
+- ❌ Create components without separate style files
+- ❌ Use `any` type in TypeScript
+
+## Quick Reference: Always
+
+- ✅ Use `authFetchClient`
+- ✅ Import colors from `styles/colors.ts`
+- ✅ Write tests first
+- ✅ Use `offlineMutation()` for mutations
+- ✅ Follow git workflow
+- ✅ Use English in code, Norwegian in UI
+- ✅ Create separate style files
+- ✅ Use proper TypeScript types
 
 ---
 
