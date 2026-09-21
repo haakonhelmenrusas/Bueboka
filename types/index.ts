@@ -1,4 +1,3 @@
-export type { MarkSet } from './MarkSet';
 export type { MarkValue } from './MarkValue';
 export type { Bow } from './Bow';
 export { BowType } from './Bow';
