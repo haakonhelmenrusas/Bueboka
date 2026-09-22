@@ -2,9 +2,6 @@ import { AxiosError } from 'axios';
 import * as Sentry from '@sentry/react-native';
 import { ApiError } from './types';
 
-/**
- * Custom application error class
- */
 export class AppError extends Error {
   constructor(
     public code: string,
@@ -16,9 +13,6 @@ export class AppError extends Error {
   }
 }
 
-/**
- * Handle and transform API errors into AppError instances
- */
 export function handleApiError(error: unknown): AppError {
   // Handle errors from authFetch (better-auth) that have a response property
   const hasResponse = error && typeof error === 'object' && 'response' in error;
