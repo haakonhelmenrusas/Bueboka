@@ -3,6 +3,7 @@ import { authFetchClient as client } from '@/services/api/authFetch';
 import { Platform } from 'react-native';
 import { User } from '@/types';
 
+/** Convert file URI to base64 data URI for upload */
 async function fileToBase64DataUri(uri: string): Promise<string> {
   if (Platform.OS === 'web') {
     const response = await fetch(uri);
@@ -25,6 +26,7 @@ async function fileToBase64DataUri(uri: string): Promise<string> {
   return `data:image/jpeg;base64,${btoa(binary)}`;
 }
 
+/** Upload user avatar image */
 export async function uploadAvatar(imageUri: string): Promise<User> {
   const dataUri = await fileToBase64DataUri(imageUri);
   const response = await client.patch<User>('/users', { image: dataUri });

@@ -2,13 +2,7 @@ import { authFetchClient as client } from '@/services/api/authFetch';
 import { handleApiError } from '@/services/api/errors';
 import { PublicProfile } from '@/types';
 
-/**
- * Public profiles API service
- */
 export const publicProfilesApi = {
-  /**
-   * Search public profiles by name or club
-   */
   async search(query: string): Promise<PublicProfile[]> {
     try {
       const q = encodeURIComponent(query.trim());
@@ -20,10 +14,6 @@ export const publicProfilesApi = {
     }
   },
 
-  /**
-   * Get detailed public profile by ID
-   * GET /api/public/profiles/:id
-   */
   async getById(id: string): Promise<PublicProfile> {
     try {
       const response = await client.get<{ profile: PublicProfile }>(`/public/profiles/${id}`);

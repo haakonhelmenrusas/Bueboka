@@ -2,9 +2,6 @@ import { authClient } from '@/services/auth/authClient';
 import * as Sentry from '@sentry/react-native';
 import { API_BASE_URL } from './constants';
 
-/**
- * Authenticated fetch wrapper using better-auth client
- */
 export async function authFetch<T = any>(endpoint: string, options: RequestInit = {}): Promise<{ data: T }> {
   const url = endpoint.startsWith('http') ? endpoint : `${API_BASE_URL}${endpoint}`;
 
@@ -38,9 +35,6 @@ export async function authFetch<T = any>(endpoint: string, options: RequestInit 
   }
 }
 
-/**
- * Build request body and headers based on data type
- */
 function buildBody(data: any): { body: any; headers: Record<string, string> } {
   if (data instanceof FormData) {
     return { body: data, headers: {} };
@@ -51,9 +45,6 @@ function buildBody(data: any): { body: any; headers: Record<string, string> } {
   };
 }
 
-/**
- * Convenience methods matching axios API
- */
 export const authFetchClient = {
   async get<T = any>(url: string, config?: RequestInit): Promise<{ data: T }> {
     return authFetch<T>(url, { ...config, method: 'GET' });

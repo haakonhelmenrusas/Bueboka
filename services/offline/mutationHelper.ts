@@ -2,9 +2,6 @@ import { AppError } from '@/services/api/errors';
 import { syncManager } from '@/services/offline/syncManager';
 import * as Sentry from '@sentry/react-native';
 
-/**
- * Mutation helper that enqueues operations when offline or on network failure
- */
 export async function offlineMutation<T>(
   operation: {
     type: string;
@@ -29,9 +26,6 @@ export async function offlineMutation<T>(
   }
 }
 
-/**
- * Check if currently offline
- */
 export async function isOffline(): Promise<boolean> {
   const NetInfo = await import('@react-native-community/netinfo');
   const state = await NetInfo.default.fetch();

@@ -1,9 +1,7 @@
 import * as SecureStore from 'expo-secure-store';
 
-/**
- * Synchronous in-memory storage adapter for @better-auth/expo.
- * Uses chunked SecureStore persistence to handle size limits.
- */
+// Synchronous in-memory storage adapter for @better-auth/expo.
+// Uses chunked SecureStore persistence to handle size limits.
 
 const CHUNK_SIZE = 1800;
 const META_SUFFIX = '__meta';
@@ -61,12 +59,9 @@ async function _clearChunks(key: string): Promise<void> {
   }
 }
 
-// ─── Plain-object adapter (no class / prototype chain) ───────────────────────
+// Plain-object adapter (no class / prototype chain)
 
 export const authStorage = {
-  /**
-   * Pre-load known keys from SecureStore into cache
-   */
   async initialize(): Promise<void> {
     const values = await Promise.all(KNOWN_KEYS.map(_read));
     KNOWN_KEYS.forEach((key, i) => {
