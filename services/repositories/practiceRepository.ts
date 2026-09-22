@@ -79,9 +79,6 @@ export const practiceRepository = {
     }
   },
 
-  /**
-   * Get all practices for the current user with optional pagination and filters
-   */
   async getAll(params?: PracticeQueryParams): Promise<PracticeListResponse> {
     try {
       const queryParams = new URLSearchParams();
