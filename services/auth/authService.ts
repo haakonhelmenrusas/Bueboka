@@ -128,9 +128,6 @@ export const authService = {
     }
   },
 
-  /**
-   * Validate the current session
-   */
   async validateSession(): Promise<{ user: User } | null> {
     try {
       const response = await client.get<{ user: User; session?: unknown }>('/auth/get-session');
