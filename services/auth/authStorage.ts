@@ -74,9 +74,17 @@ export const authStorage = {
     return _cache.get(key) ?? null;
   },
 
+  getItemAsync(key: string): Promise<string | null> {
+    return Promise.resolve(this.getItem(key));
+  },
+
   setItem(key: string, value: string): void {
     _cache.set(key, value);
     _write(key, value).catch(() => {});
+  },
+
+  setItemAsync(key: string, value: string): Promise<void> {
+    return _write(key, value);
   },
 
   deleteItem(key: string): void {
