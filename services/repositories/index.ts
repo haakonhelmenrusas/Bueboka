@@ -7,3 +7,4 @@ export * from './competitionRepository';
 export * from './roundTypeRepository';
 export * from './sightMarksRepository';
 export * from './achievementRepository';
+export * from './challengeRepository';

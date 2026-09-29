@@ -24,3 +24,15 @@ export type {
   FilterCategory,
   FilterRarity,
 } from './Achievement';
+// Challenge types for 1v1 competitions
+export type {
+  Challenge,
+  ChallengeCustomRules,
+  ChallengeListItem,
+  ChallengeListResponse,
+  ChallengeStatistics,
+  CreateChallengeData,
+  UpdateChallengeData,
+  SubmitChallengeResultData,
+} from './Challenge';
+export { ChallengeStatus } from './Challenge';

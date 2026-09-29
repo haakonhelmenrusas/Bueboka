@@ -37,6 +37,10 @@ export function handleApiError(error: unknown): AppError {
       return new AppError('NOT_FOUND', 'Ressursen ble ikke funnet', error);
     }
 
+    if (statusCode === 403) {
+      return new AppError('FORBIDDEN', apiError?.message || 'Ingen tilgang. Du har ikke tillatelse til å utføre denne handlingen.', error);
+    }
+
     if (statusCode === 409) {
       return new AppError('CONFLICT', apiError?.message || 'Ressursen eksisterer allerede', error);
     }
