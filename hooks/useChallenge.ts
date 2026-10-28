@@ -11,8 +11,8 @@ import type {
   SubmitChallengeResultData,
 } from '@/types';
 import { ChallengeStatus } from '@/types';
-import { useTranslation, useNotifications } from '@/contexts';
-import { NotificationType } from '@/contexts/NotificationContext';
+import { useTranslation } from '@/contexts/LanguageContext';
+import { useNotifications, NotificationType } from '@/contexts/NotificationContext';
 
 /**
  * Parameters for fetching challenges

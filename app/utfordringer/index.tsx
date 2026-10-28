@@ -6,7 +6,7 @@ import { ChallengeList } from '@/components/challenges';
 import { useChallenge } from '@/hooks/useChallenge';
 import { usePendingChallenges } from '@/hooks/usePendingChallenges';
 import { ChallengeListItem, ChallengeStatus } from '@/types';
-import { styles } from './utfordringerStyles';
+import { styles } from './utfordringerStyles.styles';
 import { colors } from '@/styles/colors';
 import { useAuth } from '@/hooks';
 import { Button, Message, NotificationBadge } from '@/components/common';

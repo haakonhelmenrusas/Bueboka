@@ -4,7 +4,7 @@ import { useLocalSearchParams, useRouter } from 'expo-router';
 import { ChallengeDetail } from '@/components/challenges';
 import { useChallenge } from '@/hooks/useChallenge';
 import { useAuth } from '@/hooks';
-import { styles } from './detailStyles';
+import { styles } from './detailStyles.styles';
 import { colors } from '@/styles/colors';
 import { useTranslation } from '@/contexts';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';

@@ -5,7 +5,7 @@ import { useAuth } from '@/hooks';
 import { publicProfilesApi } from '@/services';
 import { useChallenge } from '@/hooks/useChallenge';
 import type { PublicProfile, CreateChallengeData } from '@/types';
-import { styles } from './nyStyles';
+import { styles } from './nyStyles.styles';
 import { colors } from '@/styles/colors';
 import { useTranslation } from '@/contexts';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
