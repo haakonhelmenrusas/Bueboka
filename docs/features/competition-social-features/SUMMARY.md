@@ -1,14 +1,17 @@
 # Competition Social Features - Executive Summary
 
 ## Overview
+
 This branch (`feat/competition-social-features`) contains planning documents for expanding competition capabilities in the Bueboka ecosystem (Mobile App, Website, and API).
 
 ## Three Feature Ideas
 
 ### 1. Head-to-Head Challenges (1v1 Duels)
+
 **Priority: HIGH** | **Effort: 2-3 weeks**
 
 Archers can directly challenge each other to competitions with:
+
 - Direct 1v1 matchups
 - Flexible round configurations
 - Accept/decline workflow
@@ -18,9 +21,11 @@ Archers can directly challenge each other to competitions with:
 **Norwegian**: Utfordringer (En-mot-en)
 
 ### 2. Virtual Leagues & Tournaments
+
 **Priority: MEDIUM-HIGH** | **Effort: 4-6 weeks**
 
 Organized multi-player competitions with:
+
 - Seasonal, ongoing, or tournament formats
 - Leaderboards and rankings
 - Multiple rounds with scheduling
@@ -30,9 +35,11 @@ Organized multi-player competitions with:
 **Norwegian**: Liger og turneringer
 
 ### 3. Shared Goals & Group Challenges
+
 **Priority: MEDIUM** | **Effort: 3-4 weeks**
 
 Team-based motivation system with:
+
 - Group formation (open, request, invite-only)
 - Shared goals (total arrows, avg score, streaks, etc.)
 - Collective or individual contribution models
@@ -63,6 +70,7 @@ Team-based motivation system with:
 ## Technical Foundations
 
 All features leverage existing Bueboka infrastructure:
+
 - User authentication system
 - Practice and competition data models
 - Public profile system

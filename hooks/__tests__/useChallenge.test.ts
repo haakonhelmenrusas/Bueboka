@@ -158,7 +158,7 @@ describe('useChallenge', () => {
 
     it('sets loading state correctly', async () => {
       mockChallengeRepository.getAll.mockImplementation(
-        () => new Promise((resolve) => setTimeout(() => resolve({ challenges: [], page: 1, pageSize: 20, total: 0 }), 100))
+        () => new Promise((resolve) => setTimeout(() => resolve({ challenges: [], page: 1, pageSize: 20, total: 0 }), 100)),
       );
 
       const { result } = renderHook(() => useChallenge());
@@ -201,7 +201,9 @@ describe('useChallenge', () => {
 
       let error: Error | undefined;
       act(() => {
-        result.current.fetchChallengeById('non-existent').catch((e) => { error = e; });
+        result.current.fetchChallengeById('non-existent').catch((e) => {
+          error = e;
+        });
       });
 
       await waitFor(() => {
@@ -247,10 +249,14 @@ describe('useChallenge', () => {
 
       let error: Error | undefined;
       act(() => {
-        result.current.createChallenge({
-          challengedId: 'user-2',
-          name: 'New Challenge',
-        }).catch((e) => { error = e; });
+        result.current
+          .createChallenge({
+            challengedId: 'user-2',
+            name: 'New Challenge',
+          })
+          .catch((e) => {
+            error = e;
+          });
       });
 
       await waitFor(() => {

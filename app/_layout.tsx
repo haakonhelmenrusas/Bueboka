@@ -2,7 +2,7 @@ import { StatusBar } from 'expo-status-bar';
 import { Stack, useNavigationContainerRef } from 'expo-router';
 import * as Sentry from '@sentry/react-native';
 import React, { useEffect } from 'react';
-import { AuthProvider, LanguageProvider } from '@/contexts';
+import { AuthProvider, LanguageProvider, NotificationProvider } from '@/contexts';
 import { colors } from '@/styles/colors';
 
 let navigationIntegration: any = null;
@@ -45,6 +45,7 @@ function RootLayoutContent() {
         <Stack.Screen name="(tabs)" options={{ contentStyle: { backgroundColor: colors.primary }, gestureEnabled: false }} />
         <Stack.Screen name="skyttere" options={{ headerShown: false }} />
         <Stack.Screen name="achievements" options={{ headerShown: false }} />
+        <Stack.Screen name="utfordringer" options={{ headerShown: false }} />
       </Stack>
     </>
   );
@@ -54,7 +55,9 @@ function RootLayout() {
   return (
     <AuthProvider>
       <LanguageProvider>
-        <RootLayoutContent />
+        <NotificationProvider>
+          <RootLayoutContent />
+        </NotificationProvider>
       </LanguageProvider>
     </AuthProvider>
   );

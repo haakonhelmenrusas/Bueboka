@@ -72,8 +72,7 @@ function Probe() {
         testID="register"
         onPress={async () => {
           registerResult = await register('skytter@example.com', 'passord123', '');
-        }}
-      >
+        }}>
         register
       </Text>
     </>

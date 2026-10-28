@@ -95,9 +95,9 @@ describe('challengeRepository.getAll', () => {
       total: 1,
     };
     mockClient.get.mockResolvedValueOnce({ data: mockResponse });
-    
+
     const result = await challengeRepository.getAll({ page: 1, pageSize: 20 });
-    
+
     expect(result).toEqual(mockResponse);
     expect(mockClient.get).toHaveBeenCalledWith('/challenges?page=1&pageSize=20');
   });
@@ -110,9 +110,9 @@ describe('challengeRepository.getAll', () => {
       total: 1,
     };
     mockClient.get.mockResolvedValueOnce({ data: mockResponse });
-    
+
     const result = await challengeRepository.getAll();
-    
+
     expect(result).toEqual(mockResponse);
     expect(mockClient.get).toHaveBeenCalledWith('/challenges');
   });
@@ -125,9 +125,9 @@ describe('challengeRepository.getAll', () => {
       total: 1,
     };
     mockClient.get.mockResolvedValueOnce({ data: mockResponse });
-    
+
     await challengeRepository.getAll({ status: ChallengeStatus.PENDING });
-    
+
     expect(mockClient.get).toHaveBeenCalledWith('/challenges?status=PENDING');
   });
 
@@ -152,9 +152,9 @@ describe('challengeRepository.getById', () => {
 
   it('fetches a challenge by ID from /challenges/:id', async () => {
     mockClient.get.mockResolvedValueOnce({ data: fakeChallenge });
-    
+
     const result = await challengeRepository.getById('challenge-1');
-    
+
     expect(result).toEqual(fakeChallenge);
     expect(mockClient.get).toHaveBeenCalledWith('/challenges/challenge-1');
   });
@@ -197,7 +197,7 @@ describe('challengeRepository.create', () => {
 
   it('includes roundTypeId when provided', async () => {
     mockClient.post.mockResolvedValueOnce({ data: fakeChallenge });
-    
+
     const createData: CreateChallengeData = {
       challengedId: 'user-2',
       name: 'Round-based Challenge',
@@ -205,16 +205,13 @@ describe('challengeRepository.create', () => {
     };
 
     await challengeRepository.create(createData);
-    
-    expect(mockClient.post).toHaveBeenCalledWith(
-      '/challenges',
-      expect.objectContaining({ roundTypeId: 'round-1' }),
-    );
+
+    expect(mockClient.post).toHaveBeenCalledWith('/challenges', expect.objectContaining({ roundTypeId: 'round-1' }));
   });
 
   it('includes customRules when provided', async () => {
     mockClient.post.mockResolvedValueOnce({ data: fakeChallenge });
-    
+
     const createData: CreateChallengeData = {
       challengedId: 'user-2',
       name: 'Custom Challenge',
@@ -226,7 +223,7 @@ describe('challengeRepository.create', () => {
     };
 
     await challengeRepository.create(createData);
-    
+
     expect(mockClient.post).toHaveBeenCalledWith(
       '/challenges',
       expect.objectContaining({
@@ -241,10 +238,10 @@ describe('challengeRepository.create', () => {
 
   it('includes startDate and endDate when provided', async () => {
     mockClient.post.mockResolvedValueOnce({ data: fakeChallenge });
-    
+
     const startDate = new Date('2024-07-01');
     const endDate = new Date('2024-07-07');
-    
+
     const createData: CreateChallengeData = {
       challengedId: 'user-2',
       name: 'Timed Challenge',
@@ -253,7 +250,7 @@ describe('challengeRepository.create', () => {
     };
 
     await challengeRepository.create(createData);
-    
+
     expect(mockClient.post).toHaveBeenCalledWith(
       '/challenges',
       expect.objectContaining({
@@ -265,24 +262,24 @@ describe('challengeRepository.create', () => {
 
   it('throws AppError with BAD_REQUEST on 400', async () => {
     mockClient.post.mockRejectedValueOnce(makeAxiosError(400, { message: 'Challenged user not found' }));
-    
+
     const createData: CreateChallengeData = {
       challengedId: 'non-existent-user',
       name: 'Test',
     };
-    
+
     const caught = await challengeRepository.create(createData).catch((e) => e);
     expect(caught.code).toBe('BAD_REQUEST');
   });
 
   it('throws AppError on network failure', async () => {
     mockClient.post.mockRejectedValueOnce(new AxiosError('Network Error', 'ERR_NETWORK'));
-    
+
     const createData: CreateChallengeData = {
       challengedId: 'user-2',
       name: 'Test',
     };
-    
+
     await expect(challengeRepository.create(createData)).rejects.toBeInstanceOf(AppError);
   });
 });
@@ -417,11 +414,11 @@ describe('challengeRepository.submitResult', () => {
 
   it('throws AppError with BAD_REQUEST on 400 (invalid submission)', async () => {
     mockClient.post.mockRejectedValueOnce(makeAxiosError(400, { message: 'Challenge not accepted' }));
-    
+
     const submitData: SubmitChallengeResultData = {
       score: 300,
     };
-    
+
     const caught = await challengeRepository.submitResult('challenge-1', submitData).catch((e) => e);
     expect(caught.code).toBe('BAD_REQUEST');
   });

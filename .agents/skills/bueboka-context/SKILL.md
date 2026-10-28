@@ -24,11 +24,13 @@ This skill is **automatically active** when working in the `/Users/haakon/Prosje
 ## Project Quick Reference
 
 ### What is Bueboka?
+
 - **Purpose**: Archery tracking app for iOS, Android, and Web
 - **Users**: Archers who want to track practice sessions, manage equipment, and improve skills
 - **Domain**: Archery (bueskyting), practice sessions (økt/trening), equipment (bue, pilsett)
 
 ### Tech Stack
+
 ```
 Framework: React Native 0.85 + Expo SDK 56
 Language: TypeScript 6
@@ -42,6 +44,7 @@ Monitoring: Sentry + Microsoft Clarity
 ```
 
 ### Key Directories
+
 ```
 app/           # Screens & navigation (Expo Router)
 components/    # Reusable UI components
@@ -61,7 +64,9 @@ docs/          # Documentation & workflow guides
 ## Architecture Patterns
 
 ### Repository Pattern
+
 All data access goes through repositories. Each repository:
+
 1. Uses `authFetchClient` from `services/api/authFetch.ts`
 2. Wraps API calls with `handleApiError()`
 3. For mutations: wraps with `offlineMutation()` for offline support
@@ -75,32 +80,28 @@ import type { Practice } from '@/types/Practice';
 
 export const practiceRepository = {
   async getAll(): Promise<Practice[]> {
-    return offlineMutation(
-      async () => {
-        const response = await authFetchClient<Practice[]>('/practice');
-        return handleApiError(response);
-      },
-      'practice-getAll'
-    );
+    return offlineMutation(async () => {
+      const response = await authFetchClient<Practice[]>('/practice');
+      return handleApiError(response);
+    }, 'practice-getAll');
   },
-  
+
   async create(practice: Omit<Practice, 'id'>): Promise<Practice> {
-    return offlineMutation(
-      async () => {
-        const response = await authFetchClient<Practice>('/practice', {
-          method: 'POST',
-          body: JSON.stringify(practice),
-        });
-        return handleApiError(response);
-      },
-      'practice-create'
-    );
+    return offlineMutation(async () => {
+      const response = await authFetchClient<Practice>('/practice', {
+        method: 'POST',
+        body: JSON.stringify(practice),
+      });
+      return handleApiError(response);
+    }, 'practice-create');
   },
 };
 ```
 
 ### Component Organization
+
 Components are organized by feature:
+
 ```
 components/
 ├── common/           # Shared primitives (Button, Input, Modal, etc.)
@@ -114,12 +115,15 @@ components/
 ```
 
 Each component folder can have:
+
 - `ComponentName.tsx` - The component
 - `ComponentNameStyles.ts` - Styles (required for non-trivial components)
 - `__tests__/ComponentName.test.tsx` - Tests
 
 ### Navigation (Expo Router)
+
 File-based routing:
+
 ```
 app/
 ├── _layout.tsx          # Root layout (AuthProvider, Sentry)
@@ -138,16 +142,16 @@ app/
 
 ### Core Entities
 
-| Entity | Type | Description |
-|--------|------|-------------|
-| Practice | `Practice` | Practice session (økt/trening) with scores, distance, weather |
-| Bow | `Bow` | Bow equipment (bue) |
-| ArrowSet | `ArrowSet` | Set of arrows (pilsett) |
-| SightMark | `SightMark` | Sight mark configuration (siktmerke) |
-| Competition | `Competition` | Competition tracking (konkurranse) |
-| Achievement | `Achievement` | User achievements |
-| User | `User` | User profile |
-| PublicProfile | `PublicProfile` | Public archer profile (skytter) |
+| Entity        | Type            | Description                                                   |
+| ------------- | --------------- | ------------------------------------------------------------- |
+| Practice      | `Practice`      | Practice session (økt/trening) with scores, distance, weather |
+| Bow           | `Bow`           | Bow equipment (bue)                                           |
+| ArrowSet      | `ArrowSet`      | Set of arrows (pilsett)                                       |
+| SightMark     | `SightMark`     | Sight mark configuration (siktmerke)                          |
+| Competition   | `Competition`   | Competition tracking (konkurranse)                            |
+| Achievement   | `Achievement`   | User achievements                                             |
+| User          | `User`          | User profile                                                  |
+| PublicProfile | `PublicProfile` | Public archer profile (skytter)                               |
 
 ### Important Enums
 
@@ -186,22 +190,22 @@ enum BowType {
 
 ### Norwegian ↔ English Mapping
 
-| Norwegian (UI) | English (Code) | Notes |
-|---------------|----------------|-------|
-| Økt | practice | Session |
-| Trening | practice | Training session |
-| Konkurranse | competition | Competition |
-| Bue | bow | Bow |
-| Pil | arrow | Single arrow |
-| Pilsett | arrowSet | Set of arrows |
-| Siktmerke | sightMark | Sight mark |
-| Skytter | archer / user | Archer / user |
-| Avstand | distance | In metres |
-| Målskive | target | Target face |
-| Poeng | score / points | Points |
-| Merke | mark | Mark value |
-| Bane | range / lane | Shooting range |
-| Rundetype | roundType | Round type |
+| Norwegian (UI) | English (Code) | Notes            |
+| -------------- | -------------- | ---------------- |
+| Økt            | practice       | Session          |
+| Trening        | practice       | Training session |
+| Konkurranse    | competition    | Competition      |
+| Bue            | bow            | Bow              |
+| Pil            | arrow          | Single arrow     |
+| Pilsett        | arrowSet       | Set of arrows    |
+| Siktmerke      | sightMark      | Sight mark       |
+| Skytter        | archer / user  | Archer / user    |
+| Avstand        | distance       | In metres        |
+| Målskive       | target         | Target face      |
+| Poeng          | score / points | Points           |
+| Merke          | mark           | Mark value       |
+| Bane           | range / lane   | Shooting range   |
+| Rundetype      | roundType      | Round type       |
 
 ## Development Workflow
 
@@ -388,6 +392,7 @@ describe('practiceRepository', () => {
 ## Styling Conventions
 
 ### Colors
+
 **Never hardcode colors**. Always import from `styles/colors.ts`:
 
 ```typescript
@@ -413,6 +418,7 @@ const styles = StyleSheet.create({
 ```
 
 ### Color Palette
+
 ```typescript
 // styles/colors.ts
 primary: '#053546',      // Dark navy
@@ -429,6 +435,7 @@ warning: '#F39C12',      // Orange
 ```
 
 ### Component Styles
+
 - **Always** create a separate `*Styles.ts` file
 - **Never** define `StyleSheet.create()` in the same file as JSX
 - Export styles as named export
@@ -454,6 +461,7 @@ export const styles = StyleSheet.create({
 ## Git Workflow
 
 ### Branching
+
 1. Always branch from `dev`
 2. Use conventional commit type prefix
 3. Never push directly to `main` or `dev`
@@ -500,6 +508,7 @@ Co-Authored-By: Mistral Vibe <vibe@mistral.ai>
 ## Common Pitfalls & How to Avoid
 
 ### ❌ Using deprecated axios client
+
 ```typescript
 // BAD
 import { apiClient } from '@/services/api/client';
@@ -509,6 +518,7 @@ import { authFetchClient } from '@/services/api/authFetch';
 ```
 
 ### ❌ Hardcoding colors
+
 ```typescript
 // BAD
 <View style={{ backgroundColor: '#053546' }}>
@@ -519,6 +529,7 @@ import { colors } from '@/styles/colors';
 ```
 
 ### ❌ Mixing languages in code
+
 ```typescript
 // BAD - Norwegian in code
 const økt = await practiceRepository.getById(id);
@@ -528,16 +539,18 @@ const practice = await practiceRepository.getById(id);
 ```
 
 ### ❌ Skipping tests
+
 ```typescript
 // BAD - No test file
-services/repositories/newRepository.ts
+services / repositories / newRepository.ts;
 
 // GOOD - Test file exists
-services/repositories/__tests__/newRepository.test.ts
-services/repositories/newRepository.ts
+services / repositories / __tests__ / newRepository.test.ts;
+services / repositories / newRepository.ts;
 ```
 
 ### ❌ Direct pushes to protected branches
+
 ```bash
 # BAD
 git commit -m "fix: bug"
@@ -550,6 +563,7 @@ gh pr create --base dev
 ```
 
 ### ❌ Forgetting offline support
+
 ```typescript
 // BAD - No offline support
 async createPractice(practice: Practice) {
@@ -574,6 +588,7 @@ async createPractice(practice: Practice) {
 ## Important Files Reference
 
 ### Configuration
+
 - `app.json` - Expo configuration, version, splash screen
 - `eas.json` - EAS build configuration
 - `.env.example` - Environment variables template
@@ -584,11 +599,13 @@ async createPractice(practice: Practice) {
 - `jest.config.js` - Jest configuration
 
 ### Entry Points
+
 - `index.js` - Expo entry point
 - `app/_layout.tsx` - Root layout with providers
 - `app/index.tsx` - App entry redirect
 
 ### Core Services
+
 - `services/api/authFetch.ts` - Primary HTTP client
 - `services/offline/syncManager.ts` - Offline sync logic
 - `services/repositories/index.ts` - All repositories export
@@ -598,6 +615,7 @@ async createPractice(practice: Practice) {
 ## Useful Commands
 
 ### Development
+
 ```bash
 npm start              # Start Expo dev server
 npm run ios           # iOS simulator
@@ -606,6 +624,7 @@ npm run web           # Browser
 ```
 
 ### Testing
+
 ```bash
 npm test                  # All tests (CI mode)
 npm run test:watch        # Watch mode
@@ -613,6 +632,7 @@ npx jest path/to/test     # Specific test
 ```
 
 ### Code Quality
+
 ```bash
 npm run lint              # Lint
 npm run format            # Format
@@ -620,6 +640,7 @@ npm run format:check      # Check formatting
 ```
 
 ### Build & Deploy
+
 ```bash
 eas build --profile preview --platform ios    # Preview build
 eas build --profile production --platform ios # Production build
@@ -628,6 +649,7 @@ eas env:create EXPO_PUBLIC_API_URL ...      # Create environment variable
 ```
 
 ### Git
+
 ```bash
 git status
  git checkout -b feat/feature-name
@@ -652,6 +674,7 @@ try {
 ```
 
 The `AppError` type contains:
+
 - `code`: Error code (NETWORK_ERROR, VALIDATION_ERROR, etc.)
 - `message`: User-facing message in Norwegian
 - `details`: Optional additional details
@@ -665,7 +688,7 @@ import { useTranslation } from '@/lib/i18n';
 
 function MyComponent() {
   const { t, locale, setLanguage } = useTranslation();
-  
+
   return (
     <Text>{t('common.save')}</Text>
   );
@@ -673,18 +696,21 @@ function MyComponent() {
 ```
 
 Translations are in `lib/i18n/translations/`:
+
 - `no.ts` - Norwegian translations
 - `en.ts` - English translations
 
 ## Monitoring & Analytics
 
 ### Sentry
+
 - Crash reporting and breadcrumbs
 - Initialized in `app/_layout.tsx`
 - Disabled in development
 - Configuration in `app.json`
 
 ### Microsoft Clarity
+
 - Session recording
 - Lazy-initialized after Sentry
 - Configuration via `EXPO_PUBLIC_CLARITY_KEY`
@@ -692,6 +718,7 @@ Translations are in `lib/i18n/translations/`:
 ## Resources
 
 ### Documentation
+
 - `README.md` - Project overview and setup
 - `VIBE.md` - Vibe context (project context and best practices)
 - `docs/BUILD_ENVIRONMENT.md` - EAS build configuration
@@ -700,6 +727,7 @@ Translations are in `lib/i18n/translations/`:
 - `docs/skills/git-branching.md` - Git branching model
 
 ### Related Projects
+
 - **Backend API**: Separate repository (API endpoint configured in `.env`)
 - **Web Version**: [github.com/Aaronshades/bueboka-web](https://github.com/Aaronshades/bueboka-web)
 - **Website**: [rusasdesign.no](https://rusasdesign.no)
@@ -707,30 +735,39 @@ Translations are in `lib/i18n/translations/`:
 ## Quick Answers to Common Questions
 
 ### Q: Where do I add a new screen?
+
 A: In `app/` directory. Expo Router uses file-based routing. Add your `.tsx` file and it will be automatically routable.
 
 ### Q: How do I access auth state?
+
 A: Use the `useAuth` hook from `hooks/useAuth` or access `AuthContext` directly.
 
 ### Q: How do I make an API call?
+
 A: Use `authFetchClient` from `services/api/authFetch.ts` for authenticated requests.
 
 ### Q: How do I handle offline?
+
 A: Wrap mutations with `offlineMutation()` from `services/offline/mutationHelper`.
 
 ### Q: Where are the colors defined?
+
 A: In `styles/colors.ts`. Never hardcode colors.
 
 ### Q: How do I add a new domain type?
+
 A: Add it to `types/`, export from `types/index.ts`, and add to domain glossary.
 
 ### Q: What's the git workflow?
+
 A: Branch from `dev`, PR to `dev`, then PR `dev` to `main`. Never push directly to protected branches.
 
 ### Q: How do I test a repository?
+
 A: Mock `authFetchClient`, call the repository method, assert the result.
 
 ### Q: What's the Norwegian word for X?
+
 A: Check the domain glossary in `docs/skills/domain-discovery.md` or `VIBE.md`.
 
 ## Summary

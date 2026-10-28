@@ -5,11 +5,11 @@ import type { RoundType } from './Practice';
  * Challenge status enum
  */
 export enum ChallengeStatus {
-  PENDING = 'PENDING',      // Waiting for response
-  ACCEPTED = 'ACCEPTED',    // Both users accepted
-  DECLINED = 'DECLINED',    // Declined by challenged user
-  COMPLETED = 'COMPLETED',  // Both users submitted scores
-  CANCELLED = 'CANCELLED',  // Cancelled by challenger
+  PENDING = 'PENDING', // Waiting for response
+  ACCEPTED = 'ACCEPTED', // Both users accepted
+  DECLINED = 'DECLINED', // Declined by challenged user
+  COMPLETED = 'COMPLETED', // Both users submitted scores
+  CANCELLED = 'CANCELLED', // Cancelled by challenger
 }
 
 /**

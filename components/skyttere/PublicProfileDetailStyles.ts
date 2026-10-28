@@ -141,4 +141,8 @@ export const styles = StyleSheet.create({
     color: hexToRgba(colors.primary, 0.6),
     textAlign: 'center',
   },
+  challengeButton: {
+    marginVertical: 16,
+    width: '100%',
+  },
 });

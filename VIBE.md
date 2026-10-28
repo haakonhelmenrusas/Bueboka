@@ -36,6 +36,7 @@ This file provides project-specific context to Mistral Vibe when working with th
 - **Repository**: [github.com/Aaronshades/Bueboka-app](https://github.com/Aaronshades/Bueboka-app)
 
 ### Core Features
+
 - Practice session tracking with scores, distances, and weather conditions
 - Equipment management for bows and arrow sets
 - Offline support with automatic sync via `syncManager`
@@ -76,6 +77,7 @@ npm run format
 ## Architecture
 
 ### Tech Stack
+
 - **Framework**: React Native 0.86, Expo SDK 57
 - **Language**: TypeScript 6
 - **Navigation**: Expo Router (file-based)
@@ -149,24 +151,25 @@ bueboka-app/
 
 ### Domain Glossary (Ubiquitous Language)
 
-| Norwegian (UI) | English (Code) | Type/Entity | Notes |
-|---------------|----------------|-------------|-------|
-| Økt / Trening | practice | Practice | Training session |
-| Konkurranse | competition | Competition | |
-| Bue | bow | Bow | Bow equipment |
-| Pil | arrow | Arrow | Single arrow |
-| Pilsett | arrowSet | ArrowSet | Set of arrows |
-| Siktmerke | sightMark | SightMark | Sight mark |
-| Skytter | archer / user | User / PublicProfile | Archer |
-| Avstand | distance | number (metres) | In metres |
-| Målskive | target | string | Target face |
-| Poeng | score / points | number | Points |
-| Merke | mark | MarkValue | Mark value |
-| Bane | range / lane | string | Shooting range |
-| Rundetype | roundType | RoundType | |
-| Bueskyting | archery | - | |
+| Norwegian (UI) | English (Code) | Type/Entity          | Notes            |
+| -------------- | -------------- | -------------------- | ---------------- |
+| Økt / Trening  | practice       | Practice             | Training session |
+| Konkurranse    | competition    | Competition          |                  |
+| Bue            | bow            | Bow                  | Bow equipment    |
+| Pil            | arrow          | Arrow                | Single arrow     |
+| Pilsett        | arrowSet       | ArrowSet             | Set of arrows    |
+| Siktmerke      | sightMark      | SightMark            | Sight mark       |
+| Skytter        | archer / user  | User / PublicProfile | Archer           |
+| Avstand        | distance       | number (metres)      | In metres        |
+| Målskive       | target         | string               | Target face      |
+| Poeng          | score / points | number               | Points           |
+| Merke          | mark           | MarkValue            | Mark value       |
+| Bane           | range / lane   | string               | Shooting range   |
+| Rundetype      | roundType      | RoundType            |                  |
+| Bueskyting     | archery        | -                    |                  |
 
 ### Core Entities
+
 - **Practice**: Training session with scores, distance, weather
 - **Bow**: Bow equipment with specifications
 - **ArrowSet**: Set of arrows
@@ -179,6 +182,7 @@ bueboka-app/
 ## Security Best Practices
 
 ### Authentication & Authorization
+
 - **Always use `authFetchClient`** from `services/api/authFetch.ts` for API calls
 - **Never use deprecated axios client** in `services/api/client.ts`
 - **Token storage**: Use `expo-secure-store` for sensitive data (auth tokens)
@@ -186,12 +190,14 @@ bueboka-app/
 - **OAuth flows**: Use better-auth with expo-client plugin for Google/Apple auth
 
 ### Data Protection
+
 - **Sensitive data**: Always encrypt in SecureStore, never in plain text
 - **API endpoints**: Use HTTPS only, never HTTP
 - **Input validation**: Validate all user inputs on both client and server
 - **Error handling**: Never expose sensitive error details to users
 
 ### Secure Coding Standards
+
 - **No hardcoded secrets**: API keys, tokens, passwords must use environment variables
 - **Environment variables**: Use `EXPO_PUBLIC_` prefix for client-side variables
 - **Sentry**: Only enabled in non-development environments
@@ -199,6 +205,7 @@ bueboka-app/
 - **CORS**: Backend must have proper CORS configuration
 
 ### Implementation Guidelines
+
 ```typescript
 // GOOD - Secure token handling
 import * as SecureStore from 'expo-secure-store';
@@ -220,6 +227,7 @@ fetch('/api/practice', { headers: { Authorization: `Bearer ${token}` } });
 ## Performance Optimization
 
 ### React Native Performance
+
 - **Memoization**: Use `React.memo` for pure components, `useMemo`/`useCallback` for expensive calculations
 - **FlatList**: Always use `FlatList` or `SectionList` for long lists (not `ScrollView` with mapped children)
 - **Images**: Use `expo-image` with proper sizing and caching
@@ -227,12 +235,14 @@ fetch('/api/practice', { headers: { Authorization: `Bearer ${token}` } });
 - **Key prop**: Always provide stable `key` prop for list items
 
 ### Expo-Specific Optimizations
+
 - **Dev vs Prod**: Disable debugging tools in production builds
 - **Hermes engine**: Enabled by default in Expo for better JS performance
 - **Offline caching**: Use `expo-updates` for OTA updates
 - **Bundle size**: Monitor with `expo build` analytics
 
 ### Code-Level Optimizations
+
 ```typescript
 // GOOD - Memoized component
 const MemoizedComponent = React.memo(PracticeItem);
@@ -256,6 +266,7 @@ const handlePress = useCallback(() => {
 ```
 
 ### Ballistics Calculation
+
 - Heavy computations in `utils/Ballistics.ts` should be memoized
 - Consider using `react-native-worklets` for complex calculations
 - Avoid recalculating on every render
@@ -265,22 +276,26 @@ const handlePress = useCallback(() => {
 ## Accessibility Guidelines
 
 ### Screen Reader Support
+
 - Use `accessible={true}` on touchable elements
 - Provide `accessibilityLabel` for icons and images
 - Use `accessibilityHint` to describe actions
 - Ensure proper heading hierarchy (h1, h2, h3)
 
 ### Touch Targets
+
 - Minimum touch target size: 44x44 points (iOS) / 48x48 dp (Android)
 - Provide sufficient spacing between interactive elements
 - Ensure all interactive elements are focusable
 
 ### Color Contrast
+
 - Maintain minimum contrast ratio of 4.5:1 for normal text
 - Use color schemes that work in both light and dark modes
 - Never rely solely on color to convey information
 
 ### Implementation Examples
+
 ```typescript
 // GOOD - Accessible button
 <Button
@@ -308,11 +323,13 @@ const handlePress = useCallback(() => {
 ## Internationalization (i18n)
 
 ### Language Support
+
 - **Primary language**: Norwegian (no)
 - **Secondary language**: English (en)
 - **Translation files**: `lib/i18n/translations/no.ts` and `lib/i18n/translations/en.ts`
 
 ### Usage
+
 ```typescript
 // Import translations
 import { useTranslation } from '@/lib/i18n';
@@ -325,12 +342,14 @@ const { t } = useTranslation();
 ```
 
 ### Adding New Translations
+
 1. Add new key to `TranslationKeys` interface in `lib/i18n/translations.ts`
 2. Add Norwegian translation in `no.ts`
 3. Add English translation in `en.ts`
 4. Verify TypeScript compilation succeeds
 
 ### Best Practices
+
 - Always use translation keys, never hardcode UI text
 - Keep translations in sync between languages
 - Use descriptive keys that indicate context
@@ -341,12 +360,14 @@ const { t } = useTranslation();
 ## Expo Router Best Practices
 
 ### File-based Routing
+
 - Screens are automatically created based on files in `app/` directory
 - Folder structure determines URL structure
 - Use `(group)` folders for organization (not in URL)
 - Use `__tests__` folders for screen tests
 
 ### Navigation Patterns
+
 ```typescript
 // GOOD - Linking to screens
 import { Link } from 'expo-router';
@@ -361,7 +382,7 @@ router.back();
 router.replace('/home');
 
 // GOOD - Passing parameters
-<Link href={{ 
+<Link href={{
   pathname: '/practice/[id]',
   params: { id: '123' }
 }}>
@@ -370,11 +391,13 @@ router.replace('/home');
 ```
 
 ### Dynamic Routes
+
 - Use `[param]` syntax for dynamic segments
 - Access params via `useLocalSearchParams` hook
 - Validate params before using them
 
 ### Authentication Guarding
+
 - Route guarding is layout-based, not middleware
 - `app/index.tsx` redirects based on auth state
 - `app/(tabs)/_layout.tsx` redirects to `/auth` when unauthenticated
@@ -384,6 +407,7 @@ router.replace('/home');
 ## Key Files & Their Purpose
 
 ### Navigation (`app/`)
+
 - **`app/_layout.tsx`**: Root layout wrapper. Initializes Sentry, wraps in AuthProvider, sets up tab navigation
 - **`app/index.tsx`**: Entry point, redirects based on auth state
 - **`app/auth.tsx`**: Login/registration screen
@@ -397,10 +421,12 @@ router.replace('/home');
 - **`app/skyttere/`**: Public archer profiles directory
 
 ### State Management (`contexts/`)
+
 - **`AuthContext.tsx`**: Manages authentication state, tokens in SecureStore, OAuth flows
 - **`LanguageContext.tsx`**: i18n context with translations for Norwegian (no) and English (en)
 
 ### Data Layer (`services/`)
+
 - **`services/api/authFetch.ts`**: **Primary HTTP client**. Uses better-auth `$fetch` with SecureStore credentials
 - **`services/api/client.ts`**: Legacy axios client (deprecated, don't use for new code)
 - **`services/repositories/`**: 9 repositories each wrapping API calls with error handling:
@@ -412,26 +438,31 @@ router.replace('/home');
   - achievementRepository.ts
   - competitionRepository.ts
   - roundTypeRepository.ts
-  (public profiles and stats are not repositories: see services/api/publicProfilesApi.ts and statsApi.ts)
-- **`services/offline/`**: 
+    (public profiles and stats are not repositories: see services/api/publicProfilesApi.ts and statsApi.ts)
+- **`services/offline/`**:
   - `mutationHelper.ts`: `offlineMutation()` wraps repository calls, queues on NETWORK_ERROR
   - `syncManager.ts`: Drains queue when connectivity returns, keyed `offline_queue:{userId}` in AsyncStorage
   - Offline handlers registered via `registerOfflineHandlers()` in AuthContext
 
 ### Components (`components/`)
+
 Organized by feature. Common primitives in `components/common/`:
+
 - Button, Input, Select, Textarea, Checkbox, Toggle, ModalWrapper, Message, Badge, DataValue, DatePicker, FloatingTabBar, OfflineBanner, etc.
 
 ## Development Workflow
 
 ### Before Coding: Domain Discovery
+
 1. **Always** run through `docs/skills/domain-discovery.md` checklist
 2. Clarify: user goal, archery concepts, Norwegian terms, existing types
 3. Define: acceptance criteria, data touched, repositories involved, offline support
 4. Plan: architecture fit (screen, component, repository, navigation)
 
 ### TDD + DDD Cycle
+
 Follow `docs/skills/tdd-ddd.md`:
+
 1. **DISCOVER**: Ask questions, agree on behavior
 2. **MODEL**: Identify/extend domain types in `types/`
 3. **TEST (RED)**: Write failing tests for repository
@@ -444,6 +475,7 @@ Follow `docs/skills/tdd-ddd.md`:
 10. **COMMIT**: Follow conventional commits
 
 ### Mocking Conventions
+
 ```typescript
 // Mock authFetchClient for repository tests
 jest.mock('@/services/api/authFetch', () => ({
@@ -462,6 +494,7 @@ jest.mock('@/services/offline/mutationHelper', () => ({
 ```
 
 ### Offline Support
+
 - All repository calls should use `offlineMutation()` for mutating operations
 - Queue is stored in AsyncStorage with key `offline_queue:{userId}`
 - Sync is triggered automatically when network reconnects
@@ -470,6 +503,7 @@ jest.mock('@/services/offline/mutationHelper', () => ({
 ## Testing
 
 ### Test Locations
+
 ```
 services/repositories/__tests__/*.test.ts  # Repository tests
 hooks/__tests__/*.test.ts                 # Hook tests
@@ -479,11 +513,13 @@ utils/__tests__/*.test.ts                 # Utility tests
 ```
 
 ### Framework
+
 - Jest + jest-expo
 - @testing-library/react-native
 - jsdom environment
 
 ### Principles
+
 - Mock at boundaries only (mock `authFetchClient`, not internal details)
 - Test behavior, not implementation
 - One behavior per test
@@ -492,6 +528,7 @@ utils/__tests__/*.test.ts                 # Utility tests
 ## Git Workflow
 
 ### Branching Model
+
 ```
 main ← production (receives merges from dev via PR)
   └── dev ← integration (receives merges from feature branches via PR)
@@ -501,6 +538,7 @@ main ← production (receives merges from dev via PR)
 ```
 
 ### Rules
+
 1. **Never push directly to `main` or `dev`** - always use PRs
 2. Branch from `dev` with conventional commit type prefix
 3. PR to `dev` first, then PR `dev` to `main`
@@ -508,7 +546,9 @@ main ← production (receives merges from dev via PR)
 5. Merging to `main` triggers production builds
 
 ### Commit Messages
+
 Follow [Conventional Commits](https://www.conventionalcommits.org/):
+
 ```
 <type>(<optional scope>): <short summary in present tense, lowercase>
 
@@ -520,6 +560,7 @@ Co-Authored-By: Mistral Vibe <vibe@mistral.ai>
 **Types**: feat, fix, refactor, perf, test, docs, style, chore, ci
 
 ### Version Bumping
+
 - EAS auto-increments **build numbers** - never touch manually
 - **Marketing version** in `app.json` → `"version"` - bump when merging to `main`
 - Bump for: new features, significant bug fixes, UI changes users notice
@@ -529,16 +570,19 @@ Co-Authored-By: Mistral Vibe <vibe@mistral.ai>
 ## Environment & Configuration
 
 ### Environment Variables
+
 - **Local Development**: `.env` file with local API URL
 - **Preview/Production Builds**: EAS environment variables
 
 Required in `.env`:
+
 ```
 EXPO_PUBLIC_API_URL=http://localhost:3000/api
 EXPO_PUBLIC_CLARITY_KEY= (optional, leave empty to disable)
 ```
 
 ### EAS Configuration
+
 - `eas.json` defines preview and production profiles
 - Both have `"autoIncrement": true` for build numbers
 - Production API URL set via EAS secrets: `EXPO_PUBLIC_API_URL`
@@ -547,28 +591,34 @@ EXPO_PUBLIC_CLARITY_KEY= (optional, leave empty to disable)
 ## Styling Conventions
 
 ### Colors
+
 **Never hardcode hex values** - import from `styles/colors.ts`:
+
 - Primary: `#053546` (dark navy)
 - Secondary: `#227B9A` (teal)
 - Accent: `#29B6F6` (light blue)
 
 ### Style Files
+
 - Keep styles in dedicated `*Styles.ts` file next to component
 - Use `StyleSheet.create()` - never define styles in same file as JSX
 - Export as `export const styles = StyleSheet.create({...})`
 
 ### Icons
+
 - Use FontAwesome imports per-icon for tree-shaking
 - Import from `@fortawesome/react-native-fontawesome`
 
 ## Monitoring
 
 ### Sentry
+
 - Crash reporting and breadcrumbs
 - Initialized in `app/_layout.tsx`
 - Disabled in development
 
 ### Microsoft Clarity
+
 - Session recording
 - Lazy-initialized after Sentry in `app/_layout.tsx`
 - Disabled in development
@@ -606,28 +656,28 @@ eas build --profile production --platform ios # Production build
 ## Important Patterns
 
 ### Error Handling
+
 - API errors are wrapped with `handleApiError()` in repositories
 - Maps to `AppError` with Norwegian user-facing messages
 - See `types/AppError.ts` for error codes
 
 ### Repository Pattern
+
 ```typescript
 // services/repositories/practiceRepository.ts
 export const practiceRepository = {
   async getAll() {
-    return offlineMutation(
-      async () => {
-        const response = await authFetchClient<Practice[]>('/practice');
-        return handleApiError(response);
-      },
-      'practice-getAll'
-    );
+    return offlineMutation(async () => {
+      const response = await authFetchClient<Practice[]>('/practice');
+      return handleApiError(response);
+    }, 'practice-getAll');
   },
   // ...
 };
 ```
 
 ### Offline Mutation
+
 ```typescript
 import { offlineMutation } from '@/services/offline/mutationHelper';
 
@@ -681,12 +731,14 @@ offlineMutation(async () => {
 Before submitting a PR, verify:
 
 ### Security
+
 - [ ] No hardcoded secrets or API keys
 - [ ] Uses `authFetchClient` for API calls
 - [ ] Sensitive data uses SecureStore
 - [ ] No sensitive data in logs or error messages
 
 ### Code Quality
+
 - [ ] Follows existing code style and conventions
 - [ ] TypeScript types are properly defined
 - [ ] No `any` types used
@@ -695,32 +747,37 @@ Before submitting a PR, verify:
 - [ ] Proper error handling with `AppError`
 
 ### Testing
+
 - [ ] All new code has corresponding tests
 - [ ] Tests follow TDD principles
 - [ ] Mocking at boundaries only
 - [ ] All tests pass (`npm test`)
 
 ### Performance
+
 - [ ] Uses FlatList for long lists
 - [ ] No inline functions in render methods
 - [ ] Proper memoization where needed
 - [ ] No unnecessary re-renders
 
 ### Offline Support
+
 - [ ] Mutations use `offlineMutation()` where applicable
 - [ ] Offline handlers registered in `handlers.ts`
 - [ ] Proper error handling for network failures
 
 ### Documentation
+
 - [ ] New domain terms added to glossary
 - [ ] Complex logic has comments
 - [ ] Breaking changes documented in PR description
 
 ### Git
+
 - [ ] Follows conventional commit messages
 - [ ] Branch name follows convention (feat/fix/refactor/)
 - [ ] PR title is clear and descriptive
-- [ ] PR description explains the *why*
+- [ ] PR description explains the _why_
 
 ---
 
@@ -739,6 +796,6 @@ Before submitting a PR, verify:
 
 ---
 
-*Generated for Mistral Vibe - Project Context Document*
-*Last Updated: 2026-09-21*
-*Enhanced with Security, Performance, Accessibility, i18n, and Expo Router best practices*
+_Generated for Mistral Vibe - Project Context Document_
+_Last Updated: 2026-09-21_
+_Enhanced with Security, Performance, Accessibility, i18n, and Expo Router best practices_

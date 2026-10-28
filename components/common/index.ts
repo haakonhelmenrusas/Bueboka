@@ -13,6 +13,7 @@ import DatePicker from './DatePicker/DatePicker';
 import { OfflineBanner } from './OfflineBanner/OfflineBanner';
 import { Badge } from './Badge/Badge';
 import { MobileActionButton } from './MobileActionButton/MobileActionButton';
+import NotificationBadge from './NotificationBadge';
 
 export {
   Button,
@@ -30,4 +31,5 @@ export {
   OfflineBanner,
   Badge,
   MobileActionButton,
+  NotificationBadge,
 };

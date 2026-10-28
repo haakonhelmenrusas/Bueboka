@@ -11,7 +11,8 @@ import type {
   SubmitChallengeResultData,
 } from '@/types';
 import { ChallengeStatus } from '@/types';
-import { useTranslation } from '@/lib/i18n';
+import { useTranslation, useNotifications } from '@/contexts';
+import { NotificationType } from '@/contexts/NotificationContext';
 
 /**
  * Parameters for fetching challenges
@@ -53,6 +54,7 @@ export interface FetchChallengesParams extends GetAllChallengesParams {
 export function useChallenge() {
   const { user } = useAuth();
   const { t } = useTranslation();
+  const { addNotification } = useNotifications();
 
   // State
   const [challenges, setChallenges] = useState<ChallengeListItem[]>([]);
@@ -83,6 +85,7 @@ export function useChallenge() {
           page,
           pageSize,
           status,
+          ...(user?.id && { userId: user.id }),
         });
 
         setChallenges(response.challenges);
@@ -97,7 +100,7 @@ export function useChallenge() {
         setLoading(false);
       }
     },
-    [pagination.page, pagination.pageSize, t]
+    [pagination.page, pagination.pageSize, t],
   );
 
   /**
@@ -119,7 +122,7 @@ export function useChallenge() {
         setLoading(false);
       }
     },
-    [t]
+    [t],
   );
 
   /**
@@ -132,10 +135,11 @@ export function useChallenge() {
         setError(null);
 
         const challenge = await offlineMutation(
+          { type: 'create', payload: data },
           async () => {
             return await challengeRepository.create(data);
           },
-          `challenge-create-${Date.now()}`
+          user?.id,
         );
 
         // Refresh challenges list
@@ -148,7 +152,7 @@ export function useChallenge() {
         setLoading(false);
       }
     },
-    [fetchChallenges, t]
+    [fetchChallenges, t],
   );
 
   /**
@@ -161,10 +165,11 @@ export function useChallenge() {
         setError(null);
 
         const challenge = await offlineMutation(
+          { type: 'update', payload: { id, data } },
           async () => {
             return await challengeRepository.update(id, data);
           },
-          `challenge-update-${id}`
+          user?.id,
         );
 
         setCurrentChallenge(challenge);
@@ -177,7 +182,7 @@ export function useChallenge() {
         setLoading(false);
       }
     },
-    [fetchChallenges, t]
+    [fetchChallenges, t],
   );
 
   /**
@@ -190,10 +195,11 @@ export function useChallenge() {
         setError(null);
 
         const challenge = await offlineMutation(
+          { type: 'accept', payload: { id } },
           async () => {
             return await challengeRepository.accept(id);
           },
-          `challenge-accept-${id}`
+          user?.id,
         );
 
         setCurrentChallenge(challenge);
@@ -206,7 +212,7 @@ export function useChallenge() {
         setLoading(false);
       }
     },
-    [fetchChallenges, t]
+    [fetchChallenges, t],
   );
 
   /**
@@ -219,10 +225,11 @@ export function useChallenge() {
         setError(null);
 
         const challenge = await offlineMutation(
+          { type: 'decline', payload: { id } },
           async () => {
             return await challengeRepository.decline(id);
           },
-          `challenge-decline-${id}`
+          user?.id,
         );
 
         setCurrentChallenge(challenge);
@@ -235,7 +242,7 @@ export function useChallenge() {
         setLoading(false);
       }
     },
-    [fetchChallenges, t]
+    [fetchChallenges, t],
   );
 
   /**
@@ -248,10 +255,11 @@ export function useChallenge() {
         setError(null);
 
         const challenge = await offlineMutation(
+          { type: 'cancel', payload: { id } },
           async () => {
             return await challengeRepository.cancel(id);
           },
-          `challenge-cancel-${id}`
+          user?.id,
         );
 
         setCurrentChallenge(challenge);
@@ -264,7 +272,7 @@ export function useChallenge() {
         setLoading(false);
       }
     },
-    [fetchChallenges, t]
+    [fetchChallenges, t],
   );
 
   /**
@@ -277,10 +285,11 @@ export function useChallenge() {
         setError(null);
 
         const challenge = await offlineMutation(
+          { type: 'submit', payload: { id, data } },
           async () => {
             return await challengeRepository.submitResult(id, data);
           },
-          `challenge-submit-${id}`
+          user?.id,
         );
 
         setCurrentChallenge(challenge);
@@ -293,7 +302,7 @@ export function useChallenge() {
         setLoading(false);
       }
     },
-    [fetchChallenges, t]
+    [fetchChallenges, t],
   );
 
   /**
@@ -306,10 +315,11 @@ export function useChallenge() {
         setError(null);
 
         await offlineMutation(
+          { type: 'delete', payload: { id } },
           async () => {
             await challengeRepository.delete(id);
           },
-          `challenge-delete-${id}`
+          user?.id,
         );
 
         await fetchChallenges();
@@ -320,30 +330,27 @@ export function useChallenge() {
         setLoading(false);
       }
     },
-    [fetchChallenges, t]
+    [fetchChallenges, t],
   );
 
   /**
    * Fetch challenge statistics for the current user
    */
-  const fetchStatistics = useCallback(
-    async () => {
-      try {
-        setLoading(true);
-        setError(null);
+  const fetchStatistics = useCallback(async () => {
+    try {
+      setLoading(true);
+      setError(null);
 
-        const stats = await challengeRepository.getStatistics(user?.id || '');
-        setStatistics(stats);
-        return stats;
-      } catch (err) {
-        setError(err instanceof Error ? err : new Error(t('common.unknownError')));
-        throw err;
-      } finally {
-        setLoading(false);
-      }
-    },
-    [user?.id, t]
-  );
+      const stats = await challengeRepository.getStatistics(user?.id || '');
+      setStatistics(stats);
+      return stats;
+    } catch (err) {
+      setError(err instanceof Error ? err : new Error(t('common.unknownError')));
+      throw err;
+    } finally {
+      setLoading(false);
+    }
+  }, [user?.id, t]);
 
   /**
    * Clear the error state
@@ -359,7 +366,7 @@ export function useChallenge() {
     (challenge: Challenge) => {
       return challenge.challengerId === user?.id;
     },
-    [user?.id]
+    [user?.id],
   );
 
   /**
@@ -369,7 +376,7 @@ export function useChallenge() {
     (challenge: Challenge) => {
       return challenge.challengedId === user?.id && challenge.status === ChallengeStatus.PENDING;
     },
-    [user?.id]
+    [user?.id],
   );
 
   /**
@@ -379,7 +386,7 @@ export function useChallenge() {
     (challenge: Challenge) => {
       return challenge.challengerId === user?.id && challenge.status === ChallengeStatus.PENDING;
     },
-    [user?.id]
+    [user?.id],
   );
 
   /**
@@ -402,7 +409,7 @@ export function useChallenge() {
           return status;
       }
     },
-    [t]
+    [t],
   );
 
   /**
@@ -415,7 +422,7 @@ export function useChallenge() {
       }
       return challenge.challengerName || t('common.opponent');
     },
-    [user?.id, t]
+    [user?.id, t],
   );
 
   /**
@@ -437,7 +444,7 @@ export function useChallenge() {
 
       return false;
     },
-    [user?.id]
+    [user?.id],
   );
 
   return {
