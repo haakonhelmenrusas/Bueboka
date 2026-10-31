@@ -43,13 +43,6 @@ export const styles = StyleSheet.create({
   field: {
     marginBottom: 0,
   },
-  halfField: {
-    flex: 1,
-  },
-  dateFields: {
-    flexDirection: 'row',
-    gap: 12,
-  },
   checkboxContainer: {
     marginVertical: 8,
   },

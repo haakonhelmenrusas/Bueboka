@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { View, ScrollView, ActivityIndicator, Text } from 'react-native';
-import { Input, Button, Checkbox, DatePicker, Select } from '@/components/common';
+import { Input, Button, Checkbox } from '@/components/common';
 import { styles } from './ChallengeFormStyles';
 import { useTranslation } from '@/contexts';
 import type { PublicProfile, ChallengeCustomRules, CreateChallengeData } from '@/types';
@@ -16,16 +16,6 @@ interface ChallengeFormProps {
   error: string | null;
 }
 
-// Options for target type selection
-const getTargetTypeOptions = (t: any) => [
-  { label: t['form.choose'], value: '' },
-  { label: 'FITA', value: 'FITA' },
-  { label: 'WA', value: 'WA' },
-  { label: '3D', value: '3D' },
-  { label: 'Felt', value: 'Felt' },
-  { label: t['target.other'], value: 'Other' },
-];
-
 type NumericChallengeRuleField = keyof Omit<ChallengeCustomRules, 'targetType'>;
 
 export default function ChallengeForm({ opponent, onSubmit, onCancel, loading, error }: ChallengeFormProps) {
@@ -34,8 +24,6 @@ export default function ChallengeForm({ opponent, onSubmit, onCancel, loading, e
   // Form state
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
-  const [startDate, setStartDate] = useState<Date | null>(null);
-  const [endDate, setEndDate] = useState<Date | null>(null);
   const [useCustomRules, setUseCustomRules] = useState(false);
   const [customRules, setCustomRules] = useState<ChallengeCustomRules>({
     distanceMeters: null,
@@ -46,8 +34,6 @@ export default function ChallengeForm({ opponent, onSubmit, onCancel, loading, e
     numberArrows: null,
     arrowsWithoutScore: null,
   });
-
-  const targetTypeOptions = getTargetTypeOptions(t);
 
   // Set default name when opponent changes
   useEffect(() => {
@@ -73,9 +59,6 @@ export default function ChallengeForm({ opponent, onSubmit, onCancel, loading, e
       description: description.trim() || undefined,
     };
 
-    if (startDate) data.startDate = startDate;
-    if (endDate) data.endDate = endDate;
-
     if (useCustomRules) {
       const rules: ChallengeCustomRules = {};
       if (customRules.distanceMeters !== null) rules.distanceMeters = customRules.distanceMeters;
@@ -92,7 +75,7 @@ export default function ChallengeForm({ opponent, onSubmit, onCancel, loading, e
     }
 
     await onSubmit(data);
-  }, [name, description, startDate, endDate, useCustomRules, customRules, opponent?.id]);
+  }, [name, description, useCustomRules, customRules, opponent?.id, onSubmit]);
 
   const handleNumberChange = useCallback((field: NumericChallengeRuleField, value: string) => {
     const num: number | null = value === '' ? null : Number(value);
@@ -155,25 +138,6 @@ export default function ChallengeForm({ opponent, onSubmit, onCancel, loading, e
           containerStyle={styles.field}
           editable={!loading}
         />
-
-        {/* Date fields */}
-        <View style={styles.dateFields}>
-          <DatePicker
-            label={t['challenge.startDateLabel']}
-            value={startDate || new Date()}
-            onDateChange={(date) => setStartDate(date || null)}
-            placeholder={t['form.choose']}
-            containerStyle={[styles.field, styles.halfField]}
-          />
-
-          <DatePicker
-            label={t['challenge.endDateLabel']}
-            value={endDate || new Date()}
-            onDateChange={(date) => setEndDate(date || null)}
-            placeholder={t['form.choose']}
-            containerStyle={[styles.field, styles.halfField]}
-          />
-        </View>
 
         {/* Custom rules toggle */}
         <Checkbox
@@ -249,12 +213,13 @@ export default function ChallengeForm({ opponent, onSubmit, onCancel, loading, e
                 editable={!loading}
               />
 
-              <Select
+              <Input
                 label={t['challenge.targetType']}
-                options={targetTypeOptions}
-                selectedValue={customRules.targetType || ''}
-                onValueChange={handleTargetTypeChange}
+                value={customRules.targetType || ''}
+                onChangeText={handleTargetTypeChange}
+                placeholder="f.eks. FITA, 3D"
                 containerStyle={styles.field}
+                editable={!loading}
               />
             </View>
           </View>

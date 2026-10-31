@@ -23,8 +23,6 @@ export interface Challenge {
   description?: string | null;
   roundTypeId?: string | null;
   customRules?: ChallengeCustomRules | null;
-  startDate?: string | null;
-  endDate?: string | null;
   status: ChallengeStatus;
   winnerId?: string | null;
   challengerScore?: number | null;
@@ -65,8 +63,6 @@ export interface CreateChallengeData {
   description?: string;
   roundTypeId?: string;
   customRules?: ChallengeCustomRules;
-  startDate?: Date;
-  endDate?: Date;
 }
 
 /**
@@ -77,8 +73,6 @@ export interface UpdateChallengeData {
   description?: string | null;
   roundTypeId?: string | null;
   customRules?: ChallengeCustomRules | null;
-  startDate?: Date | null;
-  endDate?: Date | null;
   status?: ChallengeStatus;
 }
 

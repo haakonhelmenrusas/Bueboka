@@ -132,24 +132,6 @@ export default function ChallengeDetail({
           </Text>
         </View>
 
-        {challenge.startDate && (
-          <View style={styles.metaRow}>
-            <FontAwesomeIcon icon={faCalendar} size={16} color={colors.textSecondary} />
-            <Text style={styles.metaText}>
-              {t['challenge.startDateLabel']}: {formatDate(challenge.startDate)}
-            </Text>
-          </View>
-        )}
-
-        {challenge.endDate && (
-          <View style={styles.metaRow}>
-            <FontAwesomeIcon icon={faCalendar} size={16} color={colors.textSecondary} />
-            <Text style={styles.metaText}>
-              {t['challenge.endDateLabel']}: {formatDate(challenge.endDate)}
-            </Text>
-          </View>
-        )}
-
         <View style={styles.metaRow}>
           <FontAwesomeIcon icon={faUser} size={16} color={colors.textSecondary} />
           <Text style={styles.metaText}>

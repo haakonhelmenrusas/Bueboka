@@ -63,14 +63,7 @@ export const challengeRepository = {
    */
   async create(data: CreateChallengeData): Promise<Challenge> {
     try {
-      // Convert Date objects to ISO strings for JSON serialization
-      const payload = {
-        ...data,
-        startDate: data.startDate ? data.startDate.toISOString() : undefined,
-        endDate: data.endDate ? data.endDate.toISOString() : undefined,
-      };
-
-      const response = await client.post<Challenge>('/challenges', payload);
+      const response = await client.post<Challenge>('/challenges', data);
       return response.data;
     } catch (error) {
       throw handleApiError(error);
@@ -82,14 +75,7 @@ export const challengeRepository = {
    */
   async update(id: string, data: UpdateChallengeData): Promise<Challenge> {
     try {
-      // Convert Date objects to ISO strings for JSON serialization
-      const payload = {
-        ...data,
-        startDate: data.startDate ? data.startDate.toISOString() : undefined,
-        endDate: data.endDate ? data.endDate.toISOString() : undefined,
-      };
-
-      const response = await client.patch<Challenge>(`/challenges/${id}`, payload);
+      const response = await client.patch<Challenge>(`/challenges/${id}`, data);
       return response.data;
     } catch (error) {
       throw handleApiError(error);
