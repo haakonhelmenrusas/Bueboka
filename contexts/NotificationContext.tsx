@@ -1,5 +1,5 @@
 import { createContext, useContext, useState, useCallback, useEffect, ReactNode } from 'react';
-import { useAuth } from '@/hooks';
+import { useAuth } from '@/hooks/useAuth';
 
 /**
  * Notification types
