@@ -17,6 +17,13 @@ export default function UtfordringerLayout() {
         }}
       />
       <Stack.Screen
+        name="ny/[opponentId]"
+        options={{
+          presentation: 'modal',
+          animation: 'slide_from_right',
+        }}
+      />
+      <Stack.Screen
         name="[id]"
         options={{
           presentation: 'modal',
