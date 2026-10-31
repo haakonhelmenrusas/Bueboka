@@ -75,7 +75,13 @@ export const authStorage = {
   },
 
   getItemAsync(key: string): Promise<string | null> {
-    return Promise.resolve(this.getItem(key));
+    const cached = _cache.get(key);
+    if (cached !== undefined) return Promise.resolve(cached);
+    // Fall back to SecureStore for keys not yet in cache (e.g. chunk keys after a refresh)
+    return _read(key).then((value) => {
+      if (value !== null) _cache.set(key, value);
+      return value;
+    });
   },
 
   setItem(key: string, value: string): void {

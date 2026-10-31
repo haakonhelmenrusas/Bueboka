@@ -362,14 +362,51 @@ export function AuthProvider({ children }: AuthProviderProps) {
       const token = await getAccessToken();
 
       if (!token) {
+        // Token metadata missing — fall back to the better-auth cookie session
+        const session = await authClient.getSession();
+        if (session?.data?.user) {
+          const sessionToken = (session.data as any).session?.token || (session.data as any).token;
+          if (sessionToken) {
+            const expiresAt = new Date(Date.now() + 604800 * 1000).toISOString();
+            await saveTokens({ accessToken: sessionToken, expiresAt });
+          }
+          const cachedUser = await getCachedUser();
+          if (cachedUser) {
+            setState({ user: cachedUser, isAuthenticated: true, isLoading: false, error: null });
+            revalidateSession();
+            return;
+          }
+          const fullUser = await fetchAndSetFullUser();
+          if (fullUser) {
+            setAuthenticatedUser(fullUser);
+            return;
+          }
+        }
         setState((prev) => ({ ...prev, isLoading: false }));
         return;
       }
 
       const expired = await isTokenExpired();
       if (expired) {
-        await clearTokens();
-        await clearCachedUser();
+        // Token metadata says expired — check the better-auth cookie session before clearing
+        const session = await authClient.getSession();
+        if (session?.data?.user) {
+          const sessionToken = (session.data as any).session?.token || (session.data as any).token;
+          const expiresAt = new Date(Date.now() + 604800 * 1000).toISOString();
+          if (sessionToken) {
+            await saveTokens({ accessToken: sessionToken, expiresAt });
+          }
+          const cachedUser = await getCachedUser();
+          if (cachedUser) {
+            setState({ user: cachedUser, isAuthenticated: true, isLoading: false, error: null });
+            Sentry.setUser({ id: cachedUser.id, email: cachedUser.email, username: cachedUser.name || undefined });
+            revalidateSession();
+            return;
+          }
+        } else {
+          await clearTokens();
+          await clearCachedUser();
+        }
         setState((prev) => ({ ...prev, isLoading: false }));
         return;
       }
