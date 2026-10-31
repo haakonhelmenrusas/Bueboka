@@ -84,6 +84,7 @@ export const authStorage = {
   },
 
   setItemAsync(key: string, value: string): Promise<void> {
+    _cache.set(key, value);
     return _write(key, value);
   },
 
