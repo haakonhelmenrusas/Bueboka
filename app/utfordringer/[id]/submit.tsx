@@ -4,7 +4,7 @@ import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useChallenge } from '@/hooks/useChallenge';
 import { useAuth } from '@/hooks';
 import { Input, Button } from '@/components/common';
-import { styles } from './submitStyles';
+import { styles } from '@/components/challenges/SubmitChallengeScreenStyles';
 import { colors } from '@/styles/colors';
 import { useTranslation } from '@/contexts';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
