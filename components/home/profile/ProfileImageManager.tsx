@@ -2,7 +2,7 @@ import { Alert, Image, Modal, Pressable, Text, TouchableOpacity, View } from 're
 import { Button } from '@/components/common';
 import { useState } from 'react';
 import * as ImagePicker from 'expo-image-picker';
-import * as FileSystem from 'expo-file-system';
+import * as FileSystem from 'expo-file-system/legacy';
 import { useTranslation } from '@/contexts';
 import { styles } from './ProfileImageManagerStyles';
 
@@ -111,12 +111,13 @@ export default function ProfileImageManager({ userName, avatarUrl, onUpload, onR
   return (
     <View style={styles.container}>
       <TouchableOpacity
+        testID="avatar-button"
         style={[styles.avatar, { width: avatarSize, height: avatarSize, borderRadius: avatarSize / 2 }]}
         onPress={() => setShowMenu(true)}
         disabled={isUploading || isRemoving}
         activeOpacity={0.7}>
         {avatarUrl ? (
-          <Image source={{ uri: avatarUrl }} style={[styles.avatarImage, { width: avatarSize, height: avatarSize }]} />
+          <Image testID="avatar-image" source={{ uri: avatarUrl }} style={[styles.avatarImage, { width: avatarSize, height: avatarSize }]} />
         ) : (
           <Text style={[styles.avatarInitial, { fontSize }]}>{userName?.charAt(0).toUpperCase() || '?'}</Text>
         )}

@@ -86,7 +86,7 @@
     "typescript": "~6.0.3"
   },
   "name": "bueboka",
-  "version": "1.0.0",
+  "version": "2.1.0",
   "private": true,
   "author": {
     "name": "Rusås Design",

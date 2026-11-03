@@ -254,8 +254,8 @@ describe('challengeRepository.create', () => {
     expect(mockClient.post).toHaveBeenCalledWith(
       '/challenges',
       expect.objectContaining({
-        startDate: '2024-07-01T00:00:00.000Z',
-        endDate: '2024-07-07T00:00:00.000Z',
+        startDate,
+        endDate,
       }),
     );
   });

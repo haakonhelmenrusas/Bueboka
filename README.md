@@ -18,7 +18,7 @@
 
 ## Tech Stack
 
-Built with **React Native**, **Expo SDK 56**, **TypeScript**, and **Expo Router**.
+Built with **React Native**, **Expo SDK 58**, **TypeScript**, and **Expo Router**.
 
 ## Prerequisites
 

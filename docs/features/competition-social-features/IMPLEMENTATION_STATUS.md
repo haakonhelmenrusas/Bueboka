@@ -119,7 +119,7 @@ Tests:       224 passed, 224 total
 ### Medium Priority
 
 4. **Mobile Components** - Create UI components for challenge feature on mobile
-5. **Mobile Screens** - Create screens for challenge browsing, creation, details on mobile
+5. **Mobile Screens** - Implemented under `app/utfordringer/` (index, `ny`, `[id]`, `[id]/submit`) with components in `components/challenges/`
 6. **Website Components** - Create UI components for challenge feature on website
 7. **Website Pages** - Create pages for challenge feature on website
 

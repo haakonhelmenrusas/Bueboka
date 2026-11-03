@@ -43,26 +43,26 @@ describe('ShareSessionModal', () => {
     mockShareAsync.mockResolvedValue(undefined);
   });
 
-  it('renders modal title and hint text', () => {
-    render(<ShareSessionModal visible={true} onClose={onClose} data={baseData} />);
+  it('renders modal title and hint text', async () => {
+    await render(<ShareSessionModal visible={true} onClose={onClose} data={baseData} />);
     expect(screen.getByText('Del økt')).toBeTruthy();
     expect(screen.getByText('Forhåndsvis øktkortet ditt og del det.')).toBeTruthy();
   });
 
-  it('renders the share button', () => {
-    render(<ShareSessionModal visible={true} onClose={onClose} data={baseData} />);
+  it('renders the share button', async () => {
+    await render(<ShareSessionModal visible={true} onClose={onClose} data={baseData} />);
     expect(screen.getByText('Del')).toBeTruthy();
   });
 
-  it('renders the SessionShareCard inside the modal', () => {
-    render(<ShareSessionModal visible={true} onClose={onClose} data={baseData} />);
+  it('renders the SessionShareCard inside the modal', async () => {
+    await render(<ShareSessionModal visible={true} onClose={onClose} data={baseData} />);
     expect(screen.getByText('Bueboka')).toBeTruthy();
     expect(screen.getByText('bueboka.no')).toBeTruthy();
   });
 
   it('captures the card and opens the share sheet on press', async () => {
-    render(<ShareSessionModal visible={true} onClose={onClose} data={baseData} />);
-    fireEvent.press(screen.getByText('Del'));
+    await render(<ShareSessionModal visible={true} onClose={onClose} data={baseData} />);
+    await fireEvent.press(screen.getByText('Del'));
 
     await waitFor(() => {
       expect(mockCapture).toHaveBeenCalled();
@@ -72,8 +72,8 @@ describe('ShareSessionModal', () => {
 
   it('does not call shareAsync if capture returns no uri', async () => {
     mockCapture.mockResolvedValue(undefined);
-    render(<ShareSessionModal visible={true} onClose={onClose} data={baseData} />);
-    fireEvent.press(screen.getByText('Del'));
+    await render(<ShareSessionModal visible={true} onClose={onClose} data={baseData} />);
+    await fireEvent.press(screen.getByText('Del'));
 
     await waitFor(() => {
       expect(mockCapture).toHaveBeenCalled();
@@ -85,8 +85,8 @@ describe('ShareSessionModal', () => {
     const alertSpy = jest.spyOn(Alert, 'alert');
     mockShareAsync.mockRejectedValue(new Error('User did not share'));
 
-    render(<ShareSessionModal visible={true} onClose={onClose} data={baseData} />);
-    fireEvent.press(screen.getByText('Del'));
+    await render(<ShareSessionModal visible={true} onClose={onClose} data={baseData} />);
+    await fireEvent.press(screen.getByText('Del'));
 
     await waitFor(() => {
       expect(mockShareAsync).toHaveBeenCalled();
@@ -98,8 +98,8 @@ describe('ShareSessionModal', () => {
     const alertSpy = jest.spyOn(Alert, 'alert');
     mockShareAsync.mockRejectedValue(new Error('Permission denied'));
 
-    render(<ShareSessionModal visible={true} onClose={onClose} data={baseData} />);
-    fireEvent.press(screen.getByText('Del'));
+    await render(<ShareSessionModal visible={true} onClose={onClose} data={baseData} />);
+    await fireEvent.press(screen.getByText('Del'));
 
     await waitFor(() => {
       expect(alertSpy).toHaveBeenCalledWith('Feil', 'Kunne ikke dele bildet. Prøv igjen.');
@@ -110,7 +110,9 @@ describe('ShareSessionModal', () => {
     let resolveShare: () => void;
     mockShareAsync.mockImplementation(() => new Promise<void>((resolve) => (resolveShare = resolve)));
 
-    render(<ShareSessionModal visible={true} onClose={onClose} data={baseData} />);
+    await render(<ShareSessionModal visible={true} onClose={onClose} data={baseData} />);
+    // Do not await the press: the share promise stays pending on purpose,
+    // and awaiting fireEvent would wait for the handler to settle.
     fireEvent.press(screen.getByText('Del'));
 
     await waitFor(() => {

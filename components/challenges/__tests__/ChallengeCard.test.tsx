@@ -6,18 +6,15 @@ import { ChallengeListItem, ChallengeStatus } from '@/types';
 // Mock useTranslation
 jest.mock('@/contexts', () => ({
   useTranslation: () => ({
-    t: (key: string) => {
-      const translations: Record<string, string> = {
-        'challenge.opponent': 'Opponent',
-        'challenge.created': 'Created',
-        'challenge.unknownOpponent': 'Unknown opponent',
-        'challenge.statusPending': 'Pending',
-        'challenge.statusAccepted': 'Accepted',
-        'challenge.statusDeclined': 'Declined',
-        'challenge.statusCompleted': 'Completed',
-        'challenge.statusCancelled': 'Cancelled',
-      };
-      return translations[key] || key;
+    t: {
+      'challenge.opponent': 'Opponent',
+      'challenge.created': 'Created',
+      'challenge.unknownOpponent': 'Unknown opponent',
+      'challenge.statusPending': 'Pending',
+      'challenge.statusAccepted': 'Accepted',
+      'challenge.statusDeclined': 'Declined',
+      'challenge.statusCompleted': 'Completed',
+      'challenge.statusCancelled': 'Cancelled',
     },
     locale: 'en',
   }),
@@ -73,43 +70,43 @@ describe('ChallengeCard', () => {
 
   const mockOnPress = jest.fn();
 
-  it('renders challenge name', () => {
-    const { getByText } = render(<ChallengeCard challenge={mockChallenge} onPress={mockOnPress} />);
+  it('renders challenge name', async () => {
+    const { getByText } = await render(<ChallengeCard challenge={mockChallenge} onPress={mockOnPress} />);
 
     expect(getByText('Test Challenge')).toBeTruthy();
   });
 
-  it('renders opponent name', () => {
-    const { getByText } = render(<ChallengeCard challenge={mockChallenge} onPress={mockOnPress} />);
+  it('renders opponent name', async () => {
+    const { getByText } = await render(<ChallengeCard challenge={mockChallenge} onPress={mockOnPress} />);
 
     expect(getByText('Opponent: User One')).toBeTruthy();
   });
 
-  it('renders status badge', () => {
-    const { getByText } = render(<ChallengeCard challenge={mockChallenge} onPress={mockOnPress} />);
+  it('renders status badge', async () => {
+    const { getByText } = await render(<ChallengeCard challenge={mockChallenge} onPress={mockOnPress} />);
 
     expect(getByText('Pending')).toBeTruthy();
   });
 
-  it('renders created date', () => {
-    const { getByText } = render(<ChallengeCard challenge={mockChallenge} onPress={mockOnPress} />);
+  it('renders created date', async () => {
+    const { getByText } = await render(<ChallengeCard challenge={mockChallenge} onPress={mockOnPress} />);
 
     expect(getByText(/Created:/)).toBeTruthy();
   });
 
-  it('calls onPress when pressed', () => {
-    const { getByTestId } = render(<ChallengeCard challenge={mockChallenge} onPress={mockOnPress} />);
+  it('calls onPress when pressed', async () => {
+    const { getByTestId } = await render(<ChallengeCard challenge={mockChallenge} onPress={mockOnPress} />);
 
     // The component uses TouchableOpacity, so we need to find the card
     // and trigger a press event
-    const card = render(<ChallengeCard challenge={mockChallenge} onPress={mockOnPress} />);
+    const card = await render(<ChallengeCard challenge={mockChallenge} onPress={mockOnPress} />);
 
     // Since we can't easily simulate the press on TouchableOpacity,
     // we verify that the onPress prop is passed correctly
     expect(mockOnPress).toBeDefined();
   });
 
-  it('renders score when available', () => {
+  it('renders score when available', async () => {
     const completedChallenge: ChallengeListItem = {
       ...mockChallenge,
       status: ChallengeStatus.COMPLETED,
@@ -117,7 +114,7 @@ describe('ChallengeCard', () => {
       challengedScore: 90,
     };
 
-    const { getByText } = render(<ChallengeCard challenge={completedChallenge} onPress={mockOnPress} />);
+    const { getByText } = await render(<ChallengeCard challenge={completedChallenge} onPress={mockOnPress} />);
 
     expect(getByText('100 - 90')).toBeTruthy();
   });

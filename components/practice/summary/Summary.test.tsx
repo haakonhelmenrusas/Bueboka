@@ -48,39 +48,39 @@ describe('Summary', () => {
     jest.restoreAllMocks();
   });
 
-  it('renders the summary title', () => {
-    const { getByText } = render(<Summary practices={practices} />);
+  it('renders the summary title', async () => {
+    const { getByText } = await render(<Summary practices={practices} />);
     expect(getByText('Oppsummering')).toBeTruthy();
   });
 
-  it('renders arrow counts for last 7 days', () => {
-    const { getByText } = render(<Summary practices={practices} />);
+  it('renders arrow counts for last 7 days', async () => {
+    const { getByText } = await render(<Summary practices={practices} />);
     expect(getByText('Siste 7 dagene')).toBeTruthy();
     expect(getByText('15')).toBeTruthy();
   });
 
-  it('renders arrow counts for this month', () => {
-    const { getByText } = render(<Summary practices={practices} />);
+  it('renders arrow counts for this month', async () => {
+    const { getByText } = await render(<Summary practices={practices} />);
     expect(getByText('Denne måneden')).toBeTruthy();
     expect(getByText('25')).toBeTruthy();
   });
 
-  it('renders total arrow count', () => {
-    const { getByText } = render(<Summary practices={practices} />);
+  it('renders total arrow count', async () => {
+    const { getByText } = await render(<Summary practices={practices} />);
     expect(getByText('Totalt')).toBeTruthy();
     expect(getByText('35')).toBeTruthy();
   });
 
-  it('calls sumArrows with correct arguments', () => {
-    render(<Summary practices={practices} />);
+  it('calls sumArrows with correct arguments', async () => {
+    await render(<Summary practices={practices} />);
     expect(helpers.sumArrows).toHaveBeenCalledWith(practices, '7days');
     expect(helpers.sumArrows).toHaveBeenCalledWith(practices, 'month');
     expect(helpers.sumArrows).toHaveBeenCalledWith(practices);
   });
 
-  it('renders correctly with empty trainings array', () => {
+  it('renders correctly with empty trainings array', async () => {
     jest.spyOn(helpers, 'sumArrows').mockImplementation(() => 0);
-    const { getAllByText } = render(<Summary practices={[]} />);
+    const { getAllByText } = await render(<Summary practices={[]} />);
     expect(getAllByText('0')).toHaveLength(3);
   });
 });

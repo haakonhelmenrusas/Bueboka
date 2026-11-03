@@ -1,7 +1,10 @@
 node_modules/
 .expo/
+.eas/
 dist/
+coverage/
 npm-debug.*
+*.tsbuildinfo
 *.jks
 *.p8
 *.p12

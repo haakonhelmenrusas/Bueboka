@@ -32,7 +32,7 @@ This skill is **automatically active** when working in the `/Users/haakon/Prosje
 ### Tech Stack
 
 ```
-Framework: React Native 0.85 + Expo SDK 56
+Framework: React Native 0.88 + Expo SDK 58
 Language: TypeScript 6
 Navigation: Expo Router (file-based)
 State: React Context API
@@ -51,7 +51,7 @@ components/    # Reusable UI components
 contexts/      # React Context providers
 services/      # Data layer (API, repositories, offline)
   ├── api/           # HTTP clients (use authFetchClient!)
-  ├── repositories/  # 9 repositories (practice, bow, arrow, etc.)
+  ├── repositories/  # 9 repositories (practice, bow, arrows, challenge, etc.)
   └── offline/       # Queue & sync manager
 types/         # TypeScript domain types
 hooks/         # Custom React hooks
@@ -111,6 +111,10 @@ components/
 ├── sightMarks/      # Ballistics calculator
 ├── settings/        # Settings screens
 ├── achievements/    # Achievement badges, progress
+├── challenges/      # Head-to-head challenges (utfordringer)
+├── aktivitet/       # Activity screens
+├── skyttere/        # Public archer profiles
+├── intro/           # Language picker
 └── onboarding/      # First-launch flow
 ```
 
@@ -130,6 +134,9 @@ app/
 ├── index.tsx            # Entry point (redirects)
 ├── auth.tsx             # Login screen
 ├── intro.tsx            # Language picker
+├── achievements.tsx     # Achievements overview
+├── skyttere/            # Public archer profiles
+├── utfordringer/        # Challenges (dashboard, ny, [id], [id]/submit)
 └── (tabs)/               # Tab navigator
     ├── _layout.tsx      # Tab layout
     ├── home/           # Home tab
@@ -149,6 +156,7 @@ app/
 | ArrowSet      | `ArrowSet`      | Set of arrows (pilsett)                                       |
 | SightMark     | `SightMark`     | Sight mark configuration (siktmerke)                          |
 | Competition   | `Competition`   | Competition tracking (konkurranse)                            |
+| Challenge     | `Challenge`     | Head-to-head challenge (utfordring)                           |
 | Achievement   | `Achievement`   | User achievements                                             |
 | User          | `User`          | User profile                                                  |
 | PublicProfile | `PublicProfile` | Public archer profile (skytter)                               |
@@ -195,6 +203,7 @@ enum BowType {
 | Økt            | practice       | Session          |
 | Trening        | practice       | Training session |
 | Konkurranse    | competition    | Competition      |
+| Utfordring     | challenge      | 1v1 challenge    |
 | Bue            | bow            | Bow              |
 | Pil            | arrow          | Single arrow     |
 | Pilsett        | arrowSet       | Set of arrows    |
@@ -507,11 +516,15 @@ Co-Authored-By: Mistral Vibe <vibe@mistral.ai>
 
 ## Common Pitfalls & How to Avoid
 
-### ❌ Using deprecated axios client
+### ❌ Bypassing `authFetchClient`
+
+The legacy axios client (`services/api/client.ts`) was removed. Always use
+`authFetchClient`; `axios` remains only for the `AxiosError` instanceof check
+in `services/api/errors.ts`.
 
 ```typescript
 // BAD
-import { apiClient } from '@/services/api/client';
+import { apiClient } from '@/services/api/client'; // no longer exists
 
 // GOOD
 import { authFetchClient } from '@/services/api/authFetch';

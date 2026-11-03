@@ -70,10 +70,10 @@ const baseUser: User = {
   updatedAt: '2024-01-01T00:00:00.000Z',
 };
 
-function renderForm(overrides: Partial<User> = {}, onSave = jest.fn(), setModalVisible = jest.fn()) {
+async function renderForm(overrides: Partial<User> = {}, onSave = jest.fn(), setModalVisible = jest.fn()) {
   const user = { ...baseUser, ...overrides };
   return {
-    ...render(<ProfileForm modalVisible={true} setModalVisible={setModalVisible} user={user} onSave={onSave} />),
+    ...await render(<ProfileForm modalVisible={true} setModalVisible={setModalVisible} user={user} onSave={onSave} />),
     onSave,
     setModalVisible,
   };
@@ -82,62 +82,62 @@ function renderForm(overrides: Partial<User> = {}, onSave = jest.fn(), setModalV
 // ── Tests ─────────────────────────────────────────────────────────────────────
 
 describe('ProfileForm – rendering', () => {
-  it('renders inside the modal', () => {
-    const { getByTestId } = renderForm();
+  it('renders inside the modal', async () => {
+    const { getByTestId } = await renderForm();
     expect(getByTestId('modal')).toBeTruthy();
   });
 
-  it('does not render when modalVisible is false', () => {
-    const { queryByTestId } = render(<ProfileForm modalVisible={false} setModalVisible={jest.fn()} user={baseUser} onSave={jest.fn()} />);
+  it('does not render when modalVisible is false', async () => {
+    const { queryByTestId } = await render(<ProfileForm modalVisible={false} setModalVisible={jest.fn()} user={baseUser} onSave={jest.fn()} />);
     expect(queryByTestId('modal')).toBeNull();
   });
 
-  it('pre-fills the name input with the current user name', () => {
-    const { getByTestId } = renderForm();
+  it('pre-fills the name input with the current user name', async () => {
+    const { getByTestId } = await renderForm();
     expect(getByTestId('input-Navn').props.value).toBe('Ola Nordmann');
   });
 
-  it('pre-fills the skytternr input', () => {
-    const { getByTestId } = renderForm();
+  it('pre-fills the skytternr input', async () => {
+    const { getByTestId } = await renderForm();
     expect(getByTestId('input-Skytternr').props.value).toBe('12345');
   });
 
-  it('pre-fills the name as empty string when user has no name', () => {
-    const { getByTestId } = renderForm({ name: null });
+  it('pre-fills the name as empty string when user has no name', async () => {
+    const { getByTestId } = await renderForm({ name: null });
     expect(getByTestId('input-Navn').props.value).toBe('');
   });
 });
 
 describe('ProfileForm – validation', () => {
-  it('shows a validation error and does NOT call onSave when name is empty', () => {
-    const { getByTestId, queryByTestId } = renderForm();
+  it('shows a validation error and does NOT call onSave when name is empty', async () => {
+    const { getByTestId, queryByTestId } = await renderForm();
 
-    fireEvent.changeText(getByTestId('input-Navn'), '');
-    fireEvent.press(getByTestId('btn-Lagre'));
+    await fireEvent.changeText(getByTestId('input-Navn'), '');
+    await fireEvent.press(getByTestId('btn-Lagre'));
 
     expect(queryByTestId('error-Navn')).toBeTruthy();
     expect(queryByTestId('error-Navn')?.props.children).toMatch(/påkrevd/i);
   });
 
-  it('does not call onSave when name is blank (only whitespace)', () => {
+  it('does not call onSave when name is blank (only whitespace)', async () => {
     const onSave = jest.fn();
-    const { getByTestId } = renderForm({}, onSave);
+    const { getByTestId } = await renderForm({}, onSave);
 
-    fireEvent.changeText(getByTestId('input-Navn'), '   ');
-    fireEvent.press(getByTestId('btn-Lagre'));
+    await fireEvent.changeText(getByTestId('input-Navn'), '   ');
+    await fireEvent.press(getByTestId('btn-Lagre'));
 
     expect(onSave).not.toHaveBeenCalled();
   });
 });
 
 describe('ProfileForm – saving', () => {
-  it('calls onSave with trimmed name, club, and skytternr', () => {
+  it('calls onSave with trimmed name, club, and skytternr', async () => {
     const onSave = jest.fn();
-    const { getByTestId } = renderForm({}, onSave);
+    const { getByTestId } = await renderForm({}, onSave);
 
-    fireEvent.changeText(getByTestId('input-Navn'), '  Kari Nordmann  ');
-    fireEvent.changeText(getByTestId('input-Skytternr'), ' 99 ');
-    fireEvent.press(getByTestId('btn-Lagre'));
+    await fireEvent.changeText(getByTestId('input-Navn'), '  Kari Nordmann  ');
+    await fireEvent.changeText(getByTestId('input-Skytternr'), ' 99 ');
+    await fireEvent.press(getByTestId('btn-Lagre'));
 
     expect(onSave).toHaveBeenCalledWith(
       expect.objectContaining({
@@ -147,41 +147,41 @@ describe('ProfileForm – saving', () => {
     );
   });
 
-  it('omits club from onSave payload when club is cleared', () => {
+  it('omits club from onSave payload when club is cleared', async () => {
     const onSave = jest.fn();
     // Render with no club so the Select starts empty
-    const { getByTestId } = renderForm({ club: null }, onSave);
+    const { getByTestId } = await renderForm({ club: null }, onSave);
 
-    fireEvent.press(getByTestId('btn-Lagre'));
+    await fireEvent.press(getByTestId('btn-Lagre'));
 
     expect(onSave).toHaveBeenCalledWith(expect.objectContaining({ club: undefined }));
   });
 
-  it('calls setModalVisible(false) after a successful save', () => {
+  it('calls setModalVisible(false) after a successful save', async () => {
     const setModalVisible = jest.fn();
-    const { getByTestId } = renderForm({}, jest.fn(), setModalVisible);
+    const { getByTestId } = await renderForm({}, jest.fn(), setModalVisible);
 
-    fireEvent.press(getByTestId('btn-Lagre'));
+    await fireEvent.press(getByTestId('btn-Lagre'));
 
     expect(setModalVisible).toHaveBeenCalledWith(false);
   });
 });
 
 describe('ProfileForm – cancel', () => {
-  it('calls setModalVisible(false) when "Avbryt" is pressed', () => {
+  it('calls setModalVisible(false) when "Avbryt" is pressed', async () => {
     const setModalVisible = jest.fn();
-    const { getByTestId } = renderForm({}, jest.fn(), setModalVisible);
+    const { getByTestId } = await renderForm({}, jest.fn(), setModalVisible);
 
-    fireEvent.press(getByTestId('btn-Avbryt'));
+    await fireEvent.press(getByTestId('btn-Avbryt'));
 
     expect(setModalVisible).toHaveBeenCalledWith(false);
   });
 
-  it('does NOT call onSave when "Avbryt" is pressed', () => {
+  it('does NOT call onSave when "Avbryt" is pressed', async () => {
     const onSave = jest.fn();
-    const { getByTestId } = renderForm({}, onSave);
+    const { getByTestId } = await renderForm({}, onSave);
 
-    fireEvent.press(getByTestId('btn-Avbryt'));
+    await fireEvent.press(getByTestId('btn-Avbryt'));
 
     expect(onSave).not.toHaveBeenCalled();
   });

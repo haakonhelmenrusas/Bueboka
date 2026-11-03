@@ -19,7 +19,7 @@ function makeAxiosError(status: number, data?: Record<string, any>, code = 'ERR_
 }
 
 describe('AppError', () => {
-  it('sets name, code, and message correctly', () => {
+  it('sets name, code, and message correctly', async () => {
     const err = new AppError('NOT_FOUND', 'Ressursen ble ikke funnet');
     expect(err.name).toBe('AppError');
     expect(err.code).toBe('NOT_FOUND');
@@ -27,7 +27,7 @@ describe('AppError', () => {
     expect(err).toBeInstanceOf(Error);
   });
 
-  it('stores originalError', () => {
+  it('stores originalError', async () => {
     const original = new Error('original');
     const err = new AppError('UNKNOWN', 'msg', original);
     expect(err.originalError).toBe(original);
@@ -35,7 +35,7 @@ describe('AppError', () => {
 });
 
 describe('handleApiError – AxiosError HTTP status codes', () => {
-  it('returns UNAUTHORIZED with "Feil e-post" for 401 with "invalid" in message', () => {
+  it('returns UNAUTHORIZED with "Feil e-post" for 401 with "invalid" in message', async () => {
     const err = makeAxiosError(401, { message: 'invalid credentials' });
     const result = handleApiError(err);
     expect(result).toBeInstanceOf(AppError);
@@ -43,53 +43,53 @@ describe('handleApiError – AxiosError HTTP status codes', () => {
     expect(result.message).toMatch(/Feil e-post/);
   });
 
-  it('returns UNAUTHORIZED with "Sesjonen er utløpt" for 401 without credential keywords', () => {
+  it('returns UNAUTHORIZED with "Sesjonen er utløpt" for 401 without credential keywords', async () => {
     const err = makeAxiosError(401, { message: 'session is gone' });
     const result = handleApiError(err);
     expect(result.code).toBe('UNAUTHORIZED');
     expect(result.message).toMatch(/Sesjonen er utløpt/);
   });
 
-  it('returns BAD_REQUEST for 400, forwarding the API message', () => {
+  it('returns BAD_REQUEST for 400, forwarding the API message', async () => {
     const err = makeAxiosError(400, { message: 'Ugyldig felt' });
     const result = handleApiError(err);
     expect(result.code).toBe('BAD_REQUEST');
     expect(result.message).toBe('Ugyldig felt');
   });
 
-  it('returns BAD_REQUEST with fallback message when API body has no message', () => {
+  it('returns BAD_REQUEST with fallback message when API body has no message', async () => {
     const err = makeAxiosError(400, {});
     const result = handleApiError(err);
     expect(result.code).toBe('BAD_REQUEST');
     expect(result.message).toBeTruthy();
   });
 
-  it('returns NOT_FOUND for 404', () => {
+  it('returns NOT_FOUND for 404', async () => {
     const err = makeAxiosError(404);
     const result = handleApiError(err);
     expect(result.code).toBe('NOT_FOUND');
   });
 
-  it('returns CONFLICT for 409, forwarding the API message', () => {
+  it('returns CONFLICT for 409, forwarding the API message', async () => {
     const err = makeAxiosError(409, { message: 'E-posten er allerede i bruk' });
     const result = handleApiError(err);
     expect(result.code).toBe('CONFLICT');
     expect(result.message).toBe('E-posten er allerede i bruk');
   });
 
-  it('returns RATE_LIMITED for 429', () => {
+  it('returns RATE_LIMITED for 429', async () => {
     const err = makeAxiosError(429);
     const result = handleApiError(err);
     expect(result.code).toBe('RATE_LIMITED');
   });
 
-  it('returns SERVER_ERROR for 500', () => {
+  it('returns SERVER_ERROR for 500', async () => {
     const err = makeAxiosError(500);
     const result = handleApiError(err);
     expect(result.code).toBe('SERVER_ERROR');
   });
 
-  it('returns SERVER_ERROR for 503', () => {
+  it('returns SERVER_ERROR for 503', async () => {
     const err = makeAxiosError(503);
     const result = handleApiError(err);
     expect(result.code).toBe('SERVER_ERROR');
@@ -97,31 +97,31 @@ describe('handleApiError – AxiosError HTTP status codes', () => {
 });
 
 describe('handleApiError – AxiosError network / timeout codes', () => {
-  it('returns TIMEOUT for ECONNABORTED', () => {
+  it('returns TIMEOUT for ECONNABORTED', async () => {
     const err = new AxiosError('timeout', 'ECONNABORTED');
     const result = handleApiError(err);
     expect(result.code).toBe('TIMEOUT');
   });
 
-  it('returns TIMEOUT for ETIMEDOUT', () => {
+  it('returns TIMEOUT for ETIMEDOUT', async () => {
     const err = new AxiosError('timed out', 'ETIMEDOUT');
     const result = handleApiError(err);
     expect(result.code).toBe('TIMEOUT');
   });
 
-  it('returns NETWORK_ERROR for ERR_NETWORK code', () => {
+  it('returns NETWORK_ERROR for ERR_NETWORK code', async () => {
     const err = new AxiosError('Network Error', 'ERR_NETWORK');
     const result = handleApiError(err);
     expect(result.code).toBe('NETWORK_ERROR');
   });
 
-  it('returns NETWORK_ERROR when message contains "Network Error"', () => {
+  it('returns NETWORK_ERROR when message contains "Network Error"', async () => {
     const err = new AxiosError('Network Error');
     const result = handleApiError(err);
     expect(result.code).toBe('NETWORK_ERROR');
   });
 
-  it('returns UNKNOWN for a generic AxiosError with no response', () => {
+  it('returns UNKNOWN for a generic AxiosError with no response', async () => {
     const err = new AxiosError('Something went wrong');
     err.message = 'Something totally unexpected';
     const result = handleApiError(err);
@@ -130,19 +130,19 @@ describe('handleApiError – AxiosError network / timeout codes', () => {
 });
 
 describe('handleApiError – plain Error instances', () => {
-  it('returns UNAUTHORIZED when message mentions property user of null', () => {
+  it('returns UNAUTHORIZED when message mentions property user of null', async () => {
     const err = new Error("Cannot read property 'user' of null");
     const result = handleApiError(err);
     expect(result.code).toBe('UNAUTHORIZED');
   });
 
-  it('returns UNAUTHORIZED when message mentions property user of undefined', () => {
+  it('returns UNAUTHORIZED when message mentions property user of undefined', async () => {
     const err = new Error("Cannot read property 'user' of undefined");
     const result = handleApiError(err);
     expect(result.code).toBe('UNAUTHORIZED');
   });
 
-  it('returns UNKNOWN for a generic Error', () => {
+  it('returns UNKNOWN for a generic Error', async () => {
     const err = new Error('Some random failure');
     const result = handleApiError(err);
     expect(result.code).toBe('UNKNOWN');
@@ -151,17 +151,17 @@ describe('handleApiError – plain Error instances', () => {
 });
 
 describe('handleApiError – non-Error thrown values', () => {
-  it('returns UNKNOWN for a string', () => {
+  it('returns UNKNOWN for a string', async () => {
     const result = handleApiError('plain string error');
     expect(result.code).toBe('UNKNOWN');
   });
 
-  it('returns UNKNOWN for null', () => {
+  it('returns UNKNOWN for null', async () => {
     const result = handleApiError(null);
     expect(result.code).toBe('UNKNOWN');
   });
 
-  it('returns UNKNOWN for a plain object', () => {
+  it('returns UNKNOWN for a plain object', async () => {
     const result = handleApiError({ weird: true });
     expect(result.code).toBe('UNKNOWN');
   });

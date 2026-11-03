@@ -28,16 +28,25 @@ jest.mock('@/hooks/useAuth', () => ({
   }),
 }));
 
-// Mock i18n hook
-jest.mock('@/lib/i18n', () => ({
+// Mock i18n: the hook reads object-style t from LanguageContext
+jest.mock('@/contexts/LanguageContext', () => ({
   useTranslation: () => ({
-    t: (key: string) => key,
+    t: {
+      'challenge.statusPending': 'PENDING',
+      'challenge.statusAccepted': 'ACCEPTED',
+      'challenge.statusDeclined': 'DECLINED',
+      'challenge.statusCompleted': 'COMPLETED',
+      'challenge.statusCancelled': 'CANCELLED',
+      'challenge.opponent': 'Opponent',
+      'common.unknownError': 'Unknown error',
+    },
   }),
 }));
 
-// Mock offlineMutation
+// Mock offlineMutation: the hook calls offlineMutation(operation, callback, userId),
+// so invoke the callback (2nd arg) directly.
 jest.mock('@/services/offline/mutationHelper', () => ({
-  offlineMutation: jest.fn((fn: any) => fn()),
+  offlineMutation: jest.fn((_operation: any, fn: any) => fn()),
 }));
 
 const mockChallenge: Challenge = {
@@ -88,10 +97,10 @@ describe('useChallenge', () => {
         total: 1,
       });
 
-      const { result } = renderHook(() => useChallenge());
+      const { result } = await renderHook(() => useChallenge());
 
       // Need to explicitly call fetchChallenges
-      act(() => {
+      await act(async () => {
         result.current.fetchChallenges();
       });
 
@@ -106,10 +115,12 @@ describe('useChallenge', () => {
 
       // The hook uses default values from state, which are { page: 1, pageSize: 20, total: 0 }
       // So it should call with no params (undefined) or use defaults
-      expect(mockChallengeRepository.getAll).toHaveBeenCalledWith({
-        page: 1,
-        pageSize: 20,
-      });
+      expect(mockChallengeRepository.getAll).toHaveBeenCalledWith(
+        expect.objectContaining({
+          page: 1,
+          pageSize: 20,
+        }),
+      );
     });
 
     it('fetches challenges with custom params', async () => {
@@ -120,9 +131,9 @@ describe('useChallenge', () => {
         total: 1,
       });
 
-      const { result } = renderHook(() => useChallenge());
+      const { result } = await renderHook(() => useChallenge());
 
-      act(() => {
+      await act(async () => {
         result.current.fetchChallenges({ page: 2, pageSize: 50, status: ChallengeStatus.PENDING });
       });
 
@@ -135,19 +146,21 @@ describe('useChallenge', () => {
         });
       });
 
-      expect(mockChallengeRepository.getAll).toHaveBeenCalledWith({
-        page: 2,
-        pageSize: 50,
-        status: ChallengeStatus.PENDING,
-      });
+      expect(mockChallengeRepository.getAll).toHaveBeenCalledWith(
+        expect.objectContaining({
+          page: 2,
+          pageSize: 50,
+          status: ChallengeStatus.PENDING,
+        }),
+      );
     });
 
     it('handles fetch error gracefully', async () => {
       mockChallengeRepository.getAll.mockRejectedValue(new Error('Network error'));
 
-      const { result } = renderHook(() => useChallenge());
+      const { result } = await renderHook(() => useChallenge());
 
-      act(() => {
+      await act(async () => {
         result.current.fetchChallenges();
       });
 
@@ -161,11 +174,11 @@ describe('useChallenge', () => {
         () => new Promise((resolve) => setTimeout(() => resolve({ challenges: [], page: 1, pageSize: 20, total: 0 }), 100)),
       );
 
-      const { result } = renderHook(() => useChallenge());
+      const { result } = await renderHook(() => useChallenge());
 
       expect(result.current.loading).toBe(false);
 
-      act(() => {
+      await act(async () => {
         result.current.fetchChallenges();
       });
 
@@ -181,9 +194,9 @@ describe('useChallenge', () => {
     it('fetches a specific challenge by ID', async () => {
       mockChallengeRepository.getById.mockResolvedValue(mockChallenge);
 
-      const { result } = renderHook(() => useChallenge());
+      const { result } = await renderHook(() => useChallenge());
 
-      act(() => {
+      await act(async () => {
         result.current.fetchChallengeById('challenge-1');
       });
 
@@ -197,10 +210,10 @@ describe('useChallenge', () => {
     it('handles not found error', async () => {
       mockChallengeRepository.getById.mockRejectedValue(new Error('Not found'));
 
-      const { result } = renderHook(() => useChallenge());
+      const { result } = await renderHook(() => useChallenge());
 
       let error: Error | undefined;
-      act(() => {
+      await act(async () => {
         result.current.fetchChallengeById('non-existent').catch((e) => {
           error = e;
         });
@@ -223,9 +236,9 @@ describe('useChallenge', () => {
         total: 1,
       });
 
-      const { result } = renderHook(() => useChallenge());
+      const { result } = await renderHook(() => useChallenge());
 
-      act(() => {
+      await act(async () => {
         result.current.createChallenge({
           challengedId: 'user-2',
           name: 'New Challenge',
@@ -245,10 +258,10 @@ describe('useChallenge', () => {
     it('handles create error', async () => {
       mockChallengeRepository.create.mockRejectedValue(new Error('Validation error'));
 
-      const { result } = renderHook(() => useChallenge());
+      const { result } = await renderHook(() => useChallenge());
 
       let error: Error | undefined;
-      act(() => {
+      await act(async () => {
         result.current
           .createChallenge({
             challengedId: 'user-2',
@@ -272,9 +285,9 @@ describe('useChallenge', () => {
       const acceptedChallenge = { ...mockChallenge, status: ChallengeStatus.ACCEPTED };
       mockChallengeRepository.accept.mockResolvedValue(acceptedChallenge);
 
-      const { result } = renderHook(() => useChallenge());
+      const { result } = await renderHook(() => useChallenge());
 
-      act(() => {
+      await act(async () => {
         result.current.acceptChallenge('challenge-1');
       });
 
@@ -291,9 +304,9 @@ describe('useChallenge', () => {
       const declinedChallenge = { ...mockChallenge, status: ChallengeStatus.DECLINED };
       mockChallengeRepository.decline.mockResolvedValue(declinedChallenge);
 
-      const { result } = renderHook(() => useChallenge());
+      const { result } = await renderHook(() => useChallenge());
 
-      act(() => {
+      await act(async () => {
         result.current.declineChallenge('challenge-1');
       });
 
@@ -310,9 +323,9 @@ describe('useChallenge', () => {
       const cancelledChallenge = { ...mockChallenge, status: ChallengeStatus.CANCELLED };
       mockChallengeRepository.cancel.mockResolvedValue(cancelledChallenge);
 
-      const { result } = renderHook(() => useChallenge());
+      const { result } = await renderHook(() => useChallenge());
 
-      act(() => {
+      await act(async () => {
         result.current.cancelChallenge('challenge-1');
       });
 
@@ -334,9 +347,9 @@ describe('useChallenge', () => {
       };
       mockChallengeRepository.submitResult.mockResolvedValue(updatedChallenge);
 
-      const { result } = renderHook(() => useChallenge());
+      const { result } = await renderHook(() => useChallenge());
 
-      act(() => {
+      await act(async () => {
         result.current.submitChallengeResult('challenge-1', {
           score: 280,
           totalArrows: 30,
@@ -358,9 +371,9 @@ describe('useChallenge', () => {
     it('deletes a challenge', async () => {
       mockChallengeRepository.delete.mockResolvedValue(undefined);
 
-      const { result } = renderHook(() => useChallenge());
+      const { result } = await renderHook(() => useChallenge());
 
-      act(() => {
+      await act(async () => {
         result.current.deleteChallenge('challenge-1');
       });
 
@@ -374,9 +387,9 @@ describe('useChallenge', () => {
     it('fetches challenge statistics', async () => {
       mockChallengeRepository.getStatistics.mockResolvedValue(mockStatistics);
 
-      const { result } = renderHook(() => useChallenge());
+      const { result } = await renderHook(() => useChallenge());
 
-      act(() => {
+      await act(async () => {
         result.current.fetchStatistics();
       });
 
@@ -389,18 +402,18 @@ describe('useChallenge', () => {
   });
 
   describe('resetError', () => {
-    it('clears the error state', () => {
-      const { result } = renderHook(() => useChallenge());
+    it('clears the error state', async () => {
+      const { result } = await renderHook(() => useChallenge());
 
       // Set error
-      act(() => {
+      await act(async () => {
         result.current.setError(new Error('Test error'));
       });
 
       expect(result.current.error).toBeDefined();
 
       // Clear error
-      act(() => {
+      await act(async () => {
         result.current.resetError();
       });
 
@@ -409,88 +422,88 @@ describe('useChallenge', () => {
   });
 
   describe('isChallengeOwner', () => {
-    it('returns true if user is the challenger', () => {
-      const { result } = renderHook(() => useChallenge());
+    it('returns true if user is the challenger', async () => {
+      const { result } = await renderHook(() => useChallenge());
 
       expect(result.current.isChallengeOwner({ ...mockChallenge, challengerId: 'user-1' })).toBe(true);
     });
 
-    it('returns false if user is the challenged', () => {
-      const { result } = renderHook(() => useChallenge());
+    it('returns false if user is the challenged', async () => {
+      const { result } = await renderHook(() => useChallenge());
 
       expect(result.current.isChallengeOwner({ ...mockChallenge, challengerId: 'user-2' })).toBe(false);
     });
   });
 
   describe('canAcceptChallenge', () => {
-    it('returns true if user is challenged and status is PENDING', () => {
-      const { result } = renderHook(() => useChallenge());
+    it('returns true if user is challenged and status is PENDING', async () => {
+      const { result } = await renderHook(() => useChallenge());
 
       expect(result.current.canAcceptChallenge({ ...mockChallenge, challengedId: 'user-1' })).toBe(true);
     });
 
-    it('returns false if status is not PENDING', () => {
-      const { result } = renderHook(() => useChallenge());
+    it('returns false if status is not PENDING', async () => {
+      const { result } = await renderHook(() => useChallenge());
 
       expect(result.current.canAcceptChallenge({ ...mockChallenge, status: ChallengeStatus.ACCEPTED })).toBe(false);
     });
 
-    it('returns false if user is not the challenged', () => {
-      const { result } = renderHook(() => useChallenge());
+    it('returns false if user is not the challenged', async () => {
+      const { result } = await renderHook(() => useChallenge());
 
       expect(result.current.canAcceptChallenge({ ...mockChallenge, challengedId: 'user-2' })).toBe(false);
     });
   });
 
   describe('canCancelChallenge', () => {
-    it('returns true if user is challenger and status is PENDING', () => {
-      const { result } = renderHook(() => useChallenge());
+    it('returns true if user is challenger and status is PENDING', async () => {
+      const { result } = await renderHook(() => useChallenge());
 
       expect(result.current.canCancelChallenge(mockChallenge)).toBe(true);
     });
 
-    it('returns false if status is not PENDING', () => {
-      const { result } = renderHook(() => useChallenge());
+    it('returns false if status is not PENDING', async () => {
+      const { result } = await renderHook(() => useChallenge());
 
       expect(result.current.canCancelChallenge({ ...mockChallenge, status: ChallengeStatus.ACCEPTED })).toBe(false);
     });
 
-    it('returns false if user is not the challenger', () => {
-      const { result } = renderHook(() => useChallenge());
+    it('returns false if user is not the challenger', async () => {
+      const { result } = await renderHook(() => useChallenge());
 
       expect(result.current.canCancelChallenge({ ...mockChallenge, challengerId: 'user-2' })).toBe(false);
     });
   });
 
   describe('getChallengeStatusText', () => {
-    it('returns correct status text for PENDING', () => {
-      const { result } = renderHook(() => useChallenge());
+    it('returns correct status text for PENDING', async () => {
+      const { result } = await renderHook(() => useChallenge());
 
-      expect(result.current.getChallengeStatusText(ChallengeStatus.PENDING)).toBe('challengeStatus.PENDING');
+      expect(result.current.getChallengeStatusText(ChallengeStatus.PENDING)).toBe('PENDING');
     });
 
-    it('returns correct status text for ACCEPTED', () => {
-      const { result } = renderHook(() => useChallenge());
+    it('returns correct status text for ACCEPTED', async () => {
+      const { result } = await renderHook(() => useChallenge());
 
-      expect(result.current.getChallengeStatusText(ChallengeStatus.ACCEPTED)).toBe('challengeStatus.ACCEPTED');
+      expect(result.current.getChallengeStatusText(ChallengeStatus.ACCEPTED)).toBe('ACCEPTED');
     });
 
-    it('returns correct status text for DECLINED', () => {
-      const { result } = renderHook(() => useChallenge());
+    it('returns correct status text for DECLINED', async () => {
+      const { result } = await renderHook(() => useChallenge());
 
-      expect(result.current.getChallengeStatusText(ChallengeStatus.DECLINED)).toBe('challengeStatus.DECLINED');
+      expect(result.current.getChallengeStatusText(ChallengeStatus.DECLINED)).toBe('DECLINED');
     });
 
-    it('returns correct status text for COMPLETED', () => {
-      const { result } = renderHook(() => useChallenge());
+    it('returns correct status text for COMPLETED', async () => {
+      const { result } = await renderHook(() => useChallenge());
 
-      expect(result.current.getChallengeStatusText(ChallengeStatus.COMPLETED)).toBe('challengeStatus.COMPLETED');
+      expect(result.current.getChallengeStatusText(ChallengeStatus.COMPLETED)).toBe('COMPLETED');
     });
 
-    it('returns correct status text for CANCELLED', () => {
-      const { result } = renderHook(() => useChallenge());
+    it('returns correct status text for CANCELLED', async () => {
+      const { result } = await renderHook(() => useChallenge());
 
-      expect(result.current.getChallengeStatusText(ChallengeStatus.CANCELLED)).toBe('challengeStatus.CANCELLED');
+      expect(result.current.getChallengeStatusText(ChallengeStatus.CANCELLED)).toBe('CANCELLED');
     });
   });
 });
