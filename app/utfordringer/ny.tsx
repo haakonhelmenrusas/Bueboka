@@ -31,20 +31,6 @@ export default function CreateChallengePage() {
     }
   }, [params.opponentId, router]);
 
-  // Search for profiles
-  useEffect(() => {
-    if (!query.trim()) {
-      setProfiles([]);
-      return;
-    }
-
-    const timer = setTimeout(() => {
-      fetchProfiles(query);
-    }, 300);
-
-    return () => clearTimeout(timer);
-  }, [query, fetchProfiles]);
-
   const fetchProfiles = useCallback(
     async (q: string) => {
       setLoading(true);
@@ -60,6 +46,20 @@ export default function CreateChallengePage() {
     },
     [user?.id],
   );
+
+  // Search for profiles
+  useEffect(() => {
+    if (!query.trim()) {
+      setProfiles([]);
+      return;
+    }
+
+    const timer = setTimeout(() => {
+      fetchProfiles(query);
+    }, 300);
+
+    return () => clearTimeout(timer);
+  }, [query, fetchProfiles]);
 
   const handleSelectOpponent = useCallback(
     (profile: PublicProfile) => {

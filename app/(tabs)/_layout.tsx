@@ -9,23 +9,16 @@ import { View, ActivityIndicator } from 'react-native';
 import { OfflineBanner } from '@/components/common';
 import { useAuth } from '@/hooks';
 import { Redirect } from 'expo-router';
-import { useNavigation } from 'expo-router';
-import { useEffect } from 'react';
+import { usePreventRemove } from 'expo-router/build/react-navigation/core/usePreventRemove';
 import FloatingTabBar from '@/components/common/FloatingTabBar/FloatingTabBar';
 
 export default function AppLayout() {
   const { isAuthenticated, isLoading } = useAuth();
-  const parentNavigation = useNavigation();
 
-  // Block navigating back to auth/intro screens via Android back button or iOS gesture,
-  // but allow programmatic redirects (e.g. logout → /auth)
-  useEffect(() => {
-    return parentNavigation.addListener('beforeRemove', (e) => {
-      if (isAuthenticated) {
-        e.preventDefault();
-      }
-    });
-  }, [parentNavigation, isAuthenticated]);
+  // Block navigating back to auth/intro screens via Android back button or iOS gesture.
+  // Programmatic redirects (e.g. logout → /auth) still work because isAuthenticated
+  // flips to false before the redirect happens.
+  usePreventRemove(isAuthenticated);
 
   if (isLoading) {
     return (

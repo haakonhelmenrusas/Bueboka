@@ -66,6 +66,7 @@ const baseUser: User = {
   publicStats: false,
   publicSkytternr: false,
   publicAchievements: false,
+  locale: null,
   createdAt: '2024-01-01T00:00:00.000Z',
   updatedAt: '2024-01-01T00:00:00.000Z',
 };

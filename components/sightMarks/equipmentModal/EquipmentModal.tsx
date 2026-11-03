@@ -58,9 +58,9 @@ export default function EquipmentModal({ visible, onClose }: Props) {
           bowRepository.update(bow.id, {
             name: bow.name,
             type: bow.type,
-            eyeToNock: eyeToNock ? parseFloat(eyeToNock) : null,
-            aimMeasure: aimMeasure ? parseFloat(aimMeasure) : null,
-            eyeToSight: eyeToSight ? parseFloat(eyeToSight) : null,
+            eyeToNock: eyeToNock ? parseFloat(eyeToNock) : undefined,
+            aimMeasure: aimMeasure ? parseFloat(aimMeasure) : undefined,
+            eyeToSight: eyeToSight ? parseFloat(eyeToSight) : undefined,
             limbs: bow.limbs ?? undefined,
             riser: bow.riser ?? undefined,
             handOrientation: bow.handOrientation,
@@ -77,7 +77,7 @@ export default function EquipmentModal({ visible, onClose }: Props) {
           arrowsRepository.update(arrows.id, {
             name: arrows.name,
             material: arrows.material,
-            weight: arrowWeight ? parseFloat(arrowWeight) : null,
+            weight: arrowWeight ? parseFloat(arrowWeight) : undefined,
             arrowsCount: arrows.arrowsCount ?? undefined,
             diameter: arrows.diameter ?? undefined,
             length: arrows.length ?? undefined,

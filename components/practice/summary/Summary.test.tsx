@@ -1,39 +1,51 @@
 import React from 'react';
 import { render } from '@testing-library/react-native';
 import Summary from './Summary';
-import { Environment, Practice } from '@/types';
+import { End, Environment, Practice, PracticeCategory } from '@/types';
 import * as helpers from '../helpers/sumArrows';
 
 describe('Summary', () => {
+  const makeEnd = (id: string, practiceId: string, arrows: number | null, scores: number[]): End => ({
+    id,
+    practiceId,
+    arrows,
+    arrowsWithoutScore: 0,
+    scores,
+    roundScore: null,
+    distanceMeters: null,
+    distanceFrom: null,
+    distanceTo: null,
+    targetSizeCm: null,
+    targetType: null,
+    arrowsPerEnd: null,
+    createdAt: '2024-01-01T00:00:00.000Z',
+    updatedAt: '2024-01-01T00:00:00.000Z',
+  });
+
+  const makePractice = (id: string, date: string, totalScore: number, environment: Environment, end: End): Practice => ({
+    id,
+    userId: 'user-1',
+    date,
+    notes: null,
+    totalScore,
+    rating: null,
+    location: null,
+    environment,
+    weather: [],
+    practiceCategory: PracticeCategory.SKIVE_INDOOR,
+    roundTypeId: null,
+    bowId: null,
+    arrowsId: null,
+    ends: [end],
+    createdAt: date,
+    updatedAt: date,
+  });
+
   const practices: Practice[] = [
-    {
-      id: '1',
-      date: new Date('2024-07-01'),
-      totalScore: 100,
-      environment: Environment.OUTDOOR,
-      ends: [{ id: '1', practiceId: '1', arrows: 10, scores: [9, 10, 9, 9, 10, 9, 9, 10, 9, 10] }],
-    },
-    {
-      id: '2',
-      date: new Date('2024-07-28'),
-      totalScore: 150,
-      environment: Environment.OUTDOOR,
-      ends: [{ id: '2', practiceId: '2', arrows: 15, scores: [10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10] }],
-    },
-    {
-      id: '3',
-      date: new Date('2024-06-05'),
-      totalScore: 200,
-      environment: Environment.OUTDOOR,
-      ends: [{ id: '3', practiceId: '3', arrows: 20, scores: [] }],
-    },
-    {
-      id: '4',
-      date: new Date('2024-05-20'),
-      totalScore: 50,
-      environment: Environment.INDOOR,
-      ends: [{ id: '4', practiceId: '4', arrows: 5, scores: [10, 9, 10, 9, 10] }],
-    },
+    makePractice('1', '2024-07-01', 100, Environment.OUTDOOR, makeEnd('1', '1', 10, [9, 10, 9, 9, 10, 9, 9, 10, 9, 10])),
+    makePractice('2', '2024-07-28', 150, Environment.OUTDOOR, makeEnd('2', '2', 15, Array(15).fill(10))),
+    makePractice('3', '2024-06-05', 200, Environment.OUTDOOR, makeEnd('3', '3', 20, [])),
+    makePractice('4', '2024-05-20', 50, Environment.INDOOR, makeEnd('4', '4', 5, [10, 9, 10, 9, 10])),
   ];
 
   beforeEach(() => {

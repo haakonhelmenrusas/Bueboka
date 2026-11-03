@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Platform, StyleProp, Text, TextInput, TextInputProps, TextStyle, View, ViewStyle } from 'react-native';
+import type { TextInputInstance } from 'react-native';
 import { defaultStyles } from './TextareaStyles';
 import { colors } from '@/styles/colors';
 import { useTranslation } from '@/contexts';
@@ -19,7 +20,7 @@ interface TextareaProps extends TextInputProps {
   icon?: React.ReactNode;
 }
 
-const Textarea = React.forwardRef<TextInput, TextareaProps>(
+const Textarea = React.forwardRef<TextInputInstance, TextareaProps>(
   (
     {
       label,

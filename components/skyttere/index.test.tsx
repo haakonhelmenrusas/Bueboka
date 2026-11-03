@@ -53,6 +53,7 @@ const mockUser: User = {
   image: null,
   skytternr: null,
   isPublic: false,
+  locale: null,
   publicName: false,
   publicClub: false,
   publicStats: false,

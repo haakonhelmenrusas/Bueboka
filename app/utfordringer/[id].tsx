@@ -27,13 +27,6 @@ export default function ChallengeDetailPage() {
 
   const [refreshing, setRefreshing] = useState(false);
 
-  // Fetch challenge on mount
-  useEffect(() => {
-    if (id && typeof id === 'string') {
-      fetchChallengeDetails(id);
-    }
-  }, [id, fetchChallengeDetails]);
-
   const fetchChallengeDetails = useCallback(
     async (challengeId: string) => {
       try {
@@ -44,6 +37,13 @@ export default function ChallengeDetailPage() {
     },
     [fetchChallengeById],
   );
+
+  // Fetch challenge on mount
+  useEffect(() => {
+    if (id && typeof id === 'string') {
+      fetchChallengeDetails(id);
+    }
+  }, [id, fetchChallengeDetails]);
 
   const handleRefresh = useCallback(async () => {
     if (!id || typeof id !== 'string') return;

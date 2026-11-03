@@ -51,8 +51,6 @@ const fakeChallenge: Challenge = {
   description: 'Friendly competition',
   roundTypeId: 'round-1',
   customRules: null,
-  startDate: '2024-07-01T00:00:00.000Z',
-  endDate: '2024-07-07T00:00:00.000Z',
   status: ChallengeStatus.PENDING,
   winnerId: null,
   challengerScore: null,
@@ -236,17 +234,13 @@ describe('challengeRepository.create', () => {
     );
   });
 
-  it('includes startDate and endDate when provided', async () => {
+  it('passes roundTypeId and customRules through when provided', async () => {
     mockClient.post.mockResolvedValueOnce({ data: fakeChallenge });
-
-    const startDate = new Date('2024-07-01');
-    const endDate = new Date('2024-07-07');
 
     const createData: CreateChallengeData = {
       challengedId: 'user-2',
-      name: 'Timed Challenge',
-      startDate,
-      endDate,
+      name: 'Custom Rules Challenge',
+      customRules: { distanceMeters: 50, numberArrows: 36 },
     };
 
     await challengeRepository.create(createData);
@@ -254,8 +248,9 @@ describe('challengeRepository.create', () => {
     expect(mockClient.post).toHaveBeenCalledWith(
       '/challenges',
       expect.objectContaining({
-        startDate,
-        endDate,
+        challengedId: 'user-2',
+        name: 'Custom Rules Challenge',
+        customRules: { distanceMeters: 50, numberArrows: 36 },
       }),
     );
   });
