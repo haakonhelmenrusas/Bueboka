@@ -50,7 +50,15 @@ export function usePushNotifications() {
 
         await notificationsApi.registerPushToken(token.data);
       } catch (err) {
-        console.error('[push] failed to register push token:', err);
+        // Expected in builds without FCM credentials: on Android the Expo push
+        // token needs Firebase Messaging, configured via `googleServicesFile`
+        // in app.json (or EAS credentials for store builds). Skip quietly there.
+        const msg = err instanceof Error ? err.message : String(err);
+        if (msg.includes('Firebase') || msg.includes('googleServicesFile')) {
+          console.warn('[push] push token unavailable (no FCM/google-services.json configured) — skipping registration');
+        } else {
+          console.error('[push] failed to register push token:', err);
+        }
       }
     };
 

@@ -78,9 +78,6 @@ export const styles = StyleSheet.create({
   createButton: {
     alignSelf: 'flex-end',
   },
-  listContainer: {
-    flex: 1,
-  },
   errorContainer: {
     alignItems: 'center',
     padding: 20,
