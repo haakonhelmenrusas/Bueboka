@@ -82,6 +82,33 @@ describe('ChallengeCard', () => {
     expect(getByText('Opponent: User One')).toBeTruthy();
   });
 
+  it('shows the challenged user as opponent when current user is the challenger', async () => {
+    const { getByText } = await render(<ChallengeCard challenge={mockChallenge} onPress={mockOnPress} currentUserId="user1" />);
+
+    expect(getByText('Opponent: User Two')).toBeTruthy();
+  });
+
+  it('shows the challenger as opponent when current user is the challenged', async () => {
+    const { getByText } = await render(<ChallengeCard challenge={mockChallenge} onPress={mockOnPress} currentUserId="user2" />);
+
+    expect(getByText('Opponent: User One')).toBeTruthy();
+  });
+
+  it('falls back to whichever name is available instead of Unknown opponent', async () => {
+    const partial = { ...mockChallenge, challengerName: null, challengedName: 'User Two' };
+    const { getByText, queryByText } = await render(<ChallengeCard challenge={partial} onPress={mockOnPress} currentUserId="user2" />);
+
+    expect(getByText('Opponent: User Two')).toBeTruthy();
+    expect(queryByText(/Unknown opponent/)).toBeNull();
+  });
+
+  it('shows Unknown opponent only when no names are present at all', async () => {
+    const noNames = { ...mockChallenge, challengerName: null, challengedName: null };
+    const { getByText } = await render(<ChallengeCard challenge={noNames} onPress={mockOnPress} currentUserId="user1" />);
+
+    expect(getByText('Opponent: Unknown opponent')).toBeTruthy();
+  });
+
   it('renders status badge', async () => {
     const { getByText } = await render(<ChallengeCard challenge={mockChallenge} onPress={mockOnPress} />);
 

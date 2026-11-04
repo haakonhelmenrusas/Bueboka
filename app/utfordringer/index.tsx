@@ -161,8 +161,9 @@ export default function ChallengesPage() {
             <Button
               label={t['challenge.createNew']}
               onPress={handleCreateNew}
-              style={styles.createButton}
-              icon={<FontAwesomeIcon icon={faPlus} size={18} color={colors.primary} />}
+              type="filled"
+              buttonStyle={styles.createButton}
+              icon={<FontAwesomeIcon icon={faPlus} size={18} color={colors.white} />}
             />
           </View>
 
@@ -179,6 +180,7 @@ export default function ChallengesPage() {
                 loading={loading && challenges.length === 0}
                 error={error}
                 onChallengePress={handleChallengePress}
+                currentUserId={user?.id}
                 hasMore={pagination.page * pagination.pageSize < pagination.total}
                 onLoadMore={() => {
                   if (pagination.page * pagination.pageSize < pagination.total) {

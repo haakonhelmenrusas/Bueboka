@@ -14,6 +14,7 @@ interface ChallengeListProps {
   hasMore?: boolean;
   refreshing?: boolean;
   onRefresh?: () => void;
+  currentUserId?: string;
 }
 
 export default function ChallengeList({
@@ -25,6 +26,7 @@ export default function ChallengeList({
   hasMore = false,
   refreshing = false,
   onRefresh,
+  currentUserId,
 }: ChallengeListProps) {
   const { t } = useTranslation();
 
@@ -70,7 +72,7 @@ export default function ChallengeList({
     <FlatList
       data={challenges}
       keyExtractor={(item) => item.id}
-      renderItem={({ item }) => <ChallengeCard challenge={item} onPress={onChallengePress} />}
+      renderItem={({ item }) => <ChallengeCard challenge={item} onPress={onChallengePress} currentUserId={currentUserId} />}
       contentContainerStyle={styles.list}
       ListFooterComponent={renderFooter}
       onEndReached={hasMore && onLoadMore ? () => onLoadMore?.() : undefined}

@@ -3,7 +3,15 @@ import { colors } from '@/styles/colors';
 
 export const styles = StyleSheet.create({
   container: {
+    backgroundColor: colors.white,
+    borderRadius: 12,
     padding: 16,
+    marginBottom: 16,
+    shadowColor: colors.text,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 2,
   },
   content: {
     gap: 16,
