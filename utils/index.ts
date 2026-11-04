@@ -3,3 +3,4 @@ export { capitalizeFirstLetter } from './helpers/capitalizeFirstLetter';
 export { handleNumberChange } from './helpers/handleNumberChange';
 export { checkDecimalCount } from './helpers/handleNumberChange';
 export { hexToRgba } from './helpers/hexToRgba';
+export { computeCompetitionStats, isActiveCompetition, splitCompetitions } from './competitionStats';

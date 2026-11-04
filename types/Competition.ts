@@ -40,3 +40,18 @@ export interface Competition {
   createdAt: string;
   updatedAt: string;
 }
+
+/**
+ * Aggregated statistics over a list of competitions.
+ * "Active" means the competition date is today or in the future.
+ */
+export interface CompetitionStats {
+  total: number;
+  active: number;
+  /** Competitions with placement 1-3 */
+  podiums: number;
+  personalBests: number;
+  bestPlacement: number | null;
+  /** Average totalScore, rounded to one decimal */
+  averageScore: number | null;
+}
