@@ -57,7 +57,6 @@ function RootLayoutContent() {
         <Stack.Screen name="skyttere" options={{ headerShown: false }} />
         <Stack.Screen name="achievements" options={{ headerShown: false }} />
         <Stack.Screen name="utfordringer" options={{ headerShown: false }} />
-        <Stack.Screen name="konkurranse" options={{ headerShown: false }} />
         <Stack.Screen name="varsler" options={{ headerShown: false }} />
       </Stack>
     </>

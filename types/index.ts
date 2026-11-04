@@ -8,7 +8,7 @@ export type { PublicProfile } from './PublicProfile';
 export type { Practice, End, RoundType, PracticeCardItem, PracticeCardsResponse } from './Practice';
 export type { PracticeFilter } from './Practice';
 export { Environment, WeatherCondition, PracticeCategory } from './Practice';
-export type { Competition, CompetitionRound, CompetitionStats } from './Competition';
+export type { Competition, CompetitionRound } from './Competition';
 export type { SightMark, SightMarkResult, AimDistanceMark, CalculatedMarks, SightMarkCalc, MarksResult } from './SightMarks';
 export type { Series, SeriesData } from './Statistics';
 export type {

@@ -28,7 +28,6 @@ import { styles } from '@/components/home/HomeScreenStyles';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faChevronRight } from '@fortawesome/free-solid-svg-icons/faChevronRight';
 import { faTrophy } from '@fortawesome/free-solid-svg-icons/faTrophy';
-import { faMedal } from '@fortawesome/free-solid-svg-icons/faMedal';
 import { faHandshake } from '@fortawesome/free-solid-svg-icons/faHandshake';
 import { faBell } from '@fortawesome/free-solid-svg-icons/faBell';
 import ProfileImageManager from '@/components/home/profile/ProfileImageManager';
@@ -168,12 +167,6 @@ export default function HomeScreen() {
                   onPress={() => router.push('/skyttere')}
                   accessibilityLabel={t['home.searchArchers']}>
                   <FontAwesomeIcon icon={faUserGroup} size={18} color={colors.white} />
-                </TouchableOpacity>
-                <TouchableOpacity
-                  style={styles.trophyButton}
-                  onPress={() => router.push('/konkurranse')}
-                  accessibilityLabel={t['home.competitions']}>
-                  <FontAwesomeIcon icon={faMedal} size={18} color={colors.accentYellow} />
                 </TouchableOpacity>
                 <TouchableOpacity
                   style={styles.trophyButton}

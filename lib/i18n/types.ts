@@ -76,7 +76,6 @@ export interface TranslationKeys {
   'home.greetingFallback': string;
   'home.searchArchers': string;
   'home.myAchievements': string;
-  'home.competitions': string;
   'home.challenges': string;
   'home.notifications': string;
   'home.detailedStats': string;
@@ -364,24 +363,6 @@ export interface TranslationKeys {
   'arrowMaterial.karbon': string;
   'arrowMaterial.aluminium': string;
   'arrowMaterial.treverk': string;
-
-  // Konkurranse screen (competitions overview)
-  'konkurranse.back': string;
-  'konkurranse.title': string;
-  'konkurranse.active': string;
-  'konkurranse.past': string;
-  'konkurranse.empty': string;
-  'konkurranse.emptyDesc': string;
-  'konkurranse.fetchError': string;
-  'konkurranse.placement': string;
-  'konkurranse.score': string;
-  'konkurranse.stats.title': string;
-  'konkurranse.stats.total': string;
-  'konkurranse.stats.active': string;
-  'konkurranse.stats.podiums': string;
-  'konkurranse.stats.personalBests': string;
-  'konkurranse.stats.bestPlacement': string;
-  'konkurranse.stats.avgScore': string;
 
   // Notifications screen
   'notifications.back': string;
