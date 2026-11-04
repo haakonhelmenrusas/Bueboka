@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-import { View, ScrollView, Text, ActivityIndicator, FlatList } from 'react-native';
+import { View, ScrollView, Text, TextInput, ActivityIndicator, FlatList } from 'react-native';
 import { useRouter, useLocalSearchParams } from 'expo-router';
 import { useAuth } from '@/hooks';
 import { publicProfilesApi } from '@/services';
@@ -8,7 +8,7 @@ import { styles } from '@/components/challenges/NyChallengeScreenStyles';
 import { colors } from '@/styles/colors';
 import { useTranslation } from '@/contexts';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { Button, Input } from '@/components/common';
+import { Button } from '@/components/common';
 import { LinearGradient } from 'expo-linear-gradient';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faSearch, faUser, faArrowLeft, faCheck, faTrophy } from '@fortawesome/free-solid-svg-icons';
@@ -86,7 +86,7 @@ export default function CreateChallengePage() {
               onPress={handleBack}
               label=""
               variant="tertiary"
-              style={styles.backButton}
+              buttonStyle={styles.backButton}
               icon={<FontAwesomeIcon icon={faArrowLeft} size={24} color={colors.white} />}
             />
             <View style={styles.headerContent}>
@@ -99,14 +99,12 @@ export default function CreateChallengePage() {
             <Text style={styles.sectionTitle}>{t['challenge.searchOpponent']}</Text>
             <View style={styles.searchInputContainer}>
               <FontAwesomeIcon icon={faSearch} size={20} color={'rgba(255, 255, 255, 0.7)'} style={styles.searchIcon} />
-              <Input
-                label=""
+              <TextInput
+                style={styles.searchInput}
                 placeholder={t['challenge.searchPlaceholder']}
+                placeholderTextColor={'rgba(255, 255, 255, 0.5)'}
                 value={query}
                 onChangeText={setQuery}
-                containerStyle={styles.inputContainer}
-                inputStyle={styles.input}
-                placeholderTextColor={'rgba(255, 255, 255, 0.5)'}
               />
             </View>
 

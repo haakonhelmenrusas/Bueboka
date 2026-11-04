@@ -124,7 +124,7 @@ export default function ChallengesPage() {
               onPress={() => router.back()}
               label=""
               variant="tertiary"
-              style={styles.backButton}
+              buttonStyle={styles.backButton}
               icon={<FontAwesomeIcon icon={faArrowLeft} size={24} color={colors.white} />}
             />
             <View style={styles.headerContent}>
