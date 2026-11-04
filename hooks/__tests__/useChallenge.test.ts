@@ -39,7 +39,26 @@ jest.mock('@/contexts/LanguageContext', () => ({
       'challenge.statusCancelled': 'CANCELLED',
       'challenge.opponent': 'Opponent',
       'common.unknownError': 'Unknown error',
+      'notifications.challengeSentTitle': 'Challenge sent',
+      'notifications.challengeSentMessage': 'You sent a challenge to {name}',
+      'notifications.challengeSentMessageGeneric': 'You sent a challenge',
     },
+  }),
+}));
+
+const mockAddNotification = jest.fn();
+jest.mock('@/contexts/NotificationContext', () => ({
+  NotificationType: {
+    CHALLENGE_RECEIVED: 'CHALLENGE_RECEIVED',
+    CHALLENGE_SENT: 'CHALLENGE_SENT',
+    CHALLENGE_ACCEPTED: 'CHALLENGE_ACCEPTED',
+    CHALLENGE_DECLINED: 'CHALLENGE_DECLINED',
+    CHALLENGE_SUBMITTED: 'CHALLENGE_SUBMITTED',
+  },
+  useNotifications: () => ({
+    notifications: [],
+    unreadCount: 0,
+    addNotification: mockAddNotification,
   }),
 }));
 
@@ -227,6 +246,49 @@ describe('useChallenge', () => {
   });
 
   describe('createChallenge', () => {
+    it('notifies the inviter with a CHALLENGE_SENT notification', async () => {
+      mockChallengeRepository.create.mockResolvedValue(mockChallenge);
+      mockChallengeRepository.getAll.mockResolvedValue({
+        challenges: [mockChallengeListItem],
+        page: 1,
+        pageSize: 20,
+        total: 1,
+      });
+
+      const { result } = await renderHook(() => useChallenge());
+
+      await act(async () => {
+        await result.current.createChallenge({ challengedId: 'user-2', name: 'New Challenge' }, 'User Two');
+      });
+
+      expect(mockAddNotification).toHaveBeenCalledWith(
+        expect.objectContaining({
+          type: 'CHALLENGE_SENT',
+          title: 'Challenge sent',
+          message: 'You sent a challenge to User Two',
+          challengeId: 'challenge-1',
+        }),
+      );
+    });
+
+    it('falls back to a generic message when the opponent name is unknown', async () => {
+      mockChallengeRepository.create.mockResolvedValue(mockChallenge);
+      mockChallengeRepository.getAll.mockResolvedValue({ challenges: [], page: 1, pageSize: 20, total: 0 });
+
+      const { result } = await renderHook(() => useChallenge());
+
+      await act(async () => {
+        await result.current.createChallenge({ challengedId: 'user-2', name: 'New Challenge' });
+      });
+
+      expect(mockAddNotification).toHaveBeenCalledWith(
+        expect.objectContaining({
+          type: 'CHALLENGE_SENT',
+          message: 'You sent a challenge',
+        }),
+      );
+    });
+
     it('creates a new challenge and refreshes list', async () => {
       mockChallengeRepository.create.mockResolvedValue(mockChallenge);
       mockChallengeRepository.getAll.mockResolvedValue({

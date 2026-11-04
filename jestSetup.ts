@@ -64,6 +64,7 @@ jest.mock('@/contexts/LanguageContext', () => {
 jest.mock('@/contexts/NotificationContext', () => ({
   NotificationType: {
     CHALLENGE_RECEIVED: 'CHALLENGE_RECEIVED',
+    CHALLENGE_SENT: 'CHALLENGE_SENT',
     CHALLENGE_ACCEPTED: 'CHALLENGE_ACCEPTED',
     CHALLENGE_DECLINED: 'CHALLENGE_DECLINED',
     CHALLENGE_SUBMITTED: 'CHALLENGE_SUBMITTED',

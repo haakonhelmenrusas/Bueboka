@@ -58,6 +58,11 @@ export const styles = StyleSheet.create({
     flexDirection: 'row',
     gap: 8,
   },
+  headerBadge: {
+    position: 'absolute',
+    top: -4,
+    right: -4,
+  },
   searchButton: {
     width: 40,
     height: 40,

@@ -129,7 +129,7 @@ export function useChallenge() {
    * Create a new challenge
    */
   const createChallenge = useCallback(
-    async (data: CreateChallengeData) => {
+    async (data: CreateChallengeData, opponentName?: string) => {
       try {
         setLoading(true);
         setError(null);
@@ -144,6 +144,18 @@ export function useChallenge() {
 
         // Refresh challenges list
         await fetchChallenges();
+
+        // Notify the inviter that the challenge was sent (the invitee is
+        // notified via the pending-challenges poller when they receive it)
+        addNotification({
+          type: NotificationType.CHALLENGE_SENT,
+          title: t['notifications.challengeSentTitle'],
+          message: opponentName
+            ? t['notifications.challengeSentMessage'].replace('{name}', opponentName)
+            : t['notifications.challengeSentMessageGeneric'],
+          challengeId: challenge.id,
+        });
+
         return challenge;
       } catch (err) {
         setError(err instanceof Error ? err : new Error(t['common.unknownError']));
@@ -152,7 +164,7 @@ export function useChallenge() {
         setLoading(false);
       }
     },
-    [fetchChallenges, t],
+    [fetchChallenges, addNotification, t],
   );
 
   /**

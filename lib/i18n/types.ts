@@ -77,6 +77,8 @@ export interface TranslationKeys {
   'home.searchArchers': string;
   'home.myAchievements': string;
   'home.competitions': string;
+  'home.challenges': string;
+  'home.notifications': string;
   'home.detailedStats': string;
   'home.notLoggedInTitle': string;
   'home.notLoggedInDesc': string;
@@ -380,6 +382,17 @@ export interface TranslationKeys {
   'konkurranse.stats.personalBests': string;
   'konkurranse.stats.bestPlacement': string;
   'konkurranse.stats.avgScore': string;
+
+  // Notifications screen
+  'notifications.back': string;
+  'notifications.title': string;
+  'notifications.empty': string;
+  'notifications.markAllRead': string;
+  'notifications.challengeReceivedTitle': string;
+  'notifications.challengeReceivedMessage': string;
+  'notifications.challengeSentTitle': string;
+  'notifications.challengeSentMessage': string;
+  'notifications.challengeSentMessageGeneric': string;
 
   // Achievements screen
   'achievements.fetchError': string;

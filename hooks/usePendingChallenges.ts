@@ -4,6 +4,7 @@ import { challengeRepository } from '@/services/repositories';
 import { ChallengeStatus } from '@/types';
 import { useNotifications } from '@/contexts';
 import { NotificationType } from '@/contexts/NotificationContext';
+import { useTranslation } from '@/contexts/LanguageContext';
 
 /**
  * Hook to track and manage pending challenges for the current user
@@ -11,6 +12,7 @@ import { NotificationType } from '@/contexts/NotificationContext';
  */
 export function usePendingChallenges() {
   const { user } = useAuth();
+  const { t } = useTranslation();
   const { addNotification, notifications, markAsRead } = useNotifications();
   const [pendingCount, setPendingCount] = useState<number>(0);
   const [loading, setLoading] = useState<boolean>(false);
@@ -44,8 +46,8 @@ export function usePendingChallenges() {
       newChallenges.forEach((challenge) => {
         addNotification({
           type: NotificationType.CHALLENGE_RECEIVED,
-          title: 'Ny utfordring',
-          message: `Du har mottatt en ny utfordring fra ${challenge.challengerName || 'en skytter'}`,
+          title: t['notifications.challengeReceivedTitle'],
+          message: t['notifications.challengeReceivedMessage'].replace('{name}', challenge.challengerName || t['challenge.unknownOpponent']),
           challengeId: challenge.id,
         });
       });
@@ -58,7 +60,7 @@ export function usePendingChallenges() {
     } finally {
       setLoading(false);
     }
-  }, [user, addNotification, notifications]);
+  }, [user, addNotification, notifications, t]);
 
   /**
    * Refresh pending challenges count

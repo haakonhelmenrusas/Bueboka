@@ -4,13 +4,12 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { useFocusEffect, usePathname, useRouter } from 'expo-router';
 import { ChallengeList } from '@/components/challenges';
 import { useChallenge } from '@/hooks/useChallenge';
-import { usePendingChallenges } from '@/hooks/usePendingChallenges';
 import { ChallengeListItem, ChallengeStatus } from '@/types';
 import { styles } from '@/components/challenges/UtfordringerScreenStyles';
 import { colors } from '@/styles/colors';
 import { useAuth } from '@/hooks';
 import { Button, Message, NotificationBadge } from '@/components/common';
-import { useTranslation } from '@/contexts';
+import { useTranslation, useNotifications, NotificationType } from '@/contexts';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faTrophy, faPlus, faArrowLeft } from '@fortawesome/free-solid-svg-icons';
@@ -22,7 +21,9 @@ export default function ChallengesPage() {
   const insets = useSafeAreaInsets();
   const router = useRouter();
   const pathname = usePathname();
-  const { pendingCount } = usePendingChallenges();
+  const { notifications } = useNotifications();
+  // Badge = unread incoming-challenge notifications (created by the app-wide poller)
+  const pendingCount = notifications.filter((n) => n.type === NotificationType.CHALLENGE_RECEIVED && !n.read).length;
 
   const { challenges, loading, error, pagination, fetchChallenges } = useChallenge();
 

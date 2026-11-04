@@ -3,6 +3,7 @@ import { Stack, useNavigationContainerRef } from 'expo-router';
 import * as Sentry from '@sentry/react-native';
 import React, { useEffect } from 'react';
 import { AuthProvider, LanguageProvider, NotificationProvider } from '@/contexts';
+import { usePendingChallenges } from '@/hooks';
 import { colors } from '@/styles/colors';
 
 let navigationIntegration: any = null;
@@ -26,6 +27,15 @@ if (isNonDev) {
   });
 }
 
+/**
+ * Polls for incoming challenges app-wide and turns them into in-app
+ * notifications (the invitee is notified wherever they are in the app).
+ */
+function ChallengeNotificationPoller() {
+  usePendingChallenges();
+  return null;
+}
+
 function RootLayoutContent() {
   const ref = useNavigationContainerRef();
 
@@ -37,6 +47,7 @@ function RootLayoutContent() {
 
   return (
     <>
+      <ChallengeNotificationPoller />
       <StatusBar style="light" />
       <Stack screenOptions={{ headerShown: false }}>
         <Stack.Screen name="index" />
@@ -46,6 +57,8 @@ function RootLayoutContent() {
         <Stack.Screen name="skyttere" options={{ headerShown: false }} />
         <Stack.Screen name="achievements" options={{ headerShown: false }} />
         <Stack.Screen name="utfordringer" options={{ headerShown: false }} />
+        <Stack.Screen name="konkurranse" options={{ headerShown: false }} />
+        <Stack.Screen name="varsler" options={{ headerShown: false }} />
       </Stack>
     </>
   );

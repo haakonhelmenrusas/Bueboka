@@ -5,8 +5,8 @@ import { useRouter, useFocusEffect } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { StatsSummary, EquipmentSection, PracticesSection } from '@/components/home';
 import { useAuth, useOnboarding } from '@/hooks';
-import { useTranslation } from '@/contexts';
-import { Message, Button, MobileActionButton } from '@/components/common';
+import { useTranslation, useNotifications, NotificationType } from '@/contexts';
+import { Message, Button, MobileActionButton, NotificationBadge } from '@/components/common';
 import { colors } from '@/styles/colors';
 import { statsApi, StatsResponse } from '@/services/api/statsApi';
 import {
@@ -29,6 +29,8 @@ import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faChevronRight } from '@fortawesome/free-solid-svg-icons/faChevronRight';
 import { faTrophy } from '@fortawesome/free-solid-svg-icons/faTrophy';
 import { faMedal } from '@fortawesome/free-solid-svg-icons/faMedal';
+import { faHandshake } from '@fortawesome/free-solid-svg-icons/faHandshake';
+import { faBell } from '@fortawesome/free-solid-svg-icons/faBell';
 import ProfileImageManager from '@/components/home/profile/ProfileImageManager';
 import CreateCompetitionForm from '@/components/practice/competitionForm/CreateCompetitionForm';
 import { faUserGroup } from '@fortawesome/free-solid-svg-icons';
@@ -39,6 +41,8 @@ import { AchievementUnlockModal } from '@/components/achievements/AchievementUnl
 export default function HomeScreen() {
   const { user, refreshUser } = useAuth();
   const { t } = useTranslation();
+  const { notifications, unreadCount } = useNotifications();
+  const unreadChallengeCount = notifications.filter((n) => n.type === NotificationType.CHALLENGE_RECEIVED && !n.read).length;
   const { hasSeenOnboarding, isLoading: onboardingLoading, markAsSeen } = useOnboarding();
   const router = useRouter();
   const insets = useSafeAreaInsets();
@@ -170,6 +174,28 @@ export default function HomeScreen() {
                   onPress={() => router.push('/konkurranse')}
                   accessibilityLabel={t['home.competitions']}>
                   <FontAwesomeIcon icon={faMedal} size={18} color={colors.accentYellow} />
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={styles.trophyButton}
+                  onPress={() => router.push('/utfordringer')}
+                  accessibilityLabel={t['home.challenges']}>
+                  <FontAwesomeIcon icon={faHandshake} size={18} color={colors.white} />
+                  {unreadChallengeCount > 0 && (
+                    <View style={styles.headerBadge}>
+                      <NotificationBadge count={unreadChallengeCount} />
+                    </View>
+                  )}
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={styles.trophyButton}
+                  onPress={() => router.push('/varsler')}
+                  accessibilityLabel={t['home.notifications']}>
+                  <FontAwesomeIcon icon={faBell} size={18} color={colors.warning} />
+                  {unreadCount > 0 && (
+                    <View style={styles.headerBadge}>
+                      <NotificationBadge count={unreadCount} />
+                    </View>
+                  )}
                 </TouchableOpacity>
                 <TouchableOpacity
                   style={styles.trophyButton}
