@@ -67,6 +67,7 @@ jest.mock('@/contexts/NotificationContext', () => ({
     CHALLENGE_SENT: 'CHALLENGE_SENT',
     CHALLENGE_ACCEPTED: 'CHALLENGE_ACCEPTED',
     CHALLENGE_DECLINED: 'CHALLENGE_DECLINED',
+    CHALLENGE_CANCELLED: 'CHALLENGE_CANCELLED',
     CHALLENGE_SUBMITTED: 'CHALLENGE_SUBMITTED',
   },
   NotificationProvider: ({ children }: { children: React.ReactNode }) => children,

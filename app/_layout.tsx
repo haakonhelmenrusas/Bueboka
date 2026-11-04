@@ -3,7 +3,7 @@ import { Stack, useNavigationContainerRef } from 'expo-router';
 import * as Sentry from '@sentry/react-native';
 import React, { useEffect } from 'react';
 import { AuthProvider, LanguageProvider, NotificationProvider } from '@/contexts';
-import { usePendingChallenges } from '@/hooks';
+import { usePendingChallenges, usePushNotifications } from '@/hooks';
 import { colors } from '@/styles/colors';
 
 let navigationIntegration: any = null;
@@ -38,6 +38,8 @@ function ChallengeNotificationPoller() {
 
 function RootLayoutContent() {
   const ref = useNavigationContainerRef();
+  // Register the Expo push token with /api/notifications/push-token after login
+  usePushNotifications();
 
   useEffect(() => {
     if (ref?.current && navigationIntegration) {

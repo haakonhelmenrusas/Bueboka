@@ -9,7 +9,7 @@ const base: Notification = {
   title: 'Ny utfordring',
   message: 'Du har mottatt en ny utfordring fra Ola',
   challengeId: 'ch-1',
-  createdAt: new Date('2026-11-03T10:00:00'),
+  createdAt: '2026-11-03T10:00:00.000Z',
   read: false,
 };
 

@@ -32,7 +32,7 @@ const received: Notification = {
   title: 'Ny utfordring',
   message: 'Du har mottatt en ny utfordring fra Ola',
   challengeId: 'ch-1',
-  createdAt: new Date('2026-11-03T10:00:00'),
+  createdAt: '2026-11-03T10:00:00.000Z',
   read: false,
 };
 
@@ -42,7 +42,7 @@ const sent: Notification = {
   title: 'Utfordring sendt',
   message: 'Du sendte en utfordring til Kari',
   challengeId: 'ch-2',
-  createdAt: new Date('2026-11-02T10:00:00'),
+  createdAt: '2026-11-02T10:00:00.000Z',
   read: true,
 };
 
