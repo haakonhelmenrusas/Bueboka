@@ -16,7 +16,7 @@ export const styles = StyleSheet.create({
   cardHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    alignItems: 'center',
+    alignItems: 'flex-start',
     marginBottom: 12,
   },
   challengeName: {
@@ -24,6 +24,7 @@ export const styles = StyleSheet.create({
     fontWeight: '600',
     color: colors.primary,
     flex: 1,
+    marginRight: 8,
   },
   cardBody: {
     gap: 8,
@@ -49,6 +50,7 @@ export const styles = StyleSheet.create({
     paddingHorizontal: 10,
     paddingVertical: 6,
     borderRadius: 16,
+    flexShrink: 0,
   },
   statusText: {
     fontSize: 12,

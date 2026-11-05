@@ -43,7 +43,8 @@ export const styles = StyleSheet.create({
   subtitle: {
     fontSize: 14,
     color: 'rgba(255, 255, 255, 0.8)',
-    marginTop: 2,
+    marginTop: -8,
+    marginBottom: 16,
   },
   filterContainer: {
     marginBottom: 16,
@@ -72,12 +73,6 @@ export const styles = StyleSheet.create({
     color: colors.primary,
     fontWeight: '600',
   },
-  createButtonContainer: {
-    marginBottom: 24,
-  },
-  createButton: {
-    alignSelf: 'flex-end',
-  },
   errorContainer: {
     alignItems: 'center',
     padding: 20,
@@ -87,8 +82,5 @@ export const styles = StyleSheet.create({
     color: colors.error,
     textAlign: 'center',
     marginBottom: 16,
-  },
-  notificationContainer: {
-    marginLeft: 8,
   },
 });

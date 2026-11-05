@@ -6,10 +6,9 @@ import { faPlus } from '@fortawesome/free-solid-svg-icons/faPlus';
 import { faXmark } from '@fortawesome/free-solid-svg-icons/faXmark';
 import { faBullseye } from '@fortawesome/free-solid-svg-icons/faBullseye';
 import { faTrophy } from '@fortawesome/free-solid-svg-icons/faTrophy';
-import { faHandshake } from '@fortawesome/free-solid-svg-icons/faHandshake';
 import { colors } from '@/styles/colors';
 import { useTranslation } from '@/contexts';
-import { BowIcon, ArrowIcon } from '@/components/common/icons/ArcheryIcons';
+import { BowIcon, ArrowIcon, SwordsIcon } from '@/components/common/icons/ArcheryIcons';
 import { styles } from './MobileActionButtonStyles';
 
 export interface MobileActionButtonProps {
@@ -63,7 +62,7 @@ export function MobileActionButton({
     {
       key: 'challenge',
       label: t['fab.newChallenge'],
-      icon: <FontAwesomeIcon icon={faHandshake} size={18} color={colors.white} />,
+      icon: <SwordsIcon size={18} color={colors.white} />,
       onPress: () => {
         onCreateChallenge();
         closeMenu();

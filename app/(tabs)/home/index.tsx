@@ -27,8 +27,8 @@ import CreatePracticeForm from '@/components/practice/practiceForm/CreatePractic
 import { styles } from '@/components/home/HomeScreenStyles';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faTrophy } from '@fortawesome/free-solid-svg-icons/faTrophy';
-import { faHandshake } from '@fortawesome/free-solid-svg-icons/faHandshake';
 import { faBell } from '@fortawesome/free-solid-svg-icons/faBell';
+import { SwordsIcon } from '@/components/common/icons/ArcheryIcons';
 import ProfileImageManager from '@/components/home/profile/ProfileImageManager';
 import CreateCompetitionForm from '@/components/practice/competitionForm/CreateCompetitionForm';
 import { CreateChallengeModal } from '@/components/challenges';
@@ -196,7 +196,7 @@ export default function HomeScreen() {
               onPress={() => router.push('/utfordringer')}
               accessibilityLabel={t['home.challenges']}>
               <View style={styles.quickActionIcon}>
-                <FontAwesomeIcon icon={faHandshake} size={20} color={colors.white} />
+                <SwordsIcon size={22} color={colors.white} />
                 {unreadChallengeCount > 0 && (
                   <View style={styles.headerBadge}>
                     <NotificationBadge count={unreadChallengeCount} />

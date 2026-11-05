@@ -8,11 +8,11 @@ import { ChallengeListItem, ChallengeStatus } from '@/types';
 import { styles } from '@/components/challenges/UtfordringerScreenStyles';
 import { colors } from '@/styles/colors';
 import { useAuth } from '@/hooks';
-import { Button, Message, NotificationBadge } from '@/components/common';
-import { useTranslation, useNotifications, NotificationType } from '@/contexts';
+import { Button, Message } from '@/components/common';
+import { useTranslation } from '@/contexts';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
-import { faTrophy, faPlus, faArrowLeft } from '@fortawesome/free-solid-svg-icons';
+import { faTrophy, faArrowLeft } from '@fortawesome/free-solid-svg-icons';
 import { RefreshControl } from 'react-native';
 
 export default function ChallengesPage() {
@@ -21,10 +21,6 @@ export default function ChallengesPage() {
   const insets = useSafeAreaInsets();
   const router = useRouter();
   const pathname = usePathname();
-  const { notifications } = useNotifications();
-  // Badge = unread incoming-challenge notifications (created by the app-wide poller)
-  const pendingCount = notifications.filter((n) => n.type === NotificationType.CHALLENGE_RECEIVED && !n.read).length;
-
   const { challenges, loading, error, pagination, fetchChallenges } = useChallenge();
 
   const [filterStatus, setFilterStatus] = useState<string>('');
@@ -86,10 +82,6 @@ export default function ChallengesPage() {
     [router],
   );
 
-  const handleCreateNew = useCallback(() => {
-    router.push('/utfordringer/ny');
-  }, [router]);
-
   const handleFilterChange = useCallback((status: string) => {
     setFilterStatus(status);
   }, []);
@@ -126,15 +118,10 @@ export default function ChallengesPage() {
           <FontAwesomeIcon icon={faTrophy} size={28} color={colors.white} />
           <View style={styles.headerText}>
             <Text style={styles.title}>{t['challenge.title']}</Text>
-            <Text style={styles.subtitle}>{t['challenge.subtitle']}</Text>
           </View>
-          {pendingCount > 0 && (
-            <View style={styles.notificationContainer}>
-              <NotificationBadge count={pendingCount} />
-            </View>
-          )}
         </View>
       </View>
+      <Text style={styles.subtitle}>{t['challenge.subtitle']}</Text>
 
       {/* Filter */}
       <View style={styles.filterContainer}>
@@ -149,17 +136,6 @@ export default function ChallengesPage() {
             </View>
           ))}
         </View>
-      </View>
-
-      {/* Create Button */}
-      <View style={styles.createButtonContainer}>
-        <Button
-          label={t['challenge.createNew']}
-          onPress={handleCreateNew}
-          type="filled"
-          buttonStyle={styles.createButton}
-          icon={<FontAwesomeIcon icon={faPlus} size={18} color={colors.white} />}
-        />
       </View>
     </>
   );

@@ -1,4 +1,4 @@
-import Svg, { Path } from 'react-native-svg';
+import Svg, { Line, Path, Polyline } from 'react-native-svg';
 import { colors } from '@/styles/colors';
 
 interface ArcheryIconProps {
@@ -32,6 +32,33 @@ export function ArrowIcon({ size = 20, color = colors.white }: ArcheryIconProps)
         d="M30.6956 0.0260342C31.3007 -0.128255 32.01 0.412759 32.01 1.03593C31.3187 3.5807 31.2286 6.63643 30.4872 9.12309C30.3048 9.73424 29.7257 10.1951 29.0885 9.87851C28.4073 9.53987 27.4034 8.03706 26.7141 7.54614H26.5157L11.2611 22.8088C10.8844 23.6263 12.6337 26.4897 11.6098 27.4575L7.24759 31.7976C4.56456 32.7614 4.96731 29.315 4.20989 27.758C3.22004 27.3813 2.02981 27.2691 1.05398 26.9124C-0.0661236 26.5017 -0.284533 25.3876 0.406763 24.4578C0.967815 23.7044 3.64684 21.0354 4.40626 20.4543C5.63457 19.5146 7.49205 20.6347 8.87264 20.805L9.16318 20.7148L24.4679 5.30193C24.0371 4.67074 22.3359 3.47049 22.0894 2.87538C21.7368 2.02178 22.404 1.62904 23.1093 1.4467C25.5319 0.819522 28.247 0.643191 30.6956 0.0260342Z"
         fill={color}
       />
+    </Svg>
+  );
+}
+
+/**
+ * Two crossed swords — same icon (lucide "swords") as the website's
+ * utfordringer quick action.
+ */
+export function SwordsIcon({ size = 20, color = colors.white }: ArcheryIconProps) {
+  return (
+    <Svg
+      width={size}
+      height={size}
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke={color}
+      strokeWidth={2}
+      strokeLinecap="round"
+      strokeLinejoin="round">
+      <Polyline points="14.5 17.5 3 6 3 3 6 3 17.5 14.5" />
+      <Line x1={13} y1={19} x2={19} y2={13} />
+      <Line x1={16} y1={16} x2={20} y2={20} />
+      <Line x1={19} y1={21} x2={21} y2={19} />
+      <Polyline points="14.5 6.5 18 3 21 3 21 6 17.5 10" />
+      <Line x1={5} y1={14} x2={9} y2={18} />
+      <Line x1={7} y1={17} x2={4} y2={20} />
+      <Line x1={3} y1={19} x2={5} y2={21} />
     </Svg>
   );
 }
