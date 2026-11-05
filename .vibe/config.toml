@@ -6,7 +6,7 @@ applied_migrations = [
 # into every session (it symlinks to VIBE.md). Git status and recent commits
 # are included via include_project_context (default true).
 [project_context]
-default_commit_count = 10
+default_commit_count = 5
 timeout_seconds = 3.0
 
 # Skills: .agents/skills is a default search path for trusted projects;

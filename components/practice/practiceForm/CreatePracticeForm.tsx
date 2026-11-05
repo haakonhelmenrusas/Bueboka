@@ -9,6 +9,7 @@ import ConfirmModal from '@/components/home/DeleteArrowSetModal/ConfirmModal';
 import { practiceRepository, type CreateEndData } from '@/services/repositories';
 import { Arrows, Bow, Environment, Practice, PracticeCategory } from '@/types';
 import { useTranslation } from '@/contexts';
+import { buildEndData } from '@/utils/helpers/practiceHelpers';
 import type { TranslationKeys } from '@/lib/i18n';
 import { styles } from './CreatePracticeFormStyles';
 import { DEFAULT_ARROWS_PER_END } from '@/components/practice/shared/formConstants';
@@ -343,21 +344,7 @@ export default function CreatePracticeForm({
   };
 
   // ─── Build rounds ────────────────────────────────────────────────────────────
-  const buildRounds = (validRounds: RoundInput[]): CreateEndData[] =>
-    validRounds.map((r) => {
-      const round: CreateEndData = {
-        roundScore: r.roundScore ?? 0,
-      };
-      if (r.numberArrows !== undefined) round.numberArrows = r.numberArrows;
-      if (r.arrowsPerEnd !== undefined) round.arrowsPerEnd = r.arrowsPerEnd;
-      if (r.arrowsWithoutScore !== undefined) round.arrowsWithoutScore = r.arrowsWithoutScore;
-      if (r.distanceMeters !== undefined) round.distanceMeters = r.distanceMeters;
-      if (r.distanceFrom !== undefined) round.distanceFrom = r.distanceFrom;
-      if (r.distanceTo !== undefined) round.distanceTo = r.distanceTo;
-      if (r.targetType) round.targetType = r.targetType;
-      if (r.scores && r.scores.length > 0) round.scores = r.scores;
-      return round;
-    });
+  const buildRounds = (validRounds: RoundInput[]): CreateEndData[] => buildEndData(validRounds);
 
   const getValidRounds = () =>
     rounds.filter(

@@ -1,4 +1,30 @@
 import { Practice, PracticeCardItem } from '@/types';
+import type { CreateEndData } from '@/services/repositories/practiceRepository';
+
+/**
+ * Build the end payloads sent to the API from the form's round inputs.
+ *
+ * `numberArrows` maps to the End's `arrows` (arrows WITH score). When the user
+ * entered individual arrow scores, the score count is authoritative — without
+ * this, a round with 72 scored arrows but an empty "number of arrows" field
+ * stored arrows=null and the card only showed the arrowsWithoutScore count.
+ */
+export function buildEndData(rounds: CreateEndData[]): CreateEndData[] {
+  return rounds.map((r) => {
+    const round: CreateEndData = { roundScore: r.roundScore ?? 0 };
+    const scoredCount = r.scores?.length ?? 0;
+    const numberArrows = scoredCount > 0 ? scoredCount : r.numberArrows;
+    if (numberArrows !== undefined) round.numberArrows = numberArrows;
+    if (r.arrowsPerEnd !== undefined) round.arrowsPerEnd = r.arrowsPerEnd;
+    if (r.arrowsWithoutScore !== undefined) round.arrowsWithoutScore = r.arrowsWithoutScore;
+    if (r.distanceMeters !== undefined) round.distanceMeters = r.distanceMeters;
+    if (r.distanceFrom !== undefined) round.distanceFrom = r.distanceFrom;
+    if (r.distanceTo !== undefined) round.distanceTo = r.distanceTo;
+    if (r.targetType) round.targetType = r.targetType;
+    if (r.scores && r.scores.length > 0) round.scores = r.scores;
+    return round;
+  });
+}
 
 /**
  * Convert a full Practice object to a PracticeCardItem for display in cards
