@@ -2,6 +2,7 @@ import { faGear } from '@fortawesome/free-solid-svg-icons/faGear';
 import { faChartLine } from '@fortawesome/free-solid-svg-icons/faChartLine';
 import { faHome } from '@fortawesome/free-solid-svg-icons/faHome';
 import { faBullseye } from '@fortawesome/free-solid-svg-icons/faBullseye';
+import { faChartBar } from '@fortawesome/free-solid-svg-icons/faChartBar';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { Tabs } from 'expo-router';
 import { colors } from '@/styles/colors';
@@ -64,6 +65,15 @@ export default function AppLayout() {
           options={{
             tabBarIcon: ({ focused }) => (
               <FontAwesomeIcon icon={faChartLine} size={24} color={focused ? colors.white : 'rgba(255, 255, 255, 0.5)'} />
+            ),
+            headerShown: false,
+          }}
+        />
+        <Tabs.Screen
+          name="statistics"
+          options={{
+            tabBarIcon: ({ focused }) => (
+              <FontAwesomeIcon icon={faChartBar} size={24} color={focused ? colors.white : 'rgba(255, 255, 255, 0.5)'} />
             ),
             headerShown: false,
           }}

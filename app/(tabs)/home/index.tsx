@@ -6,7 +6,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { StatsSummary, EquipmentSection, PracticesSection } from '@/components/home';
 import { useAuth, useOnboarding } from '@/hooks';
 import { useTranslation, useNotifications, NotificationType } from '@/contexts';
-import { Message, Button, MobileActionButton, NotificationBadge } from '@/components/common';
+import { Message, MobileActionButton, NotificationBadge } from '@/components/common';
 import { colors } from '@/styles/colors';
 import { statsApi, StatsResponse } from '@/services/api/statsApi';
 import {
@@ -26,7 +26,6 @@ import ArrowSetDetails from '@/components/home/arrowSetDetails/ArrowSetDetails';
 import CreatePracticeForm from '@/components/practice/practiceForm/CreatePracticeForm';
 import { styles } from '@/components/home/HomeScreenStyles';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
-import { faChevronRight } from '@fortawesome/free-solid-svg-icons/faChevronRight';
 import { faTrophy } from '@fortawesome/free-solid-svg-icons/faTrophy';
 import { faHandshake } from '@fortawesome/free-solid-svg-icons/faHandshake';
 import { faBell } from '@fortawesome/free-solid-svg-icons/faBell';
@@ -165,23 +164,6 @@ export default function HomeScreen() {
               </View>
               <View style={styles.headerButtons}>
                 <TouchableOpacity
-                  style={styles.searchButton}
-                  onPress={() => router.push('/skyttere')}
-                  accessibilityLabel={t['home.searchArchers']}>
-                  <FontAwesomeIcon icon={faUserGroup} size={18} color={colors.white} />
-                </TouchableOpacity>
-                <TouchableOpacity
-                  style={styles.trophyButton}
-                  onPress={() => router.push('/utfordringer')}
-                  accessibilityLabel={t['home.challenges']}>
-                  <FontAwesomeIcon icon={faHandshake} size={18} color={colors.white} />
-                  {unreadChallengeCount > 0 && (
-                    <View style={styles.headerBadge}>
-                      <NotificationBadge count={unreadChallengeCount} />
-                    </View>
-                  )}
-                </TouchableOpacity>
-                <TouchableOpacity
                   style={styles.trophyButton}
                   onPress={() => router.push('/varsler')}
                   accessibilityLabel={t['home.notifications']}>
@@ -192,24 +174,48 @@ export default function HomeScreen() {
                     </View>
                   )}
                 </TouchableOpacity>
-                <TouchableOpacity
-                  style={styles.trophyButton}
-                  onPress={() => router.push('/achievements')}
-                  accessibilityLabel={t['home.myAchievements']}>
-                  <FontAwesomeIcon icon={faTrophy} size={20} color={colors.warning} />
-                </TouchableOpacity>
               </View>
             </View>
           </View>
           <StatsSummary last7Days={stats.last7Days} last30Days={stats.last30Days} overall={stats.overall} />
-          <Button
-            iconPosition="right"
-            size="small"
-            buttonStyle={{ alignSelf: 'center' }}
-            icon={<FontAwesomeIcon icon={faChevronRight} size={16} color={colors.warning} />}
-            label={t['home.detailedStats']}
-            onPress={() => router.push('/(tabs)/home/statistics')}
-          />
+          {/* Quick actions row (detailed statistics moved to the tab bar) */}
+          <View style={styles.quickActions}>
+            <TouchableOpacity
+              testID="quick-action-skyttere"
+              style={styles.quickAction}
+              onPress={() => router.push('/skyttere')}
+              accessibilityLabel={t['home.searchArchers']}>
+              <View style={styles.quickActionIcon}>
+                <FontAwesomeIcon icon={faUserGroup} size={20} color={colors.white} />
+              </View>
+              <Text style={styles.quickActionLabel}>{t['home.searchArchers']}</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              testID="quick-action-utfordringer"
+              style={styles.quickAction}
+              onPress={() => router.push('/utfordringer')}
+              accessibilityLabel={t['home.challenges']}>
+              <View style={styles.quickActionIcon}>
+                <FontAwesomeIcon icon={faHandshake} size={20} color={colors.white} />
+                {unreadChallengeCount > 0 && (
+                  <View style={styles.headerBadge}>
+                    <NotificationBadge count={unreadChallengeCount} />
+                  </View>
+                )}
+              </View>
+              <Text style={styles.quickActionLabel}>{t['home.challenges']}</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              testID="quick-action-achievements"
+              style={styles.quickAction}
+              onPress={() => router.push('/achievements')}
+              accessibilityLabel={t['home.myAchievements']}>
+              <View style={styles.quickActionIcon}>
+                <FontAwesomeIcon icon={faTrophy} size={20} color={colors.warning} />
+              </View>
+              <Text style={styles.quickActionLabel}>{t['home.myAchievements']}</Text>
+            </TouchableOpacity>
+          </View>
           <PracticesSection
             refreshKey={practicesRefreshKey}
             onSelectPractice={async (id) => {
