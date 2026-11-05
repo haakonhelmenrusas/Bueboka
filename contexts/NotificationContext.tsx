@@ -36,6 +36,12 @@ const NotificationContext = createContext<NotificationContextValue | undefined>(
 const isLocalId = (id: string) => id.startsWith('local-');
 
 /**
+ * How often the inbox re-fetches /api/notifications. Set high (5 min) to avoid
+ * hammering the API; tune after user feedback.
+ */
+export const NOTIFICATIONS_POLL_INTERVAL_MS = 5 * 60 * 1000; // 5 minutes
+
+/**
  * Merge freshly fetched server rows with local-only (optimistic) ones.
  * Local rows whose type+challengeId now exist server-side are dropped, so a
  * locally-added "challenge sent" never duplicates the server copy. Newest first.
@@ -75,7 +81,7 @@ export function NotificationProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     refresh();
     if (!user) return;
-    const interval = setInterval(refresh, 30000);
+    const interval = setInterval(refresh, NOTIFICATIONS_POLL_INTERVAL_MS);
     return () => clearInterval(interval);
   }, [refresh, user]);
 

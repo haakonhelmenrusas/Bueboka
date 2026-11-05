@@ -7,6 +7,14 @@ import { NotificationType } from '@/contexts/NotificationContext';
 import { useTranslation } from '@/contexts/LanguageContext';
 
 /**
+ * How often the app polls /api/challenges for pending (incoming) challenges.
+ * Set high (5 min) to avoid hammering the API; tune after user feedback.
+ * Note: the notification inbox itself also polls /api/notifications — see
+ * NotificationContext for its interval.
+ */
+export const PENDING_CHALLENGES_POLL_INTERVAL_MS = 5 * 60 * 1000; // 5 minutes
+
+/**
  * Hook to track and manage pending challenges for the current user
  * Automatically adds notifications when pending challenges are detected
  */
@@ -92,7 +100,7 @@ export function usePendingChallenges() {
     // Set up periodic polling (every 30 seconds)
     const interval = setInterval(() => {
       fetchPendingChallenges();
-    }, 30000); // 30 seconds
+    }, PENDING_CHALLENGES_POLL_INTERVAL_MS);
 
     return () => clearInterval(interval);
   }, [fetchPendingChallenges]);
