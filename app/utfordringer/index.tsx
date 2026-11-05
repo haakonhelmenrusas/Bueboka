@@ -118,6 +118,7 @@ export default function ChallengesPage() {
           onPress={() => router.back()}
           label=""
           variant="tertiary"
+          type="outline"
           buttonStyle={styles.backButton}
           icon={<FontAwesomeIcon icon={faArrowLeft} size={24} color={colors.white} />}
         />

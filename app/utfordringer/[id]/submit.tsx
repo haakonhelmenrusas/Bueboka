@@ -100,6 +100,7 @@ export default function SubmitChallengeResultPage() {
               onPress={handleBack}
               label=""
               variant="tertiary"
+              type="outline"
               buttonStyle={styles.backButton}
               icon={<FontAwesomeIcon icon={faArrowLeft} size={24} color={colors.white} />}
             />

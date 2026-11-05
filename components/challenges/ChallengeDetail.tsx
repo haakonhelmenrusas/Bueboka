@@ -236,12 +236,6 @@ export default function ChallengeDetail({
                 <Text style={styles.submittedText}>{t['challenge.resultSubmitted']}</Text>
               </View>
             )}
-            {!opponentHasSubmitted && isCompleted === false && (
-              <View style={[styles.submittedBadge, { backgroundColor: colors.warning }]}>
-                <FontAwesomeIcon icon={faClock} size={12} color={colors.white} />
-                <Text style={styles.submittedText}>{t['challenge.waitingForOpponent']}</Text>
-              </View>
-            )}
           </View>
         </View>
       </View>

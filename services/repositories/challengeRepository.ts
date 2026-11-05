@@ -51,8 +51,10 @@ export const challengeRepository = {
    */
   async getById(id: string): Promise<Challenge> {
     try {
-      const response = await client.get<Challenge>(`/challenges/${id}`);
-      return response.data;
+      // The API wraps the row: { challenge: {...} } — unwrap it
+      const response = await client.get<Challenge | { challenge: Challenge }>(`/challenges/${id}`);
+      const data = response.data as { challenge?: Challenge };
+      return data.challenge ?? (data as Challenge);
     } catch (error) {
       throw handleApiError(error);
     }

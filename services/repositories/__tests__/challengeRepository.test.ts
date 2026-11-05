@@ -157,6 +157,15 @@ describe('challengeRepository.getById', () => {
     expect(mockClient.get).toHaveBeenCalledWith('/challenges/challenge-1');
   });
 
+  it('unwraps the { challenge } envelope the API returns', async () => {
+    mockClient.get.mockResolvedValueOnce({ data: { challenge: fakeChallenge } });
+
+    const result = await challengeRepository.getById('challenge-1');
+
+    expect(result).toEqual(fakeChallenge);
+    expect(result.name).toBe(fakeChallenge.name);
+  });
+
   it('throws AppError with NOT_FOUND on 404', async () => {
     mockClient.get.mockRejectedValueOnce(makeAxiosError(404));
     const caught = await challengeRepository.getById('ghost').catch((e) => e);
