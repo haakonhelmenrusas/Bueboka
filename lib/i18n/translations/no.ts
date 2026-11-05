@@ -827,7 +827,7 @@ export const no: TranslationKeys = {
   'challenge.yourScore': 'Din score',
   'challenge.opponentScore': 'Motstanderens score',
   'challenge.resultSubmitted': 'Resultat sendt inn',
-  'challenge.waitingForOpponent': 'Venter på motstander',
+  'challenge.notSubmitted': 'Ikke sendt',
   'challenge.bothSubmitted': 'Begge har sendt inn resultat',
   'challengeChallengeList.empty': 'Ingen utfordringer ennå',
   'challengeChallengeList.emptyDesc': 'Lag din første utfordring for å konkurrere mot andre skyttere',

@@ -828,7 +828,7 @@ export const en: TranslationKeys = {
   'challenge.yourScore': 'Your score',
   'challenge.opponentScore': "Opponent's score",
   'challenge.resultSubmitted': 'Result submitted',
-  'challenge.waitingForOpponent': 'Waiting for opponent',
+  'challenge.notSubmitted': 'Not submitted',
   'challenge.bothSubmitted': 'Both submitted results',
   'challengeChallengeList.empty': 'No challenges yet',
   'challengeChallengeList.emptyDesc': 'Create your first challenge to compete against other archers',

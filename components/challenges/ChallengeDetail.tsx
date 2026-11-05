@@ -98,7 +98,7 @@ export default function ChallengeDetail({
   };
 
   const formatScore = (score: number | null | undefined) => {
-    if (score === null || score === undefined) return t['challenge.waitingForOpponent'];
+    if (score === null || score === undefined) return t['challenge.notSubmitted'];
     return score.toString();
   };
 
@@ -266,40 +266,17 @@ export default function ChallengeDetail({
         )}
 
         {canDecline && onDecline && (
-          <Button
-            label={t['challenge.decline']}
-            onPress={onDecline}
-            variant="warning"
-            buttonStyle={styles.buttonDecline}
-            type="outline"
-            disabled={loading}
-          />
+          <Button label={t['challenge.decline']} onPress={onDecline} variant="warning" type="outline" disabled={loading} />
         )}
 
-        {canCancel && onCancel && (
-          <Button
-            label={t['challenge.cancel']}
-            onPress={onCancel}
-            variant="warning"
-            buttonStyle={styles.buttonCancel}
-            type="outline"
-            disabled={loading}
-          />
-        )}
+        {canCancel && onCancel && <Button label={t['challenge.cancel']} onPress={onCancel} type="outline" disabled={loading} />}
 
         {canSubmit && onSubmitResult && (
           <Button label={t['challenge.submitResult']} onPress={onSubmitResult} buttonStyle={styles.buttonSubmit} disabled={loading} />
         )}
 
         {canDelete && onDelete && (
-          <Button
-            label={t['common.delete']}
-            onPress={onDelete}
-            variant="warning"
-            buttonStyle={styles.buttonDelete}
-            type="outline"
-            disabled={loading}
-          />
+          <Button label={t['common.delete']} onPress={onDelete} variant="warning" type="outline" disabled={loading} />
         )}
       </View>
     </View>

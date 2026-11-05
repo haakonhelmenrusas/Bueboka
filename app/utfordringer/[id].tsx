@@ -11,7 +11,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Button, Message } from '@/components/common';
 import { LinearGradient } from 'expo-linear-gradient';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
-import { faArrowLeft, faTrophy } from '@fortawesome/free-solid-svg-icons';
+import { faArrowLeft } from '@fortawesome/free-solid-svg-icons';
 
 export default function ChallengeDetailPage() {
   const { t } = useTranslation();
@@ -175,10 +175,6 @@ export default function ChallengeDetailPage() {
               buttonStyle={styles.backButton}
               icon={<FontAwesomeIcon icon={faArrowLeft} size={24} color={colors.white} />}
             />
-            <View style={styles.headerContent}>
-              <FontAwesomeIcon icon={faTrophy} size={24} color={colors.white} />
-              <Text style={styles.title}>{currentChallenge.name}</Text>
-            </View>
           </View>
 
           <ChallengeDetail

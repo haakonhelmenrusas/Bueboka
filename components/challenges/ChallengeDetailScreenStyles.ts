@@ -4,7 +4,8 @@ import { colors } from '@/styles/colors';
 export const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: colors.background,
+    // Match the gradient's top color so the system status bar strip is not white
+    backgroundColor: colors.primary,
   },
   gradient: {
     flex: 1,
@@ -30,17 +31,6 @@ export const styles = StyleSheet.create({
     minHeight: 40,
     justifyContent: 'center',
     alignItems: 'center',
-  },
-  headerContent: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 12,
-    flex: 1,
-  },
-  title: {
-    fontSize: 20,
-    fontWeight: '700',
-    color: colors.white,
   },
   errorContainer: {
     alignItems: 'center',

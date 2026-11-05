@@ -870,7 +870,7 @@ export interface TranslationKeys {
   'challenge.yourScore': string;
   'challenge.opponentScore': string;
   'challenge.resultSubmitted': string;
-  'challenge.waitingForOpponent': string;
+  'challenge.notSubmitted': string;
   'challenge.bothSubmitted': string;
   'challengeChallengeList.empty': string;
   'challengeChallengeList.emptyDesc': string;

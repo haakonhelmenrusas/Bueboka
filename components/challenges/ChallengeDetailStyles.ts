@@ -165,16 +165,7 @@ export const styles = StyleSheet.create({
   buttonAccept: {
     backgroundColor: colors.success,
   },
-  buttonDecline: {
-    backgroundColor: colors.error,
-  },
-  buttonCancel: {
-    backgroundColor: colors.warning,
-  },
   buttonSubmit: {
     backgroundColor: colors.primary,
-  },
-  buttonDelete: {
-    backgroundColor: colors.error,
   },
 });
