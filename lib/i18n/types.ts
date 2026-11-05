@@ -590,6 +590,7 @@ export interface TranslationKeys {
 
   // FAB action menu
   'fab.newPractice': string;
+  'fab.newChallenge': string;
   'fab.newCompetition': string;
   'fab.newBow': string;
   'fab.newArrows': string;

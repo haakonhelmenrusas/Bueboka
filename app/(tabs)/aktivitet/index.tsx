@@ -9,6 +9,7 @@ import { Arrows, Bow, Competition, Practice, PracticeCardItem, PracticeFilter } 
 import { Achievement } from '@/types/Achievement';
 import CreatePracticeForm from '@/components/practice/practiceForm/CreatePracticeForm';
 import CreateCompetitionForm from '@/components/practice/competitionForm/CreateCompetitionForm';
+import { CreateChallengeModal } from '@/components/challenges';
 import BowForm from '@/components/home/bowForm/BowForm';
 import ArrowForm from '@/components/home/arrowForm/ArrowForm';
 import { MobileActionButton } from '@/components/common';
@@ -39,6 +40,7 @@ export default function AktivitetScreen() {
   const [practiceModalVisible, setPracticeModalVisible] = useState(false);
   const [editingPractice, setEditingPractice] = useState<Practice | null>(null);
   const [competitionModalVisible, setCompetitionModalVisible] = useState(false);
+  const [challengeModalVisible, setChallengeModalVisible] = useState(false);
   const [editingCompetition, setEditingCompetition] = useState<Competition | null>(null);
   const [bowModalVisible, setBowModalVisible] = useState(false);
   const [selectedBow, setSelectedBow] = useState<Bow | null>(null);
@@ -204,6 +206,7 @@ export default function AktivitetScreen() {
         editingCompetition={editingCompetition}
         onSaved={handleSaved}
       />
+      <CreateChallengeModal visible={challengeModalVisible} onClose={() => setChallengeModalVisible(false)} onSaved={handleSaved} />
       <BowForm
         modalVisible={bowModalVisible}
         setModalVisible={setBowModalVisible}
@@ -226,6 +229,9 @@ export default function AktivitetScreen() {
         onCreatePractice={() => {
           setEditingPractice(null);
           setPracticeModalVisible(true);
+        }}
+        onCreateChallenge={() => {
+          setChallengeModalVisible(true);
         }}
         onCreateCompetition={() => {
           setEditingCompetition(null);

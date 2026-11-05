@@ -4,7 +4,7 @@ import { colors } from '@/styles/colors';
 export const styles = StyleSheet.create({
   wrapper: {
     flexDirection: 'row',
-    alignItems: 'flex-start',
+    alignItems: 'center',
     paddingHorizontal: 8,
     paddingVertical: 12,
     borderRadius: 4,

@@ -1,5 +1,6 @@
 import { fireEvent, render } from '@testing-library/react-native';
 import React from 'react';
+import { StyleSheet } from 'react-native';
 
 import Checkbox from './Checkbox';
 
@@ -17,6 +18,14 @@ describe('Checkbox', () => {
   it('renders label text', async () => {
     const { getByText } = await render(<Checkbox value={false} onChange={jest.fn()} label="Accept terms" />);
     expect(getByText('Accept terms')).toBeTruthy();
+  });
+
+  it('centers the checkbox vertically with the label', async () => {
+    const { getByRole } = await render(
+      <Checkbox value={false} onChange={jest.fn()} label="En lengre tekst som wrapper til flere linjer" />,
+    );
+    const flat = StyleSheet.flatten(getByRole('checkbox').props.style);
+    expect(flat.alignItems).toBe('center');
   });
 
   it('calls onChange with toggled value on press', async () => {

@@ -546,6 +546,7 @@ export const en: TranslationKeys = {
 
   // FAB action menu
   'fab.newPractice': 'New practice',
+  'fab.newChallenge': 'New challenge',
   'fab.newCompetition': 'New competition',
   'fab.newBow': 'New bow',
   'fab.newArrows': 'New arrows',

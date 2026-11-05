@@ -17,6 +17,13 @@ describe('ModalHeader', () => {
     expect(getByText('My Modal')).toBeTruthy();
   });
 
+  it('keeps the title left-aligned at the top of the header', () => {
+    const real = jest.requireActual('../ModalHeader/ModalHeaderStyles').styles;
+    expect(real.header.alignItems).toBe('flex-start');
+    expect(real.header.justifyContent).toBe('space-between');
+    expect(real.title.textAlign).toBe('left');
+  });
+
   it('calls onPress when close button is pressed', async () => {
     const onPress = jest.fn();
     const { getByTestId } = await render(<ModalHeader title="Title" onPress={onPress} />);

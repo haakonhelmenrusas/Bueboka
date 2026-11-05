@@ -32,6 +32,7 @@ import { faHandshake } from '@fortawesome/free-solid-svg-icons/faHandshake';
 import { faBell } from '@fortawesome/free-solid-svg-icons/faBell';
 import ProfileImageManager from '@/components/home/profile/ProfileImageManager';
 import CreateCompetitionForm from '@/components/practice/competitionForm/CreateCompetitionForm';
+import { CreateChallengeModal } from '@/components/challenges';
 import { faUserGroup } from '@fortawesome/free-solid-svg-icons';
 import { PracticeDetailsModal } from '@/components/practice/practiceDetailsModal';
 import OnboardingModal from '@/components/onboarding/OnboardingModal';
@@ -64,6 +65,7 @@ export default function HomeScreen() {
   const [selectedBowForDetails, setSelectedBowForDetails] = useState<Bow | null>(null);
   const [selectedArrowSetForDetails, setSelectedArrowSetForDetails] = useState<Arrows | null>(null);
   const [competitionModalVisible, setCompetitionModalVisible] = useState(false);
+  const [challengeModalVisible, setChallengeModalVisible] = useState(false);
   const [editingCompetition, setEditingCompetition] = useState<Competition | null>(null);
   const [selectedPracticeForDetails, setSelectedPracticeForDetails] = useState<Practice | null>(null);
   const [selectedCompetitionForDetails, setSelectedCompetitionForDetails] = useState<Competition | null>(null);
@@ -296,6 +298,9 @@ export default function HomeScreen() {
           setEditingPractice(null);
           setPracticeModalVisible(true);
         }}
+        onCreateChallenge={() => {
+          setChallengeModalVisible(true);
+        }}
         onCreateCompetition={() => {
           setEditingCompetition(null);
           setCompetitionModalVisible(true);
@@ -366,6 +371,11 @@ export default function HomeScreen() {
         bows={bows}
         arrowSets={arrows}
         editingCompetition={editingCompetition}
+        onSaved={handlePracticesSaved}
+      />
+      <CreateChallengeModal
+        visible={challengeModalVisible}
+        onClose={() => setChallengeModalVisible(false)}
         onSaved={handlePracticesSaved}
       />
       {!onboardingLoading && <OnboardingModal visible={!hasSeenOnboarding} onClose={markAsSeen} />}
