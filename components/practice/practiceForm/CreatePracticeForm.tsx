@@ -4,7 +4,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as Sentry from '@sentry/react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { Button, ModalHeader, ModalWrapper } from '@/components/common';
+import { ModalHeader, ModalWrapper } from '@/components/common';
 import ConfirmModal from '@/components/home/DeleteArrowSetModal/ConfirmModal';
 import { practiceRepository, type CreateEndData } from '@/services/repositories';
 import { Arrows, Bow, Environment, Practice, PracticeCategory } from '@/types';
@@ -359,23 +359,25 @@ export default function CreatePracticeForm({
   const buildRounds = (validRounds: RoundInput[]): CreateEndData[] => buildEndData(validRounds);
 
   // A round with both distance and target chosen can be started as a quick practice
-  const quickRound = rounds.find((r) => (r.distanceMeters ?? 0) > 0 && !!r.targetType);
-
-  const handleStartQuickPractice = useCallback(() => {
-    if (!quickRound) return;
-    router.push({
-      pathname: '/hurtigtrening',
-      params: {
-        roundIndex: String(rounds.indexOf(quickRound)),
-        distanceMeters: String(quickRound.distanceMeters),
-        distanceFrom: quickRound.distanceFrom ? String(quickRound.distanceFrom) : '',
-        distanceTo: quickRound.distanceTo ? String(quickRound.distanceTo) : '',
-        targetType: quickRound.targetType,
-        environment,
-        practiceCategory,
-      },
-    });
-  }, [quickRound, rounds, router, environment, practiceCategory]);
+  const handleStartQuickPractice = useCallback(
+    (roundIndex: number) => {
+      const round = rounds[roundIndex];
+      if (!round || (round.distanceMeters ?? 0) <= 0 || !round.targetType) return;
+      router.push({
+        pathname: '/hurtigtrening',
+        params: {
+          roundIndex: String(roundIndex),
+          distanceMeters: String(round.distanceMeters),
+          distanceFrom: round.distanceFrom ? String(round.distanceFrom) : '',
+          distanceTo: round.distanceTo ? String(round.distanceTo) : '',
+          targetType: round.targetType,
+          environment,
+          practiceCategory,
+        },
+      });
+    },
+    [rounds, router, environment, practiceCategory],
+  );
 
   const getValidRounds = () =>
     rounds.filter(
@@ -496,6 +498,7 @@ export default function CreatePracticeForm({
                   onRemoveRound={removeRound}
                   onUpdateRound={updateRound}
                   onOpenScoring={setScoringRoundIndex}
+                  onStartQuickPractice={handleStartQuickPractice}
                 />
               )}
               {step === 2 && (
@@ -503,16 +506,6 @@ export default function CreatePracticeForm({
               )}
             </Pressable>
           </ScrollView>
-
-          {step === 1 && quickRound && (
-            <Button
-              testID="start-quick-practice"
-              label={t['quickPractice.startButton']}
-              onPress={handleStartQuickPractice}
-              type="filled"
-              buttonStyle={styles.quickPracticeButton}
-            />
-          )}
 
           <NavigationFooter
             currentStep={step}

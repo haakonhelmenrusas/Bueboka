@@ -18,11 +18,6 @@ export const styles = StyleSheet.create({
   scrollContainer: {
     flexGrow: 1,
   },
-  quickPracticeButton: {
-    marginHorizontal: 16,
-    marginBottom: 12,
-  },
-
   // ─── Step content wrapper ─────────────────────────────────────────────────────
   stepContent: {
     paddingHorizontal: 16,
