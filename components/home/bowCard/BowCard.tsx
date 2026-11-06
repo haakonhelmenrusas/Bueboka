@@ -2,7 +2,7 @@ import { Text, TouchableOpacity, View } from 'react-native';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faStar } from '@fortawesome/free-solid-svg-icons';
 import { Bow } from '@/types';
-import { BowTypeIcon } from '@/components/common/icons/ArcheryIcons';
+import { BowIcon } from '@/components/common/icons/ArcheryIcons';
 import { styles } from './BowCardStyles';
 import { colors } from '@/styles/colors';
 import { capitalizeFirstLetter } from '@/utils';
@@ -21,7 +21,7 @@ export default function BowCard({ bow, onPress }: Props) {
         </View>
       )}
       <View style={styles.iconWrap}>
-        <BowTypeIcon type={bow.type} size={30} color={colors.primary} />
+        <BowIcon size={30} color={colors.primary} />
       </View>
       <View style={styles.textWrap}>
         <Text style={styles.name} numberOfLines={1}>

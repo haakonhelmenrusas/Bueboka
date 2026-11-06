@@ -1,41 +1,23 @@
 import React from 'react';
 import { render } from '@testing-library/react-native';
-import { ArrowIcon, BowTypeIcon } from '../ArcheryIcons';
-import { BowType } from '@/types';
-
-const iconJson = async (element: React.ReactElement): Promise<string> => {
-  const { toJSON } = await render(element);
-  return JSON.stringify(toJSON());
-};
+import { ArrowIcon, BowIcon } from '../ArcheryIcons';
 
 // NOTE: kept in a single test — RNTL v14 returns null from toJSON() on later
 // renders once several tests in the same file have rendered.
 describe('ArcheryIcons', () => {
-  it('renders a distinct bow shape per bow type, a recurve fallback, and a stroked arrow', async () => {
-    const types = [
-      BowType.RECURVE,
-      BowType.COMPOUND,
-      BowType.LONGBOW,
-      BowType.BAREBOW,
-      BowType.HORSEBOW,
-      BowType.TRADITIONAL,
-      BowType.OTHER,
-    ];
-    const shapes: string[] = [];
-    for (const type of types) {
-      shapes.push(await iconJson(<BowTypeIcon type={type} size={24} color="#000" />));
-    }
-    // every type renders something, and all shapes are unique
-    shapes.forEach((s) => expect(s.length).toBeGreaterThan(2));
-    expect(new Set(shapes).size).toBe(types.length);
+  it('renders the lucide bow-arrow and tabler archery-arrow path data', async () => {
+    const bow = await render(<BowIcon size={24} color="#000" />);
+    const bowJson = JSON.stringify(bow.toJSON());
+    // lucide bow-arrow: bow limbs + string + arrow shaft (ISC, lucide.dev/icons/bow-arrow)
+    expect(bowJson).toContain('M18.575 11.082a13 13 0 0 1 1.048 9.027');
+    expect(bowJson).toContain('M9.707 14.293 21 3');
+    expect(bowJson.match(/RNSVGPath/g)).toHaveLength(5);
 
-    // unknown types fall back to the recurve shape
-    const fallback = await iconJson(<BowTypeIcon type={'UNKNOWN' as BowType} size={24} color="#000" />);
-    expect(fallback).toEqual(shapes[0]);
-
-    // arrow icon: shaft + 2 fletching lines + 1 arrowhead path
-    const arrowJson = await iconJson(<ArrowIcon size={24} color="#000" />);
-    expect(arrowJson.match(/RNSVGLine/g)).toHaveLength(5); // shaft + 4 feather strokes
-    expect(arrowJson.match(/RNSVGPath/g)).toHaveLength(1);
+    const arrow = await render(<ArrowIcon size={24} color="#000" />);
+    const arrowJson = JSON.stringify(arrow.toJSON());
+    // tabler archery-arrow: head + shaft + fletching (MIT, tabler.io/icons/icon/archery-arrow)
+    expect(arrowJson).toContain('M14 7v3h3l3 -3h-3v-3l-3 3');
+    expect(arrowJson).toContain('M14 10l-9 9');
+    expect(arrowJson.match(/RNSVGPath/g)).toHaveLength(3);
   });
 });
