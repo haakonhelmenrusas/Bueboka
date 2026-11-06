@@ -10,6 +10,7 @@ import { useTranslation } from '@/contexts';
 import { practiceRepository } from '@/services/repositories';
 import { Environment, PracticeCategory } from '@/types';
 import { buildQuickPracticeData, type QuickPracticeInfo } from '@/utils/helpers/practiceHelpers';
+import { setPendingQuickPracticeResult } from '@/utils/quickPractice';
 import { Button } from '@/components/common';
 import { styles } from '@/components/practice/QuickPracticeScreenStyles';
 
@@ -47,6 +48,10 @@ export default function QuickPracticeScreen() {
     setError(null);
     try {
       await practiceRepository.create(buildQuickPracticeData(count, info));
+      const roundIndex = Number(params.roundIndex);
+      if (Number.isInteger(roundIndex) && roundIndex >= 0) {
+        setPendingQuickPracticeResult({ roundIndex, count });
+      }
       router.back();
     } catch (err) {
       setError(err instanceof Error ? err.message : t['common.unknownError']);
@@ -58,7 +63,7 @@ export default function QuickPracticeScreen() {
   return (
     <View style={styles.container}>
       <LinearGradient colors={[colors.primary, colors.secondary, '#1a4f66']} style={styles.gradient}>
-        <View style={[styles.content, { paddingTop: insets.top + 12 }]}>
+        <View style={[styles.content, { paddingTop: insets.top + 12, paddingBottom: insets.bottom + 16 }]}>
           <View style={styles.header}>
             <Button
               onPress={() => router.back()}

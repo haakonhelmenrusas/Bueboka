@@ -2,9 +2,11 @@ import React from 'react';
 import { fireEvent, render, waitFor } from '@testing-library/react-native';
 import QuickPracticeScreen from '../hurtigtrening';
 import { practiceRepository } from '@/services/repositories';
+import { consumePendingQuickPracticeResult } from '@/utils/quickPractice';
 
 const mockBack = jest.fn();
 const mockParams = {
+  roundIndex: '2',
   distanceMeters: '18',
   targetType: '122cm',
   environment: 'INDOOR',
@@ -65,6 +67,8 @@ describe('QuickPracticeScreen', () => {
     });
     expect(payload.rounds[0].scores).toEqual([]);
     expect(mockBack).toHaveBeenCalledTimes(1);
+    expect(consumePendingQuickPracticeResult()).toEqual({ roundIndex: 2, count: 3 });
+    expect(consumePendingQuickPracticeResult()).toBeNull();
   });
 
   it('does not save with zero arrows', async () => {

@@ -10,7 +10,8 @@ import { practiceRepository, type CreateEndData } from '@/services/repositories'
 import { Arrows, Bow, Environment, Practice, PracticeCategory } from '@/types';
 import { useTranslation } from '@/contexts';
 import { buildEndData } from '@/utils/helpers/practiceHelpers';
-import { useRouter } from 'expo-router';
+import { useFocusEffect, useRouter } from 'expo-router';
+import { consumePendingQuickPracticeResult } from '@/utils/quickPractice';
 import type { TranslationKeys } from '@/lib/i18n';
 import { styles } from './CreatePracticeFormStyles';
 import { DEFAULT_ARROWS_PER_END } from '@/components/practice/shared/formConstants';
@@ -308,6 +309,15 @@ export default function CreatePracticeForm({
     });
   };
 
+  // Apply a quick-practice arrow count saved on /hurtigtrening when we return to the form
+  useFocusEffect(
+    useCallback(() => {
+      const result = consumePendingQuickPracticeResult();
+      if (result) updateRound(result.roundIndex, 'arrowsWithoutScore', result.count);
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []),
+  );
+
   // ─── Arrow scoring ───────────────────────────────────────────────────────────
   const addArrowScore = (roundIndex: number, score: number) => {
     const round = rounds[roundIndex];
@@ -356,6 +366,7 @@ export default function CreatePracticeForm({
     router.push({
       pathname: '/hurtigtrening',
       params: {
+        roundIndex: String(rounds.indexOf(quickRound)),
         distanceMeters: String(quickRound.distanceMeters),
         distanceFrom: quickRound.distanceFrom ? String(quickRound.distanceFrom) : '',
         distanceTo: quickRound.distanceTo ? String(quickRound.distanceTo) : '',
@@ -364,7 +375,7 @@ export default function CreatePracticeForm({
         practiceCategory,
       },
     });
-  }, [quickRound, router, environment, practiceCategory]);
+  }, [quickRound, rounds, router, environment, practiceCategory]);
 
   const getValidRounds = () =>
     rounds.filter(
