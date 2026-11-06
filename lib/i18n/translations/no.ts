@@ -838,7 +838,7 @@ export const no: TranslationKeys = {
 
   'quickPractice.startButton': 'Start hurtigtrening',
   'quickPractice.title': 'Hurtigtrening',
-  'quickPractice.save': 'Lagre økt',
+  'quickPractice.save': 'Lagre antall',
   'challengeForm.saving': 'Lagrer...',
   'challengeDetail.title': 'Utfordringsdetaljer',
   'challengeDetail.challenger': 'Utfordrer',

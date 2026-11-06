@@ -1,7 +1,6 @@
 import React from 'react';
-import { fireEvent, render, waitFor } from '@testing-library/react-native';
+import { fireEvent, render } from '@testing-library/react-native';
 import QuickPracticeScreen from '../hurtigtrening';
-import { practiceRepository } from '@/services/repositories';
 import { consumePendingQuickPracticeResult } from '@/utils/quickPractice';
 
 const mockBack = jest.fn();
@@ -17,16 +16,10 @@ jest.mock('expo-router', () => ({
   useLocalSearchParams: () => mockParams,
 }));
 
-jest.mock('@/services/repositories', () => ({
-  practiceRepository: { create: jest.fn() },
-}));
-
-const mockCreate = jest.mocked(practiceRepository.create);
-
 describe('QuickPracticeScreen', () => {
   beforeEach(() => {
     jest.clearAllMocks();
-    mockCreate.mockResolvedValue({} as any);
+    consumePendingQuickPracticeResult();
   });
 
   it('counts arrows up and down, never below zero', async () => {
@@ -46,7 +39,7 @@ describe('QuickPracticeScreen', () => {
     expect(getByTestId('quick-counter').props.children).toBe(0);
   });
 
-  it('saves a quick practice with the counted arrows as unscored and navigates back', async () => {
+  it('hands the counted arrows back to the form round without creating a session', async () => {
     const { getByTestId } = await render(<QuickPracticeScreen />);
 
     await fireEvent.press(getByTestId('quick-plus'));
@@ -54,28 +47,19 @@ describe('QuickPracticeScreen', () => {
     await fireEvent.press(getByTestId('quick-plus'));
     await fireEvent.press(getByTestId('quick-save'));
 
-    await waitFor(() => {
-      expect(mockCreate).toHaveBeenCalledTimes(1);
-    });
-
-    const payload = mockCreate.mock.calls[0][0];
-    expect(payload.rounds[0]).toMatchObject({
-      distanceMeters: 18,
-      targetType: '122cm',
-      roundScore: 0,
-      arrowsWithoutScore: 3,
-    });
-    expect(payload.rounds[0].scores).toEqual([]);
     expect(mockBack).toHaveBeenCalledTimes(1);
+    // The count is pending for the practice form's "Piler u/score" field —
+    // the quick practice is a warm-up in the same session, not a new practice
     expect(consumePendingQuickPracticeResult()).toEqual({ roundIndex: 2, count: 3 });
     expect(consumePendingQuickPracticeResult()).toBeNull();
   });
 
-  it('does not save with zero arrows', async () => {
+  it('does not go back with zero arrows', async () => {
     const { getByTestId } = await render(<QuickPracticeScreen />);
 
     await fireEvent.press(getByTestId('quick-save'));
 
-    expect(mockCreate).not.toHaveBeenCalled();
+    expect(mockBack).not.toHaveBeenCalled();
+    expect(consumePendingQuickPracticeResult()).toBeNull();
   });
 });

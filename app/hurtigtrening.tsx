@@ -1,5 +1,5 @@
 import { useCallback, useState } from 'react';
-import { ActivityIndicator, Text, TouchableOpacity, View } from 'react-native';
+import { Text, TouchableOpacity, View } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -7,16 +7,17 @@ import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faArrowLeft } from '@fortawesome/free-solid-svg-icons/faArrowLeft';
 import { colors } from '@/styles/colors';
 import { useTranslation } from '@/contexts';
-import { practiceRepository } from '@/services/repositories';
 import { Environment, PracticeCategory } from '@/types';
-import { buildQuickPracticeData, type QuickPracticeInfo } from '@/utils/helpers/practiceHelpers';
+import type { QuickPracticeInfo } from '@/utils/helpers/practiceHelpers';
 import { setPendingQuickPracticeResult } from '@/utils/quickPractice';
 import { Button } from '@/components/common';
 import { styles } from '@/components/practice/QuickPracticeScreenStyles';
 
 /**
- * Quick practice (hurtigtrening): count arrows only, no scoring.
- * Opened from the practice form with the chosen round's setup as route params.
+ * Quick practice (hurtigtrening): warm-up within the same practice session —
+ * count arrows only, no scoring. Opened from the practice form with the chosen
+ * round's setup as route params; the count is handed back to the form's
+ * "Piler u/score" field when saving, no separate session is created.
  */
 export default function QuickPracticeScreen() {
   const router = useRouter();
@@ -25,8 +26,6 @@ export default function QuickPracticeScreen() {
   const params = useLocalSearchParams<Record<string, string>>();
 
   const [count, setCount] = useState(0);
-  const [saving, setSaving] = useState(false);
-  const [error, setError] = useState<string | null>(null);
 
   const num = (v: string | undefined) => (v ? Number(v) : undefined);
 
@@ -42,23 +41,14 @@ export default function QuickPracticeScreen() {
 
   const roundInfoText = [info.distanceMeters ? `${info.distanceMeters}m` : null, info.targetType].filter(Boolean).join(' · ');
 
-  const handleSave = useCallback(async () => {
-    if (count <= 0 || saving) return;
-    setSaving(true);
-    setError(null);
-    try {
-      await practiceRepository.create(buildQuickPracticeData(count, info));
-      const roundIndex = Number(params.roundIndex);
-      if (Number.isInteger(roundIndex) && roundIndex >= 0) {
-        setPendingQuickPracticeResult({ roundIndex, count });
-      }
-      router.back();
-    } catch (err) {
-      setError(err instanceof Error ? err.message : t['common.unknownError']);
-      setSaving(false);
+  const handleSave = useCallback(() => {
+    if (count <= 0) return;
+    const roundIndex = Number(params.roundIndex);
+    if (Number.isInteger(roundIndex) && roundIndex >= 0) {
+      setPendingQuickPracticeResult({ roundIndex, count });
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [count, saving, router, t, params]);
+    router.back();
+  }, [count, params, router]);
 
   return (
     <View style={styles.container}>
@@ -101,28 +91,17 @@ export default function QuickPracticeScreen() {
             </TouchableOpacity>
           </View>
 
-          {error ? <Text style={styles.errorText}>{error}</Text> : null}
-
           <View style={[styles.footer, { marginTop: 'auto' }]}>
-            <Button
-              label={t['common.cancel']}
-              onPress={() => router.back()}
-              variant="standard"
-              type="outline"
-              disabled={saving}
-              buttonStyle={{ flex: 1 }}
-            />
+            <Button label={t['common.cancel']} onPress={() => router.back()} variant="standard" type="outline" buttonStyle={{ flex: 1 }} />
             <Button
               testID="quick-save"
-              label={saving ? t['challengeForm.saving'] : t['quickPractice.save']}
+              label={t['quickPractice.save']}
               onPress={handleSave}
               type="filled"
-              disabled={saving || count <= 0}
-              loading={saving}
+              disabled={count <= 0}
               buttonStyle={{ flex: 1 }}
             />
           </View>
-          {saving && <ActivityIndicator color={colors.white} style={{ marginTop: 8 }} />}
         </View>
       </LinearGradient>
     </View>

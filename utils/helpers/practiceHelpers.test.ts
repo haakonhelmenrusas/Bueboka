@@ -1,5 +1,4 @@
-import { buildEndData, buildQuickPracticeData } from './practiceHelpers';
-import { Environment, PracticeCategory } from '@/types';
+import { buildEndData } from './practiceHelpers';
 
 describe('buildEndData', () => {
   it('derives numberArrows from the scores array when the field is empty (warm-up + scored arrows in one round)', () => {
@@ -26,30 +25,5 @@ describe('buildEndData', () => {
     const [end] = buildEndData([{ roundScore: 0, arrowsWithoutScore: 14 }]);
     expect(end.numberArrows).toBeUndefined();
     expect(end.arrowsWithoutScore).toBe(14);
-  });
-});
-
-describe('buildQuickPracticeData', () => {
-  const info = {
-    distanceMeters: 18,
-    targetType: '122cm',
-    environment: Environment.INDOOR,
-    practiceCategory: PracticeCategory.SKIVE_INDOOR,
-  };
-
-  it('builds a single unscored round with the counted arrows', () => {
-    const data = buildQuickPracticeData(24, info);
-
-    expect(data.environment).toBe(Environment.INDOOR);
-    expect(data.practiceCategory).toBe(PracticeCategory.SKIVE_INDOOR);
-    expect(data.rounds).toHaveLength(1);
-    expect(data.rounds[0]).toMatchObject({
-      distanceMeters: 18,
-      targetType: '122cm',
-      roundScore: 0,
-      arrowsWithoutScore: 24,
-    });
-    expect(data.rounds[0].scores).toEqual([]);
-    expect(data.rounds[0].numberArrows).toBeUndefined();
   });
 });

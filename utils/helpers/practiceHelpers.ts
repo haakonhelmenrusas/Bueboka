@@ -1,5 +1,5 @@
 import { Environment, Practice, PracticeCardItem, PracticeCategory } from '@/types';
-import type { CreateEndData, CreatePracticeData } from '@/services/repositories/practiceRepository';
+import type { CreateEndData } from '@/services/repositories/practiceRepository';
 
 /**
  * Build the end payloads sent to the API from the form's round inputs.
@@ -35,29 +35,6 @@ export interface QuickPracticeInfo {
   targetSizeCm?: number;
   environment: Environment;
   practiceCategory: PracticeCategory;
-}
-
-/**
- * Build the payload for a quick practice (hurtigtrening): one round where the
- * user only counted arrows — all arrows are unscored (arrowsWithoutScore),
- * no scores and no round score.
- */
-export function buildQuickPracticeData(arrowCount: number, info: QuickPracticeInfo): CreatePracticeData {
-  const round: CreateEndData = {
-    roundScore: 0,
-    scores: [],
-    arrowsWithoutScore: arrowCount,
-  };
-  if (info.distanceMeters !== undefined) round.distanceMeters = info.distanceMeters;
-  if (info.distanceFrom !== undefined) round.distanceFrom = info.distanceFrom;
-  if (info.distanceTo !== undefined) round.distanceTo = info.distanceTo;
-  if (info.targetType) round.targetType = info.targetType;
-  return {
-    date: new Date().toISOString(),
-    environment: info.environment,
-    practiceCategory: info.practiceCategory,
-    rounds: [round],
-  };
 }
 
 /**

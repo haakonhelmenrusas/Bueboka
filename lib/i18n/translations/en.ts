@@ -839,7 +839,7 @@ export const en: TranslationKeys = {
 
   'quickPractice.startButton': 'Start quick practice',
   'quickPractice.title': 'Quick practice',
-  'quickPractice.save': 'Save session',
+  'quickPractice.save': 'Save count',
   'challengeForm.saving': 'Saving...',
   'challengeDetail.title': 'Challenge details',
   'challengeDetail.challenger': 'Challenger',

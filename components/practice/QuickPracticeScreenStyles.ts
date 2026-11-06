@@ -75,9 +75,4 @@ export const styles = StyleSheet.create({
     gap: 12,
     paddingBottom: 8,
   },
-  errorText: {
-    color: colors.errorLight,
-    textAlign: 'center',
-    marginTop: 12,
-  },
 });
