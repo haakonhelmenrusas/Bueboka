@@ -62,6 +62,13 @@ export const styles = StyleSheet.create({
   rulesGrid: {
     gap: 12,
   },
+  rulesRow: {
+    flexDirection: 'row',
+    gap: 12,
+  },
+  halfField: {
+    flex: 1,
+  },
   actions: {
     flexDirection: 'row',
     gap: 12,

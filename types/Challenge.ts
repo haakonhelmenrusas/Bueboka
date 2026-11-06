@@ -51,7 +51,6 @@ export interface ChallengeCustomRules {
   targetType?: string | null;
   targetSizeCm?: number | null;
   numberArrows?: number | null;
-  arrowsWithoutScore?: number | null;
 }
 
 /**

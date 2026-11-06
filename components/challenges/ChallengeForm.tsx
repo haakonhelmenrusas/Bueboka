@@ -32,7 +32,6 @@ export default function ChallengeForm({ opponent, onSubmit, onCancel, loading, e
     targetType: null,
     targetSizeCm: null,
     numberArrows: null,
-    arrowsWithoutScore: null,
   });
 
   // Set default name when opponent changes
@@ -67,7 +66,6 @@ export default function ChallengeForm({ opponent, onSubmit, onCancel, loading, e
       if (customRules.targetType) rules.targetType = customRules.targetType;
       if (customRules.targetSizeCm !== null) rules.targetSizeCm = customRules.targetSizeCm;
       if (customRules.numberArrows !== null) rules.numberArrows = customRules.numberArrows;
-      if (customRules.arrowsWithoutScore !== null) rules.arrowsWithoutScore = customRules.arrowsWithoutScore;
 
       if (Object.keys(rules).length > 0) {
         data.customRules = rules;
@@ -158,37 +156,39 @@ export default function ChallengeForm({ opponent, onSubmit, onCancel, loading, e
                 value={customRules.distanceMeters?.toString() || ''}
                 onChangeText={(v) => handleNumberChange('distanceMeters', v)}
                 keyboardType="numeric"
-                placeholder="0"
+                placeholder=""
                 containerStyle={styles.field}
                 editable={!loading}
               />
 
-              <Input
-                label={t['challenge.distanceFrom']}
-                value={customRules.distanceFrom?.toString() || ''}
-                onChangeText={(v) => handleNumberChange('distanceFrom', v)}
-                keyboardType="numeric"
-                placeholder="0"
-                containerStyle={styles.field}
-                editable={!loading}
-              />
+              <View style={styles.rulesRow}>
+                <Input
+                  label={t['challenge.distanceFrom']}
+                  value={customRules.distanceFrom?.toString() || ''}
+                  onChangeText={(v) => handleNumberChange('distanceFrom', v)}
+                  keyboardType="numeric"
+                  placeholder=""
+                  containerStyle={[styles.field, styles.halfField]}
+                  editable={!loading}
+                />
 
-              <Input
-                label={t['challenge.distanceTo']}
-                value={customRules.distanceTo?.toString() || ''}
-                onChangeText={(v) => handleNumberChange('distanceTo', v)}
-                keyboardType="numeric"
-                placeholder="0"
-                containerStyle={styles.field}
-                editable={!loading}
-              />
+                <Input
+                  label={t['challenge.distanceTo']}
+                  value={customRules.distanceTo?.toString() || ''}
+                  onChangeText={(v) => handleNumberChange('distanceTo', v)}
+                  keyboardType="numeric"
+                  placeholder=""
+                  containerStyle={[styles.field, styles.halfField]}
+                  editable={!loading}
+                />
+              </View>
 
               <Input
                 label={t['challenge.targetSize']}
                 value={customRules.targetSizeCm?.toString() || ''}
                 onChangeText={(v) => handleNumberChange('targetSizeCm', v)}
                 keyboardType="numeric"
-                placeholder="0"
+                placeholder=""
                 containerStyle={styles.field}
                 editable={!loading}
               />
@@ -198,17 +198,7 @@ export default function ChallengeForm({ opponent, onSubmit, onCancel, loading, e
                 value={customRules.numberArrows?.toString() || ''}
                 onChangeText={(v) => handleNumberChange('numberArrows', v)}
                 keyboardType="numeric"
-                placeholder="0"
-                containerStyle={styles.field}
-                editable={!loading}
-              />
-
-              <Input
-                label={t['challenge.arrowsWithoutScore']}
-                value={customRules.arrowsWithoutScore?.toString() || ''}
-                onChangeText={(v) => handleNumberChange('arrowsWithoutScore', v)}
-                keyboardType="numeric"
-                placeholder="0"
+                placeholder=""
                 containerStyle={styles.field}
                 editable={!loading}
               />

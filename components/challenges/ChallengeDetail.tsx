@@ -181,12 +181,6 @@ export default function ChallengeDetail({
                 <Text style={styles.ruleValue}>{challenge.customRules.numberArrows}</Text>
               </View>
             )}
-            {challenge.customRules.arrowsWithoutScore !== null && (
-              <View style={styles.ruleRow}>
-                <Text style={styles.ruleLabel}>{t['challenge.arrowsWithoutScore']}:</Text>
-                <Text style={styles.ruleValue}>{challenge.customRules.arrowsWithoutScore}</Text>
-              </View>
-            )}
             {challenge.customRules.targetType && (
               <View style={styles.ruleRow}>
                 <Text style={styles.ruleLabel}>{t['challenge.targetType']}:</Text>

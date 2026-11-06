@@ -846,7 +846,6 @@ export interface TranslationKeys {
   'challenge.distanceTo': string;
   'challenge.targetSize': string;
   'challenge.numberArrows': string;
-  'challenge.arrowsWithoutScore': string;
   'challenge.targetType': string;
   'challenge.targetTypePlaceholder': string;
   'challenge.statusPending': string;
