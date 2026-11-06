@@ -20,7 +20,7 @@ jest.mock('@/contexts', () => ({
       'scoring.scoreNow': 'Score now',
       'scoring.continueScoring': 'Continue',
       'scoring.editScores': 'Edit',
-      'quickPractice.startButton': 'Start hurtigtrening',
+      'quickPractice.startButton': 'Skyt og klikk',
     },
     locale: 'en',
   }),
@@ -41,7 +41,7 @@ jest.mock('@/components/common', () => {
       React.createElement(
         Text,
         { testID: props.testID ?? 'form-button', onPress: props.onPress },
-        `${props.label}${props.icon ? '|icon' : ''}`,
+        `${props.label}${props.icon ? '|icon' : ''}:${props.type ?? ''}`,
       ),
   };
 });
@@ -68,7 +68,7 @@ const defaultProps = {
 describe('RoundCard quick practice button', () => {
   beforeEach(() => jest.clearAllMocks());
 
-  it('shows the quick-practice button with an icon inside the card when distance and target are set', async () => {
+  it('shows the quick-practice button as outline with an icon inside the card when distance and target are set', async () => {
     const onStartQuickPractice = jest.fn();
     const { getByTestId } = await render(
       <RoundCard
@@ -79,8 +79,9 @@ describe('RoundCard quick practice button', () => {
     );
 
     const btn = getByTestId('start-quick-practice-0');
-    expect(btn.props.children).toContain('Start hurtigtrening');
+    expect(btn.props.children).toContain('Skyt og klikk');
     expect(btn.props.children).toContain('|icon'); // bolt icon
+    expect(btn.props.children).toContain(':outline');
 
     await fireEvent.press(btn);
     expect(onStartQuickPractice).toHaveBeenCalledTimes(1);

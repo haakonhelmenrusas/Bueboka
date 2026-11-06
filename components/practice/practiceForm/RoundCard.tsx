@@ -164,8 +164,8 @@ export function RoundCard({
           testID={`start-quick-practice-${roundIndex}`}
           label={t['quickPractice.startButton']}
           onPress={onStartQuickPractice}
-          type="filled"
-          icon={<FontAwesomeIcon icon={faBolt} size={16} color={colors.white} />}
+          type="outline"
+          icon={<FontAwesomeIcon icon={faBolt} size={16} color={colors.primary} />}
           buttonStyle={{ marginTop: 8 }}
         />
       )}

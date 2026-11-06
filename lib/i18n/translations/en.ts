@@ -837,7 +837,7 @@ export const en: TranslationKeys = {
   'challengeForm.cancelButton': 'Cancel',
   'challengeForm.submitButton': 'Create',
 
-  'quickPractice.startButton': 'Start quick practice',
+  'quickPractice.startButton': 'Shoot and click',
   'quickPractice.title': 'Quick practice',
   'quickPractice.save': 'Save count',
   'challengeForm.saving': 'Saving...',
