@@ -1,10 +1,21 @@
-import Svg, { Line, Path, Polyline } from 'react-native-svg';
+import type { ReactNode } from 'react';
+import Svg, { Circle, Line, Path, Polyline } from 'react-native-svg';
 import { colors } from '@/styles/colors';
+import { BowType } from '@/types';
 
 interface ArcheryIconProps {
   size?: number;
   color?: string;
 }
+
+const strokeProps = (color: string) =>
+  ({
+    stroke: color,
+    strokeWidth: 1.8,
+    strokeLinecap: 'round',
+    strokeLinejoin: 'round',
+    fill: 'none',
+  }) as const;
 
 export function BowIcon({ size = 20, color = colors.white }: ArcheryIconProps) {
   return (
@@ -26,12 +37,99 @@ export function BowIcon({ size = 20, color = colors.white }: ArcheryIconProps) {
 }
 
 export function ArrowIcon({ size = 20, color = colors.white }: ArcheryIconProps) {
+  const s = strokeProps(color);
   return (
-    <Svg width={size} height={size} viewBox="0 0 32 32" style={{ transform: [{ rotate: '225deg' }] }}>
-      <Path
-        d="M30.6956 0.0260342C31.3007 -0.128255 32.01 0.412759 32.01 1.03593C31.3187 3.5807 31.2286 6.63643 30.4872 9.12309C30.3048 9.73424 29.7257 10.1951 29.0885 9.87851C28.4073 9.53987 27.4034 8.03706 26.7141 7.54614H26.5157L11.2611 22.8088C10.8844 23.6263 12.6337 26.4897 11.6098 27.4575L7.24759 31.7976C4.56456 32.7614 4.96731 29.315 4.20989 27.758C3.22004 27.3813 2.02981 27.2691 1.05398 26.9124C-0.0661236 26.5017 -0.284533 25.3876 0.406763 24.4578C0.967815 23.7044 3.64684 21.0354 4.40626 20.4543C5.63457 19.5146 7.49205 20.6347 8.87264 20.805L9.16318 20.7148L24.4679 5.30193C24.0371 4.67074 22.3359 3.47049 22.0894 2.87538C21.7368 2.02178 22.404 1.62904 23.1093 1.4467C25.5319 0.819522 28.247 0.643191 30.6956 0.0260342Z"
-        fill={color}
-      />
+    <Svg width={size} height={size} viewBox="0 0 24 24">
+      {/* shaft */}
+      <Line x1={4} y1={20} x2={20} y2={4} {...s} />
+      {/* arrowhead */}
+      <Polyline points="13.5,4.5 20,4 19.5,10.5" {...s} />
+      {/* fletching */}
+      <Line x1={4} y1={20} x2={9} y2={19} {...s} />
+      <Line x1={4} y1={20} x2={5} y2={15} {...s} />
+    </Svg>
+  );
+}
+
+/** Horizontal arrow shot from the bow — shared by all bow-type icons */
+function ShotArrow({ color }: { color: string }) {
+  const s = strokeProps(color);
+  return (
+    <>
+      <Line x1={2} y1={12} x2={21} y2={12} {...s} />
+      <Polyline points="17.5,9.8 21,12 17.5,14.2" {...s} />
+    </>
+  );
+}
+
+/**
+ * Bow icon per bow type — each limb geometry is distinct: recurved tips for
+ * RECURVE, cam wheels for COMPOUND, tall straight limbs for LONGBOW, short
+ * straight limbs for BAREBOW, short deep curve for HORSEBOW, medium curve for
+ * TRADITIONAL and a flat straight bow for OTHER.
+ */
+export function BowTypeIcon({ type, size = 20, color = colors.white }: ArcheryIconProps & { type: BowType }) {
+  const s = strokeProps(color);
+  let limbs: ReactNode;
+  let string: ReactNode;
+  let extra: ReactNode = null;
+
+  switch (type) {
+    case BowType.COMPOUND:
+      limbs = <Path d="M6 3 C 13 5 17 8.5 17 12 C 17 15.5 13 19 6 21" {...s} />;
+      string = <Line x1={6} y1={3} x2={6} y2={21} {...s} />;
+      extra = (
+        <>
+          <Circle cx={6} cy={3} r={1.8} {...s} />
+          <Circle cx={6} cy={21} r={1.8} {...s} />
+        </>
+      );
+      break;
+    case BowType.LONGBOW:
+      limbs = <Path d="M7 2 C 9.5 8 9.5 16 7 22" {...s} />;
+      string = <Line x1={7} y1={2} x2={7} y2={22} {...s} />;
+      break;
+    case BowType.BAREBOW:
+      limbs = <Path d="M7 5 C 9 10 9 14 7 19" {...s} />;
+      string = <Line x1={7} y1={5} x2={7} y2={19} {...s} />;
+      break;
+    case BowType.HORSEBOW:
+      limbs = <Path d="M6 6 C 16 7 19 10 18.5 12 C 19 14 16 17 6 18" {...s} />;
+      string = <Line x1={6} y1={6} x2={6} y2={18} {...s} />;
+      extra = (
+        <>
+          <Path d="M6 6 C 4.5 6 4 7 4.5 8" {...s} />
+          <Path d="M6 18 C 4.5 18 4 17 4.5 16" {...s} />
+        </>
+      );
+      break;
+    case BowType.TRADITIONAL:
+      limbs = <Path d="M7 2 C 11 7 11 17 7 22" {...s} />;
+      string = <Line x1={7} y1={2} x2={7} y2={22} {...s} />;
+      break;
+    case BowType.OTHER:
+      limbs = <Line x1={8} y1={3} x2={8} y2={21} {...s} />;
+      string = <Line x1={6} y1={3} x2={6} y2={21} {...s} />;
+      break;
+    case BowType.RECURVE:
+    default:
+      limbs = <Path d="M6 2 C 14 4 18 8 18 12 C 18 16 14 20 6 22" {...s} />;
+      string = <Line x1={6} y1={2} x2={6} y2={22} {...s} />;
+      extra = (
+        <>
+          <Path d="M6 2 C 4 2.5 3.5 4 4.5 5.5" {...s} />
+          <Path d="M6 22 C 4 21.5 3.5 20 4.5 18.5" {...s} />
+        </>
+      );
+      break;
+  }
+
+  return (
+    <Svg width={size} height={size} viewBox="0 0 24 24">
+      {limbs}
+      {string}
+      {extra}
+      <ShotArrow color={color} />
     </Svg>
   );
 }

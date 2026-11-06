@@ -16,7 +16,10 @@ export const styles = StyleSheet.create({
     color: colors.white,
   },
   list: {
-    gap: 8,
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'space-between',
+    rowGap: 8,
   },
   placeholder: {
     backgroundColor: 'rgba(255,255,255,0.08)',

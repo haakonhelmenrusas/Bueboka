@@ -83,7 +83,7 @@ export const styles = StyleSheet.create({
   },
   quickActionLabel: {
     marginTop: 6,
-    fontSize: 12,
+    fontSize: 16,
     color: colors.white,
     textAlign: 'center',
   },
