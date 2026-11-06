@@ -8,10 +8,10 @@ interface ArcheryIconProps {
   color?: string;
 }
 
-const strokeProps = (color: string) =>
+const strokeProps = (color: string, strokeWidth = 1.2) =>
   ({
     stroke: color,
-    strokeWidth: 1.8,
+    strokeWidth,
     strokeLinecap: 'round',
     strokeLinejoin: 'round',
     fill: 'none',
@@ -41,12 +41,12 @@ export function ArrowIcon({ size = 20, color = colors.white }: ArcheryIconProps)
   return (
     <Svg width={size} height={size} viewBox="0 0 24 24">
       {/* shaft */}
-      <Line x1={4} y1={20} x2={20} y2={4} {...s} />
-      {/* arrowhead */}
-      <Polyline points="13.5,4.5 20,4 19.5,10.5" {...s} />
-      {/* fletching */}
-      <Line x1={4} y1={20} x2={9} y2={19} {...s} />
-      <Line x1={4} y1={20} x2={5} y2={15} {...s} />
+      <Line x1={5} y1={19} x2={19.5} y2={4.5} {...s} />
+      {/* tip: corner arrowhead */}
+      <Polyline points="13.8,4.5 19.5,4.5 19.5,10.2" {...s} />
+      {/* feathers: two swept strokes behind the tail, not a second arrowhead */}
+      <Line x1={7.4} y1={16.6} x2={4.9} y2={14.1} {...s} />
+      <Line x1={9.4} y1={14.6} x2={6.9} y2={12.1} {...s} />
     </Svg>
   );
 }
@@ -56,8 +56,13 @@ function ShotArrow({ color }: { color: string }) {
   const s = strokeProps(color);
   return (
     <>
-      <Line x1={2} y1={12} x2={21} y2={12} {...s} />
-      <Polyline points="17.5,9.8 21,12 17.5,14.2" {...s} />
+      {/* shaft */}
+      <Line x1={4} y1={12} x2={20} y2={12} {...s} />
+      {/* tip */}
+      <Polyline points="15.8,8.8 20,12 15.8,15.2" {...s} />
+      {/* feathers swept back from the tail */}
+      <Line x1={6.2} y1={12} x2={3.8} y2={9.6} {...s} />
+      <Line x1={8.2} y1={12} x2={5.8} y2={9.6} {...s} />
     </>
   );
 }
@@ -80,32 +85,49 @@ export function BowTypeIcon({ type, size = 20, color = colors.white }: ArcheryIc
       string = <Line x1={6} y1={3} x2={6} y2={21} {...s} />;
       extra = (
         <>
-          <Circle cx={6} cy={3} r={1.8} {...s} />
-          <Circle cx={6} cy={21} r={1.8} {...s} />
+          {/* cam wheels at the limb tips */}
+          <Circle cx={6} cy={3} r={1.6} {...s} />
+          <Circle cx={6} cy={21} r={1.6} {...s} />
+          {/* cables running from the cams down the limbs */}
+          <Line x1={7.4} y1={4.2} x2={13.5} y2={19.5} {...s} />
+          {/* riser/grip */}
+          <Line x1={16.2} y1={10.6} x2={17.8} y2={13.4} {...s} />
         </>
       );
       break;
     case BowType.LONGBOW:
       limbs = <Path d="M7 2 C 9.5 8 9.5 16 7 22" {...s} />;
       string = <Line x1={7} y1={2} x2={7} y2={22} {...s} />;
+      extra = (
+        <>
+          {/* grip wrap */}
+          <Line x1={7} y1={10.6} x2={8.8} y2={10.6} {...s} />
+          <Line x1={7} y1={13.4} x2={8.8} y2={13.4} {...s} />
+        </>
+      );
       break;
     case BowType.BAREBOW:
       limbs = <Path d="M7 5 C 9 10 9 14 7 19" {...s} />;
       string = <Line x1={7} y1={5} x2={7} y2={19} {...s} />;
+      extra = <Line x1={7} y1={11.2} x2={8.6} y2={11.2} {...s} />;
       break;
     case BowType.HORSEBOW:
       limbs = <Path d="M6 6 C 16 7 19 10 18.5 12 C 19 14 16 17 6 18" {...s} />;
       string = <Line x1={6} y1={6} x2={6} y2={18} {...s} />;
       extra = (
         <>
+          {/* recurved tips */}
           <Path d="M6 6 C 4.5 6 4 7 4.5 8" {...s} />
           <Path d="M6 18 C 4.5 18 4 17 4.5 16" {...s} />
+          {/* grip */}
+          <Line x1={18} y1={10.8} x2={18.9} y2={13.2} {...s} />
         </>
       );
       break;
     case BowType.TRADITIONAL:
       limbs = <Path d="M7 2 C 11 7 11 17 7 22" {...s} />;
       string = <Line x1={7} y1={2} x2={7} y2={22} {...s} />;
+      extra = <Line x1={7} y1={11.2} x2={8.6} y2={11.2} {...s} />;
       break;
     case BowType.OTHER:
       limbs = <Line x1={8} y1={3} x2={8} y2={21} {...s} />;
@@ -117,8 +139,11 @@ export function BowTypeIcon({ type, size = 20, color = colors.white }: ArcheryIc
       string = <Line x1={6} y1={2} x2={6} y2={22} {...s} />;
       extra = (
         <>
+          {/* recurved tips */}
           <Path d="M6 2 C 4 2.5 3.5 4 4.5 5.5" {...s} />
           <Path d="M6 22 C 4 21.5 3.5 20 4.5 18.5" {...s} />
+          {/* riser/grip */}
+          <Line x1={16.6} y1={10.8} x2={18.2} y2={13.2} {...s} />
         </>
       );
       break;

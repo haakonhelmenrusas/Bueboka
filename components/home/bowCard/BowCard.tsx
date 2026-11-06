@@ -21,7 +21,7 @@ export default function BowCard({ bow, onPress }: Props) {
         </View>
       )}
       <View style={styles.iconWrap}>
-        <BowTypeIcon type={bow.type} size={40} color={colors.primary} />
+        <BowTypeIcon type={bow.type} size={30} color={colors.primary} />
       </View>
       <View style={styles.textWrap}>
         <Text style={styles.name} numberOfLines={1}>

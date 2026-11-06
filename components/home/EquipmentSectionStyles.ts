@@ -21,6 +21,12 @@ export const styles = StyleSheet.create({
     justifyContent: 'space-between',
     rowGap: 8,
   },
+  divider: {
+    width: '100%',
+    height: 1,
+    backgroundColor: 'rgba(255,255,255,0.2)',
+    marginVertical: 4,
+  },
   placeholder: {
     backgroundColor: 'rgba(255,255,255,0.08)',
     borderWidth: 1,

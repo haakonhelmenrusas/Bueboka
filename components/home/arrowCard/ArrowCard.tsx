@@ -20,7 +20,7 @@ export default function ArrowCard({ arrowSet, onPress }: Props) {
         </View>
       )}
       <View style={styles.iconWrap}>
-        <ArrowIcon size={40} color={colors.primary} />
+        <ArrowIcon size={30} color={colors.primary} />
       </View>
       <View style={styles.textWrap}>
         <Text style={styles.name} numberOfLines={1}>
