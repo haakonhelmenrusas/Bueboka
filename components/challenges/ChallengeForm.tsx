@@ -5,8 +5,6 @@ import { styles } from './ChallengeFormStyles';
 import { useTranslation } from '@/contexts';
 import type { PublicProfile, ChallengeCustomRules, CreateChallengeData } from '@/types';
 import { colors } from '@/styles/colors';
-import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
-import { faCalendar } from '@fortawesome/free-solid-svg-icons';
 
 interface ChallengeFormProps {
   opponent: PublicProfile | null;
@@ -93,24 +91,16 @@ export default function ChallengeForm({ opponent, onSubmit, onCancel, loading, e
   return (
     <ScrollView contentContainerStyle={styles.container} keyboardShouldPersistTaps="handled">
       <View style={styles.form}>
-        {/* Header */}
-        <View style={styles.header}>
-          <FontAwesomeIcon icon={faCalendar} size={24} color={colors.primary} />
-          <View style={styles.headerText}>
-            <View style={styles.titleRow}>
-              <View style={styles.titleContainer}>
-                <View style={styles.titleTextWrapper}>
-                  <Text style={styles.title}>{t['challenge.createNew']}</Text>
-                </View>
-              </View>
-            </View>
-            {opponent && (
+        {/* Header: only the opponent line — the modal header already shows the title */}
+        {opponent && (
+          <View style={styles.header}>
+            <View style={styles.headerText}>
               <Text style={styles.subtitle}>
                 {t['challenge.selectOpponent']}: {opponent.name || t['challenge.unknownOpponent']}
               </Text>
-            )}
+            </View>
           </View>
-        </View>
+        )}
 
         {/* Error display */}
         {error ? <Text style={styles.errorText}>{error}</Text> : null}
@@ -128,6 +118,7 @@ export default function ChallengeForm({ opponent, onSubmit, onCancel, loading, e
         {/* Description field */}
         <Input
           label={t['challenge.descriptionLabel']}
+          optional
           value={description}
           onChangeText={setDescription}
           placeholder={t['challenge.descriptionPlaceholder']}
@@ -148,8 +139,6 @@ export default function ChallengeForm({ opponent, onSubmit, onCancel, loading, e
         {/* Custom rules section */}
         {useCustomRules && (
           <View style={styles.customRulesContainer}>
-            <Text style={styles.sectionTitle}>{t['challenge.customRulesTitle']}</Text>
-
             <View style={styles.rulesGrid}>
               <Input
                 label={t['challenge.distanceMeters']}

@@ -64,6 +64,7 @@ export const styles = StyleSheet.create({
   },
   rulesRow: {
     flexDirection: 'row',
+    alignItems: 'flex-start',
     gap: 12,
   },
   halfField: {
