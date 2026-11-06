@@ -38,7 +38,7 @@ export default function CreateChallengePage() {
         const data = await publicProfilesApi.search(q.trim());
         // Filter out the current user
         setProfiles(data.filter((p) => p.id !== user?.id));
-      } catch (err) {
+      } catch {
         setProfiles([]);
       } finally {
         setLoading(false);

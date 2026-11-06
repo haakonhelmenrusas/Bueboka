@@ -276,6 +276,3 @@ export default function ChallengeDetail({
     </View>
   );
 }
-
-// Import Text from react-native
-import { Text as RNText } from 'react-native';

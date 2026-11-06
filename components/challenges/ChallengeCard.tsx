@@ -96,7 +96,7 @@ export default function ChallengeCard({ challenge, onPress, currentUserId }: Cha
   const scoreText = getScoreText();
 
   return (
-    <TouchableOpacity style={styles.card} onPress={() => onPress?.(challenge)} activeOpacity={0.7}>
+    <TouchableOpacity testID="challenge-card" style={styles.card} onPress={() => onPress?.(challenge)} activeOpacity={0.7}>
       <View style={styles.cardHeader}>
         <Text style={styles.challengeName} numberOfLines={2}>
           {challenge.name}

@@ -1,5 +1,5 @@
 import React from 'react';
-import { render } from '@testing-library/react-native';
+import { fireEvent, render } from '@testing-library/react-native';
 import ChallengeList from '../ChallengeList';
 import { ChallengeListItem, ChallengeStatus } from '@/types';
 
@@ -32,11 +32,11 @@ jest.mock('@/styles/colors', () => ({
 // Mock ChallengeCard as a component that renders identifiable text and
 // forwards onPress, so list tests can find and press it.
 jest.mock('../ChallengeCard', () => {
-  const React = require('react');
-  const { Text } = require('react-native');
+  const React = jest.requireActual('react');
+  const { Text } = jest.requireActual('react-native');
   return {
     __esModule: true,
-    default: (props: any) => React.createElement(Text, { onPress: props.onPress }, 'ChallengeCard'),
+    default: (props: any) => React.createElement(Text, { onPress: () => props.onPress(props.challenge) }, 'ChallengeCard'),
   };
 });
 
@@ -92,8 +92,9 @@ describe('ChallengeList', () => {
       <ChallengeList challenges={[mockChallenge]} loading={false} error={null} onChallengePress={mockOnPress} />,
     );
 
-    // Since ChallengeCard is mocked, we can't test the actual press
-    // But we can verify the prop is passed correctly
-    expect(mockOnPress).toBeDefined();
+    await fireEvent.press(getByText('ChallengeCard'));
+
+    expect(mockOnPress).toHaveBeenCalledTimes(1);
+    expect(mockOnPress).toHaveBeenCalledWith(mockChallenge);
   });
 });

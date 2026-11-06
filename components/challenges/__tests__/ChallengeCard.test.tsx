@@ -1,5 +1,5 @@
 import React from 'react';
-import { render } from '@testing-library/react-native';
+import { fireEvent, render } from '@testing-library/react-native';
 import ChallengeCard from '../ChallengeCard';
 import { ChallengeListItem, ChallengeStatus } from '@/types';
 
@@ -124,13 +124,10 @@ describe('ChallengeCard', () => {
   it('calls onPress when pressed', async () => {
     const { getByTestId } = await render(<ChallengeCard challenge={mockChallenge} onPress={mockOnPress} />);
 
-    // The component uses TouchableOpacity, so we need to find the card
-    // and trigger a press event
-    const card = await render(<ChallengeCard challenge={mockChallenge} onPress={mockOnPress} />);
+    await fireEvent.press(getByTestId('challenge-card'));
 
-    // Since we can't easily simulate the press on TouchableOpacity,
-    // we verify that the onPress prop is passed correctly
-    expect(mockOnPress).toBeDefined();
+    expect(mockOnPress).toHaveBeenCalledTimes(1);
+    expect(mockOnPress).toHaveBeenCalledWith(mockChallenge);
   });
 
   it('renders score when available', async () => {
