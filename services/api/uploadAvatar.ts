@@ -1,5 +1,5 @@
 import { File as ExpoFile } from 'expo-file-system';
-import * as ImageManipulator from 'expo-image-manipulator';
+import type { Action } from 'expo-image-manipulator';
 import { authFetchClient as client } from '@/services/api/authFetch';
 import { Image, Platform } from 'react-native';
 import { User } from '@/types';
@@ -20,7 +20,11 @@ function getSize(uri: string): Promise<{ width: number; height: number }> {
 async function compressImage(uri: string): Promise<string> {
   const { width, height } = await getSize(uri);
   const ratio = Math.min(MAX_EDGE / width, MAX_EDGE / height, 1);
-  const actions: ImageManipulator.Action[] =
+  // Lazy require: expo-image-manipulator is a native module, and importing it
+  // at module load would crash the whole app on binaries built without it.
+  // eslint-disable-next-line @typescript-eslint/no-require-imports
+  const ImageManipulator = require('expo-image-manipulator') as typeof import('expo-image-manipulator');
+  const actions: Action[] =
     ratio < 1 ? [{ resize: { width: Math.round(width * ratio), height: Math.round(height * ratio) } }] : [];
   const result = await ImageManipulator.manipulateAsync(uri, actions, {
     compress: JPEG_QUALITY,
