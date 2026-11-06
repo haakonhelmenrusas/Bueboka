@@ -35,7 +35,7 @@ describe('ArcheryIcons', () => {
 
     // arrow icon: shaft + 2 fletching lines + 1 arrowhead path
     const arrowJson = await iconJson(<ArrowIcon size={24} color="#000" />);
-    expect(arrowJson.match(/RNSVGLine/g)).toHaveLength(3);
+    expect(arrowJson.match(/RNSVGLine/g)).toHaveLength(5); // shaft + 4 feather strokes
     expect(arrowJson.match(/RNSVGPath/g)).toHaveLength(1);
   });
 });

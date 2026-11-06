@@ -18,7 +18,8 @@ export const styles = StyleSheet.create({
   list: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    justifyContent: 'space-between',
+    justifyContent: 'flex-start',
+    columnGap: 8,
     rowGap: 8,
   },
   divider: {

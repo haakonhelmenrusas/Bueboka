@@ -44,9 +44,11 @@ export function ArrowIcon({ size = 20, color = colors.white }: ArcheryIconProps)
       <Line x1={5} y1={19} x2={19.5} y2={4.5} {...s} />
       {/* tip: corner arrowhead */}
       <Polyline points="13.8,4.5 19.5,4.5 19.5,10.2" {...s} />
-      {/* feathers: two swept strokes behind the tail, not a second arrowhead */}
+      {/* feathers: two swept strokes on each side of the tail, not a second arrowhead */}
       <Line x1={7.4} y1={16.6} x2={4.9} y2={14.1} {...s} />
       <Line x1={9.4} y1={14.6} x2={6.9} y2={12.1} {...s} />
+      <Line x1={7.4} y1={16.6} x2={9.9} y2={19.1} {...s} />
+      <Line x1={9.4} y1={14.6} x2={12} y2={17.1} {...s} />
     </Svg>
   );
 }
@@ -60,9 +62,11 @@ function ShotArrow({ color }: { color: string }) {
       <Line x1={4} y1={12} x2={20} y2={12} {...s} />
       {/* tip */}
       <Polyline points="15.8,8.8 20,12 15.8,15.2" {...s} />
-      {/* feathers swept back from the tail */}
+      {/* feathers swept back from the tail, both sides */}
       <Line x1={6.2} y1={12} x2={3.8} y2={9.6} {...s} />
       <Line x1={8.2} y1={12} x2={5.8} y2={9.6} {...s} />
+      <Line x1={6.2} y1={12} x2={3.8} y2={14.4} {...s} />
+      <Line x1={8.2} y1={12} x2={5.8} y2={14.4} {...s} />
     </>
   );
 }
@@ -116,9 +120,9 @@ export function BowTypeIcon({ type, size = 20, color = colors.white }: ArcheryIc
       string = <Line x1={6} y1={6} x2={6} y2={18} {...s} />;
       extra = (
         <>
-          {/* recurved tips */}
-          <Path d="M6 6 C 4.5 6 4 7 4.5 8" {...s} />
-          <Path d="M6 18 C 4.5 18 4 17 4.5 16" {...s} />
+          {/* recurved tips hooking outwards, away from the string */}
+          <Path d="M6 6 C 8 5.8 8.8 7 8.2 8.2" {...s} />
+          <Path d="M6 18 C 8 18.2 8.8 17 8.2 15.8" {...s} />
           {/* grip */}
           <Line x1={18} y1={10.8} x2={18.9} y2={13.2} {...s} />
         </>
@@ -139,9 +143,9 @@ export function BowTypeIcon({ type, size = 20, color = colors.white }: ArcheryIc
       string = <Line x1={6} y1={2} x2={6} y2={22} {...s} />;
       extra = (
         <>
-          {/* recurved tips */}
-          <Path d="M6 2 C 4 2.5 3.5 4 4.5 5.5" {...s} />
-          <Path d="M6 22 C 4 21.5 3.5 20 4.5 18.5" {...s} />
+          {/* recurved tips hooking outwards, away from the string */}
+          <Path d="M6 2 C 8 1.8 9 3.2 8.4 4.8" {...s} />
+          <Path d="M6 22 C 8 22.2 9 20.8 8.4 19.2" {...s} />
           {/* riser/grip */}
           <Line x1={16.6} y1={10.8} x2={18.2} y2={13.2} {...s} />
         </>
