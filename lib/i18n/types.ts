@@ -44,6 +44,7 @@ export interface TranslationKeys {
   'common.error': string;
   'common.unknownError': string;
   'common.cancel': string;
+  'common.back': string;
   'common.delete': string;
   'common.close': string;
   'common.tryAgain': string;
@@ -877,6 +878,11 @@ export interface TranslationKeys {
   'challengeChallengeList.error': string;
   'challengeForm.cancelButton': string;
   'challengeForm.submitButton': string;
+
+  // Quick practice (hurtigtrening) screen
+  'quickPractice.startButton': string;
+  'quickPractice.title': string;
+  'quickPractice.save': string;
   'challengeForm.saving': string;
   'challengeDetail.title': string;
   'challengeDetail.challenger': string;

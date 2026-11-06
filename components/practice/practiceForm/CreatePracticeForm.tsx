@@ -1,15 +1,16 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { Keyboard, KeyboardAvoidingView, Platform, Pressable, ScrollView, View } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as Sentry from '@sentry/react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { ModalHeader, ModalWrapper } from '@/components/common';
+import { Button, ModalHeader, ModalWrapper } from '@/components/common';
 import ConfirmModal from '@/components/home/DeleteArrowSetModal/ConfirmModal';
 import { practiceRepository, type CreateEndData } from '@/services/repositories';
 import { Arrows, Bow, Environment, Practice, PracticeCategory } from '@/types';
 import { useTranslation } from '@/contexts';
 import { buildEndData } from '@/utils/helpers/practiceHelpers';
+import { useRouter } from 'expo-router';
 import type { TranslationKeys } from '@/lib/i18n';
 import { styles } from './CreatePracticeFormStyles';
 import { DEFAULT_ARROWS_PER_END } from '@/components/practice/shared/formConstants';
@@ -94,6 +95,7 @@ export default function CreatePracticeForm({
 
   // Step navigation
   const { step, setStep, goNext, goPrev, resetStep } = useStepNavigation(TOTAL_STEPS);
+  const router = useRouter();
 
   // Form state
   const [date, setDate] = useState(new Date());
@@ -346,6 +348,24 @@ export default function CreatePracticeForm({
   // ─── Build rounds ────────────────────────────────────────────────────────────
   const buildRounds = (validRounds: RoundInput[]): CreateEndData[] => buildEndData(validRounds);
 
+  // A round with both distance and target chosen can be started as a quick practice
+  const quickRound = rounds.find((r) => (r.distanceMeters ?? 0) > 0 && !!r.targetType);
+
+  const handleStartQuickPractice = useCallback(() => {
+    if (!quickRound) return;
+    router.push({
+      pathname: '/hurtigtrening',
+      params: {
+        distanceMeters: String(quickRound.distanceMeters),
+        distanceFrom: quickRound.distanceFrom ? String(quickRound.distanceFrom) : '',
+        distanceTo: quickRound.distanceTo ? String(quickRound.distanceTo) : '',
+        targetType: quickRound.targetType,
+        environment,
+        practiceCategory,
+      },
+    });
+  }, [quickRound, router, environment, practiceCategory]);
+
   const getValidRounds = () =>
     rounds.filter(
       (r) =>
@@ -472,6 +492,16 @@ export default function CreatePracticeForm({
               )}
             </Pressable>
           </ScrollView>
+
+          {step === 1 && quickRound && (
+            <Button
+              testID="start-quick-practice"
+              label={t['quickPractice.startButton']}
+              onPress={handleStartQuickPractice}
+              type="filled"
+              buttonStyle={styles.quickPracticeButton}
+            />
+          )}
 
           <NavigationFooter
             currentStep={step}

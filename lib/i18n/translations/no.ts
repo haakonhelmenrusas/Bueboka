@@ -37,6 +37,7 @@ export const no: TranslationKeys = {
   'common.error': 'Feil',
   'common.unknownError': 'En ukjent feil oppstod',
   'common.cancel': 'Avbryt',
+  'common.back': 'Tilbake',
   'common.delete': 'Slett',
   'common.close': 'Lukk',
   'common.tryAgain': 'Prøv igjen.',
@@ -834,6 +835,10 @@ export const no: TranslationKeys = {
   'challengeChallengeList.error': 'Kunne ikke laste utfordringer',
   'challengeForm.cancelButton': 'Avbryt',
   'challengeForm.submitButton': 'Opprett',
+
+  'quickPractice.startButton': 'Start hurtigtrening',
+  'quickPractice.title': 'Hurtigtrening',
+  'quickPractice.save': 'Lagre økt',
   'challengeForm.saving': 'Lagrer...',
   'challengeDetail.title': 'Utfordringsdetaljer',
   'challengeDetail.challenger': 'Utfordrer',

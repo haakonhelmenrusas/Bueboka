@@ -37,6 +37,7 @@ export const en: TranslationKeys = {
   'common.error': 'Error',
   'common.unknownError': 'An unknown error occurred',
   'common.cancel': 'Cancel',
+  'common.back': 'Back',
   'common.delete': 'Delete',
   'common.close': 'Close',
   'common.tryAgain': 'Please try again.',
@@ -835,6 +836,10 @@ export const en: TranslationKeys = {
   'challengeChallengeList.error': 'Could not load challenges',
   'challengeForm.cancelButton': 'Cancel',
   'challengeForm.submitButton': 'Create',
+
+  'quickPractice.startButton': 'Start quick practice',
+  'quickPractice.title': 'Quick practice',
+  'quickPractice.save': 'Save session',
   'challengeForm.saving': 'Saving...',
   'challengeDetail.title': 'Challenge details',
   'challengeDetail.challenger': 'Challenger',
