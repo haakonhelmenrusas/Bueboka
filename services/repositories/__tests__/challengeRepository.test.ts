@@ -51,8 +51,6 @@ const fakeChallenge: Challenge = {
   description: 'Friendly competition',
   roundTypeId: 'round-1',
   customRules: null,
-  startDate: '2024-07-01T00:00:00.000Z',
-  endDate: '2024-07-07T00:00:00.000Z',
   status: ChallengeStatus.PENDING,
   winnerId: null,
   challengerScore: null,
@@ -159,6 +157,15 @@ describe('challengeRepository.getById', () => {
     expect(mockClient.get).toHaveBeenCalledWith('/challenges/challenge-1');
   });
 
+  it('unwraps the { challenge } envelope the API returns', async () => {
+    mockClient.get.mockResolvedValueOnce({ data: { challenge: fakeChallenge } });
+
+    const result = await challengeRepository.getById('challenge-1');
+
+    expect(result).toEqual(fakeChallenge);
+    expect(result.name).toBe(fakeChallenge.name);
+  });
+
   it('throws AppError with NOT_FOUND on 404', async () => {
     mockClient.get.mockRejectedValueOnce(makeAxiosError(404));
     const caught = await challengeRepository.getById('ghost').catch((e) => e);
@@ -236,17 +243,13 @@ describe('challengeRepository.create', () => {
     );
   });
 
-  it('includes startDate and endDate when provided', async () => {
+  it('passes roundTypeId and customRules through when provided', async () => {
     mockClient.post.mockResolvedValueOnce({ data: fakeChallenge });
-
-    const startDate = new Date('2024-07-01');
-    const endDate = new Date('2024-07-07');
 
     const createData: CreateChallengeData = {
       challengedId: 'user-2',
-      name: 'Timed Challenge',
-      startDate,
-      endDate,
+      name: 'Custom Rules Challenge',
+      customRules: { distanceMeters: 50, numberArrows: 36 },
     };
 
     await challengeRepository.create(createData);
@@ -254,8 +257,9 @@ describe('challengeRepository.create', () => {
     expect(mockClient.post).toHaveBeenCalledWith(
       '/challenges',
       expect.objectContaining({
-        startDate: '2024-07-01T00:00:00.000Z',
-        endDate: '2024-07-07T00:00:00.000Z',
+        challengedId: 'user-2',
+        name: 'Custom Rules Challenge',
+        customRules: { distanceMeters: 50, numberArrows: 36 },
       }),
     );
   });

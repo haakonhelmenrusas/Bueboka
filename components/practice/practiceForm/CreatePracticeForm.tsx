@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { Keyboard, KeyboardAvoidingView, Platform, Pressable, ScrollView, View } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as Sentry from '@sentry/react-native';
@@ -9,6 +9,9 @@ import ConfirmModal from '@/components/home/DeleteArrowSetModal/ConfirmModal';
 import { practiceRepository, type CreateEndData } from '@/services/repositories';
 import { Arrows, Bow, Environment, Practice, PracticeCategory } from '@/types';
 import { useTranslation } from '@/contexts';
+import { buildEndData } from '@/utils/helpers/practiceHelpers';
+import { useFocusEffect, useRouter } from 'expo-router';
+import { consumePendingQuickPracticeResult } from '@/utils/quickPractice';
 import type { TranslationKeys } from '@/lib/i18n';
 import { styles } from './CreatePracticeFormStyles';
 import { DEFAULT_ARROWS_PER_END } from '@/components/practice/shared/formConstants';
@@ -93,6 +96,7 @@ export default function CreatePracticeForm({
 
   // Step navigation
   const { step, setStep, goNext, goPrev, resetStep } = useStepNavigation(TOTAL_STEPS);
+  const router = useRouter();
 
   // Form state
   const [date, setDate] = useState(new Date());
@@ -305,6 +309,15 @@ export default function CreatePracticeForm({
     });
   };
 
+  // Apply a quick-practice arrow count saved on /hurtigtrening when we return to the form
+  useFocusEffect(
+    useCallback(() => {
+      const result = consumePendingQuickPracticeResult();
+      if (result) updateRound(result.roundIndex, 'arrowsWithoutScore', result.count);
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []),
+  );
+
   // ─── Arrow scoring ───────────────────────────────────────────────────────────
   const addArrowScore = (roundIndex: number, score: number) => {
     const round = rounds[roundIndex];
@@ -343,21 +356,28 @@ export default function CreatePracticeForm({
   };
 
   // ─── Build rounds ────────────────────────────────────────────────────────────
-  const buildRounds = (validRounds: RoundInput[]): CreateEndData[] =>
-    validRounds.map((r) => {
-      const round: CreateEndData = {
-        roundScore: r.roundScore ?? 0,
-      };
-      if (r.numberArrows !== undefined) round.numberArrows = r.numberArrows;
-      if (r.arrowsPerEnd !== undefined) round.arrowsPerEnd = r.arrowsPerEnd;
-      if (r.arrowsWithoutScore !== undefined) round.arrowsWithoutScore = r.arrowsWithoutScore;
-      if (r.distanceMeters !== undefined) round.distanceMeters = r.distanceMeters;
-      if (r.distanceFrom !== undefined) round.distanceFrom = r.distanceFrom;
-      if (r.distanceTo !== undefined) round.distanceTo = r.distanceTo;
-      if (r.targetType) round.targetType = r.targetType;
-      if (r.scores && r.scores.length > 0) round.scores = r.scores;
-      return round;
-    });
+  const buildRounds = (validRounds: RoundInput[]): CreateEndData[] => buildEndData(validRounds);
+
+  // A round with both distance and target chosen can be started as a quick practice
+  const handleStartQuickPractice = useCallback(
+    (roundIndex: number) => {
+      const round = rounds[roundIndex];
+      if (!round || (round.distanceMeters ?? 0) <= 0 || !round.targetType) return;
+      router.push({
+        pathname: '/hurtigtrening',
+        params: {
+          roundIndex: String(roundIndex),
+          distanceMeters: String(round.distanceMeters),
+          distanceFrom: round.distanceFrom ? String(round.distanceFrom) : '',
+          distanceTo: round.distanceTo ? String(round.distanceTo) : '',
+          targetType: round.targetType,
+          environment,
+          practiceCategory,
+        },
+      });
+    },
+    [rounds, router, environment, practiceCategory],
+  );
 
   const getValidRounds = () =>
     rounds.filter(
@@ -478,6 +498,7 @@ export default function CreatePracticeForm({
                   onRemoveRound={removeRound}
                   onUpdateRound={updateRound}
                   onOpenScoring={setScoringRoundIndex}
+                  onStartQuickPractice={handleStartQuickPractice}
                 />
               )}
               {step === 2 && (

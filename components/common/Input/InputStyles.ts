@@ -24,9 +24,9 @@ export const defaultStyles = StyleSheet.create({
     marginLeft: 4,
   },
   optional: {
-    fontSize: 11,
+    fontSize: 10,
     fontWeight: '400',
-    color: colors.secondary,
+    color: colors.primaryLight,
   },
   help: {
     color: colors.secondary,

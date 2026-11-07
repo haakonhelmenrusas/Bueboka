@@ -4,16 +4,15 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { useFocusEffect, usePathname, useRouter } from 'expo-router';
 import { ChallengeList } from '@/components/challenges';
 import { useChallenge } from '@/hooks/useChallenge';
-import { usePendingChallenges } from '@/hooks/usePendingChallenges';
 import { ChallengeListItem, ChallengeStatus } from '@/types';
-import { styles } from './utfordringerStyles.styles';
+import { styles } from '@/components/challenges/UtfordringerScreenStyles';
 import { colors } from '@/styles/colors';
 import { useAuth } from '@/hooks';
-import { Button, Message, NotificationBadge } from '@/components/common';
+import { Button, Message } from '@/components/common';
 import { useTranslation } from '@/contexts';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
-import { faTrophy, faPlus, faArrowLeft } from '@fortawesome/free-solid-svg-icons';
+import { faTrophy, faArrowLeft } from '@fortawesome/free-solid-svg-icons';
 import { RefreshControl } from 'react-native';
 
 export default function ChallengesPage() {
@@ -22,8 +21,6 @@ export default function ChallengesPage() {
   const insets = useSafeAreaInsets();
   const router = useRouter();
   const pathname = usePathname();
-  const { pendingCount } = usePendingChallenges();
-
   const { challenges, loading, error, pagination, fetchChallenges } = useChallenge();
 
   const [filterStatus, setFilterStatus] = useState<string>('');
@@ -85,10 +82,6 @@ export default function ChallengesPage() {
     [router],
   );
 
-  const handleCreateNew = useCallback(() => {
-    router.push('/utfordringer/ny');
-  }, [router]);
-
   const handleFilterChange = useCallback((status: string) => {
     setFilterStatus(status);
   }, []);
@@ -109,90 +102,80 @@ export default function ChallengesPage() {
     { value: ChallengeStatus.COMPLETED, label: t['challenge.statusCompleted'] },
   ];
 
+  const header = (
+    <>
+      {/* Header */}
+      <View style={styles.header}>
+        <Button
+          onPress={() => router.back()}
+          label=""
+          variant="tertiary"
+          type="outline"
+          buttonStyle={styles.backButton}
+          icon={<FontAwesomeIcon icon={faArrowLeft} size={24} color={colors.white} />}
+        />
+        <View style={styles.headerContent}>
+          <FontAwesomeIcon icon={faTrophy} size={28} color={colors.white} />
+          <View style={styles.headerText}>
+            <Text style={styles.title}>{t['challenge.title']}</Text>
+          </View>
+        </View>
+      </View>
+      <Text style={styles.subtitle}>{t['challenge.subtitle']}</Text>
+
+      {/* Filter */}
+      <View style={styles.filterContainer}>
+        <View style={styles.filterButtons}>
+          {filterOptions.map((option) => (
+            <View key={option.value} style={[styles.filterButton, filterStatus === option.value && styles.filterButtonActive]}>
+              <Text
+                style={[styles.filterButtonText, filterStatus === option.value && styles.filterButtonTextActive]}
+                onPress={() => handleFilterChange(option.value)}>
+                {option.label}
+              </Text>
+            </View>
+          ))}
+        </View>
+      </View>
+    </>
+  );
+
   return (
     <View style={styles.container}>
       <LinearGradient colors={[colors.primary, colors.secondary, '#1a4f66']} style={styles.gradient}>
-        <ScrollView
-          showsVerticalScrollIndicator={false}
-          contentContainerStyle={[styles.scrollContent, { paddingTop: insets.top }]}
-          keyboardShouldPersistTaps="always"
-          refreshControl={<RefreshControl refreshing={refreshing} onRefresh={handleRefresh} tintColor={colors.white} />}>
-          {/* Header */}
-          <View style={styles.header}>
-            <Button
-              onPress={() => router.back()}
-              label=""
-              variant="tertiary"
-              style={styles.backButton}
-              icon={<FontAwesomeIcon icon={faArrowLeft} size={24} color={colors.white} />}
-            />
-            <View style={styles.headerContent}>
-              <FontAwesomeIcon icon={faTrophy} size={28} color={colors.white} />
-              <View style={styles.headerText}>
-                <Text style={styles.title}>{t['challenge.title']}</Text>
-                <Text style={styles.subtitle}>{t['challenge.subtitle']}</Text>
-              </View>
-              {pendingCount > 0 && (
-                <View style={styles.notificationContainer}>
-                  <NotificationBadge count={pendingCount} />
-                </View>
-              )}
+        {error ? (
+          <ScrollView
+            contentContainerStyle={[styles.scrollContent, { paddingTop: insets.top }]}
+            refreshControl={<RefreshControl refreshing={refreshing} onRefresh={handleRefresh} tintColor={colors.white} />}>
+            <View style={styles.errorContainer}>
+              <Text style={styles.errorText}>{t['challengeChallengeList.error']}</Text>
+              <Button label={t['common.tryAgain']} onPress={handleRefresh} />
             </View>
-          </View>
-
-          {/* Filter */}
-          <View style={styles.filterContainer}>
-            <View style={styles.filterButtons}>
-              {filterOptions.map((option) => (
-                <View key={option.value} style={[styles.filterButton, filterStatus === option.value && styles.filterButtonActive]}>
-                  <Text
-                    style={[styles.filterButtonText, filterStatus === option.value && styles.filterButtonTextActive]}
-                    onPress={() => handleFilterChange(option.value)}>
-                    {option.label}
-                  </Text>
-                </View>
-              ))}
-            </View>
-          </View>
-
-          {/* Create Button */}
-          <View style={styles.createButtonContainer}>
-            <Button
-              label={t['challenge.createNew']}
-              onPress={handleCreateNew}
-              style={styles.createButton}
-              icon={<FontAwesomeIcon icon={faPlus} size={18} color={colors.primary} />}
-            />
-          </View>
-
-          {/* Challenges List */}
-          <View style={styles.listContainer}>
-            {error ? (
-              <View style={styles.errorContainer}>
-                <Text style={styles.errorText}>{t['challengeChallengeList.error']}</Text>
-                <Button label={t['common.tryAgain']} onPress={handleRefresh} />
-              </View>
-            ) : (
-              <ChallengeList
-                challenges={challenges}
-                loading={loading && challenges.length === 0}
-                error={error}
-                onChallengePress={handleChallengePress}
-                hasMore={pagination.page * pagination.pageSize < pagination.total}
-                onLoadMore={() => {
-                  if (pagination.page * pagination.pageSize < pagination.total) {
-                    fetchChallenges({
-                      page: pagination.page + 1,
-                      status: (filterStatus as ChallengeStatus) || undefined,
-                    });
-                  }
-                }}
-                refreshing={refreshing}
-                onRefresh={handleRefresh}
-              />
-            )}
-          </View>
-        </ScrollView>
+          </ScrollView>
+        ) : (
+          // The FlatList is the only scroller (header rides along as ListHeaderComponent)
+          // to avoid nesting a VirtualizedList inside a ScrollView.
+          <ChallengeList
+            challenges={challenges}
+            loading={loading && challenges.length === 0}
+            error={error}
+            onChallengePress={handleChallengePress}
+            currentUserId={user?.id}
+            hasMore={pagination.page * pagination.pageSize < pagination.total}
+            onLoadMore={() => {
+              if (pagination.page * pagination.pageSize < pagination.total) {
+                fetchChallenges({
+                  page: pagination.page + 1,
+                  status: (filterStatus as ChallengeStatus) || undefined,
+                });
+              }
+            }}
+            refreshing={refreshing}
+            onRefresh={handleRefresh}
+            header={header}
+            contentContainerStyle={[styles.scrollContent, { paddingTop: insets.top }]}
+          />
+        )}
       </LinearGradient>
     </View>
   );

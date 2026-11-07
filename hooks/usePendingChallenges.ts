@@ -4,6 +4,15 @@ import { challengeRepository } from '@/services/repositories';
 import { ChallengeStatus } from '@/types';
 import { useNotifications } from '@/contexts';
 import { NotificationType } from '@/contexts/NotificationContext';
+import { useTranslation } from '@/contexts/LanguageContext';
+
+/**
+ * How often the app polls /api/challenges for pending (incoming) challenges.
+ * Set high (5 min) to avoid hammering the API; tune after user feedback.
+ * Note: the notification inbox itself also polls /api/notifications — see
+ * NotificationContext for its interval.
+ */
+export const PENDING_CHALLENGES_POLL_INTERVAL_MS = 5 * 60 * 1000; // 5 minutes
 
 /**
  * Hook to track and manage pending challenges for the current user
@@ -11,6 +20,7 @@ import { NotificationType } from '@/contexts/NotificationContext';
  */
 export function usePendingChallenges() {
   const { user } = useAuth();
+  const { t } = useTranslation();
   const { addNotification, notifications, markAsRead } = useNotifications();
   const [pendingCount, setPendingCount] = useState<number>(0);
   const [loading, setLoading] = useState<boolean>(false);
@@ -32,20 +42,27 @@ export function usePendingChallenges() {
         pageSize: 100, // Get all pending challenges
       });
 
-      const pendingCount = response.challenges.length;
+      // Only incoming challenges count — ones the current user sent are
+      // already visible in the list and must not raise a notification here
+      const incoming = response.challenges.filter((challenge) => challenge.challengedId === user.id);
+
+      const pendingCount = incoming.length;
       setPendingCount(pendingCount);
 
-      // Add notification for each pending challenge that hasn't been notified yet
+      // Add notification for each incoming challenge that hasn't been notified yet
       const existingNotificationIds = notifications.filter((n) => n.type === 'CHALLENGE_RECEIVED').map((n) => n.challengeId);
 
-      const newChallenges = response.challenges.filter((challenge) => !existingNotificationIds.includes(challenge.id));
+      const newChallenges = incoming.filter((challenge) => !existingNotificationIds.includes(challenge.id));
 
       // Add notifications for new pending challenges
       newChallenges.forEach((challenge) => {
         addNotification({
           type: NotificationType.CHALLENGE_RECEIVED,
-          title: 'Ny utfordring',
-          message: `Du har mottatt en ny utfordring fra ${challenge.challengerName || 'en skytter'}`,
+          title: t['notifications.challengeReceivedTitle'],
+          message: t['notifications.challengeReceivedMessage'].replace(
+            '{name}',
+            challenge.challengerName || t['challenge.unknownOpponent'],
+          ),
           challengeId: challenge.id,
         });
       });
@@ -58,7 +75,7 @@ export function usePendingChallenges() {
     } finally {
       setLoading(false);
     }
-  }, [user, addNotification, notifications]);
+  }, [user, addNotification, notifications, t]);
 
   /**
    * Refresh pending challenges count
@@ -90,7 +107,7 @@ export function usePendingChallenges() {
     // Set up periodic polling (every 30 seconds)
     const interval = setInterval(() => {
       fetchPendingChallenges();
-    }, 30000); // 30 seconds
+    }, PENDING_CHALLENGES_POLL_INTERVAL_MS);
 
     return () => clearInterval(interval);
   }, [fetchPendingChallenges]);

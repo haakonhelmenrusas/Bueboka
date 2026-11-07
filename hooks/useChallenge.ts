@@ -12,7 +12,6 @@ import type {
 } from '@/types';
 import { ChallengeStatus } from '@/types';
 import { useTranslation } from '@/contexts/LanguageContext';
-import { useNotifications, NotificationType } from '@/contexts/NotificationContext';
 
 /**
  * Parameters for fetching challenges
@@ -54,7 +53,6 @@ export interface FetchChallengesParams extends GetAllChallengesParams {
 export function useChallenge() {
   const { user } = useAuth();
   const { t } = useTranslation();
-  const { addNotification } = useNotifications();
 
   // State
   const [challenges, setChallenges] = useState<ChallengeListItem[]>([]);
@@ -95,7 +93,7 @@ export function useChallenge() {
           total: response.total,
         });
       } catch (err) {
-        setError(err instanceof Error ? err : new Error(t('common.unknownError')));
+        setError(err instanceof Error ? err : new Error(t['common.unknownError']));
       } finally {
         setLoading(false);
       }
@@ -116,7 +114,7 @@ export function useChallenge() {
         setCurrentChallenge(challenge);
         return challenge;
       } catch (err) {
-        setError(err instanceof Error ? err : new Error(t('common.unknownError')));
+        setError(err instanceof Error ? err : new Error(t['common.unknownError']));
         throw err;
       } finally {
         setLoading(false);
@@ -144,9 +142,12 @@ export function useChallenge() {
 
         // Refresh challenges list
         await fetchChallenges();
+
+        // No local notification for the sender — the server notifies the
+        // challenged user, and the sender is notified only when they answer.
         return challenge;
       } catch (err) {
-        setError(err instanceof Error ? err : new Error(t('common.unknownError')));
+        setError(err instanceof Error ? err : new Error(t['common.unknownError']));
         throw err;
       } finally {
         setLoading(false);
@@ -176,7 +177,7 @@ export function useChallenge() {
         await fetchChallenges();
         return challenge;
       } catch (err) {
-        setError(err instanceof Error ? err : new Error(t('common.unknownError')));
+        setError(err instanceof Error ? err : new Error(t['common.unknownError']));
         throw err;
       } finally {
         setLoading(false);
@@ -206,7 +207,7 @@ export function useChallenge() {
         await fetchChallenges();
         return challenge;
       } catch (err) {
-        setError(err instanceof Error ? err : new Error(t('common.unknownError')));
+        setError(err instanceof Error ? err : new Error(t['common.unknownError']));
         throw err;
       } finally {
         setLoading(false);
@@ -236,7 +237,7 @@ export function useChallenge() {
         await fetchChallenges();
         return challenge;
       } catch (err) {
-        setError(err instanceof Error ? err : new Error(t('common.unknownError')));
+        setError(err instanceof Error ? err : new Error(t['common.unknownError']));
         throw err;
       } finally {
         setLoading(false);
@@ -266,7 +267,7 @@ export function useChallenge() {
         await fetchChallenges();
         return challenge;
       } catch (err) {
-        setError(err instanceof Error ? err : new Error(t('common.unknownError')));
+        setError(err instanceof Error ? err : new Error(t['common.unknownError']));
         throw err;
       } finally {
         setLoading(false);
@@ -296,7 +297,7 @@ export function useChallenge() {
         await fetchChallenges();
         return challenge;
       } catch (err) {
-        setError(err instanceof Error ? err : new Error(t('common.unknownError')));
+        setError(err instanceof Error ? err : new Error(t['common.unknownError']));
         throw err;
       } finally {
         setLoading(false);
@@ -324,7 +325,7 @@ export function useChallenge() {
 
         await fetchChallenges();
       } catch (err) {
-        setError(err instanceof Error ? err : new Error(t('common.unknownError')));
+        setError(err instanceof Error ? err : new Error(t['common.unknownError']));
         throw err;
       } finally {
         setLoading(false);
@@ -345,7 +346,7 @@ export function useChallenge() {
       setStatistics(stats);
       return stats;
     } catch (err) {
-      setError(err instanceof Error ? err : new Error(t('common.unknownError')));
+      setError(err instanceof Error ? err : new Error(t['common.unknownError']));
       throw err;
     } finally {
       setLoading(false);
@@ -396,15 +397,15 @@ export function useChallenge() {
     (status: ChallengeStatus): string => {
       switch (status) {
         case ChallengeStatus.PENDING:
-          return t('challengeStatus.PENDING');
+          return t['challenge.statusPending'];
         case ChallengeStatus.ACCEPTED:
-          return t('challengeStatus.ACCEPTED');
+          return t['challenge.statusAccepted'];
         case ChallengeStatus.DECLINED:
-          return t('challengeStatus.DECLINED');
+          return t['challenge.statusDeclined'];
         case ChallengeStatus.COMPLETED:
-          return t('challengeStatus.COMPLETED');
+          return t['challenge.statusCompleted'];
         case ChallengeStatus.CANCELLED:
-          return t('challengeStatus.CANCELLED');
+          return t['challenge.statusCancelled'];
         default:
           return status;
       }
@@ -418,9 +419,9 @@ export function useChallenge() {
   const getOpponentName = useCallback(
     (challenge: ChallengeListItem) => {
       if (challenge.challengerId === user?.id) {
-        return challenge.challengedName || t('common.opponent');
+        return challenge.challengedName || t['challenge.opponent'];
       }
-      return challenge.challengerName || t('common.opponent');
+      return challenge.challengerName || t['challenge.opponent'];
     },
     [user?.id, t],
   );

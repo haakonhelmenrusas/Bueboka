@@ -36,3 +36,5 @@ export type {
   SubmitChallengeResultData,
 } from './Challenge';
 export { ChallengeStatus } from './Challenge';
+export { NotificationType } from './Notification';
+export type { Notification, NotificationsListResponse } from './Notification';

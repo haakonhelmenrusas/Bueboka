@@ -27,15 +27,18 @@ export function normalizeEmail(email: string): string {
   return email.trim().toLowerCase();
 }
 
-function ensureExpiryString(expiresAt?: string): string | undefined {
-  if (!expiresAt) return undefined;
-  try {
-    const d = new Date(expiresAt);
-    if (!isNaN(d.getTime())) return d.toISOString();
-    return expiresAt;
-  } catch {
-    return expiresAt;
+function ensureExpiryString(expiresAt?: string): string {
+  if (expiresAt) {
+    try {
+      const d = new Date(expiresAt);
+      if (!isNaN(d.getTime())) return d.toISOString();
+      return expiresAt;
+    } catch {
+      return expiresAt;
+    }
   }
+  // better-auth sessions default to 7 days; use that when the response omits expiresAt
+  return new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString();
 }
 
 /**
@@ -60,8 +63,7 @@ export const authService = {
       const { user, token, expiresAt } = response.data;
 
       if (token) {
-        const normalized = ensureExpiryString(expiresAt);
-        await saveTokens({ accessToken: token, expiresAt: normalized ?? '' });
+        await saveTokens({ accessToken: token, expiresAt: ensureExpiryString(expiresAt) });
       }
 
       return { user, requiresEmailVerification: !token };
@@ -79,8 +81,7 @@ export const authService = {
       const { user, token, expiresAt } = response.data;
 
       if (token) {
-        const normalized = ensureExpiryString(expiresAt);
-        await saveTokens({ accessToken: token, expiresAt: normalized ?? '' });
+        await saveTokens({ accessToken: token, expiresAt: ensureExpiryString(expiresAt) });
       }
 
       return { user };

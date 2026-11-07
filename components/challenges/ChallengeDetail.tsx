@@ -98,7 +98,7 @@ export default function ChallengeDetail({
   };
 
   const formatScore = (score: number | null | undefined) => {
-    if (score === null || score === undefined) return t['challenge.waitingForOpponent'];
+    if (score === null || score === undefined) return t['challenge.notSubmitted'];
     return score.toString();
   };
 
@@ -131,24 +131,6 @@ export default function ChallengeDetail({
             {t['challenge.created']}: {formatDate(challenge.createdAt)}
           </Text>
         </View>
-
-        {challenge.startDate && (
-          <View style={styles.metaRow}>
-            <FontAwesomeIcon icon={faCalendar} size={16} color={colors.textSecondary} />
-            <Text style={styles.metaText}>
-              {t['challenge.startDateLabel']}: {formatDate(challenge.startDate)}
-            </Text>
-          </View>
-        )}
-
-        {challenge.endDate && (
-          <View style={styles.metaRow}>
-            <FontAwesomeIcon icon={faCalendar} size={16} color={colors.textSecondary} />
-            <Text style={styles.metaText}>
-              {t['challenge.endDateLabel']}: {formatDate(challenge.endDate)}
-            </Text>
-          </View>
-        )}
 
         <View style={styles.metaRow}>
           <FontAwesomeIcon icon={faUser} size={16} color={colors.textSecondary} />
@@ -197,12 +179,6 @@ export default function ChallengeDetail({
               <View style={styles.ruleRow}>
                 <Text style={styles.ruleLabel}>{t['challenge.numberArrows']}:</Text>
                 <Text style={styles.ruleValue}>{challenge.customRules.numberArrows}</Text>
-              </View>
-            )}
-            {challenge.customRules.arrowsWithoutScore !== null && (
-              <View style={styles.ruleRow}>
-                <Text style={styles.ruleLabel}>{t['challenge.arrowsWithoutScore']}:</Text>
-                <Text style={styles.ruleValue}>{challenge.customRules.arrowsWithoutScore}</Text>
               </View>
             )}
             {challenge.customRules.targetType && (
@@ -254,12 +230,6 @@ export default function ChallengeDetail({
                 <Text style={styles.submittedText}>{t['challenge.resultSubmitted']}</Text>
               </View>
             )}
-            {!opponentHasSubmitted && isCompleted === false && (
-              <View style={[styles.submittedBadge, { backgroundColor: colors.warning }]}>
-                <FontAwesomeIcon icon={faClock} size={12} color={colors.white} />
-                <Text style={styles.submittedText}>{t['challenge.waitingForOpponent']}</Text>
-              </View>
-            )}
           </View>
         </View>
       </View>
@@ -290,45 +260,19 @@ export default function ChallengeDetail({
         )}
 
         {canDecline && onDecline && (
-          <Button
-            label={t['challenge.decline']}
-            onPress={onDecline}
-            variant="warning"
-            buttonStyle={styles.buttonDecline}
-            type="outline"
-            disabled={loading}
-          />
+          <Button label={t['challenge.decline']} onPress={onDecline} variant="warning" type="outline" disabled={loading} />
         )}
 
-        {canCancel && onCancel && (
-          <Button
-            label={t['challenge.cancel']}
-            onPress={onCancel}
-            variant="warning"
-            buttonStyle={styles.buttonCancel}
-            type="outline"
-            disabled={loading}
-          />
-        )}
+        {canCancel && onCancel && <Button label={t['challenge.cancel']} onPress={onCancel} type="outline" disabled={loading} />}
 
         {canSubmit && onSubmitResult && (
           <Button label={t['challenge.submitResult']} onPress={onSubmitResult} buttonStyle={styles.buttonSubmit} disabled={loading} />
         )}
 
         {canDelete && onDelete && (
-          <Button
-            label={t['common.delete']}
-            onPress={onDelete}
-            variant="warning"
-            buttonStyle={styles.buttonDelete}
-            type="outline"
-            disabled={loading}
-          />
+          <Button label={t['common.delete']} onPress={onDelete} variant="warning" type="outline" disabled={loading} />
         )}
       </View>
     </View>
   );
 }
-
-// Import Text from react-native
-import { Text as RNText } from 'react-native';

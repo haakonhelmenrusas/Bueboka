@@ -25,15 +25,15 @@ const mockClient = authFetchClient as jest.Mocked<typeof authFetchClient>;
 const fakeUser = { id: 'user-1', email: 'archer@example.com', name: 'Archer' };
 
 describe('normalizeEmail', () => {
-  it('strips whitespace left by keyboard autocomplete', () => {
+  it('strips whitespace left by keyboard autocomplete', async () => {
     expect(normalizeEmail(' archer@example.com ')).toBe('archer@example.com');
   });
 
-  it('lowercases an address autofilled with a capital', () => {
+  it('lowercases an address autofilled with a capital', async () => {
     expect(normalizeEmail('Archer@Example.COM')).toBe('archer@example.com');
   });
 
-  it('leaves an already-normal address untouched', () => {
+  it('leaves an already-normal address untouched', async () => {
     expect(normalizeEmail('archer@example.com')).toBe('archer@example.com');
   });
 });

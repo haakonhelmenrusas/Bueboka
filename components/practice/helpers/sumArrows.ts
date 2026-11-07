@@ -21,8 +21,8 @@ export function sumArrows(practices: Practice[], period?: string): number {
   }
   let total = 0;
   for (let p of filteredPractices) {
-    // Sum arrows from all ends in the practice session
-    total += p.ends?.reduce((sum, end) => sum + (end.arrows || 0), 0) || 0;
+    // Sum arrows from all ends, including warm-up arrows without score
+    total += p.ends?.reduce((sum, end) => sum + (end.arrows || 0) + (end.arrowsWithoutScore || 0), 0) || 0;
   }
 
   return total;

@@ -8,19 +8,26 @@ import { faBullseye } from '@fortawesome/free-solid-svg-icons/faBullseye';
 import { faTrophy } from '@fortawesome/free-solid-svg-icons/faTrophy';
 import { colors } from '@/styles/colors';
 import { useTranslation } from '@/contexts';
-import { BowIcon, ArrowIcon } from '@/components/common/icons/ArcheryIcons';
+import { BowIcon, ArrowIcon, SwordsIcon } from '@/components/common/icons/ArcheryIcons';
 import { styles } from './MobileActionButtonStyles';
 
 export interface MobileActionButtonProps {
   onCreatePractice: () => void;
+  onCreateChallenge: () => void;
   onCreateCompetition: () => void;
   onCreateBow: () => void;
   onCreateArrows: () => void;
 }
 
-const NUM_ITEMS = 4;
+const NUM_ITEMS = 5;
 
-export function MobileActionButton({ onCreatePractice, onCreateCompetition, onCreateBow, onCreateArrows }: MobileActionButtonProps) {
+export function MobileActionButton({
+  onCreatePractice,
+  onCreateChallenge,
+  onCreateCompetition,
+  onCreateBow,
+  onCreateArrows,
+}: MobileActionButtonProps) {
   const [open, setOpen] = useState(false);
   const { t } = useTranslation();
   const insets = useSafeAreaInsets();
@@ -49,6 +56,15 @@ export function MobileActionButton({ onCreatePractice, onCreateCompetition, onCr
       icon: <FontAwesomeIcon icon={faBullseye} size={18} color={colors.white} />,
       onPress: () => {
         onCreatePractice();
+        closeMenu();
+      },
+    },
+    {
+      key: 'challenge',
+      label: t['fab.newChallenge'],
+      icon: <SwordsIcon size={18} color={colors.white} />,
+      onPress: () => {
+        onCreateChallenge();
         closeMenu();
       },
     },
@@ -105,7 +121,11 @@ export function MobileActionButton({ onCreatePractice, onCreateCompetition, onCr
                       },
                     ],
                   }}>
-                  <TouchableOpacity style={styles.actionRow} onPress={action.onPress} activeOpacity={0.8}>
+                  <TouchableOpacity
+                    testID={`fab-action-${action.key}`}
+                    style={styles.actionRow}
+                    onPress={action.onPress}
+                    activeOpacity={0.8}>
                     <Text style={styles.actionLabel}>{action.label}</Text>
                     <View style={styles.actionIcon}>{action.icon}</View>
                   </TouchableOpacity>
@@ -115,7 +135,7 @@ export function MobileActionButton({ onCreatePractice, onCreateCompetition, onCr
           </View>
         )}
 
-        <TouchableOpacity style={[styles.fab, open && styles.fabOpen]} onPress={toggle} activeOpacity={0.85}>
+        <TouchableOpacity testID="fab-toggle" style={[styles.fab, open && styles.fabOpen]} onPress={toggle} activeOpacity={0.85}>
           <FontAwesomeIcon icon={open ? faXmark : faPlus} size={24} color={colors.white} />
         </TouchableOpacity>
       </View>

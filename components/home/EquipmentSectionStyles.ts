@@ -16,7 +16,17 @@ export const styles = StyleSheet.create({
     color: colors.white,
   },
   list: {
-    gap: 8,
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'flex-start',
+    columnGap: 8,
+    rowGap: 8,
+  },
+  divider: {
+    width: '100%',
+    height: 1,
+    backgroundColor: 'rgba(255,255,255,0.2)',
+    marginVertical: 4,
   },
   placeholder: {
     backgroundColor: 'rgba(255,255,255,0.08)',

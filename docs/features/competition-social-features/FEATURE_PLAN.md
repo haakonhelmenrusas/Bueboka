@@ -32,13 +32,15 @@ Archers can challenge each other to direct 1v1 competitions, creating a gamified
 
 #### Mobile App Changes
 
-- **New Screen**: `app/challenges.tsx` - Challenge dashboard
-- **New Screen**: `app/challenges/[id].tsx` - Challenge details
-- **New Screen**: `app/challenges/create.tsx` - Create challenge form
-- **Components**:
+- **New Screen**: `app/utfordringer/index.tsx` - Challenge dashboard
+- **New Screen**: `app/utfordringer/[id].tsx` - Challenge details
+- **New Screen**: `app/utfordringer/ny.tsx` (+ `ny/[opponentId].tsx`) - Create challenge form
+- **New Screen**: `app/utfordringer/[id]/submit.tsx` - Submit challenge result
+- **Components** (in `components/challenges/`):
   - `ChallengeCard.tsx` - Display active/incoming challenges
+  - `ChallengeList.tsx` - List of challenges
   - `ChallengeForm.tsx` - Create/edit challenge
-  - `ChallengeResult.tsx` - Show completed challenge results
+  - `ChallengeDetail.tsx` - Challenge detail view
 - **Repository**: `challengeRepository.ts` - New CRUD operations
 - **Types**: `Challenge.ts`, `ChallengeStatus.ts`
 

@@ -1,7 +1,7 @@
 import React, { useCallback, useRef } from 'react';
 import { Animated, Pressable, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import type { BottomTabBarProps } from 'expo-router/build/react-navigation/bottom-tabs';
+import type { BottomTabBarProps } from 'expo-router/build/react-navigation/bottom-tabs/index';
 import { styles } from './FloatingTabBarStyles';
 
 function TabButton({ onPress, children, isFocused }: { onPress: () => void; children: React.ReactNode; isFocused: boolean }) {
@@ -28,7 +28,7 @@ function TabButton({ onPress, children, isFocused }: { onPress: () => void; chil
   );
 }
 
-export default function FloatingTabBar({ state, descriptors, navigation }: BottomTabBarProps) {
+export default function FloatingTabBar({ state, descriptors, emitter, navigateToTab }: BottomTabBarProps) {
   const insets = useSafeAreaInsets();
 
   return (
@@ -42,9 +42,9 @@ export default function FloatingTabBar({ state, descriptors, navigation }: Botto
         const icon = options.tabBarIcon?.({ focused: isFocused, color: '', size: 24 });
 
         const onPress = () => {
-          const event = navigation.emit({ type: 'tabPress', target: route.key, canPreventDefault: true });
+          const event = emitter.emit({ type: 'tabPress', target: route.key, canPreventDefault: true });
           if (!isFocused && !event.defaultPrevented) {
-            navigation.navigate(route.name, route.params);
+            navigateToTab(route.key);
           }
         };
 

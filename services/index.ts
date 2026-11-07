@@ -3,6 +3,7 @@ export * from './api/types';
 export * from './api/errors';
 export * from './api/publicProfilesApi';
 export * from './api/statsApi';
+export * from './api/notificationsApi';
 
 // Auth exports
 export * from './auth/authService';

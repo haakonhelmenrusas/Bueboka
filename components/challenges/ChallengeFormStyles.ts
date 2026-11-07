@@ -43,13 +43,6 @@ export const styles = StyleSheet.create({
   field: {
     marginBottom: 0,
   },
-  halfField: {
-    flex: 1,
-  },
-  dateFields: {
-    flexDirection: 'row',
-    gap: 12,
-  },
   checkboxContainer: {
     marginVertical: 8,
   },
@@ -68,6 +61,14 @@ export const styles = StyleSheet.create({
   },
   rulesGrid: {
     gap: 12,
+  },
+  rulesRow: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    gap: 12,
+  },
+  halfField: {
+    flex: 1,
   },
   actions: {
     flexDirection: 'row',

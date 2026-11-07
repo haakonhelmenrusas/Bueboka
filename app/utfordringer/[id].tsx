@@ -4,14 +4,14 @@ import { useLocalSearchParams, useRouter } from 'expo-router';
 import { ChallengeDetail } from '@/components/challenges';
 import { useChallenge } from '@/hooks/useChallenge';
 import { useAuth } from '@/hooks';
-import { styles } from './detailStyles.styles';
+import { styles } from '@/components/challenges/ChallengeDetailScreenStyles';
 import { colors } from '@/styles/colors';
 import { useTranslation } from '@/contexts';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Button, Message } from '@/components/common';
 import { LinearGradient } from 'expo-linear-gradient';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
-import { faArrowLeft, faTrophy } from '@fortawesome/free-solid-svg-icons';
+import { faArrowLeft } from '@fortawesome/free-solid-svg-icons';
 
 export default function ChallengeDetailPage() {
   const { t } = useTranslation();
@@ -27,13 +27,6 @@ export default function ChallengeDetailPage() {
 
   const [refreshing, setRefreshing] = useState(false);
 
-  // Fetch challenge on mount
-  useEffect(() => {
-    if (id && typeof id === 'string') {
-      fetchChallengeDetails(id);
-    }
-  }, [id, fetchChallengeDetails]);
-
   const fetchChallengeDetails = useCallback(
     async (challengeId: string) => {
       try {
@@ -44,6 +37,13 @@ export default function ChallengeDetailPage() {
     },
     [fetchChallengeById],
   );
+
+  // Fetch challenge on mount
+  useEffect(() => {
+    if (id && typeof id === 'string') {
+      fetchChallengeDetails(id);
+    }
+  }, [id, fetchChallengeDetails]);
 
   const handleRefresh = useCallback(async () => {
     if (!id || typeof id !== 'string') return;
@@ -171,13 +171,10 @@ export default function ChallengeDetailPage() {
               onPress={handleBack}
               label=""
               variant="tertiary"
-              style={styles.backButton}
+              type="outline"
+              buttonStyle={styles.backButton}
               icon={<FontAwesomeIcon icon={faArrowLeft} size={24} color={colors.white} />}
             />
-            <View style={styles.headerContent}>
-              <FontAwesomeIcon icon={faTrophy} size={24} color={colors.white} />
-              <Text style={styles.title}>{currentChallenge.name}</Text>
-            </View>
           </View>
 
           <ChallengeDetail

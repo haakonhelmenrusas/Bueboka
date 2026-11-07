@@ -53,6 +53,7 @@ const mockUser: User = {
   image: null,
   skytternr: null,
   isPublic: false,
+  locale: null,
   publicName: false,
   publicClub: false,
   publicStats: false,
@@ -74,7 +75,7 @@ const profile = { id: 'Hd4r7VGf90WtNCZ0RDUOVhiSbCJYKm1f', name: 'Haakon Test', c
  * all happen **inside** the same `act` wrapper before any `findBy*` query runs.
  */
 async function searchFor(input: Parameters<typeof fireEvent.changeText>[0], text: string) {
-  fireEvent.changeText(input, text);
+  await fireEvent.changeText(input, text);
   await act(async () => {
     jest.advanceTimersByTime(300); // fire the debounce
     await Promise.resolve(); // let fetchProfiles reach its first await
@@ -98,52 +99,52 @@ describe('SkytterePage', () => {
 
   // ── Auth guard ─────────────────────────────────────────────────────────────
 
-  it('shows "Ikke innlogget" when there is no logged-in user', () => {
+  it('shows "Ikke innlogget" when there is no logged-in user', async () => {
     mockedUseAuth.mockReturnValue({ user: null } as ReturnType<typeof useAuth>);
-    const { getByText } = render(<SkytterePage />);
+    const { getByText } = await render(<SkytterePage />);
     expect(getByText('Ikke innlogget')).toBeTruthy();
   });
 
-  it('does not show the search input when logged out', () => {
+  it('does not show the search input when logged out', async () => {
     mockedUseAuth.mockReturnValue({ user: null } as ReturnType<typeof useAuth>);
-    const { queryByPlaceholderText } = render(<SkytterePage />);
+    const { queryByPlaceholderText } = await render(<SkytterePage />);
     expect(queryByPlaceholderText('Søk etter navn eller klubb…')).toBeNull();
   });
 
   // ── Idle state ─────────────────────────────────────────────────────────────
 
-  it('shows the idle hint before any search', () => {
-    const { getByText } = render(<SkytterePage />);
+  it('shows the idle hint before any search', async () => {
+    const { getByText } = await render(<SkytterePage />);
     expect(getByText('Begynn å skrive for å søke')).toBeTruthy();
   });
 
-  it('shows the page title', () => {
-    const { getByText } = render(<SkytterePage />);
+  it('shows the page title', async () => {
+    const { getByText } = await render(<SkytterePage />);
     expect(getByText('Finn bueskyttere')).toBeTruthy();
   });
 
   // ── Debounce ───────────────────────────────────────────────────────────────
 
-  it('does not call search before the 300 ms debounce fires', () => {
-    const { getByPlaceholderText } = render(<SkytterePage />);
-    fireEvent.changeText(getByPlaceholderText('Søk etter navn eller klubb…'), 'haakon');
+  it('does not call search before the 300 ms debounce fires', async () => {
+    const { getByPlaceholderText } = await render(<SkytterePage />);
+    await fireEvent.changeText(getByPlaceholderText('Søk etter navn eller klubb…'), 'haakon');
     jest.advanceTimersByTime(299);
     expect(mockedSearch).not.toHaveBeenCalled();
   });
 
   it('calls search with the trimmed query after 300 ms', async () => {
-    const { getByPlaceholderText } = render(<SkytterePage />);
+    const { getByPlaceholderText } = await render(<SkytterePage />);
     await searchFor(getByPlaceholderText('Søk etter navn eller klubb…'), 'haakon');
     expect(mockedSearch).toHaveBeenCalledWith('haakon');
   });
 
   it('cancels a pending search when the query changes before debounce fires', async () => {
-    const { getByPlaceholderText } = render(<SkytterePage />);
+    const { getByPlaceholderText } = await render(<SkytterePage />);
     const input = getByPlaceholderText('Søk etter navn eller klubb…');
 
-    fireEvent.changeText(input, 'haa');
+    await fireEvent.changeText(input, 'haa');
     jest.advanceTimersByTime(150);
-    fireEvent.changeText(input, 'haakon');
+    await fireEvent.changeText(input, 'haakon');
     await act(async () => {
       jest.advanceTimersByTime(300);
     });
@@ -157,7 +158,7 @@ describe('SkytterePage', () => {
 
   it('shows profile cards when search returns results', async () => {
     mockedSearch.mockResolvedValueOnce([profile]);
-    const { getByPlaceholderText, getByText } = render(<SkytterePage />);
+    const { getByPlaceholderText, getByText } = await render(<SkytterePage />);
 
     await searchFor(getByPlaceholderText('Søk etter navn eller klubb…'), 'haakon');
 
@@ -167,7 +168,7 @@ describe('SkytterePage', () => {
 
   it('hides the idle illustration once results are shown', async () => {
     mockedSearch.mockResolvedValueOnce([profile]);
-    const { getByPlaceholderText, getByText, queryByText } = render(<SkytterePage />);
+    const { getByPlaceholderText, getByText, queryByText } = await render(<SkytterePage />);
 
     await searchFor(getByPlaceholderText('Søk etter navn eller klubb…'), 'haakon');
     expect(getByText('Haakon Test')).toBeTruthy();
@@ -179,7 +180,7 @@ describe('SkytterePage', () => {
 
   it('shows "Ingen resultater" when the search returns nothing', async () => {
     mockedSearch.mockResolvedValueOnce([]);
-    const { getByPlaceholderText, getByText } = render(<SkytterePage />);
+    const { getByPlaceholderText, getByText } = await render(<SkytterePage />);
 
     await searchFor(getByPlaceholderText('Søk etter navn eller klubb…'), 'xyz');
 
@@ -190,23 +191,23 @@ describe('SkytterePage', () => {
 
   it('returns to the idle state when the query is cleared', async () => {
     mockedSearch.mockResolvedValueOnce([profile]);
-    const { getByPlaceholderText, getByText } = render(<SkytterePage />);
+    const { getByPlaceholderText, getByText } = await render(<SkytterePage />);
     const input = getByPlaceholderText('Søk etter navn eller klubb…');
 
     await searchFor(input, 'haakon');
     expect(getByText('Haakon Test')).toBeTruthy();
 
     await act(async () => {
-      fireEvent.changeText(input, '');
+      await fireEvent.changeText(input, '');
     });
     expect(getByText('Begynn å skrive for å søke')).toBeTruthy();
   });
 
   it('does not call search when the query is empty', async () => {
-    const { getByPlaceholderText } = render(<SkytterePage />);
+    const { getByPlaceholderText } = await render(<SkytterePage />);
     const input = getByPlaceholderText('Søk etter navn eller klubb…');
 
-    fireEvent.changeText(input, '');
+    await fireEvent.changeText(input, '');
     await act(async () => {
       jest.advanceTimersByTime(300);
     });
@@ -218,7 +219,7 @@ describe('SkytterePage', () => {
 
   it('shows "Ingen resultater" when the search call throws', async () => {
     mockedSearch.mockRejectedValueOnce(new Error('Network error'));
-    const { getByPlaceholderText, getByText } = render(<SkytterePage />);
+    const { getByPlaceholderText, getByText } = await render(<SkytterePage />);
 
     await searchFor(getByPlaceholderText('Søk etter navn eller klubb…'), 'fail');
 
@@ -227,7 +228,7 @@ describe('SkytterePage', () => {
 
   it('does not crash and keeps the UI intact after a search error', async () => {
     mockedSearch.mockRejectedValueOnce(new Error('Network error'));
-    const { getByPlaceholderText, getByText } = render(<SkytterePage />);
+    const { getByPlaceholderText, getByText } = await render(<SkytterePage />);
     const input = getByPlaceholderText('Søk etter navn eller klubb…');
 
     await searchFor(input, 'fail');

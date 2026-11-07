@@ -4,7 +4,7 @@ import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useChallenge } from '@/hooks/useChallenge';
 import { useAuth } from '@/hooks';
 import { Input, Button } from '@/components/common';
-import { styles } from './submitStyles';
+import { styles } from '@/components/challenges/SubmitChallengeScreenStyles';
 import { colors } from '@/styles/colors';
 import { useTranslation } from '@/contexts';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -100,7 +100,8 @@ export default function SubmitChallengeResultPage() {
               onPress={handleBack}
               label=""
               variant="tertiary"
-              style={styles.backButton}
+              type="outline"
+              buttonStyle={styles.backButton}
               icon={<FontAwesomeIcon icon={faArrowLeft} size={24} color={colors.white} />}
             />
             <View style={styles.headerContent}>

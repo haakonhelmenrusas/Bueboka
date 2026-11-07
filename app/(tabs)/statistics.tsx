@@ -1,10 +1,9 @@
 import { useState, useCallback } from 'react';
 import { View, Text, ScrollView, StyleSheet, TouchableOpacity, ActivityIndicator, RefreshControl } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
-import { useRouter, useFocusEffect } from 'expo-router';
+import { useFocusEffect } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
-import { faChevronLeft } from '@fortawesome/free-solid-svg-icons/faChevronLeft';
 import { colors } from '@/styles/colors';
 import { statsApi } from '@/services/api/statsApi';
 import type { Series } from '@/types';
@@ -17,7 +16,6 @@ import { EmptyState } from '@/components/home/statistics/EmptyState';
 import { useTranslation } from '@/contexts';
 
 export default function StatisticsScreen() {
-  const router = useRouter();
   const insets = useSafeAreaInsets();
   const { t } = useTranslation();
 
@@ -64,12 +62,6 @@ export default function StatisticsScreen() {
           contentContainerStyle={[styles.scrollContent, { paddingTop: insets.top + 8, paddingBottom: insets.bottom + 100 }]}
           refreshControl={<RefreshControl refreshing={refreshing} onRefresh={handleRefresh} tintColor="#FFFFFF" />}>
           <View style={styles.header}>
-            <TouchableOpacity
-              onPress={() => router.back()}
-              style={styles.backButton}
-              hitSlop={{ top: 12, bottom: 12, left: 12, right: 12 }}>
-              <FontAwesomeIcon icon={faChevronLeft} size={18} color={colors.white} />
-            </TouchableOpacity>
             <View>
               <Text style={styles.title}>{t['statistics.title']}</Text>
               <Text style={styles.subtitle}>{t['statistics.subtitle']}</Text>

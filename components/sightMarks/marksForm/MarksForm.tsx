@@ -1,5 +1,6 @@
 import React, { FC, useEffect, useRef, useState } from 'react';
 import { Keyboard, Platform, TextInput, View } from 'react-native';
+import type { TextInputInstance } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Button, Input, Notch } from '@/components/common';
 import { MarkValue } from '@/types';
@@ -28,7 +29,7 @@ const MarksForm: FC<MarksFormProps> = ({ sendMarks, status, setIsFormVisible, tr
   const [aimValue, setAimValue] = useState('');
   const [distanceValue, setDistance] = useState('');
   const [nameValue, setNameValue] = useState('');
-  const distanceInputRef = useRef<TextInput>(null);
+  const distanceInputRef = useRef<TextInputInstance>(null);
   const keyboardHeight = useSharedValue(0);
 
   const animatedStyle = useAnimatedStyle(() => ({

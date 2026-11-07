@@ -44,6 +44,7 @@ export interface TranslationKeys {
   'common.error': string;
   'common.unknownError': string;
   'common.cancel': string;
+  'common.back': string;
   'common.delete': string;
   'common.close': string;
   'common.tryAgain': string;
@@ -76,6 +77,8 @@ export interface TranslationKeys {
   'home.greetingFallback': string;
   'home.searchArchers': string;
   'home.myAchievements': string;
+  'home.challenges': string;
+  'home.notifications': string;
   'home.detailedStats': string;
   'home.notLoggedInTitle': string;
   'home.notLoggedInDesc': string;
@@ -362,6 +365,17 @@ export interface TranslationKeys {
   'arrowMaterial.aluminium': string;
   'arrowMaterial.treverk': string;
 
+  // Notifications screen
+  'notifications.back': string;
+  'notifications.title': string;
+  'notifications.empty': string;
+  'notifications.markAllRead': string;
+  'notifications.challengeReceivedTitle': string;
+  'notifications.challengeReceivedMessage': string;
+  'notifications.challengeSentTitle': string;
+  'notifications.challengeSentMessage': string;
+  'notifications.challengeSentMessageGeneric': string;
+
   // Achievements screen
   'achievements.fetchError': string;
   'achievements.subtitle': string;
@@ -577,6 +591,7 @@ export interface TranslationKeys {
 
   // FAB action menu
   'fab.newPractice': string;
+  'fab.newChallenge': string;
   'fab.newCompetition': string;
   'fab.newBow': string;
   'fab.newArrows': string;
@@ -832,7 +847,6 @@ export interface TranslationKeys {
   'challenge.distanceTo': string;
   'challenge.targetSize': string;
   'challenge.numberArrows': string;
-  'challenge.arrowsWithoutScore': string;
   'challenge.targetType': string;
   'challenge.targetTypePlaceholder': string;
   'challenge.statusPending': string;
@@ -856,7 +870,7 @@ export interface TranslationKeys {
   'challenge.yourScore': string;
   'challenge.opponentScore': string;
   'challenge.resultSubmitted': string;
-  'challenge.waitingForOpponent': string;
+  'challenge.notSubmitted': string;
   'challenge.bothSubmitted': string;
   'challengeChallengeList.empty': string;
   'challengeChallengeList.emptyDesc': string;
@@ -864,6 +878,11 @@ export interface TranslationKeys {
   'challengeChallengeList.error': string;
   'challengeForm.cancelButton': string;
   'challengeForm.submitButton': string;
+
+  // Quick practice (hurtigtrening) screen
+  'quickPractice.startButton': string;
+  'quickPractice.title': string;
+  'quickPractice.save': string;
   'challengeForm.saving': string;
   'challengeDetail.title': string;
   'challengeDetail.challenger': string;

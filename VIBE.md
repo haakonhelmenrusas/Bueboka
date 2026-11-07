@@ -28,11 +28,11 @@ This file provides project-specific context to Mistral Vibe when working with th
 
 ## Project Overview
 
-**Bueboka** is a comprehensive archery tracking application for iOS, Android, and Web. Built with **React Native**, **Expo SDK 57**, **TypeScript**, and **Expo Router**.
+**Bueboka** is a comprehensive archery tracking application for iOS, Android, and Web. Built with **React Native**, **Expo SDK 58**, **TypeScript**, and **Expo Router**.
 
 - **App Stores**: [Google Play](https://play.google.com/store/apps/details?id=com.aaronshade.bueboka) | [App Store](https://apps.apple.com/no/app/bueboka/id6448108838)
 - **Web Version**: [bueboka.no](https://bueboka.no)
-- **Current Version**: 2.0.2
+- **Current Version**: 2.1.0
 - **Repository**: [github.com/Aaronshades/Bueboka-app](https://github.com/Aaronshades/Bueboka-app)
 
 ### Core Features
@@ -78,7 +78,7 @@ npm run format
 
 ### Tech Stack
 
-- **Framework**: React Native 0.86, Expo SDK 57
+- **Framework**: React Native 0.88, Expo SDK 58
 - **Language**: TypeScript 6
 - **Navigation**: Expo Router (file-based)
 - **State Management**: React Context API (no Redux/Zustand)
@@ -97,6 +97,9 @@ bueboka-app/
 │   ├── index.tsx          # Entry redirect
 │   ├── auth.tsx           # Login/register screen
 │   ├── intro.tsx          # First-launch onboarding
+│   ├── achievements.tsx   # Achievements overview
+│   ├── skyttere/          # Public archer profiles
+│   ├── utfordringer/      # Challenges (index, ny, [id], [id]/submit)
 │   └── (tabs)/            # Main tab navigation
 │
 ├── components/            # Reusable UI components
@@ -106,17 +109,18 @@ bueboka-app/
 │   ├── home/              # Home screen components
 │   ├── sightMarks/        # Ballistics calculator components
 │   ├── settings/          # Settings components
+│   ├── challenges/        # Head-to-head challenges (utfordringer)
 │   └── ...
 │
 ├── contexts/              # React Context providers
-│   ├── AuthContext.tsx    # Authentication state (667 lines)
-│   └── LanguageContext.tsx # i18n (no/en)
+│   ├── AuthContext.tsx    # Authentication state
+│   ├── LanguageContext.tsx # i18n (no/en)
+│   └── NotificationContext.tsx # In-app notifications
 │
 ├── services/              # Data layer
 │   ├── api/               # HTTP clients
-│   │   ├── authFetch.ts   # Primary client (better-auth $fetch)
-│   │   └── client.ts     # Legacy axios client (deprecated)
-│   ├── repositories/      # 9 repositories (practice, bow, arrows, etc.)
+│   │   └── authFetch.ts   # Primary client (better-auth $fetch)
+│   ├── repositories/      # 9 repositories (practice, bow, arrows, challenge, etc.)
 │   ├── offline/           # Offline queue & sync manager
 │   └── auth/              # Authentication services
 │
@@ -124,7 +128,9 @@ bueboka-app/
 │   ├── useAuth.ts         # Auth state access
 │   ├── useNetworkState.ts # Connectivity monitoring
 │   ├── useOfflineQueue.ts # Offline mutation queue
-│   └── useOnboarding.ts   # Onboarding flow
+│   ├── useOnboarding.ts   # Onboarding flow
+│   ├── useChallenge.ts    # Challenge state & actions
+│   └── usePendingChallenges.ts # Pending-challenge badge data
 │
 ├── types/                 # TypeScript domain types
 │   ├── Practice.ts        # Practice session types
@@ -184,7 +190,7 @@ bueboka-app/
 ### Authentication & Authorization
 
 - **Always use `authFetchClient`** from `services/api/authFetch.ts` for API calls
-- **Never use deprecated axios client** in `services/api/client.ts`
+- The legacy axios `client.ts` was removed — never call `fetch` directly
 - **Token storage**: Use `expo-secure-store` for sensitive data (auth tokens)
 - **Never store tokens in AsyncStorage** - use SecureStore only
 - **OAuth flows**: Use better-auth with expo-client plugin for Google/Apple auth
@@ -412,13 +418,14 @@ router.replace('/home');
 - **`app/index.tsx`**: Entry point, redirects based on auth state
 - **`app/auth.tsx`**: Login/registration screen
 - **`app/intro.tsx`**: First-launch language picker
-- **`app/(tabs)/_layout.tsx`**: Main tab navigator with 5 tabs
+- **`app/(tabs)/_layout.tsx`**: Main tab navigator with 4 tabs
 - **`app/(tabs)/home/`**: Home screen with recent practices
 - **`app/(tabs)/aktivitet/`**: Activity/practices list
 - **`app/(tabs)/sightMarks/`**: Ballistics calculator
 - **`app/(tabs)/settings/`**: App settings
 - **`app/achievements.tsx`**: Achievements overview
 - **`app/skyttere/`**: Public archer profiles directory
+- **`app/utfordringer/`**: Head-to-head challenges (list, create `ny`, detail `[id]`, submit result `[id]/submit`)
 
 ### State Management (`contexts/`)
 
@@ -427,16 +434,16 @@ router.replace('/home');
 
 ### Data Layer (`services/`)
 
-- **`services/api/authFetch.ts`**: **Primary HTTP client**. Uses better-auth `$fetch` with SecureStore credentials
-- **`services/api/client.ts`**: Legacy axios client (deprecated, don't use for new code)
+- **`services/api/authFetch.ts`**: **Primary HTTP client**. Uses better-auth `$fetch` with SecureStore credentials (the legacy axios `client.ts` was removed; `axios` remains only for the `AxiosError` check in `services/api/errors.ts`)
 - **`services/repositories/`**: 9 repositories each wrapping API calls with error handling:
   - practiceRepository.ts
   - bowRepository.ts
-  - arrowRepository.ts
+  - arrowsRepository.ts
   - userRepository.ts
   - sightMarksRepository.ts
   - achievementRepository.ts
   - competitionRepository.ts
+  - challengeRepository.ts
   - roundTypeRepository.ts
     (public profiles and stats are not repositories: see services/api/publicProfilesApi.ts and statsApi.ts)
 - **`services/offline/`**:
@@ -689,7 +696,7 @@ offlineMutation(async () => {
 
 ## Common Pitfalls
 
-1. **Using deprecated axios client** - Use `authFetchClient` from `services/api/authFetch.ts`
+1. **Bypassing `authFetchClient`** - Use `authFetchClient` from `services/api/authFetch.ts` (legacy axios client removed)
 2. **Hardcoding colors** - Always import from `styles/colors.ts`
 3. **Mixing Norwegian/English in code** - Code: English only. UI: Norwegian (or translated)
 4. **Skipping tests** - Always write tests first (TDD)
@@ -704,7 +711,7 @@ offlineMutation(async () => {
 
 ## Quick Reference: Do Not
 
-- ❌ Use deprecated axios client
+- ❌ Raw `fetch`/axios instead of `authFetchClient`
 - ❌ Hardcode colors
 - ❌ Mix Norwegian/English in code
 - ❌ Skip tests
@@ -797,5 +804,5 @@ Before submitting a PR, verify:
 ---
 
 _Generated for Mistral Vibe - Project Context Document_
-_Last Updated: 2026-09-21_
+_Last Updated: 2026-11-03_
 _Enhanced with Security, Performance, Accessibility, i18n, and Expo Router best practices_

@@ -59,12 +59,10 @@ export const styles = StyleSheet.create({
   searchIcon: {
     marginRight: 8,
   },
-  inputContainer: {
+  searchInput: {
     flex: 1,
-    borderWidth: 0,
-    padding: 0,
-  },
-  input: {
+    height: 44,
+    fontSize: 16,
     color: colors.white,
   },
   loading: {

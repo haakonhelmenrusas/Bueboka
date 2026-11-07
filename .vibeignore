@@ -41,7 +41,12 @@ logs/
 # Cache directories
 .cache/
 .parcel-cache/
-metro.config.js
+
+# Lock files (huge, no semantic value for indexing)
+package-lock.json
+
+# TypeScript build info
+*.tsbuildinfo
 
 # Test coverage
 coverage/

@@ -18,6 +18,8 @@ import {
 interface ChallengeCardProps {
   challenge: ChallengeListItem;
   onPress?: (challenge: ChallengeListItem) => void;
+  /** Current user's id, used to show the opponent (the other archer) by name */
+  currentUserId?: string;
 }
 
 // Status colors for the badge
@@ -56,16 +58,14 @@ const getStatusLabel = (status: string, t: any): string => {
   }
 };
 
-export default function ChallengeCard({ challenge, onPress }: ChallengeCardProps) {
+export default function ChallengeCard({ challenge, onPress, currentUserId }: ChallengeCardProps) {
   const { t, locale } = useTranslation();
 
   const getOpponentName = () => {
-    // If we have names, use the opponent's name
-    if (challenge.challengerName && challenge.challengedName) {
-      // For simplicity, just show the name we have
-      return challenge.challengerName || challenge.challengedName;
-    }
-    return t['challenge.unknownOpponent'] || 'Ukjent motstander';
+    // Show the other archer relative to the current user
+    const opponentName =
+      currentUserId != null ? (challenge.challengerId === currentUserId ? challenge.challengedName : challenge.challengerName) : null;
+    return opponentName || challenge.challengerName || challenge.challengedName || t['challenge.unknownOpponent'] || 'Ukjent motstander';
   };
 
   const formatDate = (dateString: string) => {
@@ -96,9 +96,9 @@ export default function ChallengeCard({ challenge, onPress }: ChallengeCardProps
   const scoreText = getScoreText();
 
   return (
-    <TouchableOpacity style={styles.card} onPress={() => onPress?.(challenge)} activeOpacity={0.7}>
+    <TouchableOpacity testID="challenge-card" style={styles.card} onPress={() => onPress?.(challenge)} activeOpacity={0.7}>
       <View style={styles.cardHeader}>
-        <Text style={styles.challengeName} numberOfLines={1}>
+        <Text style={styles.challengeName} numberOfLines={2}>
           {challenge.name}
         </Text>
         <StatusBadge status={challenge.status} />

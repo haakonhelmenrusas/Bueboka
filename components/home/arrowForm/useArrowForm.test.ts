@@ -18,49 +18,49 @@ const INITIAL_STATE: ArrowSetState = {
 };
 
 describe('arrowForm reducer', () => {
-  it('sets arrow name', () => {
+  it('sets arrow name', async () => {
     const action: Action = { type: 'SET_NAME', payload: 'Carbon Elite' };
     const state = reducer(INITIAL_STATE, action);
     expect(state.name).toBe('Carbon Elite');
   });
 
-  it('sets arrow weight', () => {
+  it('sets arrow weight', async () => {
     const action: Action = { type: 'SET_WEIGHT', payload: '27.4' };
     const state = reducer(INITIAL_STATE, action);
     expect(state.weight).toBe('27.4');
   });
 
-  it('sets arrow length', () => {
+  it('sets arrow length', async () => {
     const action: Action = { type: 'SET_LENGTH', payload: '92' };
     const state = reducer(INITIAL_STATE, action);
     expect(state.length).toBe('92');
   });
 
-  it('sets material', () => {
+  it('sets material', async () => {
     const action: Action = { type: 'SET_MATERIAL', payload: Material.ALUMINIUM };
     const state = reducer(INITIAL_STATE, action);
     expect(state.material).toBe(Material.ALUMINIUM);
   });
 
-  it('sets diameter', () => {
+  it('sets diameter', async () => {
     const action: Action = { type: 'SET_DIAMETER', payload: '6.5' };
     const state = reducer(INITIAL_STATE, action);
     expect(state.diameter).toBe('6.5');
   });
 
-  it('sets spine', () => {
+  it('sets spine', async () => {
     const action: Action = { type: 'SET_SPINE', payload: '350' };
     const state = reducer(INITIAL_STATE, action);
     expect(state.spine).toBe('350');
   });
 
-  it('sets number of arrows', () => {
+  it('sets number of arrows', async () => {
     const action: Action = { type: 'SET_ARROWS_COUNT', payload: '12' };
     const state = reducer(INITIAL_STATE, action);
     expect(state.arrowsCount).toBe('12');
   });
 
-  it('sets point details', () => {
+  it('sets point details', async () => {
     const pointTypeAction: Action = { type: 'SET_POINT_TYPE', payload: 'bullet' };
     const pointWeightAction: Action = { type: 'SET_POINT_WEIGHT', payload: '100' };
     const stateAfterType = reducer(INITIAL_STATE, pointTypeAction);
@@ -69,7 +69,7 @@ describe('arrowForm reducer', () => {
     expect(stateAfterWeight.pointWeight).toBe('100');
   });
 
-  it('sets vanes, nock and notes', () => {
+  it('sets vanes, nock and notes', async () => {
     const stateWithVanes = reducer(INITIAL_STATE, { type: 'SET_VANES', payload: 'Spin Wing' });
     const stateWithNock = reducer(stateWithVanes, { type: 'SET_NOCK', payload: 'Beiter' });
     const finalState = reducer(stateWithNock, { type: 'SET_NOTES', payload: 'Practice set' });
@@ -78,7 +78,7 @@ describe('arrowForm reducer', () => {
     expect(finalState.notes).toBe('Practice set');
   });
 
-  it('sets isFavorite to true', () => {
+  it('sets isFavorite to true', async () => {
     const action: Action = { type: 'SET_FAVORITE', payload: true };
     const state = reducer(INITIAL_STATE, action);
     expect(state.isFavorite).toBe(true);

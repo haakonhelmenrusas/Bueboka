@@ -2,20 +2,22 @@ applied_migrations = [
     "bash_read_only_defaults_v1",
 ]
 
+# Project context: AGENTS.md at the repo root is auto-discovered and injected
+# into every session (it symlinks to VIBE.md). Git status and recent commits
+# are included via include_project_context (default true).
 [project_context]
-extra_files = [
-    "VIBE.md",
-    "README.md",
-]
-commit_count = 10
+default_commit_count = 5
 timeout_seconds = 3.0
 
-[skills]
+# Skills: .agents/skills is a default search path for trusted projects;
+# keep it explicit anyway. All installed skills stay enabled (no enabled_skills filter).
 skill_paths = [
     ".agents/skills",
 ]
-enabled_skills = [
-    "bueboka-context",
+
+# Custom agent profiles (none yet, .agents is the standard directory).
+agent_paths = [
+    ".agents",
 ]
 
 [tools.grep]
@@ -82,13 +84,3 @@ allowlist = [
 
 [tools.read_file]
 max_read_bytes = 100000
-
-[agents]
-agent_paths = [
-    ".agents",
-]
-
-[context]
-include_project_readme = true
-include_git_status = true
-include_recent_commits = 10

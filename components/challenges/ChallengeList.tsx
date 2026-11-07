@@ -1,4 +1,4 @@
-import { View, Text, FlatList, ActivityIndicator } from 'react-native';
+import { View, Text, FlatList, ActivityIndicator, StyleProp, ViewStyle } from 'react-native';
 import { ChallengeListItem } from '@/types';
 import ChallengeCard from './ChallengeCard';
 import { styles } from './ChallengeListStyles';
@@ -12,8 +12,12 @@ interface ChallengeListProps {
   onChallengePress: (challenge: ChallengeListItem) => void;
   onLoadMore?: () => void;
   hasMore?: boolean;
+  currentUserId?: string;
+  /** Screen header (title, filters, create button) rendered above the list */
+  header?: React.ReactNode;
   refreshing?: boolean;
   onRefresh?: () => void;
+  contentContainerStyle?: StyleProp<ViewStyle>;
 }
 
 export default function ChallengeList({
@@ -23,8 +27,11 @@ export default function ChallengeList({
   onChallengePress,
   onLoadMore,
   hasMore = false,
+  currentUserId,
+  header,
   refreshing = false,
   onRefresh,
+  contentContainerStyle,
 }: ChallengeListProps) {
   const { t } = useTranslation();
 
@@ -70,11 +77,13 @@ export default function ChallengeList({
     <FlatList
       data={challenges}
       keyExtractor={(item) => item.id}
-      renderItem={({ item }) => <ChallengeCard challenge={item} onPress={onChallengePress} />}
-      contentContainerStyle={styles.list}
+      renderItem={({ item }) => <ChallengeCard challenge={item} onPress={onChallengePress} currentUserId={currentUserId} />}
+      contentContainerStyle={[styles.list, contentContainerStyle]}
+      ListHeaderComponent={header ? <>{header}</> : undefined}
       ListFooterComponent={renderFooter}
       onEndReached={hasMore && onLoadMore ? () => onLoadMore?.() : undefined}
       onEndReachedThreshold={0.5}
+      keyboardShouldPersistTaps="always"
       refreshing={refreshing}
       onRefresh={onRefresh}
     />

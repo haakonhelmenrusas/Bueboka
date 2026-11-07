@@ -80,7 +80,7 @@ function Probe() {
 }
 
 async function renderAndRegister() {
-  const utils = render(
+  const utils = await render(
     <AuthProvider>
       <Probe />
     </AuthProvider>,

@@ -58,6 +58,35 @@ export const styles = StyleSheet.create({
     flexDirection: 'row',
     gap: 8,
   },
+  headerBadge: {
+    position: 'absolute',
+    top: -4,
+    right: -4,
+  },
+  quickActions: {
+    flexDirection: 'row',
+    justifyContent: 'space-evenly',
+    marginTop: 16,
+    marginBottom: 20,
+  },
+  quickAction: {
+    alignItems: 'center',
+    flex: 1,
+  },
+  quickActionIcon: {
+    width: 48,
+    height: 48,
+    borderRadius: 24,
+    backgroundColor: 'rgba(255, 255, 255, 0.15)',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  quickActionLabel: {
+    marginTop: 6,
+    fontSize: 16,
+    color: colors.white,
+    textAlign: 'center',
+  },
   searchButton: {
     width: 40,
     height: 40,

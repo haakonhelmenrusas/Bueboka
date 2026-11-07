@@ -1,12 +1,12 @@
 import { getTranslations, isLocale, DEFAULT_LOCALE } from '@/lib/i18n';
 
 describe('isLocale', () => {
-  it('accepts the two supported locales', () => {
+  it('accepts the two supported locales', async () => {
     expect(isLocale('no')).toBe(true);
     expect(isLocale('en')).toBe(true);
   });
 
-  it('rejects everything else', () => {
+  it('rejects everything else', async () => {
     expect(isLocale('sv')).toBe(false);
     expect(isLocale('')).toBe(false);
     expect(isLocale(null)).toBe(false);
@@ -16,19 +16,19 @@ describe('isLocale', () => {
 });
 
 describe('getTranslations', () => {
-  it('returns Norwegian for the "no" locale', () => {
+  it('returns Norwegian for the "no" locale', async () => {
     const t = getTranslations('no');
     expect(t['language.norwegian']).toBe('Norsk');
     expect(t['language.english']).toBe('Engelsk');
   });
 
-  it('returns English for the "en" locale', () => {
+  it('returns English for the "en" locale', async () => {
     const t = getTranslations('en');
     expect(t['language.norwegian']).toBe('Norwegian');
     expect(t['language.english']).toBe('English');
   });
 
-  it('falls back to the default locale when given garbage at runtime', () => {
+  it('falls back to the default locale when given garbage at runtime', async () => {
     // Cast through `unknown` so we can simulate a stale/wrong value reaching
     // the resolver — defensive behavior, not a typed code path.
     const t = getTranslations('xx' as unknown as 'no');

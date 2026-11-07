@@ -42,16 +42,17 @@ const baseUser: User = {
   publicStats: false,
   publicSkytternr: false,
   publicAchievements: false,
+  locale: null,
   createdAt: '2024-01-01T00:00:00.000Z',
   updatedAt: '2024-01-01T00:00:00.000Z',
 };
 
-function renderProfileBox(overrides: Partial<User> = {}, onEdit = jest.fn()) {
+async function renderProfileBox(overrides: Partial<User> = {}, onEdit = jest.fn()) {
   const user = { ...baseUser, ...overrides };
   const onAvatarUpload = jest.fn().mockResolvedValue(undefined);
   const onAvatarRemove = jest.fn().mockResolvedValue(undefined);
   return {
-    ...render(<ProfileBox user={user} onEdit={onEdit} onAvatarUpload={onAvatarUpload} onAvatarRemove={onAvatarRemove} />),
+    ...await render(<ProfileBox user={user} onEdit={onEdit} onAvatarUpload={onAvatarUpload} onAvatarRemove={onAvatarRemove} />),
     onEdit,
   };
 }
@@ -59,52 +60,52 @@ function renderProfileBox(overrides: Partial<User> = {}, onEdit = jest.fn()) {
 // ── Tests ─────────────────────────────────────────────────────────────────────
 
 describe('ProfileBox – display', () => {
-  it('renders the user name', () => {
-    const { getByText } = renderProfileBox();
+  it('renders the user name', async () => {
+    const { getByText } = await renderProfileBox();
     expect(getByText('Ola Nordmann')).toBeTruthy();
   });
 
-  it('falls back to email when name is null', () => {
-    const { getByText } = renderProfileBox({ name: null });
+  it('falls back to email when name is null', async () => {
+    const { getByText } = await renderProfileBox({ name: null });
     expect(getByText('archer@bueboka.no')).toBeTruthy();
   });
 
-  it('falls back to "Bruker" when both name and email are empty', () => {
-    const { getByText } = renderProfileBox({ name: null, email: '' });
+  it('falls back to "Bruker" when both name and email are empty', async () => {
+    const { getByText } = await renderProfileBox({ name: null, email: '' });
     expect(getByText('Bruker')).toBeTruthy();
   });
 
-  it('renders the club name', () => {
-    const { getByText } = renderProfileBox();
+  it('renders the club name', async () => {
+    const { getByText } = await renderProfileBox();
     expect(getByText('Oslo Bueskyttere')).toBeTruthy();
   });
 
-  it('does not render club when it is null', () => {
-    const { queryByText } = renderProfileBox({ club: null });
+  it('does not render club when it is null', async () => {
+    const { queryByText } = await renderProfileBox({ club: null });
     expect(queryByText('Oslo Bueskyttere')).toBeNull();
   });
 
-  it('renders the skytternr inside a Badge', () => {
-    const { getByText } = renderProfileBox();
+  it('renders the skytternr inside a Badge', async () => {
+    const { getByText } = await renderProfileBox();
     expect(getByText('#99001')).toBeTruthy();
   });
 
-  it('does not render a Badge when skytternr is null', () => {
-    const { queryByTestId } = renderProfileBox({ skytternr: null });
+  it('does not render a Badge when skytternr is null', async () => {
+    const { queryByTestId } = await renderProfileBox({ skytternr: null });
     expect(queryByTestId('badge')).toBeNull();
   });
 
-  it('renders the edit button label', () => {
-    const { getByText } = renderProfileBox();
+  it('renders the edit button label', async () => {
+    const { getByText } = await renderProfileBox();
     expect(getByText('Rediger profil')).toBeTruthy();
   });
 });
 
 describe('ProfileBox – interactions', () => {
-  it('calls onEdit when the edit button is pressed', () => {
+  it('calls onEdit when the edit button is pressed', async () => {
     const onEdit = jest.fn();
-    const { getByTestId } = renderProfileBox({}, onEdit);
-    fireEvent.press(getByTestId('btn-Rediger profil'));
+    const { getByTestId } = await renderProfileBox({}, onEdit);
+    await fireEvent.press(getByTestId('btn-Rediger profil'));
     expect(onEdit).toHaveBeenCalledTimes(1);
   });
 });

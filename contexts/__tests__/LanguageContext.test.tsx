@@ -42,7 +42,7 @@ describe('LanguageProvider', () => {
   it('uses the stored locale when one is present', async () => {
     await AsyncStorage.setItem('bueboka_language', 'en');
 
-    const { getByTestId } = render(
+    const { getByTestId } = await render(
       <LanguageProvider>
         <Probe />
       </LanguageProvider>,
@@ -55,7 +55,7 @@ describe('LanguageProvider', () => {
   });
 
   it('falls back to the OS locale when storage is empty', async () => {
-    const { getByTestId } = render(
+    const { getByTestId } = await render(
       <LanguageProvider>
         <Probe />
       </LanguageProvider>,
@@ -70,7 +70,7 @@ describe('LanguageProvider', () => {
     const localization = jest.requireMock('expo-localization');
     (localization.getLocales as jest.Mock).mockReturnValueOnce([{ languageCode: 'nb' }]);
 
-    const { getByTestId } = render(
+    const { getByTestId } = await render(
       <LanguageProvider>
         <Probe />
       </LanguageProvider>,
@@ -89,7 +89,7 @@ describe('LanguageProvider', () => {
       return null;
     }
 
-    render(
+    await render(
       <LanguageProvider>
         <Capture />
       </LanguageProvider>,

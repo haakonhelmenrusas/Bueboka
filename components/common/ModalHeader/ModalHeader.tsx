@@ -12,7 +12,7 @@ export default function ModalHeader({ title, onPress }: Props) {
   return (
     <View style={styles.header}>
       <Text style={styles.title}>{title}</Text>
-      <TouchableOpacity style={styles.closeButton} onPress={onPress}>
+      <TouchableOpacity testID="modal-header-close" style={styles.closeButton} onPress={onPress}>
         <Text>
           <FontAwesomeIcon icon={faXmark} size={20} />
         </Text>
