@@ -75,7 +75,7 @@ export default function CreateChallengeModal({ visible, onClose, onSaved }: Prop
       setSubmitting(true);
       setError(null);
       try {
-        await createChallenge(data, opponent?.name ?? undefined);
+        await createChallenge(data);
         onSaved?.();
         handleClose();
       } catch (err) {
@@ -84,7 +84,7 @@ export default function CreateChallengeModal({ visible, onClose, onSaved }: Prop
         setSubmitting(false);
       }
     },
-    [createChallenge, opponent?.name, onSaved, handleClose, t],
+    [createChallenge, onSaved, handleClose, t],
   );
 
   return (

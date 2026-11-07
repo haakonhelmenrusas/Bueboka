@@ -65,7 +65,7 @@ export default function ChallengeFormPage() {
       setFormLoading(true);
       setFormError(null);
       try {
-        await createChallenge(data, opponent?.name ?? undefined);
+        await createChallenge(data);
         router.replace('/utfordringer');
       } catch (err) {
         setFormError(err instanceof Error ? err.message : t['common.unknownError']);
@@ -73,7 +73,7 @@ export default function ChallengeFormPage() {
         setFormLoading(false);
       }
     },
-    [createChallenge, router, t, opponent?.name],
+    [createChallenge, router, t],
   );
 
   if (!user) {

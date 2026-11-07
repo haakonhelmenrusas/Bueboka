@@ -12,7 +12,6 @@ import type {
 } from '@/types';
 import { ChallengeStatus } from '@/types';
 import { useTranslation } from '@/contexts/LanguageContext';
-import { useNotifications, NotificationType } from '@/contexts/NotificationContext';
 
 /**
  * Parameters for fetching challenges
@@ -54,7 +53,6 @@ export interface FetchChallengesParams extends GetAllChallengesParams {
 export function useChallenge() {
   const { user } = useAuth();
   const { t } = useTranslation();
-  const { addNotification } = useNotifications();
 
   // State
   const [challenges, setChallenges] = useState<ChallengeListItem[]>([]);
@@ -129,7 +127,7 @@ export function useChallenge() {
    * Create a new challenge
    */
   const createChallenge = useCallback(
-    async (data: CreateChallengeData, opponentName?: string) => {
+    async (data: CreateChallengeData) => {
       try {
         setLoading(true);
         setError(null);
@@ -145,17 +143,8 @@ export function useChallenge() {
         // Refresh challenges list
         await fetchChallenges();
 
-        // Notify the inviter that the challenge was sent (the invitee is
-        // notified via the pending-challenges poller when they receive it)
-        addNotification({
-          type: NotificationType.CHALLENGE_SENT,
-          title: t['notifications.challengeSentTitle'],
-          message: opponentName
-            ? t['notifications.challengeSentMessage'].replace('{name}', opponentName)
-            : t['notifications.challengeSentMessageGeneric'],
-          challengeId: challenge.id,
-        });
-
+        // No local notification for the sender — the server notifies the
+        // challenged user, and the sender is notified only when they answer.
         return challenge;
       } catch (err) {
         setError(err instanceof Error ? err : new Error(t['common.unknownError']));
@@ -164,7 +153,7 @@ export function useChallenge() {
         setLoading(false);
       }
     },
-    [fetchChallenges, addNotification, t],
+    [fetchChallenges, t],
   );
 
   /**

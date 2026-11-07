@@ -42,20 +42,27 @@ export function usePendingChallenges() {
         pageSize: 100, // Get all pending challenges
       });
 
-      const pendingCount = response.challenges.length;
+      // Only incoming challenges count — ones the current user sent are
+      // already visible in the list and must not raise a notification here
+      const incoming = response.challenges.filter((challenge) => challenge.challengedId === user.id);
+
+      const pendingCount = incoming.length;
       setPendingCount(pendingCount);
 
-      // Add notification for each pending challenge that hasn't been notified yet
+      // Add notification for each incoming challenge that hasn't been notified yet
       const existingNotificationIds = notifications.filter((n) => n.type === 'CHALLENGE_RECEIVED').map((n) => n.challengeId);
 
-      const newChallenges = response.challenges.filter((challenge) => !existingNotificationIds.includes(challenge.id));
+      const newChallenges = incoming.filter((challenge) => !existingNotificationIds.includes(challenge.id));
 
       // Add notifications for new pending challenges
       newChallenges.forEach((challenge) => {
         addNotification({
           type: NotificationType.CHALLENGE_RECEIVED,
           title: t['notifications.challengeReceivedTitle'],
-          message: t['notifications.challengeReceivedMessage'].replace('{name}', challenge.challengerName || t['challenge.unknownOpponent']),
+          message: t['notifications.challengeReceivedMessage'].replace(
+            '{name}',
+            challenge.challengerName || t['challenge.unknownOpponent'],
+          ),
           challengeId: challenge.id,
         });
       });

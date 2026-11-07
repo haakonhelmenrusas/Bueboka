@@ -47,7 +47,7 @@ jest.mock('@/contexts/NotificationContext', () => ({
 
 const mockGetAll = jest.mocked(challengeRepository.getAll);
 
-const pendingChallenge: ChallengeListItem = {
+const incomingChallenge: ChallengeListItem = {
   id: 'ch-1',
   challengerId: 'user-2',
   challengedId: 'user-1',
@@ -58,6 +58,18 @@ const pendingChallenge: ChallengeListItem = {
   createdAt: '2026-11-01T10:00:00Z',
   updatedAt: '2026-11-01T10:00:00Z',
 } as ChallengeListItem;
+
+// A pending challenge the current user SENT — must not raise a notification
+const outgoingChallenge: ChallengeListItem = {
+  ...incomingChallenge,
+  id: 'ch-2',
+  challengerId: 'user-1',
+  challengedId: 'user-2',
+  challengerName: 'Test User',
+  challengedName: 'Challenger',
+} as ChallengeListItem;
+
+const pendingChallenge = incomingChallenge;
 
 describe('usePendingChallenges', () => {
   beforeEach(() => {
@@ -96,6 +108,32 @@ describe('usePendingChallenges', () => {
     });
 
     expect(mockAddNotification).toHaveBeenCalledTimes(1);
+  });
+
+  it('does not notify for pending challenges the current user sent', async () => {
+    mockGetAll.mockResolvedValue({ challenges: [outgoingChallenge], page: 1, pageSize: 100, total: 1 });
+
+    const { result } = await renderHook(() => usePendingChallenges());
+
+    await waitFor(() => {
+      expect(result.current.loading).toBe(false);
+    });
+
+    expect(mockAddNotification).not.toHaveBeenCalled();
+    expect(result.current.pendingCount).toBe(0);
+  });
+
+  it('notifies only for the incoming ones when sent and received are mixed', async () => {
+    mockGetAll.mockResolvedValue({ challenges: [incomingChallenge, outgoingChallenge], page: 1, pageSize: 100, total: 2 });
+
+    const { result } = await renderHook(() => usePendingChallenges());
+
+    await waitFor(() => {
+      expect(mockAddNotification).toHaveBeenCalledTimes(1);
+    });
+
+    expect(mockAddNotification).toHaveBeenCalledWith(expect.objectContaining({ challengeId: 'ch-1' }));
+    expect(result.current.pendingCount).toBe(1);
   });
 
   it('returns zero pending when there is no user', async () => {

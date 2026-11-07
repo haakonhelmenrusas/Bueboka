@@ -57,7 +57,7 @@ describe('CreateChallengeModal', () => {
     await fireEvent.press(submit);
 
     await waitFor(() => {
-      expect(mockCreateChallenge).toHaveBeenCalledWith({ challengedId: 'opp-1', name: 'Kamp' }, 'Ola Nordmann');
+      expect(mockCreateChallenge).toHaveBeenCalledWith({ challengedId: 'opp-1', name: 'Kamp' });
     });
     expect(onSaved).toHaveBeenCalledTimes(1);
     expect(onClose).toHaveBeenCalledTimes(1);

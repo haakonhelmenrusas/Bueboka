@@ -39,9 +39,6 @@ jest.mock('@/contexts/LanguageContext', () => ({
       'challenge.statusCancelled': 'CANCELLED',
       'challenge.opponent': 'Opponent',
       'common.unknownError': 'Unknown error',
-      'notifications.challengeSentTitle': 'Challenge sent',
-      'notifications.challengeSentMessage': 'You sent a challenge to {name}',
-      'notifications.challengeSentMessageGeneric': 'You sent a challenge',
     },
   }),
 }));
@@ -246,7 +243,7 @@ describe('useChallenge', () => {
   });
 
   describe('createChallenge', () => {
-    it('notifies the inviter with a CHALLENGE_SENT notification', async () => {
+    it('does not notify the sender — only the other party gets notified when they answer', async () => {
       mockChallengeRepository.create.mockResolvedValue(mockChallenge);
       mockChallengeRepository.getAll.mockResolvedValue({
         challenges: [mockChallengeListItem],
@@ -258,35 +255,10 @@ describe('useChallenge', () => {
       const { result } = await renderHook(() => useChallenge());
 
       await act(async () => {
-        await result.current.createChallenge({ challengedId: 'user-2', name: 'New Challenge' }, 'User Two');
-      });
-
-      expect(mockAddNotification).toHaveBeenCalledWith(
-        expect.objectContaining({
-          type: 'CHALLENGE_SENT',
-          title: 'Challenge sent',
-          message: 'You sent a challenge to User Two',
-          challengeId: 'challenge-1',
-        }),
-      );
-    });
-
-    it('falls back to a generic message when the opponent name is unknown', async () => {
-      mockChallengeRepository.create.mockResolvedValue(mockChallenge);
-      mockChallengeRepository.getAll.mockResolvedValue({ challenges: [], page: 1, pageSize: 20, total: 0 });
-
-      const { result } = await renderHook(() => useChallenge());
-
-      await act(async () => {
         await result.current.createChallenge({ challengedId: 'user-2', name: 'New Challenge' });
       });
 
-      expect(mockAddNotification).toHaveBeenCalledWith(
-        expect.objectContaining({
-          type: 'CHALLENGE_SENT',
-          message: 'You sent a challenge',
-        }),
-      );
+      expect(mockAddNotification).not.toHaveBeenCalled();
     });
 
     it('creates a new challenge and refreshes list', async () => {
