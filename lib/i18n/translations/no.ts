@@ -250,6 +250,7 @@ export const no: TranslationKeys = {
   'scoring.editScores': 'Rediger score',
   'scoring.continueScoring': 'Fortsett scoring',
   'scoring.done': 'Ferdig',
+  'scoring.noScoreTarget': 'Denne skiven har ingen poengsoner — registrer kun piler uten score i runden.',
 
   'reflection.ratingLabel': 'Vurdering (valgfritt)',
   'reflection.ratingPromptPractice': 'Hvordan vil du vurdere treningen?',

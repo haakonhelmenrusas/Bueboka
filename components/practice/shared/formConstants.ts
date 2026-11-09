@@ -33,20 +33,6 @@ export const getWeatherOptions = (t: TranslationKeys): { value: WeatherCondition
 // ─── Scoring defaults ────────────────────────────────────────────────────────
 export const DEFAULT_ARROWS_PER_END = 3;
 
-// ─── Arrow score button options ───────────────────────────────────────────────
-// These labels are numeric / single-letter ('X', 'M') and don't need
-// translation.
-export const ARROW_SCORE_OPTIONS = [
-  { label: 'X', value: 10 },
-  { label: '10', value: 10 },
-  { label: '9', value: 9 },
-  { label: '8', value: 8 },
-  { label: '7', value: 7 },
-  { label: '6', value: 6 },
-  { label: '5', value: 5 },
-  { label: '4', value: 4 },
-  { label: '3', value: 3 },
-  { label: '2', value: 2 },
-  { label: '1', value: 1 },
-  { label: 'M', value: 0 },
-];
+// Arrow score button options are no longer fixed: they come from the scoring
+// scheme resolved for the chosen category + target face.
+// See utils/helpers/scoringHelpers.ts (resolveScoringScheme).

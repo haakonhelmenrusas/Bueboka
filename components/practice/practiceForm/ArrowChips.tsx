@@ -1,17 +1,20 @@
 import { Pressable, Text, View } from 'react-native';
 import { useTranslation } from '@/contexts';
-import { getChipColorStyle, getChipTextColor } from '@/components/practice/shared/scoreUtils';
+import type { ScoringScheme } from '@/types';
+import { getZoneForScore } from '@/utils/helpers/scoringHelpers';
+import { getChipStyleForZone, getChipTextColorForZone } from '@/components/practice/shared/scoreUtils';
 import { styles } from './CreatePracticeFormStyles';
 
 interface ArrowChipsProps {
   arrowsInThisEnd: number;
   startIdx: number;
   scores: number[];
+  scheme: ScoringScheme;
   editingIdx: number | null;
   onChipPress: (absoluteIndex: number) => void;
 }
 
-export function ArrowChips({ arrowsInThisEnd, startIdx, scores, editingIdx, onChipPress }: ArrowChipsProps) {
+export function ArrowChips({ arrowsInThisEnd, startIdx, scores, scheme, editingIdx, onChipPress }: ArrowChipsProps) {
   const { t } = useTranslation();
 
   return (
@@ -28,12 +31,16 @@ export function ArrowChips({ arrowsInThisEnd, startIdx, scores, editingIdx, onCh
               styles.arrowChip,
               styles.arrowChipLarge,
               isThisChipEditing && styles.arrowChipEditing,
-              scored ? [styles.arrowChipFilled, getChipColorStyle(scores[i])] : styles.arrowChipEmpty,
+              scored ? [styles.arrowChipFilled, getChipStyleForZone(getZoneForScore(scheme, scores[i]))] : styles.arrowChipEmpty,
             ]}
             onPress={scored ? () => onChipPress(isThisChipEditing ? -1 : absIdx) : undefined}
             accessibilityLabel={scored ? `${t['scoring.editArrowAriaPrefix']} ${i + 1}: ${scores[i]} ${t['scoring.points']}` : undefined}>
             <Text
-              style={[styles.arrowChipText, styles.arrowChipTextLarge, scored ? getChipTextColor(scores[i]) : styles.arrowChipTextEmpty]}>
+              style={[
+                styles.arrowChipText,
+                styles.arrowChipTextLarge,
+                scored ? getChipTextColorForZone(getZoneForScore(scheme, scores[i])) : styles.arrowChipTextEmpty,
+              ]}>
               {scored ? String(scores[i]) : '–'}
             </Text>
           </Pressable>

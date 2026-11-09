@@ -1,21 +1,24 @@
 import { Pressable, Text, View } from 'react-native';
-import { Environment } from '@/types';
-import { ARROW_SCORE_OPTIONS } from '@/components/practice/shared/formConstants';
-import { getScoreButtonColorStyle } from '@/components/practice/shared/scoreUtils';
+import type { ScoringOption } from '@/types';
+import { getScoreButtonStyleForZone } from '@/components/practice/shared/scoreUtils';
 import { styles } from './CreatePracticeFormStyles';
 
 interface ScoreButtonGridProps {
-  environment: Environment;
+  options: ScoringOption[];
   onScorePress: (score: number) => void;
 }
 
-export function ScoreButtonGrid({ environment, onScorePress }: ScoreButtonGridProps) {
+export function ScoreButtonGrid({ options, onScorePress }: ScoreButtonGridProps) {
   return (
     <View style={styles.scoreButtonsGrid}>
-      {ARROW_SCORE_OPTIONS.filter((opt) => opt.label !== 'X' || environment === Environment.OUTDOOR).map((opt) => {
-        const { button: buttonStyle, text: textStyle } = getScoreButtonColorStyle(opt.label);
+      {options.map((opt) => {
+        const { button: buttonStyle, text: textStyle } = getScoreButtonStyleForZone(opt.zone);
         return (
-          <Pressable key={opt.label} style={[styles.scoreButton, buttonStyle]} onPress={() => onScorePress(opt.value)}>
+          <Pressable
+            key={opt.label}
+            testID={`score-button-${opt.label}`}
+            style={[styles.scoreButton, buttonStyle]}
+            onPress={() => onScorePress(opt.value)}>
             <Text style={[styles.scoreButtonText, textStyle]}>{opt.label}</Text>
           </Pressable>
         );
