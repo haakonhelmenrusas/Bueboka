@@ -548,7 +548,7 @@ export default function CreatePracticeForm({
           visible
           round={rounds[scoringRoundIndex]}
           roundIndex={scoringRoundIndex}
-          environment={environment}
+          practiceCategory={practiceCategory}
           endPage={endPages[scoringRoundIndex] ?? 0}
           editingIndex={editingIndices[scoringRoundIndex] ?? null}
           onClose={() => setScoringRoundIndex(null)}

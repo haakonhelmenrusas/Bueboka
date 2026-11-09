@@ -1,4 +1,5 @@
 export type { MarkValue } from './MarkValue';
+export type { ScoringZone, ScoringOption, ScoringScheme, ScoringSchemeId } from './TargetScoring';
 export type { Bow } from './Bow';
 export { BowType } from './Bow';
 export type { Arrows } from './ArrowSet';

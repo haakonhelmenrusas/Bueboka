@@ -273,6 +273,7 @@ export interface TranslationKeys {
   'scoring.editScores': string;
   'scoring.continueScoring': string;
   'scoring.done': string;
+  'scoring.noScoreTarget': string;
 
   // Reflection step UI
   'reflection.ratingLabel': string;
