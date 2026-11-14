@@ -19,3 +19,22 @@ export const consumePendingQuickPracticeResult = (): QuickPracticeResult | null 
   pending = null;
   return result;
 };
+
+/**
+ * Set when the quick-practice screen is pushed from the practice form (the
+ * form modal must be hidden first — a RN Modal sits above the navigation
+ * stack on iOS, so a pushed screen would otherwise open behind it). The
+ * hosting screen consumes this on focus to re-open the form modal when the
+ * user returns.
+ */
+let launched = false;
+
+export const markQuickPracticeLaunched = (): void => {
+  launched = true;
+};
+
+export const consumeQuickPracticeLaunched = (): boolean => {
+  const value = launched;
+  launched = false;
+  return value;
+};

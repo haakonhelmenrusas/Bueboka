@@ -36,6 +36,7 @@ import { faUserGroup } from '@fortawesome/free-solid-svg-icons';
 import { PracticeDetailsModal } from '@/components/practice/practiceDetailsModal';
 import OnboardingModal from '@/components/onboarding/OnboardingModal';
 import { AchievementUnlockModal } from '@/components/achievements/AchievementUnlockModal';
+import { consumeQuickPracticeLaunched } from '@/utils/quickPractice';
 
 export default function HomeScreen() {
   const { user, refreshUser } = useAuth();
@@ -104,6 +105,13 @@ export default function HomeScreen() {
     useCallback(() => {
       loadData();
     }, [loadData]),
+  );
+
+  // Re-open the practice form when returning from the quick-practice screen
+  useFocusEffect(
+    useCallback(() => {
+      if (consumeQuickPracticeLaunched()) setPracticeModalVisible(true);
+    }, []),
   );
 
   const handleRefresh = async () => {
@@ -363,6 +371,7 @@ export default function HomeScreen() {
           setPracticeModalVisible(false);
           setEditingPractice(null);
         }}
+        onHide={() => setPracticeModalVisible(false)}
         bows={bows}
         arrowSets={arrows}
         editingPractice={editingPractice}
