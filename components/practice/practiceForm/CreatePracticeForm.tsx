@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { Keyboard, KeyboardAvoidingView, Platform, Pressable, ScrollView, View } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as Sentry from '@sentry/react-native';
@@ -11,7 +11,7 @@ import { Arrows, Bow, Environment, Practice, PracticeCategory } from '@/types';
 import { useTranslation } from '@/contexts';
 import { buildEndData } from '@/utils/helpers/practiceHelpers';
 import { useFocusEffect, useRouter } from 'expo-router';
-import { consumePendingQuickPracticeResult } from '@/utils/quickPractice';
+import { consumePendingQuickPracticeResult, markQuickPracticeLaunched } from '@/utils/quickPractice';
 import type { TranslationKeys } from '@/lib/i18n';
 import { styles } from './CreatePracticeFormStyles';
 import { DEFAULT_ARROWS_PER_END } from '@/components/practice/shared/formConstants';
@@ -50,6 +50,13 @@ export interface RoundInput {
 interface CreatePracticeFormProps {
   visible: boolean;
   onClose: () => void;
+  /**
+   * Hides the form without clearing the editing context — used when handing
+   * off to the quick-practice screen, which must be pushed while the RN Modal
+   * is hidden (a pushed route would otherwise render behind the modal on iOS).
+   * The form state is kept and restored when the modal is shown again.
+   */
+  onHide?: () => void;
   bows?: Bow[];
   arrowSets?: Arrows[];
   onPracticeSaved?: () => void;
@@ -85,6 +92,7 @@ function emptyRound(cat: PracticeCategory): RoundInput {
 export default function CreatePracticeForm({
   visible,
   onClose,
+  onHide,
   bows = [],
   arrowSets = [],
   onPracticeSaved,
@@ -123,6 +131,9 @@ export default function CreatePracticeForm({
   const [endPages, setEndPages] = useState<Record<number, number>>({});
   const [editingIndices, setEditingIndices] = useState<Record<number, number | null>>({});
   const [editingId, setEditingId] = useState<string | null>(null);
+  // Set when handing off to quick practice so the next `visible` transition
+  // restores the current form state instead of resetting it
+  const resumeFromQuickPracticeRef = useRef(false);
 
   // Derived
   const isEditing = !!editingId;
@@ -142,15 +153,21 @@ export default function CreatePracticeForm({
   // ─── Init form ───────────────────────────────────────────────────────────────
   useEffect(() => {
     if (!visible) {
-      setEditingId(null);
+      if (!resumeFromQuickPracticeRef.current) setEditingId(null);
       setCloseConfirmVisible(false);
       setConfirmVisible(false);
       setScoringRoundIndex(null);
       return;
     }
 
+    const resumeFromQuickPractice = resumeFromQuickPracticeRef.current;
+    resumeFromQuickPracticeRef.current = false;
+
     resetStep();
     setError(null);
+
+    // Returning from the quick-practice screen: keep the current form state
+    if (resumeFromQuickPractice) return;
 
     if (editingPractice) {
       setEditingId(editingPractice.id);
@@ -358,11 +375,17 @@ export default function CreatePracticeForm({
   // ─── Build rounds ────────────────────────────────────────────────────────────
   const buildRounds = (validRounds: RoundInput[]): CreateEndData[] => buildEndData(validRounds);
 
-  // A round with both distance and target chosen can be started as a quick practice
+  // A round with both distance and target chosen can be started as a quick practice.
+  // The form modal is hidden before pushing: a RN Modal renders above the
+  // navigation stack on iOS, so the pushed screen would open behind it.
   const handleStartQuickPractice = useCallback(
     (roundIndex: number) => {
       const round = rounds[roundIndex];
       if (!round || (round.distanceMeters ?? 0) <= 0 || !round.targetType) return;
+      resumeFromQuickPracticeRef.current = true;
+      markQuickPracticeLaunched();
+      if (onHide) onHide();
+      else onClose();
       router.push({
         pathname: '/hurtigtrening',
         params: {
@@ -376,7 +399,7 @@ export default function CreatePracticeForm({
         },
       });
     },
-    [rounds, router, environment, practiceCategory],
+    [rounds, router, environment, practiceCategory, onHide, onClose],
   );
 
   const getValidRounds = () =>
@@ -548,7 +571,7 @@ export default function CreatePracticeForm({
           visible
           round={rounds[scoringRoundIndex]}
           roundIndex={scoringRoundIndex}
-          environment={environment}
+          practiceCategory={practiceCategory}
           endPage={endPages[scoringRoundIndex] ?? 0}
           editingIndex={editingIndices[scoringRoundIndex] ?? null}
           onClose={() => setScoringRoundIndex(null)}

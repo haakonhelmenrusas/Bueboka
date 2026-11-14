@@ -16,9 +16,12 @@ export const styles = StyleSheet.create({
     shadowRadius: 6,
     elevation: 3,
   },
+  // Solid background: a translucent backgroundColor or opacity on the
+  // shadowed card makes iOS unable to compute the shadow efficiently
+  // (RCTViewComponentView warning), so the locked look is conveyed with a
+  // solid gray card + the dimmed icon/text colors in AchievementBadge instead.
   cardLocked: {
-    backgroundColor: 'rgba(255, 255, 255, 0.82)',
-    opacity: 0.72,
+    backgroundColor: colors.bgGray100,
   },
   iconWrap: {
     width: 48,

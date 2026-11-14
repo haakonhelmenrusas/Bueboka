@@ -18,6 +18,7 @@ import { AktivitetHeader, PracticeList } from '@/components/aktivitet';
 import { useTranslation } from '@/contexts';
 import { styles } from '@/components/aktivitet/AktivitetStyles';
 import { AchievementUnlockModal } from '@/components/achievements/AchievementUnlockModal';
+import { consumeQuickPracticeLaunched } from '@/utils/quickPractice';
 
 const PAGE_SIZE = 15;
 
@@ -89,6 +90,13 @@ export default function AktivitetScreen() {
       loadEquipment();
       setRefreshKey((k) => k + 1);
     }, [loadEquipment]),
+  );
+
+  // Re-open the practice form when returning from the quick-practice screen
+  useFocusEffect(
+    useCallback(() => {
+      if (consumeQuickPracticeLaunched()) setPracticeModalVisible(true);
+    }, []),
   );
 
   const handleFilterChange = (newFilter: PracticeFilter) => {
@@ -190,6 +198,7 @@ export default function AktivitetScreen() {
           setPracticeModalVisible(false);
           setEditingPractice(null);
         }}
+        onHide={() => setPracticeModalVisible(false)}
         bows={bows}
         arrowSets={arrows}
         editingPractice={editingPractice}

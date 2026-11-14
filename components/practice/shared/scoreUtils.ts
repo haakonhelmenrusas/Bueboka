@@ -1,47 +1,52 @@
 import { colors } from '@/styles/colors';
 import { styles } from '../practiceForm/CreatePracticeFormStyles';
+import type { ScoringZone } from '@/types';
 import type { TranslationKeys } from '@/lib/i18n';
 import type { RoundInput } from '../practiceForm/CreatePracticeForm';
 
-export function getChipColorStyle(score: number): any {
-  if (score >= 9) return styles.arrowChipGold;
-  if (score >= 7) return styles.arrowChipRed;
-  if (score >= 5) return styles.arrowChipBlue;
-  if (score >= 3) return styles.arrowChipBlack;
-  if (score >= 1) return styles.arrowChipWhite;
-  return styles.arrowChipMiss;
-}
-
-export function getChipTextColor(score: number): any {
-  if (score >= 9 || (score >= 1 && score <= 2)) {
-    return { color: colors.text };
-  }
-  return { color: colors.white };
-}
-
-export function getScoreButtonColorStyle(label: string): any {
-  switch (label) {
-    case 'X':
-    case '10':
-    case '9':
+/**
+ * Zone-based styles so score buttons and arrow chips follow the scoring scheme
+ * resolved for the chosen category + target (see utils/helpers/scoringHelpers).
+ */
+export function getScoreButtonStyleForZone(zone: ScoringZone): { button: any; text: any } {
+  switch (zone) {
+    case 'gold':
       return { button: styles.scoreButtonGold, text: { color: colors.text } };
-    case '8':
-    case '7':
+    case 'red':
       return { button: styles.scoreButtonRed, text: { color: colors.white } };
-    case '6':
-    case '5':
+    case 'blue':
       return { button: styles.scoreButtonBlue, text: { color: colors.white } };
-    case '4':
-    case '3':
+    case 'black':
       return { button: styles.scoreButtonBlack, text: { color: colors.white } };
-    case '2':
-    case '1':
+    case 'white':
       return { button: styles.scoreButtonWhite, text: { color: colors.text } };
-    case 'M':
+    case 'miss':
       return { button: styles.scoreButtonMiss, text: { color: colors.textSecondary } };
-    default:
-      return { button: null, text: { color: colors.text } };
   }
+}
+
+export function getChipStyleForZone(zone: ScoringZone): any {
+  switch (zone) {
+    case 'gold':
+      return styles.arrowChipGold;
+    case 'red':
+      return styles.arrowChipRed;
+    case 'blue':
+      return styles.arrowChipBlue;
+    case 'black':
+      return styles.arrowChipBlack;
+    case 'white':
+      return styles.arrowChipWhite;
+    case 'miss':
+      return styles.arrowChipMiss;
+  }
+}
+
+export function getChipTextColorForZone(zone: ScoringZone): any {
+  // Light zones (gold, white) need dark text; miss uses the secondary color
+  if (zone === 'gold' || zone === 'white') return { color: colors.text };
+  if (zone === 'miss') return { color: colors.textSecondary };
+  return { color: colors.white };
 }
 
 export function getRoundSummary(round: RoundInput, t: TranslationKeys): string {

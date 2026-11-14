@@ -250,6 +250,7 @@ export const en: TranslationKeys = {
   'scoring.editScores': 'Edit scores',
   'scoring.continueScoring': 'Continue scoring',
   'scoring.done': 'Done',
+  'scoring.noScoreTarget': 'This target face has no scoring zones — only count arrows without score in the round.',
 
   'reflection.ratingLabel': 'Rating (optional)',
   'reflection.ratingPromptPractice': 'How would you rate the practice?',
