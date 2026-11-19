@@ -35,6 +35,7 @@ export const en: TranslationKeys = {
   'common.loading': 'Loading...',
   'common.success': 'Success',
   'common.error': 'Error',
+  'observe.errorFallbackMessage': 'Something went wrong — the app needs to be restarted.',
   'common.unknownError': 'An unknown error occurred',
   'common.cancel': 'Cancel',
   'common.back': 'Back',

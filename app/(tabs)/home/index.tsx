@@ -1,7 +1,8 @@
-import { useState, useCallback, useRef } from 'react';
+import { useState, useCallback, useEffect, useRef } from 'react';
 import { Alert, View, Text, ScrollView, RefreshControl, TouchableOpacity } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter, useFocusEffect } from 'expo-router';
+import { useObserve } from 'expo-observe';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { StatsSummary, EquipmentSection, PracticesSection } from '@/components/home';
 import { useAuth, useOnboarding } from '@/hooks';
@@ -46,6 +47,12 @@ export default function HomeScreen() {
   const { hasSeenOnboarding, isLoading: onboardingLoading, markAsSeen } = useOnboarding();
   const router = useRouter();
   const insets = useSafeAreaInsets();
+  const { markInteractive } = useObserve();
+
+  // Main entry screen after auth / deep links — record its time to interactive
+  useEffect(() => {
+    markInteractive();
+  }, [markInteractive]);
   const [refreshing, setRefreshing] = useState(false);
   const [stats, setStats] = useState<StatsResponse>({
     last7Days: { totalArrows: 0, scoredArrows: 0, unscoredArrows: 0, avgScorePerArrow: null },
