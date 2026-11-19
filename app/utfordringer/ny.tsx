@@ -103,7 +103,7 @@ export default function CreateChallengePage() {
               <TextInput
                 style={styles.searchInput}
                 placeholder={t['challenge.searchPlaceholder']}
-                placeholderTextColor={'rgba(255, 255, 255, 0.5)'}
+                placeholderTextColor={'rgba(255, 255, 255, 0.75)'}
                 value={query}
                 onChangeText={setQuery}
               />

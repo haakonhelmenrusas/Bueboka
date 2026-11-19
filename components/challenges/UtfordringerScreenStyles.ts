@@ -79,7 +79,8 @@ export const styles = StyleSheet.create({
   },
   errorText: {
     fontSize: 16,
-    color: colors.error,
+    // Light variant: the screen sits on a dark gradient, colors.error has too low contrast there
+    color: colors.errorLight,
     textAlign: 'center',
     marginBottom: 16,
   },
