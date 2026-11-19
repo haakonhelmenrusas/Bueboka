@@ -7,7 +7,7 @@
     },
     "name": "Bueboka",
     "slug": "bueboka",
-    "version": "2.1.0",
+    "version": "2.2.0",
     "icon": "./assets/images/icon.png",
     "extra": {
       "eas": {
