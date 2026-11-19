@@ -12,28 +12,28 @@ export default function UtfordringerLayout() {
       <Stack.Screen
         name="ny"
         options={{
-          presentation: 'modal',
+          presentation: 'fullScreenModal',
           animation: 'slide_from_bottom',
         }}
       />
       <Stack.Screen
         name="ny/[opponentId]"
         options={{
-          presentation: 'modal',
+          presentation: 'fullScreenModal',
           animation: 'slide_from_right',
         }}
       />
       <Stack.Screen
         name="[id]"
         options={{
-          presentation: 'modal',
+          presentation: 'fullScreenModal',
           animation: 'slide_from_right',
         }}
       />
       <Stack.Screen
         name="[id]/submit"
         options={{
-          presentation: 'modal',
+          presentation: 'fullScreenModal',
           animation: 'slide_from_right',
         }}
       />

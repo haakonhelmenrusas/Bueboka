@@ -74,7 +74,7 @@ export const styles = StyleSheet.create({
   resultsTitle: {
     fontSize: 14,
     fontWeight: '600',
-    color: 'rgba(255, 255, 255, 0.8)',
+    color: 'rgba(255, 255, 255, 0.95)',
     marginBottom: 8,
   },
   profileItem: {
@@ -98,11 +98,11 @@ export const styles = StyleSheet.create({
   },
   profileClub: {
     fontSize: 12,
-    color: 'rgba(255, 255, 255, 0.7)',
+    color: 'rgba(255, 255, 255, 0.9)',
   },
   noResults: {
     fontSize: 14,
-    color: 'rgba(255, 255, 255, 0.7)',
+    color: 'rgba(255, 255, 255, 0.9)',
     textAlign: 'center',
     marginTop: 16,
   },
@@ -136,7 +136,7 @@ export const styles = StyleSheet.create({
   },
   opponentClub: {
     fontSize: 12,
-    color: 'rgba(255, 255, 255, 0.7)',
+    color: 'rgba(255, 255, 255, 0.9)',
   },
   // Form container with light background for better contrast
   formContainer: {

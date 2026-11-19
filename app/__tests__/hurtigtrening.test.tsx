@@ -1,9 +1,11 @@
 import React from 'react';
-import { fireEvent, render } from '@testing-library/react-native';
+import { fireEvent, render, waitFor } from '@testing-library/react-native';
 import QuickPracticeScreen from '../hurtigtrening';
 import { consumePendingQuickPracticeResult } from '@/utils/quickPractice';
 
 const mockBack = jest.fn();
+const mockGetItem = jest.fn().mockResolvedValue(null);
+const mockSetItem = jest.fn().mockResolvedValue(undefined);
 const mockParams = {
   roundIndex: '2',
   distanceMeters: '18',
@@ -16,9 +18,15 @@ jest.mock('expo-router', () => ({
   useLocalSearchParams: () => mockParams,
 }));
 
+jest.mock('@react-native-async-storage/async-storage', () => ({
+  getItem: (...args: any[]) => mockGetItem(...args),
+  setItem: (...args: any[]) => mockSetItem(...args),
+}));
+
 describe('QuickPracticeScreen', () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    mockGetItem.mockResolvedValue(null);
     consumePendingQuickPracticeResult();
   });
 
@@ -61,5 +69,24 @@ describe('QuickPracticeScreen', () => {
 
     expect(mockBack).not.toHaveBeenCalled();
     expect(consumePendingQuickPracticeResult()).toBeNull();
+  });
+
+  it('starts from the last saved count for this round', async () => {
+    mockGetItem.mockResolvedValue('6');
+    const { getByTestId } = await render(<QuickPracticeScreen />);
+
+    await waitFor(() => expect(getByTestId('quick-counter').props.children).toBe(6));
+    // keyed by the round the arrows are added to (roundIndex=2)
+    expect(mockGetItem).toHaveBeenCalledWith('bueboka_quick_count_round_2');
+  });
+
+  it('persists the count per round when saving', async () => {
+    const { getByTestId } = await render(<QuickPracticeScreen />);
+
+    await fireEvent.press(getByTestId('quick-plus'));
+    await fireEvent.press(getByTestId('quick-plus'));
+    await fireEvent.press(getByTestId('quick-save'));
+
+    expect(mockSetItem).toHaveBeenCalledWith('bueboka_quick_count_round_2', '2');
   });
 });

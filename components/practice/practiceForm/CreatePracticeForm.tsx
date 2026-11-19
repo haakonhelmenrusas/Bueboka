@@ -163,10 +163,12 @@ export default function CreatePracticeForm({
     const resumeFromQuickPractice = resumeFromQuickPracticeRef.current;
     resumeFromQuickPracticeRef.current = false;
 
-    resetStep();
+    // Returning from the quick-practice screen: keep the current form state
+    // and land back on the rounds step (1), where the arrow count belongs
+    if (resumeFromQuickPractice) setStep(1);
+    else resetStep();
     setError(null);
 
-    // Returning from the quick-practice screen: keep the current form state
     if (resumeFromQuickPractice) return;
 
     if (editingPractice) {

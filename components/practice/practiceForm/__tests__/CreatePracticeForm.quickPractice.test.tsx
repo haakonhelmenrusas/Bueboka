@@ -53,8 +53,10 @@ jest.mock('@/components/home/DeleteArrowSetModal/ConfirmModal', () => ({
 jest.mock('@/components/practice/shared/StepIndicator', () => ({ StepIndicator: () => null }));
 jest.mock('@/components/practice/shared/NavigationFooter', () => ({ NavigationFooter: () => null }));
 // Start directly on the rounds step, where the quick-practice button lives
+const mockSetStep = jest.fn();
+const mockResetStep = jest.fn();
 jest.mock('@/components/practice/shared/useStepNavigation', () => ({
-  useStepNavigation: () => ({ step: 1, setStep: jest.fn(), goNext: jest.fn(), goPrev: jest.fn(), resetStep: jest.fn() }),
+  useStepNavigation: () => ({ step: 1, setStep: mockSetStep, goNext: jest.fn(), goPrev: jest.fn(), resetStep: mockResetStep }),
 }));
 jest.mock('../InfoStep', () => ({ InfoStep: () => null }));
 jest.mock('../ReflectionStep', () => ({ ReflectionStep: () => null }));
@@ -86,6 +88,29 @@ describe('CreatePracticeForm quick practice handoff', () => {
     mockRoundsStepProps = null;
     // drain any launched flag from previous tests
     consumeQuickPracticeLaunched();
+  });
+
+  it('lands back on the rounds step when returning from quick practice', async () => {
+    const { getByTestId, rerender } = await renderForm(true, jest.fn(), jest.fn());
+
+    await waitFor(() => expect(mockRoundsStepProps?.rounds?.[0]?.targetType).toBe('80cm'));
+
+    await act(async () => {
+      fireEvent.press(getByTestId('start-quick-practice'));
+    });
+
+    const props = (visible: boolean) => (
+      <CreatePracticeForm visible={visible} onClose={jest.fn()} onHide={jest.fn()} bows={[]} arrowSets={[]} />
+    );
+
+    await act(async () => {
+      rerender(props(false));
+    });
+    await act(async () => {
+      rerender(props(true));
+    });
+
+    expect(mockSetStep).toHaveBeenCalledWith(1);
   });
 
   it('hides the form modal before pushing /hurtigtrening (pushed screen must not open behind the RN Modal)', async () => {
