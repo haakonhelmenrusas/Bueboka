@@ -117,6 +117,12 @@ describe('practiceRepository.getCards', () => {
     expect(mockClient.get).toHaveBeenCalledWith('/practices/cards?filter=TRENING');
   });
 
+  it('omits the filter parameter for "all" (backend default; sending it caused 500s)', async () => {
+    mockClient.get.mockResolvedValueOnce({ data: fakeCardsResponse });
+    await practiceRepository.getCards({ page: 1, pageSize: 5, filter: 'all' });
+    expect(mockClient.get).toHaveBeenCalledWith('/practices/cards?page=1&pageSize=5');
+  });
+
   it('throws AppError on network failure', async () => {
     mockClient.get.mockRejectedValueOnce(new AxiosError('Network Error', 'ERR_NETWORK'));
     await expect(practiceRepository.getCards()).rejects.toBeInstanceOf(AppError);

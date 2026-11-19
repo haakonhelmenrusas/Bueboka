@@ -71,7 +71,8 @@ export const practiceRepository = {
       const queryParams = new URLSearchParams();
       if (params?.page) queryParams.append('page', params.page.toString());
       if (params?.pageSize) queryParams.append('pageSize', params.pageSize.toString());
-      if (params?.filter) queryParams.append('filter', params.filter);
+      // 'all' is the backend default — sending it explicitly makes /practices/cards return 500
+      if (params?.filter && params.filter !== 'all') queryParams.append('filter', params.filter);
       const response = await client.get<PracticeCardsResponse>(`/practices/cards?${queryParams.toString()}`);
       return response.data;
     } catch (error) {

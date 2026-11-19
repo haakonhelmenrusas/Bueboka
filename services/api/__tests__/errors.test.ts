@@ -89,6 +89,19 @@ describe('handleApiError – AxiosError HTTP status codes', () => {
     expect(result.code).toBe('SERVER_ERROR');
   });
 
+  it('reports 5xx to Sentry grouped per status + endpoint, with query string stripped', async () => {
+    const Sentry = jest.requireMock('@sentry/react-native');
+    Sentry.captureException.mockClear();
+    const err = makeAxiosError(500) as any;
+    err.endpoint = '/stats?userId=abc123';
+    handleApiError(err);
+    expect(Sentry.captureException).toHaveBeenCalledTimes(1);
+    const call = Sentry.captureException.mock.calls[0][1];
+    expect(call.tags).toEqual({ type: 'server_error' });
+    expect(call.fingerprint).toEqual(['api-server-error', '500', '/stats']);
+    expect(call.extra.endpoint).toBe('/stats');
+  });
+
   it('returns SERVER_ERROR for 503', async () => {
     const err = makeAxiosError(503);
     const result = handleApiError(err);
