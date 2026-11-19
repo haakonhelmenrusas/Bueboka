@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Keyboard, KeyboardAvoidingView, Platform, Pressable, ScrollView, Text, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import * as Sentry from '@sentry/react-native';
+import { Observe } from 'expo-observe';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faPlus } from '@fortawesome/free-solid-svg-icons/faPlus';
 import { faXmark } from '@fortawesome/free-solid-svg-icons/faXmark';
@@ -310,6 +311,7 @@ export default function CreateCompetitionForm({
       onSaved?.();
       onClose();
     } catch (err) {
+      Observe.reportError(err);
       Sentry.captureException(err);
       setError(err instanceof Error ? err.message : t['competitionForm.saveError']);
     } finally {
@@ -325,6 +327,7 @@ export default function CreateCompetitionForm({
       onSaved?.();
       onClose();
     } catch (err) {
+      Observe.reportError(err);
       Sentry.captureException(err);
     }
   };
