@@ -10,6 +10,7 @@ import { offlineMutation } from '@/services/offline/mutationHelper';
 import { useAuth } from '@/contexts/AuthContext';
 import { useTranslation } from '@/contexts';
 import * as Sentry from '@sentry/react-native';
+import { Observe } from 'expo-observe';
 
 interface CalculateMarksModalProps {
   modalVisible: boolean;
@@ -111,6 +112,7 @@ export const CalculateMarksModal = ({
       Keyboard.dismiss();
       closeModal();
     } catch (error: any) {
+      Observe.reportError(error);
       Sentry.captureException(error, {
         tags: { type: 'calculate_marks_error' },
         extra: {

@@ -2,6 +2,7 @@ import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { Keyboard, KeyboardAvoidingView, Platform, Pressable, ScrollView, View } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as Sentry from '@sentry/react-native';
+import { Observe } from 'expo-observe';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { ModalHeader, ModalWrapper } from '@/components/common';
@@ -456,6 +457,7 @@ export default function CreatePracticeForm({
       onPracticeSaved?.();
       onClose();
     } catch (err) {
+      Observe.reportError(err);
       Sentry.captureException(err);
       setError(err instanceof Error ? err.message : t['practiceForm.saveError']);
     } finally {
@@ -471,6 +473,7 @@ export default function CreatePracticeForm({
       onPracticeSaved?.();
       onClose();
     } catch (err) {
+      Observe.reportError(err);
       Sentry.captureException(err);
     }
   };

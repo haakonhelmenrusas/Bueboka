@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useState } from 'react';
+import { useObserve } from 'expo-observe';
 import { Alert, ScrollView, View } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -23,7 +24,12 @@ import { consumeQuickPracticeLaunched } from '@/utils/quickPractice';
 const PAGE_SIZE = 15;
 
 export default function AktivitetScreen() {
+  const { markInteractive } = useObserve();
   const insets = useSafeAreaInsets();
+
+  useEffect(() => {
+    markInteractive();
+  }, [markInteractive]);
   const { t } = useTranslation();
   const router = useRouter();
 

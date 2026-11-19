@@ -1,7 +1,8 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import { View, Text, ScrollView, StyleSheet, TouchableOpacity, ActivityIndicator, RefreshControl } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useFocusEffect } from 'expo-router';
+import { useObserve } from 'expo-observe';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { colors } from '@/styles/colors';
@@ -16,7 +17,12 @@ import { EmptyState } from '@/components/home/statistics/EmptyState';
 import { useTranslation } from '@/contexts';
 
 export default function StatisticsScreen() {
+  const { markInteractive } = useObserve();
   const insets = useSafeAreaInsets();
+
+  useEffect(() => {
+    markInteractive();
+  }, [markInteractive]);
   const { t } = useTranslation();
 
   const [series, setSeries] = useState<Series[]>([]);

@@ -42,6 +42,7 @@ export interface TranslationKeys {
   'common.loading': string;
   'common.success': string;
   'common.error': string;
+  'observe.errorFallbackMessage': string;
   'common.unknownError': string;
   'common.cancel': string;
   'common.back': string;

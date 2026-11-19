@@ -5,6 +5,7 @@ import { Arrows, Bow } from '@/types';
 import { arrowsRepository, bowRepository } from '@/services/repositories';
 import { useTranslation } from '@/contexts';
 import * as Sentry from '@sentry/react-native';
+import { Observe } from 'expo-observe';
 import { styles } from './EquipmentModalStyles';
 
 interface Props {
@@ -34,6 +35,7 @@ export default function EquipmentModal({ visible, onClose }: Props) {
       setAimMeasure(favBow?.aimMeasure?.toString() ?? '');
       setArrowWeight(favArrows?.weight?.toString() ?? '');
     } catch (err) {
+      Observe.reportError(err);
       Sentry.captureException(err);
     }
   }, []);
@@ -95,6 +97,7 @@ export default function EquipmentModal({ visible, onClose }: Props) {
       await Promise.all(updates);
       onClose();
     } catch (err) {
+      Observe.reportError(err);
       Sentry.captureException(err);
     } finally {
       setStatus('idle');

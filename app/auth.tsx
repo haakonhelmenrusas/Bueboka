@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Keyboard, KeyboardAvoidingView, Platform, ScrollView } from 'react-native';
 import { useRouter } from 'expo-router';
+import { useObserve } from 'expo-observe';
 import { Button, Message } from '@/components/common';
 import { useAuth } from '@/hooks';
 import { useTranslation } from '@/contexts';
@@ -16,12 +17,18 @@ function AuthScreen({ onAuthSuccess }: AuthScreenProps) {
   const { login, register, loginWithGoogle, isLoading, isAuthenticated, error, clearError } = useAuth();
   const { t } = useTranslation();
   const router = useRouter();
+  const { markInteractive } = useObserve();
   const [isLogin, setIsLogin] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [localError, setLocalError] = useState<string | null>(null);
   const [showVerification, setShowVerification] = useState(false);
   const [registeredEmail, setRegisteredEmail] = useState<string>('');
+
+  // Entry screen for the login flow
+  useEffect(() => {
+    markInteractive();
+  }, [markInteractive]);
 
   useEffect(() => {
     if (!isAuthenticated) return;

@@ -1,8 +1,9 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Image, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from 'expo-router';
+import { useObserve } from 'expo-observe';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Button } from '@/components/common';
 import { colors } from '@/styles/colors';
@@ -15,6 +16,12 @@ export const INTRO_SEEN_KEY = 'bueboka_has_seen_intro';
 export default function IntroScreen() {
   const router = useRouter();
   const { t } = useTranslation();
+  const { markInteractive } = useObserve();
+
+  // Entry screen for first-time visitors
+  useEffect(() => {
+    markInteractive();
+  }, [markInteractive]);
 
   const markSeenAndNavigate = async () => {
     await AsyncStorage.setItem(INTRO_SEEN_KEY, 'true');

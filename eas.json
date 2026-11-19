@@ -54,7 +54,8 @@
         "resourceClass": "m-medium"
       },
       "autoIncrement": true,
-      "channel": "production"
+      "channel": "production",
+      "uploadSourceMaps": true
     }
   },
   "submit": {

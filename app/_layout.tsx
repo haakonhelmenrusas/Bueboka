@@ -1,10 +1,21 @@
 import { StatusBar } from 'expo-status-bar';
 import { Stack, useNavigationContainerRef } from 'expo-router';
 import * as Sentry from '@sentry/react-native';
+import { Observe, ObserveRoot } from 'expo-observe';
 import React, { useEffect } from 'react';
 import { AuthProvider, LanguageProvider, NotificationProvider } from '@/contexts';
 import { usePendingChallenges, usePushNotifications } from '@/hooks';
+import { ObserveErrorFallback } from '@/components/common';
 import { colors } from '@/styles/colors';
+
+// Expo Observe: per-route navigation metrics. Must run at module scope,
+// before any screen mounts — each configure() call replaces the whole config.
+// Route params that carry ids are stripped from exported metrics.
+Observe.configure({
+  integrations: {
+    'expo-router': { filteredParams: ['id', 'opponentId'] },
+  },
+});
 
 let navigationIntegration: any = null;
 
@@ -78,4 +89,14 @@ function RootLayout() {
   );
 }
 
-export default isNonDev ? Sentry.wrap(RootLayout) : RootLayout;
+const RootComponent = isNonDev ? Sentry.wrap(RootLayout) : RootLayout;
+
+// ObserveRoot measures time to first render and records render errors
+// (errorBoundaryFallback renders in place of the app on a crash)
+export default function AppRoot() {
+  return (
+    <ObserveRoot errorBoundaryFallback={<ObserveErrorFallback />}>
+      <RootComponent />
+    </ObserveRoot>
+  );
+}

@@ -14,6 +14,7 @@ import { OfflineBanner } from './OfflineBanner/OfflineBanner';
 import { Badge } from './Badge/Badge';
 import { MobileActionButton } from './MobileActionButton/MobileActionButton';
 import NotificationBadge from './NotificationBadge';
+import ObserveErrorFallback from './ObserveErrorFallback';
 
 export {
   Button,
@@ -32,4 +33,5 @@ export {
   Badge,
   MobileActionButton,
   NotificationBadge,
+  ObserveErrorFallback,
 };

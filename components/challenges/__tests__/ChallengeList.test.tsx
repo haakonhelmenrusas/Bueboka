@@ -1,4 +1,5 @@
 import React from 'react';
+import { Text } from 'react-native';
 import { fireEvent, render } from '@testing-library/react-native';
 import ChallengeList from '../ChallengeList';
 import { ChallengeListItem, ChallengeStatus } from '@/types';
@@ -25,6 +26,7 @@ jest.mock('@/styles/colors', () => ({
     text: '#212529',
     textSecondary: '#6C757D',
     error: '#DC3545',
+    errorLight: '#FF8A80',
     border: '#DEE2E6',
   },
 }));
@@ -77,6 +79,19 @@ describe('ChallengeList', () => {
 
     expect(getByText('Could not load challenges')).toBeTruthy();
     expect(getByText('Test error')).toBeTruthy();
+  });
+
+  // Regression: the header (filter pills) must stay visible in every
+  // state — otherwise filtering to an empty result hides all controls
+  it.each([
+    ['loading', { loading: true, error: null }],
+    ['empty', { loading: false, error: null }],
+    ['error', { loading: false, error: new Error('boom') }],
+  ])('keeps the header visible in the %s state', async (_label, state) => {
+    const header = <Text>filter-pills-header</Text>;
+    const { getByText } = await render(<ChallengeList challenges={[]} {...state} onChallengePress={mockOnPress} header={header} />);
+
+    expect(getByText('filter-pills-header')).toBeTruthy();
   });
 
   it('renders list of challenges', async () => {
