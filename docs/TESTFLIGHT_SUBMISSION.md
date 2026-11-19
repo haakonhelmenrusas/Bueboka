@@ -75,3 +75,15 @@ eas submit --profile preview --platform ios --latest --groups "Intern testing"
 - **"Build number already used"** — skal ikke skje lenger; `autoIncrement: true` er satt i preview/production.
 - **"Invalid ASC key / not authorized"** — nøkkelen må ha Admin-rolle, og Apple ID-en som kjører `eas submit` må være Admin på teamet.
 - **"No Apple ID with 2FA"** — første `eas credentials` krever interaktiv innlogging med 2FA; kan ikke gjøres fra CI — bruk API-nøkkel (steg 1).
+- **"Failed to patch capabilities: APPLE_ID_AUTH" / "bundle cannot be deleted"** — Bueboka bruker ikke Sign in with Apple (kun Google OAuth + e-post), så denne capability-en trengs ikke. Hopp over auto-sync:
+  ```bash
+  EXPO_NO_CAPABILITY_SYNC=1 eas credentials --platform ios
+  EXPO_NO_CAPABILITY_SYNC=1 eas build --profile preview --platform ios
+  ```
+  Alternativt kan du slå capabilities av/på manuelt på https://developer.apple.com/account/resources/identifiers/bundleId/edit/W4ZWT3YRLV — men fordi bundleet er knyttet til en App i App Store Connect, kan Apple nekte endringen ("delete all the Apps related to this bundle"), så `EXPO_NO_CAPABILITY_SYNC=1` er enkleste vei.
+
+## Status etter første kjøring (nov 2026)
+
+- Apple Team: `379N885Y43` (Haakon Helmen (Individual)); bundle App ID i Developer Portal: `W4ZWT3YRLV`
+- ASC API-nøkkel registrert hos EAS: Key ID `9L9BZ29GS9`, Issuer `39eea337-bcc5-46aa-9663-5d683bf0e692`, rolle **ADMIN** — klar for `eas submit`
+- Gjenstående: distribution certificate + provisioning profile via `eas credentials --platform ios` (EAS-managed, én gangs Apple ID + 2FA)
