@@ -1,5 +1,4 @@
 import { authClient } from '@/services/auth/authClient';
-import * as Sentry from '@sentry/react-native';
 import { API_BASE_URL } from './constants';
 
 export async function authFetch<T = any>(endpoint: string, options: RequestInit = {}): Promise<{ data: T }> {
@@ -26,10 +25,11 @@ export async function authFetch<T = any>(endpoint: string, options: RequestInit 
     const data = isWrapped ? (raw as { data: T }).data : (raw as T);
     return { data: (data ?? null) as T };
   } catch (error: any) {
-    const status = error?.status ?? error?.response?.status;
-    const isExpected = status === 401 || status === 403 || error?.message?.includes('Network');
-    if (!isExpected) {
-      Sentry.captureException(error, { extra: { endpoint } });
+    // Attach context for handleApiError, which is the single place that
+    // reports to Sentry (reporting here too would duplicate every event)
+    if (error && typeof error === 'object') {
+      error.endpoint = error.endpoint ?? endpoint;
+      error.status = error.status ?? error?.response?.status ?? null;
     }
     throw error;
   }

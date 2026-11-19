@@ -50,12 +50,14 @@ export function handleApiError(error: unknown): AppError {
     }
 
     if (statusCode && statusCode >= 500) {
+      // Strip the query string — it can contain user ids, and everything
+      // reported here is dispatched off-device to the Sentry dashboard
+      const endpoint = String((error as any)?.endpoint ?? (error as any)?.config?.url ?? 'unknown').split('?')[0];
       Sentry.captureException(error, {
         tags: { type: 'server_error' },
-        extra: {
-          status: statusCode,
-          url: (error as any).config?.url,
-        },
+        // Group per status + endpoint instead of one "API request failed" bucket
+        fingerprint: ['api-server-error', String(statusCode), endpoint],
+        extra: { status: statusCode, endpoint },
       });
       return new AppError('SERVER_ERROR', 'Serverfeil. Vennligst prøv igjen senere.', error);
     }
