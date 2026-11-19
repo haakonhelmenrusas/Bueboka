@@ -39,36 +39,38 @@ export default function ChallengeList({
     if (!loading && hasMore && onLoadMore) {
       return (
         <View style={styles.footer}>
-          <ActivityIndicator size="small" color={colors.primary} />
+          <ActivityIndicator size="small" color={colors.white} />
         </View>
       );
     }
     return null;
   };
 
-  if (loading && challenges.length === 0) {
-    return (
+  // State views (loading/error/empty) must keep the header rendered —
+  // otherwise the filter pills disappear when a filter yields no data
+  const stateView =
+    loading && challenges.length === 0 ? (
       <View style={styles.loadingContainer}>
-        <ActivityIndicator size="large" color={colors.primary} />
+        <ActivityIndicator size="large" color={colors.white} />
         <Text style={styles.loadingText}>{t['challengeChallengeList.loading']}</Text>
       </View>
-    );
-  }
-
-  if (error) {
-    return (
+    ) : error ? (
       <View style={styles.errorContainer}>
         <Text style={styles.errorText}>{t['challengeChallengeList.error']}</Text>
         <Text style={styles.errorDetails}>{error.message}</Text>
       </View>
-    );
-  }
-
-  if (challenges.length === 0) {
-    return (
+    ) : challenges.length === 0 ? (
       <View style={styles.emptyContainer}>
         <Text style={styles.emptyTitle}>{t['challengeChallengeList.empty']}</Text>
         <Text style={styles.emptyDescription}>{t['challengeChallengeList.emptyDesc']}</Text>
+      </View>
+    ) : null;
+
+  if (stateView) {
+    return (
+      <View style={[styles.stateWrapper, contentContainerStyle]}>
+        {header}
+        {stateView}
       </View>
     );
   }

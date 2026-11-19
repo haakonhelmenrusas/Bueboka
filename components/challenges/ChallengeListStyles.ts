@@ -13,10 +13,14 @@ export const styles = StyleSheet.create({
     alignItems: 'center',
     padding: 40,
   },
+  stateWrapper: {
+    flex: 1,
+  },
   loadingText: {
     marginTop: 16,
     fontSize: 16,
-    color: colors.textSecondary,
+    // The challenge screens sit on a dark gradient — dark text is unreadable
+    color: colors.white,
   },
   errorContainer: {
     flex: 1,
@@ -27,12 +31,12 @@ export const styles = StyleSheet.create({
   errorText: {
     fontSize: 18,
     fontWeight: '600',
-    color: colors.error,
+    color: colors.errorLight,
     marginBottom: 8,
   },
   errorDetails: {
     fontSize: 14,
-    color: colors.textSecondary,
+    color: 'rgba(255, 255, 255, 0.8)',
     textAlign: 'center',
   },
   emptyContainer: {
@@ -44,12 +48,12 @@ export const styles = StyleSheet.create({
   emptyTitle: {
     fontSize: 18,
     fontWeight: '600',
-    color: colors.text,
+    color: colors.white,
     marginBottom: 8,
   },
   emptyDescription: {
     fontSize: 14,
-    color: colors.textSecondary,
+    color: 'rgba(255, 255, 255, 0.8)',
     textAlign: 'center',
     maxWidth: 280,
   },
