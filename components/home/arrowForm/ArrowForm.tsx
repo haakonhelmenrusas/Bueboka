@@ -1,5 +1,6 @@
 import { Keyboard, KeyboardAvoidingView, Platform, Pressable, ScrollView, Text, TouchableOpacity, View } from 'react-native';
 import { useEffect, useState } from 'react';
+import { Observe } from 'expo-observe';
 import { Button, Checkbox, Input, ModalHeader, ModalWrapper, Select, Textarea } from '@/components/common';
 import { handleNumberChange } from '@/utils';
 import { Arrows, Material } from '@/types';
@@ -126,11 +127,32 @@ export default function ArrowForm({ modalVisible, setArrowModalVisible, arrowSet
         await arrowsRepository.create(arrowsData);
       }
 
-      // If setting as favorite, unfavorite others
+      // If setting as favorite, unfavorite others. The arrow set is already
+      // saved at this point, so a failure here must not surface as a save
+      // error — report it and still complete the save.
       if (isFavorite) {
         const favoriteArrows = existingArrowSets.filter((a) => a.isFavorite && a.id !== arrowSet?.id);
         for (const favArrow of favoriteArrows) {
-          await arrowsRepository.update(favArrow.id, { isFavorite: false });
+          try {
+            await arrowsRepository.update(favArrow.id, {
+              name: favArrow.name,
+              material: favArrow.material,
+              arrowsCount: favArrow.arrowsCount ?? undefined,
+              diameter: favArrow.diameter ?? undefined,
+              weight: favArrow.weight ?? undefined,
+              length: favArrow.length ?? undefined,
+              spine: favArrow.spine ?? undefined,
+              pointType: favArrow.pointType ?? undefined,
+              pointWeight: favArrow.pointWeight ?? undefined,
+              vanes: favArrow.vanes ?? undefined,
+              nock: favArrow.nock ?? undefined,
+              notes: favArrow.notes ?? undefined,
+              isFavorite: false,
+            });
+          } catch (error) {
+            console.error('Error un-favoriting other arrow set:', error);
+            Observe.reportError(error instanceof Error ? error : new Error(String(error)));
+          }
         }
       }
 
