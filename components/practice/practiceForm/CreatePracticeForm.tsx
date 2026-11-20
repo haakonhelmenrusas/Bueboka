@@ -492,78 +492,78 @@ export default function CreatePracticeForm({
   // ═══════════════════════════════════════════════════════════════════════════════
 
   return (
-    <>
-      <ModalWrapper visible={visible} onClose={handleClose} fullScreen>
-        <View style={[styles.safeArea, { paddingTop: insets.top, paddingBottom: insets.bottom }]}>
-          <KeyboardAvoidingView style={styles.container} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
+    <ModalWrapper visible={visible} onClose={handleClose} fullScreen>
+      <View style={[styles.safeArea, { paddingTop: insets.top, paddingBottom: insets.bottom }]}>
+        <KeyboardAvoidingView style={styles.container} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
+          <Pressable onPress={Keyboard.dismiss}>
+            <ModalHeader title={isEditing ? t['practiceForm.editTitle'] : t['practiceForm.newTitle']} onPress={handleClose} />
+          </Pressable>
+
+          <StepIndicator steps={STEP_LABELS} currentStep={step} onStepPress={setStep} />
+
+          <ScrollView
+            style={styles.scrollView}
+            contentContainerStyle={styles.scrollContainer}
+            keyboardShouldPersistTaps="handled"
+            showsVerticalScrollIndicator={false}>
             <Pressable onPress={Keyboard.dismiss}>
-              <ModalHeader title={isEditing ? t['practiceForm.editTitle'] : t['practiceForm.newTitle']} onPress={handleClose} />
+              {step === 0 && (
+                <InfoStep
+                  date={date}
+                  onDateChange={setDate}
+                  practiceCategory={practiceCategory}
+                  onCategoryChange={handleCategoryChange}
+                  environment={environment}
+                  onEnvironmentChange={setEnvironment}
+                  location={location}
+                  onLocationChange={setLocation}
+                  weather={weather}
+                  onToggleWeather={toggleWeather}
+                  bowOptions={bowOptions}
+                  arrowSetOptions={arrowSetOptions}
+                  selectedBow={selectedBow}
+                  selectedArrowSet={selectedArrowSet}
+                  onBowChange={setSelectedBow}
+                  onArrowSetChange={setSelectedArrowSet}
+                />
+              )}
+              {step === 1 && (
+                <RoundsStep
+                  rounds={rounds}
+                  practiceCategory={practiceCategory}
+                  onAddRound={addRound}
+                  onRemoveRound={removeRound}
+                  onUpdateRound={updateRound}
+                  onOpenScoring={setScoringRoundIndex}
+                  onStartQuickPractice={handleStartQuickPractice}
+                />
+              )}
+              {step === 2 && (
+                <ReflectionStep rating={rating} onRatingChange={setRating} notes={notes} onNotesChange={setNotes} error={error} />
+              )}
             </Pressable>
+          </ScrollView>
 
-            <StepIndicator steps={STEP_LABELS} currentStep={step} onStepPress={setStep} />
+          <NavigationFooter
+            currentStep={step}
+            totalSteps={TOTAL_STEPS}
+            stepLabels={STEP_LABELS}
+            isEditing={isEditing}
+            submitting={submitting}
+            saveLabel={t['form.save']}
+            onPrev={goPrev}
+            onNext={goNext}
+            onSave={handleSaveAndFinish}
+            onDelete={() => setConfirmVisible(true)}
+          />
+        </KeyboardAvoidingView>
+      </View>
 
-            <ScrollView
-              style={styles.scrollView}
-              contentContainerStyle={styles.scrollContainer}
-              keyboardShouldPersistTaps="handled"
-              showsVerticalScrollIndicator={false}>
-              <Pressable onPress={Keyboard.dismiss}>
-                {step === 0 && (
-                  <InfoStep
-                    date={date}
-                    onDateChange={setDate}
-                    practiceCategory={practiceCategory}
-                    onCategoryChange={handleCategoryChange}
-                    environment={environment}
-                    onEnvironmentChange={setEnvironment}
-                    location={location}
-                    onLocationChange={setLocation}
-                    weather={weather}
-                    onToggleWeather={toggleWeather}
-                    bowOptions={bowOptions}
-                    arrowSetOptions={arrowSetOptions}
-                    selectedBow={selectedBow}
-                    selectedArrowSet={selectedArrowSet}
-                    onBowChange={setSelectedBow}
-                    onArrowSetChange={setSelectedArrowSet}
-                  />
-                )}
-                {step === 1 && (
-                  <RoundsStep
-                    rounds={rounds}
-                    practiceCategory={practiceCategory}
-                    onAddRound={addRound}
-                    onRemoveRound={removeRound}
-                    onUpdateRound={updateRound}
-                    onOpenScoring={setScoringRoundIndex}
-                    onStartQuickPractice={handleStartQuickPractice}
-                  />
-                )}
-                {step === 2 && (
-                  <ReflectionStep rating={rating} onRatingChange={setRating} notes={notes} onNotesChange={setNotes} error={error} />
-                )}
-              </Pressable>
-            </ScrollView>
-
-            <NavigationFooter
-              currentStep={step}
-              totalSteps={TOTAL_STEPS}
-              stepLabels={STEP_LABELS}
-              isEditing={isEditing}
-              submitting={submitting}
-              saveLabel={t['form.save']}
-              onPrev={goPrev}
-              onNext={goNext}
-              onSave={handleSaveAndFinish}
-              onDelete={() => setConfirmVisible(true)}
-            />
-          </KeyboardAvoidingView>
-        </View>
-      </ModalWrapper>
-
-      {/* Nested RN Modals on iOS can leave the root view untouchable when
-          dismissed together with the parent modal — keep these as siblings */}
+      {/* Rendered as an overlay inside this modal (embedded), not as a second
+          native RN Modal: stacking native modals on iOS is unreliable and can
+          freeze the app when both dismiss at once */}
       <ConfirmModal
+        embedded
         visible={confirmVisible}
         title={t['practiceForm.deleteTitle']}
         message={t['practiceForm.deleteMessage']}
@@ -575,6 +575,7 @@ export default function CreatePracticeForm({
       />
 
       <ConfirmModal
+        embedded
         visible={closeConfirmVisible}
         title={t['practiceForm.discardTitle']}
         message={t['practiceForm.discardMessage']}
@@ -599,6 +600,6 @@ export default function CreatePracticeForm({
           onUpdateArrowScore={(arrowIndex, score) => updateArrowScore(scoringRoundIndex, arrowIndex, score)}
         />
       )}
-    </>
+    </ModalWrapper>
   );
 }

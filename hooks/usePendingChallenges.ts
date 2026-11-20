@@ -1,6 +1,7 @@
 import { useEffect, useState, useCallback } from 'react';
 import { useAuth } from '@/hooks/useAuth';
 import { challengeRepository } from '@/services/repositories';
+import { subscribeChallengeList } from '@/hooks/useChallenge';
 import { ChallengeStatus } from '@/types';
 import { useNotifications } from '@/contexts';
 import { NotificationType } from '@/contexts/NotificationContext';
@@ -111,6 +112,11 @@ export function usePendingChallenges() {
 
     return () => clearInterval(interval);
   }, [fetchPendingChallenges]);
+
+  // Refetch immediately when a challenge is mutated elsewhere (e.g. a pending
+  // challenge deleted from the detail screen), so the badge doesn't wait for
+  // the next poll
+  useEffect(() => subscribeChallengeList(() => void fetchPendingChallenges()), [fetchPendingChallenges]);
 
   return {
     pendingCount,

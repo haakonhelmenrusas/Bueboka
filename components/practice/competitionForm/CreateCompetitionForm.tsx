@@ -548,48 +548,48 @@ export default function CreateCompetitionForm({
 
   // ─── Render ────────────────────────────────────────────────────────────────
   return (
-    <>
-      <ModalWrapper visible={visible} onClose={handleClose} fullScreen>
-        <SafeAreaView style={styles.container} edges={['top', 'bottom']}>
-          <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
+    <ModalWrapper visible={visible} onClose={handleClose} fullScreen>
+      <SafeAreaView style={styles.container} edges={['top', 'bottom']}>
+        <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
+          <Pressable onPress={Keyboard.dismiss}>
+            <ModalHeader title={isEditing ? t['competitionForm.editTitle'] : t['competitionForm.newTitle']} onPress={handleClose} />
+          </Pressable>
+
+          <StepIndicator steps={STEP_LABELS} currentStep={step} onStepPress={setStep} />
+
+          <ScrollView
+            style={styles.scrollView}
+            contentContainerStyle={styles.scrollContainer}
+            keyboardShouldPersistTaps="handled"
+            showsVerticalScrollIndicator={false}>
             <Pressable onPress={Keyboard.dismiss}>
-              <ModalHeader title={isEditing ? t['competitionForm.editTitle'] : t['competitionForm.newTitle']} onPress={handleClose} />
+              {step === 0 && renderInfoStep()}
+              {step === 1 && renderDetailsStep()}
+              {step === 2 && renderRoundsStep()}
+              {step === 3 && renderReflectionStep()}
             </Pressable>
+          </ScrollView>
 
-            <StepIndicator steps={STEP_LABELS} currentStep={step} onStepPress={setStep} />
+          <NavigationFooter
+            currentStep={step}
+            totalSteps={TOTAL_STEPS}
+            stepLabels={STEP_LABELS}
+            isEditing={isEditing}
+            submitting={submitting}
+            saveLabel={t['form.save']}
+            onPrev={goPrev}
+            onNext={goNext}
+            onSave={handleSave}
+            onDelete={() => setConfirmVisible(true)}
+          />
+        </KeyboardAvoidingView>
+      </SafeAreaView>
 
-            <ScrollView
-              style={styles.scrollView}
-              contentContainerStyle={styles.scrollContainer}
-              keyboardShouldPersistTaps="handled"
-              showsVerticalScrollIndicator={false}>
-              <Pressable onPress={Keyboard.dismiss}>
-                {step === 0 && renderInfoStep()}
-                {step === 1 && renderDetailsStep()}
-                {step === 2 && renderRoundsStep()}
-                {step === 3 && renderReflectionStep()}
-              </Pressable>
-            </ScrollView>
-
-            <NavigationFooter
-              currentStep={step}
-              totalSteps={TOTAL_STEPS}
-              stepLabels={STEP_LABELS}
-              isEditing={isEditing}
-              submitting={submitting}
-              saveLabel={t['form.save']}
-              onPrev={goPrev}
-              onNext={goNext}
-              onSave={handleSave}
-              onDelete={() => setConfirmVisible(true)}
-            />
-          </KeyboardAvoidingView>
-        </SafeAreaView>
-      </ModalWrapper>
-
-      {/* Nested RN Modals on iOS can leave the root view untouchable when
-          dismissed together with the parent modal — keep these as siblings */}
+      {/* Rendered as an overlay inside this modal (embedded), not as a second
+          native RN Modal: stacking native modals on iOS is unreliable and can
+          freeze the app when both dismiss at once */}
       <ConfirmModal
+        embedded
         visible={confirmVisible}
         title={t['competitionForm.deleteTitle']}
         message={t['competitionForm.deleteMessage']}
@@ -601,6 +601,7 @@ export default function CreateCompetitionForm({
       />
 
       <ConfirmModal
+        embedded
         visible={closeConfirmVisible}
         title={t['practiceForm.discardTitle']}
         message={t['practiceForm.discardMessage']}
@@ -609,6 +610,6 @@ export default function CreateCompetitionForm({
         onCancel={() => setCloseConfirmVisible(false)}
         onConfirm={handleConfirmClose}
       />
-    </>
+    </ModalWrapper>
   );
 }
