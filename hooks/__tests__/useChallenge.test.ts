@@ -44,6 +44,8 @@ jest.mock('@/contexts/LanguageContext', () => ({
 }));
 
 const mockAddNotification = jest.fn();
+const mockRemoveNotification = jest.fn();
+let mockNotifications: any[] = [];
 jest.mock('@/contexts/NotificationContext', () => ({
   NotificationType: {
     CHALLENGE_RECEIVED: 'CHALLENGE_RECEIVED',
@@ -53,9 +55,10 @@ jest.mock('@/contexts/NotificationContext', () => ({
     CHALLENGE_SUBMITTED: 'CHALLENGE_SUBMITTED',
   },
   useNotifications: () => ({
-    notifications: [],
-    unreadCount: 0,
+    notifications: mockNotifications,
+    unreadCount: mockNotifications.filter((n) => !n.read).length,
     addNotification: mockAddNotification,
+    removeNotification: mockRemoveNotification,
   }),
 }));
 
@@ -102,6 +105,7 @@ const mockChallengeRepository = challengeRepository as jest.Mocked<typeof challe
 describe('useChallenge', () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    mockNotifications = [];
   });
 
   describe('fetchChallenges', () => {
@@ -450,6 +454,24 @@ describe('useChallenge', () => {
       // The list screen's instance must refetch and drop the deleted challenge
       await waitFor(() => expect(listScreen.result.current.challenges).toEqual([]));
       expect(mockChallengeRepository.delete).toHaveBeenCalledWith('challenge-1');
+    });
+
+    it('removes the CHALLENGE_RECEIVED notification for the deleted challenge (badge refresh)', async () => {
+      mockNotifications = [
+        { id: 'notif-1', type: 'CHALLENGE_RECEIVED', challengeId: 'challenge-1', read: false },
+        { id: 'notif-2', type: 'CHALLENGE_RECEIVED', challengeId: 'other', read: false },
+      ];
+      mockChallengeRepository.delete.mockResolvedValue(undefined);
+      mockChallengeRepository.getAll.mockResolvedValue({ challenges: [], page: 1, pageSize: 20, total: 0 });
+
+      const { result } = await renderHook(() => useChallenge());
+
+      await act(async () => {
+        await result.current.deleteChallenge('challenge-1');
+      });
+
+      await waitFor(() => expect(mockRemoveNotification).toHaveBeenCalledWith('notif-1'));
+      expect(mockRemoveNotification).not.toHaveBeenCalledWith('notif-2');
     });
   });
 

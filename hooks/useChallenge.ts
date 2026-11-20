@@ -2,6 +2,8 @@ import { useState, useCallback, useEffect, useRef } from 'react';
 import { useAuth } from '@/hooks/useAuth';
 import { challengeRepository, type GetAllChallengesParams } from '@/services/repositories';
 import { offlineMutation } from '@/services/offline/mutationHelper';
+import { useNotifications } from '@/contexts/NotificationContext';
+import { NotificationType } from '@/types/Notification';
 import type {
   Challenge,
   ChallengeListItem,
@@ -72,6 +74,7 @@ function emitChallengeListChanged(): void {
 export function useChallenge() {
   const { user } = useAuth();
   const { t } = useTranslation();
+  const { notifications, removeNotification } = useNotifications();
 
   // State
   const [challenges, setChallenges] = useState<ChallengeListItem[]>([]);
@@ -128,6 +131,22 @@ export function useChallenge() {
   }, [fetchChallenges]);
   useEffect(() => subscribeChallengeList(() => void fetchChallengesRef.current()), []);
 
+  // Drop the notification tied to a challenge when its status changes, so
+  // the badge (unread CHALLENGE_RECEIVED) updates immediately
+  const notificationsRef = useRef(notifications);
+  useEffect(() => {
+    notificationsRef.current = notifications;
+  }, [notifications]);
+  const removeChallengeNotification = useCallback(
+    (challengeId: string) => {
+      const notification = notificationsRef.current.find(
+        (n) => n.challengeId === challengeId && n.type === NotificationType.CHALLENGE_RECEIVED,
+      );
+      if (notification) removeNotification(notification.id);
+    },
+    [removeNotification],
+  );
+
   /**
    * Fetch a specific challenge by ID
    */
@@ -181,7 +200,7 @@ export function useChallenge() {
         setLoading(false);
       }
     },
-    [fetchChallenges, t],
+    [fetchChallenges, removeChallengeNotification, t],
   );
 
   /**
@@ -202,6 +221,7 @@ export function useChallenge() {
         );
 
         setCurrentChallenge(challenge);
+        removeChallengeNotification(id);
         await fetchChallenges();
         emitChallengeListChanged();
         return challenge;
@@ -212,7 +232,7 @@ export function useChallenge() {
         setLoading(false);
       }
     },
-    [fetchChallenges, t],
+    [fetchChallenges, removeChallengeNotification, t],
   );
 
   /**
@@ -233,6 +253,7 @@ export function useChallenge() {
         );
 
         setCurrentChallenge(challenge);
+        removeChallengeNotification(id);
         await fetchChallenges();
         emitChallengeListChanged();
         return challenge;
@@ -243,7 +264,7 @@ export function useChallenge() {
         setLoading(false);
       }
     },
-    [fetchChallenges, t],
+    [fetchChallenges, removeChallengeNotification, t],
   );
 
   /**
@@ -264,6 +285,7 @@ export function useChallenge() {
         );
 
         setCurrentChallenge(challenge);
+        removeChallengeNotification(id);
         await fetchChallenges();
         emitChallengeListChanged();
         return challenge;
@@ -274,7 +296,7 @@ export function useChallenge() {
         setLoading(false);
       }
     },
-    [fetchChallenges, t],
+    [fetchChallenges, removeChallengeNotification, t],
   );
 
   /**
@@ -295,6 +317,7 @@ export function useChallenge() {
         );
 
         setCurrentChallenge(challenge);
+        removeChallengeNotification(id);
         await fetchChallenges();
         emitChallengeListChanged();
         return challenge;
@@ -305,7 +328,7 @@ export function useChallenge() {
         setLoading(false);
       }
     },
-    [fetchChallenges, t],
+    [fetchChallenges, removeChallengeNotification, t],
   );
 
   /**
@@ -326,6 +349,7 @@ export function useChallenge() {
         );
 
         setCurrentChallenge(challenge);
+        removeChallengeNotification(id);
         await fetchChallenges();
         emitChallengeListChanged();
         return challenge;
@@ -336,7 +360,7 @@ export function useChallenge() {
         setLoading(false);
       }
     },
-    [fetchChallenges, t],
+    [fetchChallenges, removeChallengeNotification, t],
   );
 
   /**
@@ -356,6 +380,7 @@ export function useChallenge() {
           user?.id,
         );
 
+        removeChallengeNotification(id);
         await fetchChallenges();
         emitChallengeListChanged();
       } catch (err) {
@@ -365,7 +390,7 @@ export function useChallenge() {
         setLoading(false);
       }
     },
-    [fetchChallenges, t],
+    [fetchChallenges, removeChallengeNotification, t],
   );
 
   /**
