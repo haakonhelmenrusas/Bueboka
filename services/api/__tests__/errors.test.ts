@@ -179,3 +179,63 @@ describe('handleApiError – non-Error thrown values', () => {
     expect(result.code).toBe('UNKNOWN');
   });
 });
+
+describe('handleApiError – better-auth style errors (status attached, no response)', () => {
+  /** authFetch attaches `status`/`endpoint` directly on the thrown Error */
+  function makeFetchError(status: number, message = 'API request failed', endpoint = '/arrows') {
+    const err = new Error(message) as any;
+    err.status = status;
+    err.endpoint = endpoint;
+    return err;
+  }
+
+  it('returns BAD_REQUEST with the server message for 400', async () => {
+    const result = handleApiError(makeFetchError(400, 'name is required'));
+    expect(result.code).toBe('BAD_REQUEST');
+    expect(result.message).toBe('name is required');
+  });
+
+  it('returns BAD_REQUEST fallback when the error has no message', async () => {
+    const err = new Error() as any;
+    err.status = 400;
+    const result = handleApiError(err);
+    expect(result.code).toBe('BAD_REQUEST');
+    expect(result.message).toBe('Ugyldig forespørsel');
+  });
+
+  it('returns UNAUTHORIZED for 401', async () => {
+    const result = handleApiError(makeFetchError(401));
+    expect(result.code).toBe('UNAUTHORIZED');
+    expect(result.message).toMatch(/Sesjonen er utløpt/);
+  });
+
+  it('returns NOT_FOUND for 404', async () => {
+    expect(handleApiError(makeFetchError(404)).code).toBe('NOT_FOUND');
+  });
+
+  it('returns CONFLICT with the server message for 409', async () => {
+    const result = handleApiError(makeFetchError(409, 'already exists'));
+    expect(result.code).toBe('CONFLICT');
+    expect(result.message).toBe('already exists');
+  });
+
+  it('returns RATE_LIMITED for 429', async () => {
+    expect(handleApiError(makeFetchError(429)).code).toBe('RATE_LIMITED');
+  });
+
+  it('returns SERVER_ERROR for 500 and reports to Sentry grouped per status + endpoint', async () => {
+    const Sentry = jest.requireMock('@sentry/react-native');
+    Sentry.captureException.mockClear();
+    const result = handleApiError(makeFetchError(500, 'boom', '/arrows?page=1&userId=abc'));
+    expect(result.code).toBe('SERVER_ERROR');
+    expect(Sentry.captureException).toHaveBeenCalledTimes(1);
+    const call = Sentry.captureException.mock.calls[0][1];
+    expect(call.fingerprint).toEqual(['api-server-error', '500', '/arrows']);
+    expect(call.extra.endpoint).toBe('/arrows');
+  });
+
+  it('does NOT treat a network Error without status as an HTTP error', async () => {
+    const result = handleApiError(new Error('Network request failed'));
+    expect(result.code).toBe('NETWORK_ERROR');
+  });
+});
