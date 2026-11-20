@@ -1,4 +1,4 @@
-name: Build, Submit, and Sync Version
+name: Build and Submit
 
 on:
   push:
@@ -34,18 +34,3 @@ jobs:
     params:
       build_id: ${{ needs.build_android.outputs.build_id }}
       profile: production
-
-  sync_version:
-    name: Sync version to API
-    needs: [submit_ios, submit_android]
-    env:
-      EXPO_PUBLIC_API_URL: ${{ env.EXPO_PUBLIC_API_URL }}
-      APP_ADMIN_API_KEY: ${{ env.APP_ADMIN_API_KEY }}
-      APP_VERSION: ${{ needs.build_ios.outputs.app_version }}
-    steps:
-      - name: Update app version in database
-        run: |
-          curl -f -X PUT "$EXPO_PUBLIC_API_URL/app/version" \
-            -H "Authorization: Bearer $APP_ADMIN_API_KEY" \
-            -H "Content-Type: application/json" \
-            -d "{\"currentVersion\": \"$APP_VERSION\"}"

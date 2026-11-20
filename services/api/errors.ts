@@ -2,9 +2,6 @@ import { AxiosError } from 'axios';
 import * as Sentry from '@sentry/react-native';
 import { ApiError } from './types';
 
-/**
- * Custom application error class
- */
 export class AppError extends Error {
   constructor(
     public code: string,
@@ -16,19 +13,15 @@ export class AppError extends Error {
   }
 }
 
-/**
- * Handle and transform API errors into AppError instances
- */
 export function handleApiError(error: unknown): AppError {
   // Handle errors from authFetch (better-auth) that have a response property
   const hasResponse = error && typeof error === 'object' && 'response' in error;
   const errorResponse = hasResponse ? (error as any).response : null;
+  // authFetch attaches `status` directly on thrown better-auth errors (no `response`)
   const statusCode = errorResponse?.status || (error as any)?.status;
+  const apiError = (errorResponse?.data ?? null) as ApiError | null;
 
-  if (error instanceof AxiosError || errorResponse) {
-    const apiError = errorResponse?.data as ApiError;
-
-    // Handle specific HTTP status codes
+  if (error instanceof AxiosError || errorResponse || typeof statusCode === 'number') {
     if (statusCode === 401) {
       const message = apiError?.message?.toLowerCase();
       if (message?.includes('invalid') || message?.includes('credential') || message?.includes('user')) {
@@ -38,15 +31,23 @@ export function handleApiError(error: unknown): AppError {
     }
 
     if (statusCode === 400) {
-      return new AppError('BAD_REQUEST', apiError?.message || 'Ugyldig forespørsel', error);
+      return new AppError('BAD_REQUEST', apiError?.message || (error as any)?.message || 'Ugyldig forespørsel', error);
     }
 
     if (statusCode === 404) {
       return new AppError('NOT_FOUND', 'Ressursen ble ikke funnet', error);
     }
 
+    if (statusCode === 403) {
+      return new AppError(
+        'FORBIDDEN',
+        apiError?.message || (error as any)?.message || 'Ingen tilgang. Du har ikke tillatelse til å utføre denne handlingen.',
+        error,
+      );
+    }
+
     if (statusCode === 409) {
-      return new AppError('CONFLICT', apiError?.message || 'Ressursen eksisterer allerede', error);
+      return new AppError('CONFLICT', apiError?.message || (error as any)?.message || 'Ressursen eksisterer allerede', error);
     }
 
     if (statusCode === 429) {
@@ -54,13 +55,14 @@ export function handleApiError(error: unknown): AppError {
     }
 
     if (statusCode && statusCode >= 500) {
+      // Strip the query string — it can contain user ids, and everything
+      // reported here is dispatched off-device to the Sentry dashboard
+      const endpoint = String((error as any)?.endpoint ?? (error as any)?.config?.url ?? 'unknown').split('?')[0];
       Sentry.captureException(error, {
         tags: { type: 'server_error' },
-        extra: {
-          status: statusCode,
-          url: (error as any).config?.url,
-          data: errorResponse?.data,
-        },
+        // Group per status + endpoint instead of one "API request failed" bucket
+        fingerprint: ['api-server-error', String(statusCode), endpoint],
+        extra: { status: statusCode, endpoint },
       });
       return new AppError('SERVER_ERROR', 'Serverfeil. Vennligst prøv igjen senere.', error);
     }
@@ -79,12 +81,10 @@ export function handleApiError(error: unknown): AppError {
   }
 
   if (error instanceof Error) {
-    // Specifically handle "Cannot read property 'user' of null/undefined" – bad credentials
     if (error.message?.includes("property 'user' of null") || error.message?.includes("property 'user' of undefined")) {
       return new AppError('UNAUTHORIZED', 'Feil e-post eller passord. Vennligst prøv igjen.', error);
     }
 
-    // Handle network-related error messages
     if (error.message?.includes('Network') || error.message?.includes('Failed to fetch')) {
       return new AppError('NETWORK_ERROR', 'Nettverksfeil. Sjekk internettforbindelsen din.', error);
     }

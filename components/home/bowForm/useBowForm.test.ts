@@ -3,11 +3,11 @@ import { BowType } from '@/types';
 import { useBowForm } from './useBowForm';
 
 describe('useBowForm', () => {
-  const setupHook = () => renderHook(() => useBowForm());
+  const setupHook = async () => await renderHook(() => useBowForm());
 
   describe('initial state', () => {
-    it('initializes with correct default values', () => {
-      const { result } = setupHook();
+    it('initializes with correct default values', async () => {
+      const { result } = await setupHook();
       expect(result.current[0]).toEqual({
         name: '',
         nameError: false,
@@ -27,9 +27,9 @@ describe('useBowForm', () => {
   });
 
   describe('form actions', () => {
-    it('handles name changes and clears error', () => {
-      const { result } = setupHook();
-      act(() => {
+    it('handles name changes and clears error', async () => {
+      const { result } = await setupHook();
+      await act(async () => {
         result.current[1]({ type: 'SET_NAME_ERROR', payload: true });
         result.current[1]({ type: 'SET_NAME', payload: 'Longbow' });
         result.current[1]({ type: 'SET_NAME_ERROR', payload: false });
@@ -38,21 +38,21 @@ describe('useBowForm', () => {
       expect(result.current[0].nameError).toBe(false);
     });
 
-    it('handles bow type changes for valid types', () => {
-      const { result } = setupHook();
+    it('handles bow type changes for valid types', async () => {
+      const { result } = await setupHook();
       const bowTypes = [BowType.RECURVE, BowType.COMPOUND, BowType.TRADITIONAL];
 
-      bowTypes.forEach((type) => {
-        act(() => {
+      for (const type of bowTypes) {
+        await act(async () => {
           result.current[1]({ type: 'SET_TYPE', payload: type });
         });
         expect(result.current[0].type).toBe(type);
-      });
+      }
     });
 
-    it('handles measurements and notes', () => {
-      const { result } = setupHook();
-      act(() => {
+    it('handles measurements and notes', async () => {
+      const { result } = await setupHook();
+      await act(async () => {
         result.current[1]({ type: 'SET_EYE_TO_NOCK', payload: '30' });
         result.current[1]({ type: 'SET_AIM_MEASURE', payload: '95' });
         result.current[1]({ type: 'SET_EYE_TO_SIGHT', payload: '12' });
@@ -64,18 +64,18 @@ describe('useBowForm', () => {
       expect(result.current[0].notes).toBe('Test notes');
     });
 
-    it('handles favorite status changes', () => {
-      const { result } = setupHook();
-      act(() => {
+    it('handles favorite status changes', async () => {
+      const { result } = await setupHook();
+      await act(async () => {
         result.current[1]({ type: 'SET_IS_FAVORITE', payload: true });
       });
       expect(result.current[0].isFavorite).toBe(true);
     });
 
-    it('maintains state consistency across multiple actions', () => {
-      const { result } = setupHook();
+    it('maintains state consistency across multiple actions', async () => {
+      const { result } = await setupHook();
 
-      act(() => {
+      await act(async () => {
         result.current[1]({ type: 'SET_NAME', payload: 'My Bow' });
         result.current[1]({ type: 'SET_TYPE', payload: BowType.COMPOUND });
         result.current[1]({ type: 'SET_EYE_TO_NOCK', payload: '30' });

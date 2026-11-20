@@ -1,0 +1,601 @@
+import { renderHook, waitFor, act } from '@testing-library/react-native';
+import { useChallenge } from '../useChallenge';
+import { challengeRepository } from '@/services/repositories';
+import type { Challenge, ChallengeListItem, ChallengeStatistics } from '@/types';
+import { ChallengeStatus } from '@/types';
+
+// Mock the challenge repository
+jest.mock('@/services/repositories', () => ({
+  challengeRepository: {
+    getAll: jest.fn(),
+    getById: jest.fn(),
+    create: jest.fn(),
+    update: jest.fn(),
+    delete: jest.fn(),
+    accept: jest.fn(),
+    decline: jest.fn(),
+    cancel: jest.fn(),
+    submitResult: jest.fn(),
+    getStatistics: jest.fn(),
+  },
+}));
+
+// Mock the auth hook
+jest.mock('@/hooks/useAuth', () => ({
+  useAuth: () => ({
+    user: { id: 'user-1', name: 'Test User' },
+    isAuthenticated: true,
+  }),
+}));
+
+// Mock i18n: the hook reads object-style t from LanguageContext
+jest.mock('@/contexts/LanguageContext', () => ({
+  useTranslation: () => ({
+    t: {
+      'challenge.statusPending': 'PENDING',
+      'challenge.statusAccepted': 'ACCEPTED',
+      'challenge.statusDeclined': 'DECLINED',
+      'challenge.statusCompleted': 'COMPLETED',
+      'challenge.statusCancelled': 'CANCELLED',
+      'challenge.opponent': 'Opponent',
+      'common.unknownError': 'Unknown error',
+    },
+  }),
+}));
+
+const mockAddNotification = jest.fn();
+const mockRemoveNotification = jest.fn();
+let mockNotifications: any[] = [];
+jest.mock('@/contexts/NotificationContext', () => ({
+  NotificationType: {
+    CHALLENGE_RECEIVED: 'CHALLENGE_RECEIVED',
+    CHALLENGE_SENT: 'CHALLENGE_SENT',
+    CHALLENGE_ACCEPTED: 'CHALLENGE_ACCEPTED',
+    CHALLENGE_DECLINED: 'CHALLENGE_DECLINED',
+    CHALLENGE_SUBMITTED: 'CHALLENGE_SUBMITTED',
+  },
+  useNotifications: () => ({
+    notifications: mockNotifications,
+    unreadCount: mockNotifications.filter((n) => !n.read).length,
+    addNotification: mockAddNotification,
+    removeNotification: mockRemoveNotification,
+  }),
+}));
+
+// Mock offlineMutation: the hook calls offlineMutation(operation, callback, userId),
+// so invoke the callback (2nd arg) directly.
+jest.mock('@/services/offline/mutationHelper', () => ({
+  offlineMutation: jest.fn((_operation: any, fn: any) => fn()),
+}));
+
+const mockChallenge: Challenge = {
+  id: 'challenge-1',
+  challengerId: 'user-1',
+  challengedId: 'user-2',
+  name: 'Test Challenge',
+  description: 'A test challenge',
+  status: ChallengeStatus.PENDING,
+  createdAt: '2024-01-01T00:00:00Z',
+  updatedAt: '2024-01-01T00:00:00Z',
+};
+
+const mockChallengeListItem: ChallengeListItem = {
+  id: 'challenge-1',
+  challengerId: 'user-1',
+  challengedId: 'user-2',
+  name: 'Test Challenge',
+  status: ChallengeStatus.PENDING,
+  challengerName: 'Test User',
+  challengedName: 'Other User',
+  createdAt: '2024-01-01T00:00:00Z',
+  updatedAt: '2024-01-01T00:00:00Z',
+};
+
+const mockStatistics: ChallengeStatistics = {
+  totalChallenges: 10,
+  wins: 7,
+  losses: 2,
+  winRate: 0.77,
+  pendingChallenges: 1,
+  completedChallenges: 9,
+};
+
+const mockChallengeRepository = challengeRepository as jest.Mocked<typeof challengeRepository>;
+
+describe('useChallenge', () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+    mockNotifications = [];
+  });
+
+  describe('fetchChallenges', () => {
+    it('fetches challenges with default params', async () => {
+      mockChallengeRepository.getAll.mockResolvedValue({
+        challenges: [mockChallengeListItem],
+        page: 1,
+        pageSize: 20,
+        total: 1,
+      });
+
+      const { result } = await renderHook(() => useChallenge());
+
+      // Need to explicitly call fetchChallenges
+      await act(async () => {
+        result.current.fetchChallenges();
+      });
+
+      await waitFor(() => {
+        expect(result.current.challenges).toEqual([mockChallengeListItem]);
+        expect(result.current.pagination).toEqual({
+          page: 1,
+          pageSize: 20,
+          total: 1,
+        });
+      });
+
+      // The hook uses default values from state, which are { page: 1, pageSize: 20, total: 0 }
+      // So it should call with no params (undefined) or use defaults
+      expect(mockChallengeRepository.getAll).toHaveBeenCalledWith(
+        expect.objectContaining({
+          page: 1,
+          pageSize: 20,
+        }),
+      );
+    });
+
+    it('fetches challenges with custom params', async () => {
+      mockChallengeRepository.getAll.mockResolvedValue({
+        challenges: [mockChallengeListItem],
+        page: 2,
+        pageSize: 50,
+        total: 1,
+      });
+
+      const { result } = await renderHook(() => useChallenge());
+
+      await act(async () => {
+        result.current.fetchChallenges({ page: 2, pageSize: 50, status: ChallengeStatus.PENDING });
+      });
+
+      await waitFor(() => {
+        expect(result.current.challenges).toEqual([mockChallengeListItem]);
+        expect(result.current.pagination).toEqual({
+          page: 2,
+          pageSize: 50,
+          total: 1,
+        });
+      });
+
+      expect(mockChallengeRepository.getAll).toHaveBeenCalledWith(
+        expect.objectContaining({
+          page: 2,
+          pageSize: 50,
+          status: ChallengeStatus.PENDING,
+        }),
+      );
+    });
+
+    it('handles fetch error gracefully', async () => {
+      mockChallengeRepository.getAll.mockRejectedValue(new Error('Network error'));
+
+      const { result } = await renderHook(() => useChallenge());
+
+      await act(async () => {
+        result.current.fetchChallenges();
+      });
+
+      await waitFor(() => {
+        expect(result.current.error).toBeDefined();
+      });
+    });
+
+    it('sets loading state correctly', async () => {
+      mockChallengeRepository.getAll.mockImplementation(
+        () => new Promise((resolve) => setTimeout(() => resolve({ challenges: [], page: 1, pageSize: 20, total: 0 }), 100)),
+      );
+
+      const { result } = await renderHook(() => useChallenge());
+
+      expect(result.current.loading).toBe(false);
+
+      await act(async () => {
+        result.current.fetchChallenges();
+      });
+
+      expect(result.current.loading).toBe(true);
+
+      await waitFor(() => {
+        expect(result.current.loading).toBe(false);
+      });
+    });
+  });
+
+  describe('fetchChallengeById', () => {
+    it('fetches a specific challenge by ID', async () => {
+      mockChallengeRepository.getById.mockResolvedValue(mockChallenge);
+
+      const { result } = await renderHook(() => useChallenge());
+
+      await act(async () => {
+        result.current.fetchChallengeById('challenge-1');
+      });
+
+      await waitFor(() => {
+        expect(result.current.currentChallenge).toEqual(mockChallenge);
+      });
+
+      expect(mockChallengeRepository.getById).toHaveBeenCalledWith('challenge-1');
+    });
+
+    it('handles not found error', async () => {
+      mockChallengeRepository.getById.mockRejectedValue(new Error('Not found'));
+
+      const { result } = await renderHook(() => useChallenge());
+
+      let error: Error | undefined;
+      await act(async () => {
+        result.current.fetchChallengeById('non-existent').catch((e) => {
+          error = e;
+        });
+      });
+
+      await waitFor(() => {
+        expect(result.current.error).toBeDefined();
+        expect(error).toBeDefined();
+      });
+    });
+  });
+
+  describe('createChallenge', () => {
+    it('does not notify the sender — only the other party gets notified when they answer', async () => {
+      mockChallengeRepository.create.mockResolvedValue(mockChallenge);
+      mockChallengeRepository.getAll.mockResolvedValue({
+        challenges: [mockChallengeListItem],
+        page: 1,
+        pageSize: 20,
+        total: 1,
+      });
+
+      const { result } = await renderHook(() => useChallenge());
+
+      await act(async () => {
+        await result.current.createChallenge({ challengedId: 'user-2', name: 'New Challenge' });
+      });
+
+      expect(mockAddNotification).not.toHaveBeenCalled();
+    });
+
+    it('creates a new challenge and refreshes list', async () => {
+      mockChallengeRepository.create.mockResolvedValue(mockChallenge);
+      mockChallengeRepository.getAll.mockResolvedValue({
+        challenges: [mockChallengeListItem],
+        page: 1,
+        pageSize: 20,
+        total: 1,
+      });
+
+      const { result } = await renderHook(() => useChallenge());
+
+      await act(async () => {
+        result.current.createChallenge({
+          challengedId: 'user-2',
+          name: 'New Challenge',
+        });
+      });
+
+      await waitFor(() => {
+        expect(mockChallengeRepository.create).toHaveBeenCalledWith({
+          challengedId: 'user-2',
+          name: 'New Challenge',
+        });
+        // After creating, fetchChallenges is called, so we should have the mocked list
+        expect(result.current.challenges).toEqual([mockChallengeListItem]);
+      });
+    });
+
+    it('handles create error', async () => {
+      mockChallengeRepository.create.mockRejectedValue(new Error('Validation error'));
+
+      const { result } = await renderHook(() => useChallenge());
+
+      let error: Error | undefined;
+      await act(async () => {
+        result.current
+          .createChallenge({
+            challengedId: 'user-2',
+            name: 'New Challenge',
+          })
+          .catch((e) => {
+            error = e;
+          });
+      });
+
+      await waitFor(() => {
+        expect(result.current.error).toBeDefined();
+        // Error is set in the hook's state
+        expect(error).toBeDefined();
+      });
+    });
+  });
+
+  describe('acceptChallenge', () => {
+    it('accepts a challenge', async () => {
+      const acceptedChallenge = { ...mockChallenge, status: ChallengeStatus.ACCEPTED };
+      mockChallengeRepository.accept.mockResolvedValue(acceptedChallenge);
+
+      const { result } = await renderHook(() => useChallenge());
+
+      await act(async () => {
+        result.current.acceptChallenge('challenge-1');
+      });
+
+      await waitFor(() => {
+        expect(result.current.currentChallenge?.status).toBe(ChallengeStatus.ACCEPTED);
+      });
+
+      expect(mockChallengeRepository.accept).toHaveBeenCalledWith('challenge-1');
+    });
+  });
+
+  describe('declineChallenge', () => {
+    it('declines a challenge', async () => {
+      const declinedChallenge = { ...mockChallenge, status: ChallengeStatus.DECLINED };
+      mockChallengeRepository.decline.mockResolvedValue(declinedChallenge);
+
+      const { result } = await renderHook(() => useChallenge());
+
+      await act(async () => {
+        result.current.declineChallenge('challenge-1');
+      });
+
+      await waitFor(() => {
+        expect(result.current.currentChallenge?.status).toBe(ChallengeStatus.DECLINED);
+      });
+
+      expect(mockChallengeRepository.decline).toHaveBeenCalledWith('challenge-1');
+    });
+  });
+
+  describe('cancelChallenge', () => {
+    it('cancels a challenge', async () => {
+      const cancelledChallenge = { ...mockChallenge, status: ChallengeStatus.CANCELLED };
+      mockChallengeRepository.cancel.mockResolvedValue(cancelledChallenge);
+
+      const { result } = await renderHook(() => useChallenge());
+
+      await act(async () => {
+        result.current.cancelChallenge('challenge-1');
+      });
+
+      await waitFor(() => {
+        expect(result.current.currentChallenge?.status).toBe(ChallengeStatus.CANCELLED);
+      });
+
+      expect(mockChallengeRepository.cancel).toHaveBeenCalledWith('challenge-1');
+    });
+  });
+
+  describe('submitChallengeResult', () => {
+    it('submits challenge result', async () => {
+      const updatedChallenge = {
+        ...mockChallenge,
+        challengerScore: 280,
+        challengerTotalArrows: 30,
+        challengerSubmittedAt: '2024-01-02T00:00:00Z',
+      };
+      mockChallengeRepository.submitResult.mockResolvedValue(updatedChallenge);
+
+      const { result } = await renderHook(() => useChallenge());
+
+      await act(async () => {
+        result.current.submitChallengeResult('challenge-1', {
+          score: 280,
+          totalArrows: 30,
+        });
+      });
+
+      await waitFor(() => {
+        expect(result.current.currentChallenge?.challengerScore).toBe(280);
+      });
+
+      expect(mockChallengeRepository.submitResult).toHaveBeenCalledWith('challenge-1', {
+        score: 280,
+        totalArrows: 30,
+      });
+    });
+  });
+
+  describe('deleteChallenge', () => {
+    it('deletes a challenge', async () => {
+      mockChallengeRepository.delete.mockResolvedValue(undefined);
+
+      const { result } = await renderHook(() => useChallenge());
+
+      await act(async () => {
+        result.current.deleteChallenge('challenge-1');
+      });
+
+      await waitFor(() => {
+        expect(mockChallengeRepository.delete).toHaveBeenCalledWith('challenge-1');
+      });
+    });
+
+    it('refetches the challenge list on other useChallenge instances (e.g. the list screen) after delete', async () => {
+      mockChallengeRepository.delete.mockResolvedValue(undefined);
+      // The list screen's instance has already loaded the challenge
+      mockChallengeRepository.getAll.mockResolvedValue({
+        challenges: [mockChallengeListItem],
+        page: 1,
+        pageSize: 20,
+        total: 1,
+      });
+
+      // Two independent hook instances, like the list screen and the detail screen
+      const listScreen = await renderHook(() => useChallenge());
+      const detailScreen = await renderHook(() => useChallenge());
+
+      await act(async () => {
+        await listScreen.result.current.fetchChallenges();
+      });
+      await waitFor(() => expect(listScreen.result.current.challenges).toEqual([mockChallengeListItem]));
+
+      // After the delete the server no longer returns the challenge
+      mockChallengeRepository.getAll.mockResolvedValue({
+        challenges: [],
+        page: 1,
+        pageSize: 20,
+        total: 0,
+      });
+
+      await act(async () => {
+        await detailScreen.result.current.deleteChallenge('challenge-1');
+      });
+
+      // The list screen's instance must refetch and drop the deleted challenge
+      await waitFor(() => expect(listScreen.result.current.challenges).toEqual([]));
+      expect(mockChallengeRepository.delete).toHaveBeenCalledWith('challenge-1');
+    });
+
+    it('removes the CHALLENGE_RECEIVED notification for the deleted challenge (badge refresh)', async () => {
+      mockNotifications = [
+        { id: 'notif-1', type: 'CHALLENGE_RECEIVED', challengeId: 'challenge-1', read: false },
+        { id: 'notif-2', type: 'CHALLENGE_RECEIVED', challengeId: 'other', read: false },
+      ];
+      mockChallengeRepository.delete.mockResolvedValue(undefined);
+      mockChallengeRepository.getAll.mockResolvedValue({ challenges: [], page: 1, pageSize: 20, total: 0 });
+
+      const { result } = await renderHook(() => useChallenge());
+
+      await act(async () => {
+        await result.current.deleteChallenge('challenge-1');
+      });
+
+      await waitFor(() => expect(mockRemoveNotification).toHaveBeenCalledWith('notif-1'));
+      expect(mockRemoveNotification).not.toHaveBeenCalledWith('notif-2');
+    });
+  });
+
+  describe('fetchStatistics', () => {
+    it('fetches challenge statistics', async () => {
+      mockChallengeRepository.getStatistics.mockResolvedValue(mockStatistics);
+
+      const { result } = await renderHook(() => useChallenge());
+
+      await act(async () => {
+        result.current.fetchStatistics();
+      });
+
+      await waitFor(() => {
+        expect(result.current.statistics).toEqual(mockStatistics);
+      });
+
+      expect(mockChallengeRepository.getStatistics).toHaveBeenCalled();
+    });
+  });
+
+  describe('resetError', () => {
+    it('clears the error state', async () => {
+      const { result } = await renderHook(() => useChallenge());
+
+      // Set error
+      await act(async () => {
+        result.current.setError(new Error('Test error'));
+      });
+
+      expect(result.current.error).toBeDefined();
+
+      // Clear error
+      await act(async () => {
+        result.current.resetError();
+      });
+
+      expect(result.current.error).toBeNull();
+    });
+  });
+
+  describe('isChallengeOwner', () => {
+    it('returns true if user is the challenger', async () => {
+      const { result } = await renderHook(() => useChallenge());
+
+      expect(result.current.isChallengeOwner({ ...mockChallenge, challengerId: 'user-1' })).toBe(true);
+    });
+
+    it('returns false if user is the challenged', async () => {
+      const { result } = await renderHook(() => useChallenge());
+
+      expect(result.current.isChallengeOwner({ ...mockChallenge, challengerId: 'user-2' })).toBe(false);
+    });
+  });
+
+  describe('canAcceptChallenge', () => {
+    it('returns true if user is challenged and status is PENDING', async () => {
+      const { result } = await renderHook(() => useChallenge());
+
+      expect(result.current.canAcceptChallenge({ ...mockChallenge, challengedId: 'user-1' })).toBe(true);
+    });
+
+    it('returns false if status is not PENDING', async () => {
+      const { result } = await renderHook(() => useChallenge());
+
+      expect(result.current.canAcceptChallenge({ ...mockChallenge, status: ChallengeStatus.ACCEPTED })).toBe(false);
+    });
+
+    it('returns false if user is not the challenged', async () => {
+      const { result } = await renderHook(() => useChallenge());
+
+      expect(result.current.canAcceptChallenge({ ...mockChallenge, challengedId: 'user-2' })).toBe(false);
+    });
+  });
+
+  describe('canCancelChallenge', () => {
+    it('returns true if user is challenger and status is PENDING', async () => {
+      const { result } = await renderHook(() => useChallenge());
+
+      expect(result.current.canCancelChallenge(mockChallenge)).toBe(true);
+    });
+
+    it('returns false if status is not PENDING', async () => {
+      const { result } = await renderHook(() => useChallenge());
+
+      expect(result.current.canCancelChallenge({ ...mockChallenge, status: ChallengeStatus.ACCEPTED })).toBe(false);
+    });
+
+    it('returns false if user is not the challenger', async () => {
+      const { result } = await renderHook(() => useChallenge());
+
+      expect(result.current.canCancelChallenge({ ...mockChallenge, challengerId: 'user-2' })).toBe(false);
+    });
+  });
+
+  describe('getChallengeStatusText', () => {
+    it('returns correct status text for PENDING', async () => {
+      const { result } = await renderHook(() => useChallenge());
+
+      expect(result.current.getChallengeStatusText(ChallengeStatus.PENDING)).toBe('PENDING');
+    });
+
+    it('returns correct status text for ACCEPTED', async () => {
+      const { result } = await renderHook(() => useChallenge());
+
+      expect(result.current.getChallengeStatusText(ChallengeStatus.ACCEPTED)).toBe('ACCEPTED');
+    });
+
+    it('returns correct status text for DECLINED', async () => {
+      const { result } = await renderHook(() => useChallenge());
+
+      expect(result.current.getChallengeStatusText(ChallengeStatus.DECLINED)).toBe('DECLINED');
+    });
+
+    it('returns correct status text for COMPLETED', async () => {
+      const { result } = await renderHook(() => useChallenge());
+
+      expect(result.current.getChallengeStatusText(ChallengeStatus.COMPLETED)).toBe('COMPLETED');
+    });
+
+    it('returns correct status text for CANCELLED', async () => {
+      const { result } = await renderHook(() => useChallenge());
+
+      expect(result.current.getChallengeStatusText(ChallengeStatus.CANCELLED)).toBe('CANCELLED');
+    });
+  });
+});

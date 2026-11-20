@@ -117,6 +117,12 @@ describe('practiceRepository.getCards', () => {
     expect(mockClient.get).toHaveBeenCalledWith('/practices/cards?filter=TRENING');
   });
 
+  it('omits the filter parameter for "all" (backend default; sending it caused 500s)', async () => {
+    mockClient.get.mockResolvedValueOnce({ data: fakeCardsResponse });
+    await practiceRepository.getCards({ page: 1, pageSize: 5, filter: 'all' });
+    expect(mockClient.get).toHaveBeenCalledWith('/practices/cards?page=1&pageSize=5');
+  });
+
   it('throws AppError on network failure', async () => {
     mockClient.get.mockRejectedValueOnce(new AxiosError('Network Error', 'ERR_NETWORK'));
     await expect(practiceRepository.getCards()).rejects.toBeInstanceOf(AppError);
@@ -185,18 +191,20 @@ describe('practiceRepository.create', () => {
     const result = await practiceRepository.create({
       date: new Date('2024-01-15'),
       environment: Environment.INDOOR,
-      totalScore: 270,
+      rounds: [],
     });
     expect(result).toEqual(fakePractice);
     expect(mockClient.post).toHaveBeenCalledWith(
       '/practices',
-      expect.objectContaining({ environment: Environment.INDOOR, totalScore: 270 }),
+      expect.objectContaining({ environment: Environment.INDOOR }),
     );
   });
 
   it('throws AppError with BAD_REQUEST on 400', async () => {
     mockClient.post.mockRejectedValueOnce(makeAxiosError(400, { message: 'Ugyldig feltverdi' }));
-    const caught = await practiceRepository.create({ date: new Date(), environment: Environment.INDOOR, totalScore: -1 }).catch((e) => e);
+    const caught = await practiceRepository
+      .create({ date: new Date(), environment: Environment.INDOOR, rounds: [] })
+      .catch((e) => e);
     expect(caught.code).toBe('BAD_REQUEST');
   });
 });
@@ -241,9 +249,9 @@ describe('practiceRepository.delete', () => {
 describe('practiceRepository.addEnd', () => {
   it('sends POST to /practices/:id/ends and returns the created end', async () => {
     mockClient.post.mockResolvedValueOnce({ data: fakeEnd });
-    const result = await practiceRepository.addEnd('practice-1', { arrows: 3, roundScore: 27 });
+    const result = await practiceRepository.addEnd('practice-1', { numberArrows: 3, roundScore: 27 });
     expect(result).toEqual(fakeEnd);
-    expect(mockClient.post).toHaveBeenCalledWith('/practices/practice-1/ends', { arrows: 3, roundScore: 27 });
+    expect(mockClient.post).toHaveBeenCalledWith('/practices/practice-1/ends', { numberArrows: 3, roundScore: 27 });
   });
 
   it('throws AppError with NOT_FOUND when practice does not exist', async () => {

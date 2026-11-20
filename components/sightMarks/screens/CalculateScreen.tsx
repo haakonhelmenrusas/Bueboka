@@ -5,6 +5,7 @@ import { AimDistanceMark, Arrows, Bow, MarkValue, SightMark } from '@/types';
 import { useSharedValue, withTiming } from 'react-native-reanimated';
 import { Ballistics } from '@/utils';
 import * as Sentry from '@sentry/react-native';
+import { Observe } from 'expo-observe';
 import { colors } from '@/styles/colors';
 import SightMarkSetCard from '@/components/sightMarks/sightMarkSetCard/SightMarkSetCard';
 import MarksForm from '@/components/sightMarks/marksForm/MarksForm';
@@ -43,6 +44,7 @@ export default function CalculateScreen() {
       const all = await sightMarksRepository.getAll();
       setSightMarks(all.sort((a, b) => new Date(b.createdAt ?? 0).getTime() - new Date(a.createdAt ?? 0).getTime()));
     } catch (err) {
+      Observe.reportError(err);
       Sentry.captureException(err);
       setError(err instanceof AppError && err.code === 'NETWORK_ERROR' ? t['sightMarks.networkError'] : t['sightMarks.loadError']);
     } finally {
@@ -146,6 +148,7 @@ export default function CalculateScreen() {
 
         await loadData();
       } catch (err) {
+        Observe.reportError(err);
         Sentry.captureException(err);
         setError(t['sightMarks.calculateError']);
         setStatus('error');
@@ -197,6 +200,7 @@ export default function CalculateScreen() {
       }
       await loadData();
     } catch (err) {
+      Observe.reportError(err);
       Sentry.captureException(err);
       setError(t['sightMarks.removeError']);
       setStatus('error');
@@ -218,6 +222,7 @@ export default function CalculateScreen() {
       );
       await loadData();
     } catch (err) {
+      Observe.reportError(err);
       Sentry.captureException(err);
       setError(t['sightMarks.deleteSetError']);
       setStatus('error');

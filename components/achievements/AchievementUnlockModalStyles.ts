@@ -30,6 +30,8 @@ export const styles = StyleSheet.create({
   list: {
     gap: 10,
     marginBottom: 16,
+    flexShrink: 1,
+    flexGrow: 0,
   },
   item: {
     flexDirection: 'row',

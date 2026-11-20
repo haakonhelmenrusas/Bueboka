@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Keyboard, KeyboardAvoidingView, Platform, Pressable, ScrollView, Text, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import * as Sentry from '@sentry/react-native';
+import { Observe } from 'expo-observe';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faPlus } from '@fortawesome/free-solid-svg-icons/faPlus';
 import { faXmark } from '@fortawesome/free-solid-svg-icons/faXmark';
@@ -310,6 +311,7 @@ export default function CreateCompetitionForm({
       onSaved?.();
       onClose();
     } catch (err) {
+      Observe.reportError(err);
       Sentry.captureException(err);
       setError(err instanceof Error ? err.message : t['competitionForm.saveError']);
     } finally {
@@ -325,6 +327,7 @@ export default function CreateCompetitionForm({
       onSaved?.();
       onClose();
     } catch (err) {
+      Observe.reportError(err);
       Sentry.captureException(err);
     }
   };
@@ -582,7 +585,11 @@ export default function CreateCompetitionForm({
         </KeyboardAvoidingView>
       </SafeAreaView>
 
+      {/* Rendered as an overlay inside this modal (embedded), not as a second
+          native RN Modal: stacking native modals on iOS is unreliable and can
+          freeze the app when both dismiss at once */}
       <ConfirmModal
+        embedded
         visible={confirmVisible}
         title={t['competitionForm.deleteTitle']}
         message={t['competitionForm.deleteMessage']}
@@ -594,6 +601,7 @@ export default function CreateCompetitionForm({
       />
 
       <ConfirmModal
+        embedded
         visible={closeConfirmVisible}
         title={t['practiceForm.discardTitle']}
         message={t['practiceForm.discardMessage']}

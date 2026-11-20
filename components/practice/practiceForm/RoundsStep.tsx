@@ -15,9 +15,18 @@ interface RoundsStepProps {
   onRemoveRound: (index: number) => void;
   onUpdateRound: <K extends keyof RoundInput>(index: number, field: K, value: RoundInput[K]) => void;
   onOpenScoring: (roundIndex: number) => void;
+  onStartQuickPractice: (roundIndex: number) => void;
 }
 
-export function RoundsStep({ rounds, practiceCategory, onAddRound, onRemoveRound, onUpdateRound, onOpenScoring }: RoundsStepProps) {
+export function RoundsStep({
+  rounds,
+  practiceCategory,
+  onAddRound,
+  onRemoveRound,
+  onUpdateRound,
+  onOpenScoring,
+  onStartQuickPractice,
+}: RoundsStepProps) {
   const { t } = useTranslation();
 
   return (
@@ -33,6 +42,7 @@ export function RoundsStep({ rounds, practiceCategory, onAddRound, onRemoveRound
             onRemoveRound={() => onRemoveRound(index)}
             onUpdateRound={(field, value) => onUpdateRound(index, field, value)}
             onOpenScoring={() => onOpenScoring(index)}
+            onStartQuickPractice={() => onStartQuickPractice(index)}
           />
         ))}
 

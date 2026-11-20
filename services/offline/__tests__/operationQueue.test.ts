@@ -35,7 +35,7 @@ beforeEach(() => {
 // ── MAX_RETRIES ───────────────────────────────────────────────────────────────
 
 describe('MAX_RETRIES constant', () => {
-  it('is set to 5', () => {
+  it('is set to 5', async () => {
     expect(MAX_RETRIES).toBe(5);
   });
 });

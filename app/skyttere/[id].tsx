@@ -7,9 +7,11 @@ import { publicProfilesApi } from '@/services';
 import { PublicProfile } from '@/types';
 import { styles } from '@/components/skyttere/PublicProfileDetailStyles';
 import { colors } from '@/styles/colors';
-import { Message } from '@/components/common';
+import { Message, Button } from '@/components/common';
 import { BackButton, LoadingState, ProfileHeader, ProfileStats, ProfileAchievements } from '@/components/skyttere';
 import { useTranslation } from '@/contexts';
+import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
+import { faTrophy } from '@fortawesome/free-solid-svg-icons';
 
 export default function PublicProfileDetailPage() {
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -39,7 +41,7 @@ export default function PublicProfileDetailPage() {
     }
 
     fetchProfile();
-  }, [id]);
+  }, [id, t]);
 
   if (loading) {
     return (
@@ -72,6 +74,14 @@ export default function PublicProfileDetailPage() {
 
           <View style={styles.card}>
             <ProfileHeader name={profile.name} image={profile.image} club={profile.club} skytternr={profile.skytternr} />
+
+            <Button
+              label={t['challenge.createNew']}
+              onPress={() => router.push(`/utfordringer/ny?opponentId=${profile.id}`)}
+              buttonStyle={styles.challengeButton}
+              type="outline"
+              icon={<FontAwesomeIcon icon={faTrophy} size={16} color={colors.primary} />}
+            />
 
             {profile.stats && <ProfileStats totalArrows={profile.stats.totalArrows} avgScorePerArrow={profile.stats.avgScorePerArrow} />}
 

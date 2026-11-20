@@ -17,18 +17,18 @@ jest.mock('react-native-svg', () => {
 /* eslint-enable @typescript-eslint/no-require-imports */
 
 describe('GoogleLogo', () => {
-  it('renders without crashing', () => {
-    const { toJSON } = render(<GoogleLogo />);
+  it('renders without crashing', async () => {
+    const { toJSON } = await render(<GoogleLogo />);
     expect(toJSON()).toBeTruthy();
   });
 
-  it('renders with custom size', () => {
-    const { toJSON } = render(<GoogleLogo size={32} />);
+  it('renders with custom size', async () => {
+    const { toJSON } = await render(<GoogleLogo size={32} />);
     expect(toJSON()).toBeTruthy();
   });
 
-  it('defaults to size 20', () => {
-    const { getByTestId } = render(<GoogleLogo />);
+  it('defaults to size 20', async () => {
+    const { getByTestId } = await render(<GoogleLogo />);
     const svg = getByTestId('svg');
     expect(svg.props.width).toBe(20);
     expect(svg.props.height).toBe(20);

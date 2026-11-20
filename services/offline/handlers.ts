@@ -5,9 +5,6 @@ import { practiceRepository } from '@/services/repositories/practiceRepository';
 import { sightMarksRepository } from '@/services/repositories/sightMarksRepository';
 import { userRepository } from '@/services/repositories/userRepository';
 
-/**
- * Register all offline operation handlers
- */
 export function registerOfflineHandlers() {
   // Bow handlers
   syncManager.registerHandler('bows/create', handleCreateBow);

@@ -1,4 +1,5 @@
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
+import { useObserve } from 'expo-observe';
 import { Text, TouchableOpacity, View } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -11,7 +12,12 @@ import { colors } from '@/styles/colors';
 import { useTranslation } from '@/contexts';
 
 export default function SightMarks() {
+  const { markInteractive } = useObserve();
   const { t } = useTranslation();
+
+  useEffect(() => {
+    markInteractive();
+  }, [markInteractive]);
   const [screen, setScreen] = useState('calculate');
   const insets = useSafeAreaInsets();
 

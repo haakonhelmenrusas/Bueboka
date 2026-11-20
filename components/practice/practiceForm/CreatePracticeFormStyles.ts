@@ -18,7 +18,6 @@ export const styles = StyleSheet.create({
   scrollContainer: {
     flexGrow: 1,
   },
-
   // ─── Step content wrapper ─────────────────────────────────────────────────────
   stepContent: {
     paddingHorizontal: 16,

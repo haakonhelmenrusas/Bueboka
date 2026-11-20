@@ -59,6 +59,30 @@ jest.mock('@/contexts/LanguageContext', () => {
   };
 });
 
+// Mock NotificationContext so hooks/components that consume notifications
+// (e.g. useChallenge) can render without a provider.
+jest.mock('@/contexts/NotificationContext', () => ({
+  NotificationType: {
+    CHALLENGE_RECEIVED: 'CHALLENGE_RECEIVED',
+    CHALLENGE_SENT: 'CHALLENGE_SENT',
+    CHALLENGE_ACCEPTED: 'CHALLENGE_ACCEPTED',
+    CHALLENGE_DECLINED: 'CHALLENGE_DECLINED',
+    CHALLENGE_CANCELLED: 'CHALLENGE_CANCELLED',
+    CHALLENGE_SUBMITTED: 'CHALLENGE_SUBMITTED',
+  },
+  NotificationProvider: ({ children }: { children: React.ReactNode }) => children,
+  useNotifications: () => ({
+    notifications: [],
+    unreadCount: 0,
+    addNotification: jest.fn(),
+    markAsRead: jest.fn(),
+    markAllAsRead: jest.fn(),
+    removeNotification: jest.fn(),
+    clearNotifications: jest.fn(),
+  }),
+  useUnreadNotifications: () => 0,
+}));
+
 // Mock expo-router
 jest.mock('expo-router', () => ({
   ...jest.requireActual('expo-router'),

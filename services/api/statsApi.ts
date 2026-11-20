@@ -22,13 +22,7 @@ const EMPTY_STATS_DATA: StatsData = {
   avgScorePerArrow: null,
 };
 
-/**
- * Stats API service
- */
 export const statsApi = {
-  /**
-   * Get user statistics
-   */
   async getStats(): Promise<StatsResponse> {
     try {
       const response = await client.get<{ stats: StatsResponse } | StatsResponse>('/stats');
@@ -45,9 +39,6 @@ export const statsApi = {
     }
   },
 
-  /**
-   * Get detailed statistics with per-series breakdown
-   */
   async getDetailedStats(): Promise<Series[]> {
     try {
       const response = await client.get<{ series: Series[] }>('/stats/detailed');

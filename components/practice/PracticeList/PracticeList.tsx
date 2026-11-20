@@ -13,7 +13,7 @@ interface PracticeListProps {
 }
 
 export default function PracticeList({ practices, onEditPractice }: PracticeListProps) {
-  const t = useTranslation();
+  const { t } = useTranslation();
   const sortedPractices = [...practices].sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
 
   const handleCardPress = (practiceId: string) => {

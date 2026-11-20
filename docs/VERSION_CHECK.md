@@ -1,5 +1,10 @@
 # Version Check System Documentation
 
+> **HISTORICAL — no longer in the codebase.** The version service and forced-update
+> screen (`services/versionService.ts`, `components/common/UpdateRequired/`) were removed
+> in commit 9d12635 ("refactor: remove version service and forced update screen").
+> Kept for reference only; do not follow these instructions for new work.
+
 ## Overview
 
 The app now includes a forced update system that checks the app version on launch and can block users from using the app until they update to a newer version from the App Store or Play Store.

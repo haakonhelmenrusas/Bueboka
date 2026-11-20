@@ -1,6 +1,8 @@
 import { Text, TouchableOpacity, View } from 'react-native';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faXmark } from '@fortawesome/free-solid-svg-icons/faXmark';
+import { faBolt } from '@fortawesome/free-solid-svg-icons/faBolt';
+import { faBullseye } from '@fortawesome/free-solid-svg-icons/faBullseye';
 import { Input, Select, Button } from '@/components/common';
 import { useTranslation } from '@/contexts';
 import { PracticeCategory } from '@/types';
@@ -18,6 +20,7 @@ interface RoundCardProps {
   onRemoveRound: () => void;
   onUpdateRound: <K extends keyof RoundInput>(field: K, value: RoundInput[K]) => void;
   onOpenScoring: () => void;
+  onStartQuickPractice: () => void;
 }
 
 export function RoundCard({
@@ -28,6 +31,7 @@ export function RoundCard({
   onRemoveRound,
   onUpdateRound,
   onOpenScoring,
+  onStartQuickPractice,
 }: RoundCardProps) {
   const { t } = useTranslation();
   const rangeMode = isRangeCategory(practiceCategory);
@@ -40,6 +44,8 @@ export function RoundCard({
   const hasPartialScores = filledCount > 0 && !isFull;
   const hasManualScore = round.roundScore > 0 && filledCount === 0;
   const showScoreButton = maxArrows > 0 && !hasManualScore;
+  // A round with both distance and target chosen can be started as a quick practice
+  const showQuickPractice = (round.distanceMeters ?? 0) > 0 && !!round.targetType;
 
   const scoreButtonLabel = isFull ? t['scoring.editScores'] : hasPartialScores ? t['scoring.continueScoring'] : t['scoring.scoreNow'];
 
@@ -147,9 +153,21 @@ export function RoundCard({
             label={scoreButtonLabel}
             onPress={onOpenScoring}
             type={filledCount > 0 ? 'outline' : 'filled'}
+            icon={<FontAwesomeIcon icon={faBullseye} size={16} color={filledCount > 0 ? colors.primary : colors.white} />}
             buttonStyle={{ marginTop: 6 }}
           />
         </View>
+      )}
+
+      {showQuickPractice && (
+        <Button
+          testID={`start-quick-practice-${roundIndex}`}
+          label={t['quickPractice.startButton']}
+          onPress={onStartQuickPractice}
+          type="outline"
+          icon={<FontAwesomeIcon icon={faBolt} size={16} color={colors.primary} />}
+          buttonStyle={{ marginTop: 8 }}
+        />
       )}
     </View>
   );

@@ -10,10 +10,17 @@ import { faEnvelope } from '@fortawesome/free-solid-svg-icons';
 interface EmailVerificationProps {
   email: string;
   onVerified?: () => void;
+  /**
+   * Provided when the account has no session yet (the backend requires the
+   * address to be verified before signing in). In that case the user cannot
+   * check their own status from here, so they are sent back to the login form
+   * once they have clicked the link in the email.
+   */
+  onBackToLogin?: () => void;
 }
 
-export default function EmailVerification({ email, onVerified }: EmailVerificationProps) {
-  const { resendVerificationEmail, refreshUser, user, isLoading } = useAuth();
+export default function EmailVerification({ email, onVerified, onBackToLogin }: EmailVerificationProps) {
+  const { resendVerificationEmail, sendVerificationEmail, refreshUser, user, isLoading } = useAuth();
   const { t } = useTranslation();
   const [resending, setResending] = useState(false);
   const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
@@ -25,7 +32,13 @@ export default function EmailVerification({ email, onVerified }: EmailVerificati
     try {
       setResending(true);
       setMessage(null);
-      await resendVerificationEmail();
+      // Without a session the "resend for current user" endpoint has nobody to
+      // resend for, so address the request explicitly.
+      if (onBackToLogin) {
+        await sendVerificationEmail(email);
+      } else {
+        await resendVerificationEmail();
+      }
       setMessage({ type: 'success', text: t['emailVerification.sentSuccess'] });
 
       // Start cooldown
@@ -69,7 +82,9 @@ export default function EmailVerification({ email, onVerified }: EmailVerificati
       <Text style={styles.description}>
         {t['emailVerification.sentTo']} <Text style={styles.email}>{email}</Text>
       </Text>
-      <Text style={styles.instructions}>{t['emailVerification.instructions']}</Text>
+      <Text style={styles.instructions}>
+        {onBackToLogin ? t['emailVerification.instructionsSignIn'] : t['emailVerification.instructions']}
+      </Text>
 
       {message && (
         <Message
@@ -80,12 +95,16 @@ export default function EmailVerification({ email, onVerified }: EmailVerificati
       )}
 
       <View style={styles.buttonsContainer}>
-        <Button
-          label={t['emailVerification.checkButton']}
-          onPress={handleCheckVerification}
-          disabled={isLoading}
-          buttonStyle={styles.primaryButton}
-        />
+        {onBackToLogin ? (
+          <Button label={t['emailVerification.backToLogin']} onPress={onBackToLogin} buttonStyle={styles.primaryButton} />
+        ) : (
+          <Button
+            label={t['emailVerification.checkButton']}
+            onPress={handleCheckVerification}
+            disabled={isLoading}
+            buttonStyle={styles.primaryButton}
+          />
+        )}
 
         <Button
           label={cooldown > 0 ? `${t['emailVerification.resendCooldown']} (${cooldown}s)` : t['emailVerification.resendButton']}

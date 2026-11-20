@@ -1,5 +1,5 @@
-export type { MarkSet } from './MarkSet';
 export type { MarkValue } from './MarkValue';
+export type { ScoringZone, ScoringOption, ScoringScheme, ScoringSchemeId } from './TargetScoring';
 export type { Bow } from './Bow';
 export { BowType } from './Bow';
 export type { Arrows } from './ArrowSet';
@@ -10,14 +10,7 @@ export type { Practice, End, RoundType, PracticeCardItem, PracticeCardsResponse 
 export type { PracticeFilter } from './Practice';
 export { Environment, WeatherCondition, PracticeCategory } from './Practice';
 export type { Competition, CompetitionRound } from './Competition';
-export type {
-  SightMark,
-  SightMarkResult,
-  AimDistanceMark,
-  CalculatedMarks,
-  SightMarkCalc,
-  MarksResult,
-} from './SightMarks';
+export type { SightMark, SightMarkResult, AimDistanceMark, CalculatedMarks, SightMarkCalc, MarksResult } from './SightMarks';
 export type { Series, SeriesData } from './Statistics';
 export type {
   Achievement,
@@ -32,3 +25,17 @@ export type {
   FilterCategory,
   FilterRarity,
 } from './Achievement';
+// Challenge types for 1v1 competitions
+export type {
+  Challenge,
+  ChallengeCustomRules,
+  ChallengeListItem,
+  ChallengeListResponse,
+  ChallengeStatistics,
+  CreateChallengeData,
+  UpdateChallengeData,
+  SubmitChallengeResultData,
+} from './Challenge';
+export { ChallengeStatus } from './Challenge';
+export { NotificationType } from './Notification';
+export type { Notification, NotificationsListResponse } from './Notification';

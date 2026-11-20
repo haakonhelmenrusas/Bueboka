@@ -3,9 +3,7 @@ import { handleApiError } from '@/services/api/errors';
 import { uploadAvatar } from '@/services/api/uploadAvatar';
 import { User } from '@/types';
 
-/**
- * User update data structure
- */
+/** User update data */
 export interface UpdateUserData {
   name?: string;
   club?: string;
@@ -22,18 +20,11 @@ export interface UpdatePublicSettingsData {
   publicAchievements?: boolean;
 }
 
-/**
- * User repository - handles all user-related API operations
- */
+/** User repository */
 export const userRepository = {
-  /**
-   * Get current user profile
-   * GET /api/profile
-   */
   async getCurrentUser(): Promise<User> {
     try {
       const response = await client.get<{ profile: User } | User>('/profile');
-      // The API returns { profile: {...} } — unwrap it if present
       const data = response.data as any;
       return data?.profile ?? data;
     } catch (error) {
@@ -41,10 +32,6 @@ export const userRepository = {
     }
   },
 
-  /**
-   * Update current user profile
-   * PATCH /api/users
-   */
   async updateProfile(data: UpdateUserData): Promise<User> {
     try {
       const response = await client.patch<User>('/users', data);
@@ -54,10 +41,6 @@ export const userRepository = {
     }
   },
 
-  /**
-   * Update user avatar
-   * PATCH /api/users
-   */
   async updateAvatar(imageUri: string): Promise<User> {
     try {
       return await uploadAvatar(imageUri);
@@ -66,10 +49,6 @@ export const userRepository = {
     }
   },
 
-  /**
-   * Remove user avatar
-   * PATCH /api/users
-   */
   async removeAvatar(): Promise<User> {
     try {
       const response = await client.patch<User>('/users', { image: null });
@@ -79,10 +58,6 @@ export const userRepository = {
     }
   },
 
-  /**
-   * Update public profile visibility settings
-   * PATCH /api/users
-   */
   async updatePublicSettings(data: UpdatePublicSettingsData): Promise<User> {
     try {
       const response = await client.patch<User>('/users', data);
@@ -92,14 +67,6 @@ export const userRepository = {
     }
   },
 
-  /**
-   * Update the user's UI language preference.
-   * PATCH /api/users
-   *
-   * Server validates `locale` against the literals 'no' | 'en' (any other
-   * value returns 400). Pass `null` only if you intentionally want to clear
-   * a previously-set preference.
-   */
   async updateLocale(locale: 'no' | 'en' | null): Promise<User> {
     try {
       const response = await client.patch<User>('/users', { locale });
@@ -109,10 +76,6 @@ export const userRepository = {
     }
   },
 
-  /**
-   * Delete user account
-   * DELETE /api/users/delete
-   */
   async deleteAccount(): Promise<void> {
     try {
       await client.delete('/users/delete');

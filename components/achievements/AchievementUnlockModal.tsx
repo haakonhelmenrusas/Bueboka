@@ -1,5 +1,5 @@
 import React from 'react';
-import { Text, View } from 'react-native';
+import { ScrollView, Text, View } from 'react-native';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faTrophy } from '@fortawesome/free-solid-svg-icons/faTrophy';
 import type { IconDefinition } from '@fortawesome/fontawesome-svg-core';
@@ -82,7 +82,7 @@ export function AchievementUnlockModal({ achievements, onClose, onViewAll }: Ach
           <Text style={styles.subtitle}>{isSingle ? t['achievementUnlock.subtitleSingle'] : t['achievementUnlock.subtitleMultiple']}</Text>
         </View>
 
-        <View style={styles.list}>
+        <ScrollView testID="achievement-list" style={styles.list} showsVerticalScrollIndicator={false}>
           {achievements.map((achievement) => {
             const icon = ICON_MAP[achievement.icon] ?? faTrophy;
             const name = getAchievementName(achievement.id, achievement.name, t);
@@ -103,7 +103,7 @@ export function AchievementUnlockModal({ achievements, onClose, onViewAll }: Ach
               </View>
             );
           })}
-        </View>
+        </ScrollView>
 
         {totalPoints > 0 && (
           <Text style={styles.totalPoints}>

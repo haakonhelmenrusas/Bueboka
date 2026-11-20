@@ -42,7 +42,10 @@ export interface TranslationKeys {
   'common.loading': string;
   'common.success': string;
   'common.error': string;
+  'observe.errorFallbackMessage': string;
+  'common.unknownError': string;
   'common.cancel': string;
+  'common.back': string;
   'common.delete': string;
   'common.close': string;
   'common.tryAgain': string;
@@ -52,6 +55,8 @@ export interface TranslationKeys {
   'emailVerification.title': string;
   'emailVerification.sentTo': string;
   'emailVerification.instructions': string;
+  'emailVerification.instructionsSignIn': string;
+  'emailVerification.backToLogin': string;
   'emailVerification.checkButton': string;
   'emailVerification.resendButton': string;
   'emailVerification.resendCooldown': string;
@@ -73,6 +78,8 @@ export interface TranslationKeys {
   'home.greetingFallback': string;
   'home.searchArchers': string;
   'home.myAchievements': string;
+  'home.challenges': string;
+  'home.notifications': string;
   'home.detailedStats': string;
   'home.notLoggedInTitle': string;
   'home.notLoggedInDesc': string;
@@ -267,6 +274,7 @@ export interface TranslationKeys {
   'scoring.editScores': string;
   'scoring.continueScoring': string;
   'scoring.done': string;
+  'scoring.noScoreTarget': string;
 
   // Reflection step UI
   'reflection.ratingLabel': string;
@@ -358,6 +366,17 @@ export interface TranslationKeys {
   'arrowMaterial.karbon': string;
   'arrowMaterial.aluminium': string;
   'arrowMaterial.treverk': string;
+
+  // Notifications screen
+  'notifications.back': string;
+  'notifications.title': string;
+  'notifications.empty': string;
+  'notifications.markAllRead': string;
+  'notifications.challengeReceivedTitle': string;
+  'notifications.challengeReceivedMessage': string;
+  'notifications.challengeSentTitle': string;
+  'notifications.challengeSentMessage': string;
+  'notifications.challengeSentMessageGeneric': string;
 
   // Achievements screen
   'achievements.fetchError': string;
@@ -574,6 +593,7 @@ export interface TranslationKeys {
 
   // FAB action menu
   'fab.newPractice': string;
+  'fab.newChallenge': string;
   'fab.newCompetition': string;
   'fab.newBow': string;
   'fab.newArrows': string;
@@ -642,6 +662,9 @@ export interface TranslationKeys {
   'settings.supportTitle': string;
   'settings.supportDesc': string;
   'settings.vippsLabel': string;
+  'settings.faqTitle': string;
+  'settings.faqDesc': string;
+  'settings.faqButton': string;
 
   // Bow form
   'bowForm.editTitle': string;
@@ -806,4 +829,81 @@ export interface TranslationKeys {
   'onboarding.next': string;
   'onboarding.getStarted': string;
   'onboarding.goToStep': string;
+
+  // Challenge translations
+  'challenge.title': string;
+  'challenge.subtitle': string;
+  'challenge.createNew': string;
+  'challenge.searchOpponent': string;
+  'challenge.searchPlaceholder': string;
+  'challenge.noOpponents': string;
+  'challenge.selectOpponent': string;
+  'challenge.selectedOpponent': string;
+  'challenge.nameLabel': string;
+  'challenge.nameRequired': string;
+  'challenge.descriptionLabel': string;
+  'challenge.descriptionPlaceholder': string;
+  'challenge.startDateLabel': string;
+  'challenge.endDateLabel': string;
+  'challenge.useCustomRules': string;
+  'challenge.customRulesTitle': string;
+  'challenge.distanceMeters': string;
+  'challenge.distanceFrom': string;
+  'challenge.distanceTo': string;
+  'challenge.targetSize': string;
+  'challenge.numberArrows': string;
+  'challenge.targetType': string;
+  'challenge.targetTypePlaceholder': string;
+  'challenge.statusPending': string;
+  'challenge.statusAccepted': string;
+  'challenge.statusDeclined': string;
+  'challenge.statusCompleted': string;
+  'challenge.statusCancelled': string;
+  'challenge.opponent': string;
+  'challenge.unknownOpponent': string;
+  'challenge.created': string;
+  'challenge.score': string;
+  'challenge.winner': string;
+  'challenge.you': string;
+  'challenge.accept': string;
+  'challenge.decline': string;
+  'challenge.cancel': string;
+  'challenge.submitResult': string;
+  'challenge.viewDetails': string;
+  'challenge.backToList': string;
+  'challenge.submit': string;
+  'challenge.yourScore': string;
+  'challenge.opponentScore': string;
+  'challenge.resultSubmitted': string;
+  'challenge.notSubmitted': string;
+  'challenge.bothSubmitted': string;
+  'challengeChallengeList.empty': string;
+  'challengeChallengeList.emptyDesc': string;
+  'challengeChallengeList.loading': string;
+  'challengeChallengeList.error': string;
+  'challengeForm.cancelButton': string;
+  'challengeForm.submitButton': string;
+
+  // Quick practice (hurtigtrening) screen
+  'quickPractice.startButton': string;
+  'quickPractice.title': string;
+  'quickPractice.save': string;
+  'challengeForm.saving': string;
+  'challengeDetail.title': string;
+  'challengeDetail.challenger': string;
+  'challengeDetail.challenged': string;
+  'challengeDetail.rules': string;
+  'challengeDetail.noRules': string;
+  'challengeDetail.actions': string;
+  'challengeDetail.noDescription': string;
+  'challengeSubmit.title': string;
+  'challengeSubmit.yourScoreLabel': string;
+  'challengeSubmit.totalArrowsLabel': string;
+  'challengeSubmit.submitButton': string;
+  'challengeSubmit.success': string;
+  'challengeResult.title': string;
+  'challengeResult.youWon': string;
+  'challengeResult.youLost': string;
+  'challengeResult.draw': string;
+  'challengeResult.waiting': string;
 }

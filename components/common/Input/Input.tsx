@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { StyleProp, Text, TextInput, TextInputProps, TextStyle, View, ViewStyle } from 'react-native';
+import type { TextInputInstance } from 'react-native';
 import { defaultStyles } from './InputStyles';
 import { colors } from '@/styles/colors';
 import { useTranslation } from '@/contexts';
@@ -23,7 +24,7 @@ interface InputProps extends TextInputProps {
  * Input component matching web version design.
  * Supports label, help text, optional hint, icons/addons and error message.
  */
-const Input = React.forwardRef<TextInput, InputProps>(
+const Input = React.forwardRef<TextInputInstance, InputProps>(
   (
     {
       label,

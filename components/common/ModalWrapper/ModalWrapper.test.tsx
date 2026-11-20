@@ -5,8 +5,8 @@ import { Text } from 'react-native';
 import ModalWrapper from './ModalWrapper';
 
 describe('ModalWrapper', () => {
-  it('renders children when visible', () => {
-    const { getByText } = render(
+  it('renders children when visible', async () => {
+    const { getByText } = await render(
       <ModalWrapper visible={true} onClose={jest.fn()}>
         <Text>Content</Text>
       </ModalWrapper>,
@@ -14,8 +14,8 @@ describe('ModalWrapper', () => {
     expect(getByText('Content')).toBeTruthy();
   });
 
-  it('renders children in full-screen mode', () => {
-    const { getByText } = render(
+  it('renders children in full-screen mode', async () => {
+    const { getByText } = await render(
       <ModalWrapper visible={true} onClose={jest.fn()} fullScreen>
         <Text>Full screen</Text>
       </ModalWrapper>,
@@ -23,9 +23,9 @@ describe('ModalWrapper', () => {
     expect(getByText('Full screen')).toBeTruthy();
   });
 
-  it('calls onClose on requestClose', () => {
+  it('calls onClose on requestClose', async () => {
     const onClose = jest.fn();
-    render(
+    await render(
       <ModalWrapper visible={true} onClose={onClose}>
         <Text>Content</Text>
       </ModalWrapper>,

@@ -2,8 +2,8 @@ import { useCalcMarksForm } from './useCalcMarksForm';
 import { act, renderHook } from '@testing-library/react-native';
 
 describe('useCalcMarksForm', () => {
-  it('initializes with default state', () => {
-    const { result } = renderHook(() => useCalcMarksForm());
+  it('initializes with default state', async () => {
+    const { result } = await renderHook(() => useCalcMarksForm());
     expect(result.current[0]).toEqual({
       distanceFrom: '10',
       distanceFromError: false,
@@ -15,64 +15,64 @@ describe('useCalcMarksForm', () => {
     });
   });
 
-  it('sets distance from correctly', () => {
-    const { result } = renderHook(() => useCalcMarksForm());
-    act(() => {
+  it('sets distance from correctly', async () => {
+    const { result } = await renderHook(() => useCalcMarksForm());
+    await act(async () => {
       result.current[1]({ type: 'SET_DISTANCE_FROM', payload: '100' });
     });
     expect(result.current[0].distanceFrom).toBe('100');
   });
 
-  it('sets distance from error correctly', () => {
-    const { result } = renderHook(() => useCalcMarksForm());
-    act(() => {
+  it('sets distance from error correctly', async () => {
+    const { result } = await renderHook(() => useCalcMarksForm());
+    await act(async () => {
       result.current[1]({ type: 'SET_DISTANCE_FROM_ERROR', payload: true });
     });
     expect(result.current[0].distanceFromError).toBe(true);
   });
 
-  it('sets distance to correctly', () => {
-    const { result } = renderHook(() => useCalcMarksForm());
-    act(() => {
+  it('sets distance to correctly', async () => {
+    const { result } = await renderHook(() => useCalcMarksForm());
+    await act(async () => {
       result.current[1]({ type: 'SET_DISTANCE_TO', payload: '200' });
     });
     expect(result.current[0].distanceTo).toBe('200');
   });
 
-  it('sets distance to error correctly', () => {
-    const { result } = renderHook(() => useCalcMarksForm());
-    act(() => {
+  it('sets distance to error correctly', async () => {
+    const { result } = await renderHook(() => useCalcMarksForm());
+    await act(async () => {
       result.current[1]({ type: 'SET_DISTANCE_TO_ERROR', payload: true });
     });
     expect(result.current[0].distanceToError).toBe(true);
   });
 
-  it('sets interval correctly', () => {
-    const { result } = renderHook(() => useCalcMarksForm());
-    act(() => {
+  it('sets interval correctly', async () => {
+    const { result } = await renderHook(() => useCalcMarksForm());
+    await act(async () => {
       result.current[1]({ type: 'SET_INTERVAL', payload: '50' });
     });
     expect(result.current[0].interval).toBe('50');
   });
 
-  it('sets interval error correctly', () => {
-    const { result } = renderHook(() => useCalcMarksForm());
-    act(() => {
+  it('sets interval error correctly', async () => {
+    const { result } = await renderHook(() => useCalcMarksForm());
+    await act(async () => {
       result.current[1]({ type: 'SET_INTERVAL_ERROR', payload: true });
     });
     expect(result.current[0].intervalError).toBe(true);
   });
 
-  it('sets angles correctly', () => {
-    const { result } = renderHook(() => useCalcMarksForm());
-    act(() => {
+  it('sets angles correctly', async () => {
+    const { result } = await renderHook(() => useCalcMarksForm());
+    await act(async () => {
       result.current[1]({ type: 'SET_ANGLES', payload: [10, 20, 30] });
     });
     expect(result.current[0].angles).toEqual([10, 20, 30]);
   });
 
-  it('loads form data correctly', () => {
-    const { result } = renderHook(() => useCalcMarksForm());
+  it('loads form data correctly', async () => {
+    const { result } = await renderHook(() => useCalcMarksForm());
     const mockData = {
       distanceFrom: '15',
       distanceFromError: false,
@@ -83,18 +83,18 @@ describe('useCalcMarksForm', () => {
       angles: [45, 0, -45],
     };
 
-    act(() => {
+    await act(async () => {
       result.current[1]({ type: 'LOAD_FORM_DATA', payload: mockData });
     });
 
     expect(result.current[0]).toEqual(mockData);
   });
 
-  it('handles unknown action type gracefully', () => {
-    const { result } = renderHook(() => useCalcMarksForm());
+  it('handles unknown action type gracefully', async () => {
+    const { result } = await renderHook(() => useCalcMarksForm());
     const initialState = result.current[0];
 
-    act(() => {
+    await act(async () => {
       result.current[1]({ type: 'UNKNOWN_ACTION' as any, payload: true });
     });
 

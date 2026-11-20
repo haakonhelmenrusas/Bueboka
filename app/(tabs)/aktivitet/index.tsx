@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useState } from 'react';
+import { useObserve } from 'expo-observe';
 import { Alert, ScrollView, View } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -9,6 +10,7 @@ import { Arrows, Bow, Competition, Practice, PracticeCardItem, PracticeFilter } 
 import { Achievement } from '@/types/Achievement';
 import CreatePracticeForm from '@/components/practice/practiceForm/CreatePracticeForm';
 import CreateCompetitionForm from '@/components/practice/competitionForm/CreateCompetitionForm';
+import { CreateChallengeModal } from '@/components/challenges';
 import BowForm from '@/components/home/bowForm/BowForm';
 import ArrowForm from '@/components/home/arrowForm/ArrowForm';
 import { MobileActionButton } from '@/components/common';
@@ -17,11 +19,17 @@ import { AktivitetHeader, PracticeList } from '@/components/aktivitet';
 import { useTranslation } from '@/contexts';
 import { styles } from '@/components/aktivitet/AktivitetStyles';
 import { AchievementUnlockModal } from '@/components/achievements/AchievementUnlockModal';
+import { consumeQuickPracticeLaunched } from '@/utils/quickPractice';
 
 const PAGE_SIZE = 15;
 
 export default function AktivitetScreen() {
+  const { markInteractive } = useObserve();
   const insets = useSafeAreaInsets();
+
+  useEffect(() => {
+    markInteractive();
+  }, [markInteractive]);
   const { t } = useTranslation();
   const router = useRouter();
 
@@ -39,6 +47,7 @@ export default function AktivitetScreen() {
   const [practiceModalVisible, setPracticeModalVisible] = useState(false);
   const [editingPractice, setEditingPractice] = useState<Practice | null>(null);
   const [competitionModalVisible, setCompetitionModalVisible] = useState(false);
+  const [challengeModalVisible, setChallengeModalVisible] = useState(false);
   const [editingCompetition, setEditingCompetition] = useState<Competition | null>(null);
   const [bowModalVisible, setBowModalVisible] = useState(false);
   const [selectedBow, setSelectedBow] = useState<Bow | null>(null);
@@ -87,6 +96,13 @@ export default function AktivitetScreen() {
       loadEquipment();
       setRefreshKey((k) => k + 1);
     }, [loadEquipment]),
+  );
+
+  // Re-open the practice form when returning from the quick-practice screen
+  useFocusEffect(
+    useCallback(() => {
+      if (consumeQuickPracticeLaunched()) setPracticeModalVisible(true);
+    }, []),
   );
 
   const handleFilterChange = (newFilter: PracticeFilter) => {
@@ -188,6 +204,7 @@ export default function AktivitetScreen() {
           setPracticeModalVisible(false);
           setEditingPractice(null);
         }}
+        onHide={() => setPracticeModalVisible(false)}
         bows={bows}
         arrowSets={arrows}
         editingPractice={editingPractice}
@@ -204,6 +221,7 @@ export default function AktivitetScreen() {
         editingCompetition={editingCompetition}
         onSaved={handleSaved}
       />
+      <CreateChallengeModal visible={challengeModalVisible} onClose={() => setChallengeModalVisible(false)} onSaved={handleSaved} />
       <BowForm
         modalVisible={bowModalVisible}
         setModalVisible={setBowModalVisible}
@@ -226,6 +244,9 @@ export default function AktivitetScreen() {
         onCreatePractice={() => {
           setEditingPractice(null);
           setPracticeModalVisible(true);
+        }}
+        onCreateChallenge={() => {
+          setChallengeModalVisible(true);
         }}
         onCreateCompetition={() => {
           setEditingCompetition(null);

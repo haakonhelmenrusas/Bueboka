@@ -2,6 +2,7 @@ import { faGear } from '@fortawesome/free-solid-svg-icons/faGear';
 import { faChartLine } from '@fortawesome/free-solid-svg-icons/faChartLine';
 import { faHome } from '@fortawesome/free-solid-svg-icons/faHome';
 import { faBullseye } from '@fortawesome/free-solid-svg-icons/faBullseye';
+import { faChartBar } from '@fortawesome/free-solid-svg-icons/faChartBar';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { Tabs } from 'expo-router';
 import { colors } from '@/styles/colors';
@@ -9,23 +10,16 @@ import { View, ActivityIndicator } from 'react-native';
 import { OfflineBanner } from '@/components/common';
 import { useAuth } from '@/hooks';
 import { Redirect } from 'expo-router';
-import { useNavigation } from 'expo-router';
-import { useEffect } from 'react';
+import { usePreventRemove } from 'expo-router/build/react-navigation/core/usePreventRemove';
 import FloatingTabBar from '@/components/common/FloatingTabBar/FloatingTabBar';
 
 export default function AppLayout() {
   const { isAuthenticated, isLoading } = useAuth();
-  const parentNavigation = useNavigation();
 
-  // Block navigating back to auth/intro screens via Android back button or iOS gesture,
-  // but allow programmatic redirects (e.g. logout → /auth)
-  useEffect(() => {
-    return parentNavigation.addListener('beforeRemove', (e) => {
-      if (isAuthenticated) {
-        e.preventDefault();
-      }
-    });
-  }, [parentNavigation, isAuthenticated]);
+  // Block navigating back to auth/intro screens via Android back button or iOS gesture.
+  // Programmatic redirects (e.g. logout → /auth) still work because isAuthenticated
+  // flips to false before the redirect happens.
+  usePreventRemove(isAuthenticated);
 
   if (isLoading) {
     return (
@@ -71,6 +65,15 @@ export default function AppLayout() {
           options={{
             tabBarIcon: ({ focused }) => (
               <FontAwesomeIcon icon={faChartLine} size={24} color={focused ? colors.white : 'rgba(255, 255, 255, 0.5)'} />
+            ),
+            headerShown: false,
+          }}
+        />
+        <Tabs.Screen
+          name="statistics"
+          options={{
+            tabBarIcon: ({ focused }) => (
+              <FontAwesomeIcon icon={faChartBar} size={24} color={focused ? colors.white : 'rgba(255, 255, 255, 0.5)'} />
             ),
             headerShown: false,
           }}

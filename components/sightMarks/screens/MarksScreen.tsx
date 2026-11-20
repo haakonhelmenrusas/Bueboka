@@ -2,6 +2,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Pressable, ScrollView, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import * as Sentry from '@sentry/react-native';
+import { Observe } from 'expo-observe';
 import { Button, Message, Select } from '@/components/common';
 import { CalculatedMarks, MarksResult, SightMark, SightMarkResult } from '@/types';
 import { CalculateMarksModal } from '@/components/sightMarks/calculateMarksModal/CalculateMarksModal';
@@ -74,6 +75,7 @@ export default function MarksScreen({ setScreen }: MarksScreenProps) {
         setCalculatedMarks(null);
       }
     } catch (error: any) {
+      Observe.reportError(error);
       if (error?.response?.status === 404) {
         setSightMarks([]);
         setActiveSightMark(null);
@@ -129,6 +131,7 @@ export default function MarksScreen({ setScreen }: MarksScreenProps) {
         }
       }
     } catch (error) {
+      Observe.reportError(error);
       Sentry.captureException(error, { tags: { type: 'sight_marks_delete_result_error' } });
     } finally {
       // Always clear local state and open the modal so the user can recalculate,
@@ -286,7 +289,6 @@ export default function MarksScreen({ setScreen }: MarksScreenProps) {
         sightMarkId={activeSightMark?.id ?? null}
         onResultCreated={() => loadData()}
       />
-
     </View>
   );
 }

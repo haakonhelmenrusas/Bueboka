@@ -221,6 +221,11 @@ export const styles = StyleSheet.create({
     color: colors.textGray700,
     textAlign: 'center',
   },
+  faqDesc: {
+    fontSize: 14,
+    lineHeight: 21,
+    color: colors.textGray700,
+  },
   vippsBox: {
     alignItems: 'center',
     backgroundColor: colors.bgGray100,

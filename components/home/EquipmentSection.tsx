@@ -37,6 +37,7 @@ export function EquipmentSection({ bows, arrows, loading, onSelectBow, onSelectA
           {bows.map((bow) => (
             <BowCard key={bow.id} bow={bow} onPress={() => onSelectBow?.(bow)} />
           ))}
+          {bows.length > 0 && arrows.length > 0 && <View style={styles.divider} />}
           {arrows.map((arrow) => (
             <ArrowCard key={arrow.id} arrowSet={arrow} onPress={() => onSelectArrows?.(arrow)} />
           ))}

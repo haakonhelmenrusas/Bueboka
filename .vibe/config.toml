@@ -1,0 +1,86 @@
+applied_migrations = [
+    "bash_read_only_defaults_v1",
+]
+
+# Project context: AGENTS.md at the repo root is auto-discovered and injected
+# into every session (it symlinks to VIBE.md). Git status and recent commits
+# are included via include_project_context (default true).
+[project_context]
+default_commit_count = 5
+timeout_seconds = 3.0
+
+# Skills: .agents/skills is a default search path for trusted projects;
+# keep it explicit anyway. All installed skills stay enabled (no enabled_skills filter).
+skill_paths = [
+    ".agents/skills",
+]
+
+# Custom agent profiles (none yet, .agents is the standard directory).
+agent_paths = [
+    ".agents",
+]
+
+[tools.grep]
+max_output_bytes = 100000
+default_max_matches = 200
+
+[tools.edit]
+permission = "always"
+
+[tools.write_file]
+permission = "always"
+create_parent_dirs = true
+
+[tools.bash]
+permission = "always"
+allowlist = [
+    "basename",
+    "cat",
+    "cd",
+    "comm",
+    "cut",
+    "date",
+    "diff",
+    "dirname",
+    "du",
+    "eas",
+    "echo",
+    "expo",
+    "file",
+    "find",
+    "fmt",
+    "fold",
+    "git",
+    "grep",
+    "head",
+    "jest",
+    "join",
+    "less",
+    "ls",
+    "md5sum",
+    "more",
+    "nl",
+    "npm",
+    "npx",
+    "od",
+    "paste",
+    "pwd",
+    "readlink",
+    "sha1sum",
+    "sha256sum",
+    "shasum",
+    "sort",
+    "stat",
+    "sum",
+    "tac",
+    "tail",
+    "tr",
+    "uname",
+    "uniq",
+    "wc",
+    "which",
+    "yarn",
+]
+
+[tools.read_file]
+max_read_bytes = 100000

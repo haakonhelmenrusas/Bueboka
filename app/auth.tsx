@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Keyboard, KeyboardAvoidingView, Platform, ScrollView } from 'react-native';
 import { useRouter } from 'expo-router';
+import { useObserve } from 'expo-observe';
 import { Button, Message } from '@/components/common';
 import { useAuth } from '@/hooks';
 import { useTranslation } from '@/contexts';
@@ -16,12 +17,18 @@ function AuthScreen({ onAuthSuccess }: AuthScreenProps) {
   const { login, register, loginWithGoogle, isLoading, isAuthenticated, error, clearError } = useAuth();
   const { t } = useTranslation();
   const router = useRouter();
+  const { markInteractive } = useObserve();
   const [isLogin, setIsLogin] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [localError, setLocalError] = useState<string | null>(null);
   const [showVerification, setShowVerification] = useState(false);
   const [registeredEmail, setRegisteredEmail] = useState<string>('');
+
+  // Entry screen for the login flow
+  useEffect(() => {
+    markInteractive();
+  }, [markInteractive]);
 
   useEffect(() => {
     if (!isAuthenticated) return;
@@ -77,9 +84,18 @@ function AuthScreen({ onAuthSuccess }: AuthScreenProps) {
     }
 
     try {
-      await register(email, password, '');
-      setEmail('');
+      const { requiresEmailVerification } = await register(email, password, '');
       setPassword('');
+
+      // The backend issues no session until the address is verified, so show
+      // the verification screen instead of navigating into the app.
+      if (requiresEmailVerification) {
+        setRegisteredEmail(email);
+        setShowVerification(true);
+        return;
+      }
+
+      setEmail('');
       onAuthSuccess?.();
     } catch (error) {
       handleAuthError(error);
@@ -105,16 +121,17 @@ function AuthScreen({ onAuthSuccess }: AuthScreenProps) {
     }
   };
 
-  const handleVerificationComplete = () => {
+  const handleBackToLogin = () => {
     setShowVerification(false);
-    setEmail('');
+    setIsLogin(true);
     setRegisteredEmail('');
-    onAuthSuccess?.();
+    clearAuthErrors();
   };
 
-  // If showing verification screen, render it instead
+  // The verification screen is only reached from a sign-up that returned no
+  // session, so the only way forward is back to the login form.
   if (showVerification) {
-    return <EmailVerification email={registeredEmail} onVerified={handleVerificationComplete} />;
+    return <EmailVerification email={registeredEmail} onBackToLogin={handleBackToLogin} />;
   }
 
   return (

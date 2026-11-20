@@ -1,12 +1,13 @@
-import { useState, useCallback, useRef } from 'react';
+import { useState, useCallback, useEffect, useRef } from 'react';
 import { Alert, View, Text, ScrollView, RefreshControl, TouchableOpacity } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter, useFocusEffect } from 'expo-router';
+import { useObserve } from 'expo-observe';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { StatsSummary, EquipmentSection, PracticesSection } from '@/components/home';
 import { useAuth, useOnboarding } from '@/hooks';
-import { useTranslation } from '@/contexts';
-import { Message, Button, MobileActionButton } from '@/components/common';
+import { useTranslation, useNotifications, NotificationType } from '@/contexts';
+import { Message, MobileActionButton, NotificationBadge } from '@/components/common';
 import { colors } from '@/styles/colors';
 import { statsApi, StatsResponse } from '@/services/api/statsApi';
 import {
@@ -26,21 +27,32 @@ import ArrowSetDetails from '@/components/home/arrowSetDetails/ArrowSetDetails';
 import CreatePracticeForm from '@/components/practice/practiceForm/CreatePracticeForm';
 import { styles } from '@/components/home/HomeScreenStyles';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
-import { faChevronRight } from '@fortawesome/free-solid-svg-icons/faChevronRight';
 import { faTrophy } from '@fortawesome/free-solid-svg-icons/faTrophy';
+import { faBell } from '@fortawesome/free-solid-svg-icons/faBell';
+import { SwordsIcon } from '@/components/common/icons/ArcheryIcons';
 import ProfileImageManager from '@/components/home/profile/ProfileImageManager';
 import CreateCompetitionForm from '@/components/practice/competitionForm/CreateCompetitionForm';
+import { CreateChallengeModal } from '@/components/challenges';
 import { faUserGroup } from '@fortawesome/free-solid-svg-icons';
 import { PracticeDetailsModal } from '@/components/practice/practiceDetailsModal';
 import OnboardingModal from '@/components/onboarding/OnboardingModal';
 import { AchievementUnlockModal } from '@/components/achievements/AchievementUnlockModal';
+import { consumeQuickPracticeLaunched } from '@/utils/quickPractice';
 
 export default function HomeScreen() {
   const { user, refreshUser } = useAuth();
   const { t } = useTranslation();
+  const { notifications, unreadCount } = useNotifications();
+  const unreadChallengeCount = notifications.filter((n) => n.type === NotificationType.CHALLENGE_RECEIVED && !n.read).length;
   const { hasSeenOnboarding, isLoading: onboardingLoading, markAsSeen } = useOnboarding();
   const router = useRouter();
   const insets = useSafeAreaInsets();
+  const { markInteractive } = useObserve();
+
+  // Main entry screen after auth / deep links — record its time to interactive
+  useEffect(() => {
+    markInteractive();
+  }, [markInteractive]);
   const [refreshing, setRefreshing] = useState(false);
   const [stats, setStats] = useState<StatsResponse>({
     last7Days: { totalArrows: 0, scoredArrows: 0, unscoredArrows: 0, avgScorePerArrow: null },
@@ -60,6 +72,7 @@ export default function HomeScreen() {
   const [selectedBowForDetails, setSelectedBowForDetails] = useState<Bow | null>(null);
   const [selectedArrowSetForDetails, setSelectedArrowSetForDetails] = useState<Arrows | null>(null);
   const [competitionModalVisible, setCompetitionModalVisible] = useState(false);
+  const [challengeModalVisible, setChallengeModalVisible] = useState(false);
   const [editingCompetition, setEditingCompetition] = useState<Competition | null>(null);
   const [selectedPracticeForDetails, setSelectedPracticeForDetails] = useState<Practice | null>(null);
   const [selectedCompetitionForDetails, setSelectedCompetitionForDetails] = useState<Competition | null>(null);
@@ -99,6 +112,13 @@ export default function HomeScreen() {
     useCallback(() => {
       loadData();
     }, [loadData]),
+  );
+
+  // Re-open the practice form when returning from the quick-practice screen
+  useFocusEffect(
+    useCallback(() => {
+      if (consumeQuickPracticeLaunched()) setPracticeModalVisible(true);
+    }, []),
   );
 
   const handleRefresh = async () => {
@@ -159,29 +179,58 @@ export default function HomeScreen() {
               </View>
               <View style={styles.headerButtons}>
                 <TouchableOpacity
-                  style={styles.searchButton}
-                  onPress={() => router.push('/skyttere')}
-                  accessibilityLabel={t['home.searchArchers']}>
-                  <FontAwesomeIcon icon={faUserGroup} size={18} color={colors.white} />
-                </TouchableOpacity>
-                <TouchableOpacity
                   style={styles.trophyButton}
-                  onPress={() => router.push('/achievements')}
-                  accessibilityLabel={t['home.myAchievements']}>
-                  <FontAwesomeIcon icon={faTrophy} size={20} color={colors.warning} />
+                  onPress={() => router.push('/varsler')}
+                  accessibilityLabel={t['home.notifications']}>
+                  <FontAwesomeIcon icon={faBell} size={18} color={colors.warning} />
+                  {unreadCount > 0 && (
+                    <View style={styles.headerBadge}>
+                      <NotificationBadge count={unreadCount} />
+                    </View>
+                  )}
                 </TouchableOpacity>
               </View>
             </View>
           </View>
           <StatsSummary last7Days={stats.last7Days} last30Days={stats.last30Days} overall={stats.overall} />
-          <Button
-            iconPosition="right"
-            size="small"
-            buttonStyle={{ alignSelf: 'center' }}
-            icon={<FontAwesomeIcon icon={faChevronRight} size={16} color={colors.warning} />}
-            label={t['home.detailedStats']}
-            onPress={() => router.push('/(tabs)/home/statistics')}
-          />
+          {/* Quick actions row (detailed statistics moved to the tab bar) */}
+          <View style={styles.quickActions}>
+            <TouchableOpacity
+              testID="quick-action-skyttere"
+              style={styles.quickAction}
+              onPress={() => router.push('/skyttere')}
+              accessibilityLabel={t['home.searchArchers']}>
+              <View style={styles.quickActionIcon}>
+                <FontAwesomeIcon icon={faUserGroup} size={20} color={colors.white} />
+              </View>
+              <Text style={styles.quickActionLabel}>{t['home.searchArchers']}</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              testID="quick-action-utfordringer"
+              style={styles.quickAction}
+              onPress={() => router.push('/utfordringer')}
+              accessibilityLabel={t['home.challenges']}>
+              <View style={styles.quickActionIcon}>
+                <SwordsIcon size={22} color={colors.white} />
+                {unreadChallengeCount > 0 && (
+                  <View style={styles.headerBadge}>
+                    <NotificationBadge count={unreadChallengeCount} />
+                  </View>
+                )}
+              </View>
+              <Text style={styles.quickActionLabel}>{t['home.challenges']}</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              testID="quick-action-achievements"
+              style={styles.quickAction}
+              onPress={() => router.push('/achievements')}
+              accessibilityLabel={t['home.myAchievements']}>
+              <View style={styles.quickActionIcon}>
+                <FontAwesomeIcon icon={faTrophy} size={20} color={colors.warning} />
+              </View>
+              <Text style={styles.quickActionLabel}>{t['home.myAchievements']}</Text>
+            </TouchableOpacity>
+          </View>
           <PracticesSection
             refreshKey={practicesRefreshKey}
             onSelectPractice={async (id) => {
@@ -270,6 +319,9 @@ export default function HomeScreen() {
           setEditingPractice(null);
           setPracticeModalVisible(true);
         }}
+        onCreateChallenge={() => {
+          setChallengeModalVisible(true);
+        }}
         onCreateCompetition={() => {
           setEditingCompetition(null);
           setCompetitionModalVisible(true);
@@ -326,6 +378,7 @@ export default function HomeScreen() {
           setPracticeModalVisible(false);
           setEditingPractice(null);
         }}
+        onHide={() => setPracticeModalVisible(false)}
         bows={bows}
         arrowSets={arrows}
         editingPractice={editingPractice}
@@ -340,6 +393,11 @@ export default function HomeScreen() {
         bows={bows}
         arrowSets={arrows}
         editingCompetition={editingCompetition}
+        onSaved={handlePracticesSaved}
+      />
+      <CreateChallengeModal
+        visible={challengeModalVisible}
+        onClose={() => setChallengeModalVisible(false)}
         onSaved={handlePracticesSaved}
       />
       {!onboardingLoading && <OnboardingModal visible={!hasSeenOnboarding} onClose={markAsSeen} />}

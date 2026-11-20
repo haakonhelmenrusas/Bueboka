@@ -5,6 +5,7 @@ import { Arrows, Bow } from '@/types';
 import { arrowsRepository, bowRepository } from '@/services/repositories';
 import { useTranslation } from '@/contexts';
 import * as Sentry from '@sentry/react-native';
+import { Observe } from 'expo-observe';
 import { styles } from './EquipmentModalStyles';
 
 interface Props {
@@ -34,6 +35,7 @@ export default function EquipmentModal({ visible, onClose }: Props) {
       setAimMeasure(favBow?.aimMeasure?.toString() ?? '');
       setArrowWeight(favArrows?.weight?.toString() ?? '');
     } catch (err) {
+      Observe.reportError(err);
       Sentry.captureException(err);
     }
   }, []);
@@ -58,9 +60,9 @@ export default function EquipmentModal({ visible, onClose }: Props) {
           bowRepository.update(bow.id, {
             name: bow.name,
             type: bow.type,
-            eyeToNock: eyeToNock ? parseFloat(eyeToNock) : null,
-            aimMeasure: aimMeasure ? parseFloat(aimMeasure) : null,
-            eyeToSight: eyeToSight ? parseFloat(eyeToSight) : null,
+            eyeToNock: eyeToNock ? parseFloat(eyeToNock) : undefined,
+            aimMeasure: aimMeasure ? parseFloat(aimMeasure) : undefined,
+            eyeToSight: eyeToSight ? parseFloat(eyeToSight) : undefined,
             limbs: bow.limbs ?? undefined,
             riser: bow.riser ?? undefined,
             handOrientation: bow.handOrientation,
@@ -77,7 +79,7 @@ export default function EquipmentModal({ visible, onClose }: Props) {
           arrowsRepository.update(arrows.id, {
             name: arrows.name,
             material: arrows.material,
-            weight: arrowWeight ? parseFloat(arrowWeight) : null,
+            weight: arrowWeight ? parseFloat(arrowWeight) : undefined,
             arrowsCount: arrows.arrowsCount ?? undefined,
             diameter: arrows.diameter ?? undefined,
             length: arrows.length ?? undefined,
@@ -95,6 +97,7 @@ export default function EquipmentModal({ visible, onClose }: Props) {
       await Promise.all(updates);
       onClose();
     } catch (err) {
+      Observe.reportError(err);
       Sentry.captureException(err);
     } finally {
       setStatus('idle');

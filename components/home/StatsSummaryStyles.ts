@@ -82,9 +82,10 @@ export const styles = StyleSheet.create({
     color: colors.textSecondary,
   },
   statValue: {
-    fontSize: 15,
-    fontWeight: '700',
+    fontSize: 22,
+    fontWeight: '800',
     color: colors.text,
+    fontVariant: ['tabular-nums'],
   },
   divider: {
     height: 1,

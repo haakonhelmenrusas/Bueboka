@@ -2,7 +2,7 @@ import { authFetchClient as client } from '@/services/api/authFetch';
 import { handleApiError } from '@/services/api/errors';
 import { Bow, BowType } from '@/types';
 
-/** Fields for creating or updating a bow. Required fields (name, type) are only enforced on create. */
+/** Bow creation/update data */
 export interface BowData {
   name: string;
   type: BowType;
@@ -18,13 +18,8 @@ export interface BowData {
   isFavorite?: boolean;
 }
 
-/**
- * Bow repository - handles all bow-related API operations
- */
+/** Bow repository */
 export const bowRepository = {
-  /**
-   * Get all bows for the current user
-   */
   async getAll(): Promise<Bow[]> {
     try {
       const response = await client.get<{ bows: Bow[] }>('/bows');
@@ -35,9 +30,6 @@ export const bowRepository = {
     }
   },
 
-  /**
-   * Create a new bow
-   */
   async create(data: BowData): Promise<Bow> {
     try {
       const response = await client.post<{ bow: Bow }>('/bows', data);
@@ -47,13 +39,6 @@ export const bowRepository = {
     }
   },
 
-  /**
-   * Update an existing bow.
-   *
-   * When { isFavorite: true } is included the API automatically unfavourites
-   * all other bows for the current user in the same transaction, so the
-   * client never needs to send multiple requests.
-   */
   async update(id: string, data: Partial<BowData>): Promise<Bow> {
     try {
       const response = await client.patch<{ bow: Bow }>(`/bows/${id}`, data);
@@ -63,9 +48,6 @@ export const bowRepository = {
     }
   },
 
-  /**
-   * Delete a bow
-   */
   async delete(id: string): Promise<void> {
     try {
       await client.delete(`/bows/${id}`);

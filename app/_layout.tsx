@@ -1,9 +1,21 @@
 import { StatusBar } from 'expo-status-bar';
 import { Stack, useNavigationContainerRef } from 'expo-router';
 import * as Sentry from '@sentry/react-native';
+import { Observe, ObserveRoot } from 'expo-observe';
 import React, { useEffect } from 'react';
-import { AuthProvider, LanguageProvider } from '@/contexts';
+import { AuthProvider, LanguageProvider, NotificationProvider } from '@/contexts';
+import { usePendingChallenges, usePushNotifications } from '@/hooks';
+import { ObserveErrorFallback } from '@/components/common';
 import { colors } from '@/styles/colors';
+
+// Expo Observe: per-route navigation metrics. Must run at module scope,
+// before any screen mounts — each configure() call replaces the whole config.
+// Route params that carry ids are stripped from exported metrics.
+Observe.configure({
+  integrations: {
+    'expo-router': { filteredParams: ['id', 'opponentId'] },
+  },
+});
 
 let navigationIntegration: any = null;
 
@@ -26,8 +38,19 @@ if (isNonDev) {
   });
 }
 
+/**
+ * Polls for incoming challenges app-wide and turns them into in-app
+ * notifications (the invitee is notified wherever they are in the app).
+ */
+function ChallengeNotificationPoller() {
+  usePendingChallenges();
+  return null;
+}
+
 function RootLayoutContent() {
   const ref = useNavigationContainerRef();
+  // Register the Expo push token with /api/notifications/push-token after login
+  usePushNotifications();
 
   useEffect(() => {
     if (ref?.current && navigationIntegration) {
@@ -37,6 +60,7 @@ function RootLayoutContent() {
 
   return (
     <>
+      <ChallengeNotificationPoller />
       <StatusBar style="light" />
       <Stack screenOptions={{ headerShown: false }}>
         <Stack.Screen name="index" />
@@ -45,6 +69,9 @@ function RootLayoutContent() {
         <Stack.Screen name="(tabs)" options={{ contentStyle: { backgroundColor: colors.primary }, gestureEnabled: false }} />
         <Stack.Screen name="skyttere" options={{ headerShown: false }} />
         <Stack.Screen name="achievements" options={{ headerShown: false }} />
+        <Stack.Screen name="utfordringer" options={{ headerShown: false }} />
+        <Stack.Screen name="hurtigtrening" options={{ headerShown: false }} />
+        <Stack.Screen name="varsler" options={{ headerShown: false }} />
       </Stack>
     </>
   );
@@ -54,10 +81,22 @@ function RootLayout() {
   return (
     <AuthProvider>
       <LanguageProvider>
-        <RootLayoutContent />
+        <NotificationProvider>
+          <RootLayoutContent />
+        </NotificationProvider>
       </LanguageProvider>
     </AuthProvider>
   );
 }
 
-export default isNonDev ? Sentry.wrap(RootLayout) : RootLayout;
+const RootComponent = isNonDev ? Sentry.wrap(RootLayout) : RootLayout;
+
+// ObserveRoot measures time to first render and records render errors
+// (errorBoundaryFallback renders in place of the app on a crash)
+export default function AppRoot() {
+  return (
+    <ObserveRoot errorBoundaryFallback={<ObserveErrorFallback />}>
+      <RootComponent />
+    </ObserveRoot>
+  );
+}

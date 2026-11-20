@@ -1,3 +1,4 @@
+import { useMemo } from 'react';
 import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
@@ -7,7 +8,8 @@ import { faXmark } from '@fortawesome/free-solid-svg-icons/faXmark';
 import { faInfo } from '@fortawesome/free-solid-svg-icons/faInfo';
 import { Button, ModalWrapper } from '@/components/common';
 import { useTranslation } from '@/contexts';
-import { Environment } from '@/types';
+import { PracticeCategory } from '@/types';
+import { resolveScoringScheme } from '@/utils/helpers/scoringHelpers';
 import { DEFAULT_ARROWS_PER_END } from '@/components/practice/shared/formConstants';
 import { colors } from '@/styles/colors';
 import { styles } from './CreatePracticeFormStyles';
@@ -19,7 +21,7 @@ interface ScoringModalProps {
   visible: boolean;
   round: RoundInput;
   roundIndex: number;
-  environment: Environment;
+  practiceCategory: PracticeCategory;
   endPage: number;
   editingIndex: number | null;
   onClose: () => void;
@@ -33,7 +35,7 @@ export function ScoringModal({
   visible,
   round,
   roundIndex,
-  environment,
+  practiceCategory,
   endPage,
   editingIndex,
   onClose,
@@ -44,6 +46,9 @@ export function ScoringModal({
 }: ScoringModalProps) {
   const { t } = useTranslation();
   const insets = useSafeAreaInsets();
+
+  // Scoring is driven by the practice category + the round's target face
+  const scheme = useMemo(() => resolveScoringScheme(practiceCategory, round.targetType), [practiceCategory, round.targetType]);
 
   const maxArrows = round.numberArrows ?? 0;
   const hasManualScore = round.roundScore > 0 && (round.scores ?? []).length === 0;
@@ -126,6 +131,7 @@ export function ScoringModal({
                 arrowsInThisEnd={arrowsInThisEnd}
                 startIdx={startIdx}
                 scores={endScores}
+                scheme={scheme}
                 editingIdx={editingIdx}
                 onChipPress={(absIdx) => onSetEditingIndex(absIdx === -1 ? null : absIdx)}
               />
@@ -137,24 +143,27 @@ export function ScoringModal({
                 {filledCount > 0 && <Text style={styles.scoringTotal}>{`${t['scoring.sum']} ${total}`}</Text>}
               </View>
 
-              {showScoreButtons && (
-                <>
-                  {isEditingArrow && (
-                    <Text style={styles.editingHint}>{`${t['scoring.editingArrowPrefix']} ${(editingIdx! % arrowsPerEnd) + 1}`}</Text>
-                  )}
-                  <ScoreButtonGrid
-                    environment={environment}
-                    onScorePress={(score) => {
-                      if (isEditingArrow) {
-                        onUpdateArrowScore(editingIdx!, score);
-                        onSetEditingIndex(null);
-                      } else {
-                        onAddArrowScore(score);
-                      }
-                    }}
-                  />
-                </>
-              )}
+              {showScoreButtons &&
+                (scheme.options.length > 0 ? (
+                  <>
+                    {isEditingArrow && (
+                      <Text style={styles.editingHint}>{`${t['scoring.editingArrowPrefix']} ${(editingIdx! % arrowsPerEnd) + 1}`}</Text>
+                    )}
+                    <ScoreButtonGrid
+                      options={scheme.options}
+                      onScorePress={(score) => {
+                        if (isEditingArrow) {
+                          onUpdateArrowScore(editingIdx!, score);
+                          onSetEditingIndex(null);
+                        } else {
+                          onAddArrowScore(score);
+                        }
+                      }}
+                    />
+                  </>
+                ) : (
+                  <Text style={styles.editingHint}>{t['scoring.noScoreTarget']}</Text>
+                ))}
 
               {isFull && !isEditingArrow && currentEndPage === totalEnds - 1 && (
                 <View style={styles.scoringComplete}>

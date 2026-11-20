@@ -57,67 +57,66 @@ function pickedImage(uri = 'file:///photo.jpg', fileSize = 1_000_000) {
 // ── Tests ─────────────────────────────────────────────────────────────────────
 
 describe('ProfileImageManager – avatar display', () => {
-  it('shows the first letter of the userName when there is no avatar', () => {
-    const { getByText } = render(<ProfileImageManager userName="Ola Nordmann" onUpload={jest.fn()} onRemove={jest.fn()} />);
+  it('shows the first letter of the userName when there is no avatar', async () => {
+    const { getByText } = await render(<ProfileImageManager userName="Ola Nordmann" onUpload={jest.fn()} onRemove={jest.fn()} />);
     expect(getByText('O')).toBeTruthy();
   });
 
-  it('uppercases the initial letter', () => {
-    const { getByText } = render(<ProfileImageManager userName="kari" onUpload={jest.fn()} onRemove={jest.fn()} />);
+  it('uppercases the initial letter', async () => {
+    const { getByText } = await render(<ProfileImageManager userName="kari" onUpload={jest.fn()} onRemove={jest.fn()} />);
     expect(getByText('K')).toBeTruthy();
   });
 
-  it('shows "?" when userName is empty', () => {
-    const { getByText } = render(<ProfileImageManager userName="" onUpload={jest.fn()} onRemove={jest.fn()} />);
+  it('shows "?" when userName is empty', async () => {
+    const { getByText } = await render(<ProfileImageManager userName="" onUpload={jest.fn()} onRemove={jest.fn()} />);
     expect(getByText('?')).toBeTruthy();
   });
 
-  it('renders an Image when avatarUrl is provided', () => {
-    const { UNSAFE_getByType } = render(
+  it('renders an Image when avatarUrl is provided', async () => {
+    const { getByTestId } = await render(
       <ProfileImageManager userName="Ola" avatarUrl="https://cdn.example.com/avatar.jpg" onUpload={jest.fn()} onRemove={jest.fn()} />,
     );
-    const img = UNSAFE_getByType(Image);
+    const img = getByTestId('avatar-image');
     expect(img.props.source).toEqual({ uri: 'https://cdn.example.com/avatar.jpg' });
   });
 });
 
 describe('ProfileImageManager – menu modal', () => {
-  it('menu is closed by default', () => {
-    const { queryByText } = render(<ProfileImageManager userName="Ola" onUpload={jest.fn()} onRemove={jest.fn()} />);
+  it('menu is closed by default', async () => {
+    const { queryByText } = await render(<ProfileImageManager userName="Ola" onUpload={jest.fn()} onRemove={jest.fn()} />);
     // The menu title only renders when the modal is open
     expect(queryByText('Profilbilde')).toBeNull();
   });
 
   it('opens the menu when the avatar is pressed', async () => {
-    const { getByText, queryByText } = render(<ProfileImageManager userName="Ola" onUpload={jest.fn()} onRemove={jest.fn()} />);
+    const { getByText, queryByText } = await render(<ProfileImageManager userName="Ola" onUpload={jest.fn()} onRemove={jest.fn()} />);
     // Avatar TouchableOpacity wraps the initial letter
-    fireEvent.press(getByText('O'));
+    await fireEvent.press(getByText('O'));
     await waitFor(() => expect(queryByText('Profilbilde')).toBeTruthy());
   });
 
   it('closes the menu when "Avbryt" is pressed', async () => {
-    const { getByText, queryByText, getByTestId } = render(
+    const { getByText, queryByText, getByTestId } = await render(
       <ProfileImageManager userName="Ola" onUpload={jest.fn()} onRemove={jest.fn()} />,
     );
-    fireEvent.press(getByText('O'));
+    await fireEvent.press(getByText('O'));
     await waitFor(() => expect(queryByText('Profilbilde')).toBeTruthy());
 
-    fireEvent.press(getByTestId('btn-Avbryt'));
+    await fireEvent.press(getByTestId('btn-Avbryt'));
     await waitFor(() => expect(queryByText('Profilbilde')).toBeNull());
   });
 
   it('does NOT show "Fjern bilde" when there is no avatarUrl', async () => {
-    const { getByText, queryByTestId } = render(<ProfileImageManager userName="Ola" onUpload={jest.fn()} onRemove={jest.fn()} />);
-    fireEvent.press(getByText('O'));
+    const { getByText, queryByTestId } = await render(<ProfileImageManager userName="Ola" onUpload={jest.fn()} onRemove={jest.fn()} />);
+    await fireEvent.press(getByText('O'));
     await waitFor(() => expect(queryByTestId('btn-Fjern bilde')).toBeNull());
   });
 
   it('shows "Fjern bilde" when avatarUrl is set', async () => {
-    const { UNSAFE_getAllByType, getByTestId } = render(
+    const { getByTestId } = await render(
       <ProfileImageManager userName="Ola" avatarUrl="https://cdn.example.com/avatar.jpg" onUpload={jest.fn()} onRemove={jest.fn()} />,
     );
-    // The first TouchableOpacity in the tree is the avatar press area
-    fireEvent.press(UNSAFE_getAllByType(TouchableOpacity)[0]);
+    await fireEvent.press(getByTestId('avatar-button'));
     await waitFor(() => expect(getByTestId('btn-Fjern bilde')).toBeTruthy());
   });
 });
@@ -132,15 +131,15 @@ describe('ProfileImageManager – image upload', () => {
     const onUpload = jest.fn().mockResolvedValue(undefined);
     pickedImage('file:///selected.jpg', 500_000);
 
-    const { getByText, getByTestId } = render(<ProfileImageManager userName="Ola" onUpload={onUpload} onRemove={jest.fn()} />);
+    const { getByText, getByTestId } = await render(<ProfileImageManager userName="Ola" onUpload={onUpload} onRemove={jest.fn()} />);
 
     // Open menu
-    fireEvent.press(getByText('O'));
+    await fireEvent.press(getByText('O'));
     await waitFor(() => getByTestId('btn-Velg bilde'));
 
     // Pick image
     await act(async () => {
-      fireEvent.press(getByTestId('btn-Velg bilde'));
+      await fireEvent.press(getByTestId('btn-Velg bilde'));
     });
 
     await waitFor(() => expect(onUpload).toHaveBeenCalledWith('file:///selected.jpg'));
@@ -151,13 +150,13 @@ describe('ProfileImageManager – image upload', () => {
     // fileSize > 5 * 1024 * 1024
     pickedImage('file:///huge.jpg', 6 * 1024 * 1024);
 
-    const { getByText, getByTestId } = render(<ProfileImageManager userName="Ola" onUpload={onUpload} onRemove={jest.fn()} />);
+    const { getByText, getByTestId } = await render(<ProfileImageManager userName="Ola" onUpload={onUpload} onRemove={jest.fn()} />);
 
-    fireEvent.press(getByText('O'));
+    await fireEvent.press(getByText('O'));
     await waitFor(() => getByTestId('btn-Velg bilde'));
 
     await act(async () => {
-      fireEvent.press(getByTestId('btn-Velg bilde'));
+      await fireEvent.press(getByTestId('btn-Velg bilde'));
     });
 
     await waitFor(() => {
@@ -170,13 +169,13 @@ describe('ProfileImageManager – image upload', () => {
     const onUpload = jest.fn();
     cancelledPicker();
 
-    const { getByText, getByTestId } = render(<ProfileImageManager userName="Ola" onUpload={onUpload} onRemove={jest.fn()} />);
+    const { getByText, getByTestId } = await render(<ProfileImageManager userName="Ola" onUpload={onUpload} onRemove={jest.fn()} />);
 
-    fireEvent.press(getByText('O'));
+    await fireEvent.press(getByText('O'));
     await waitFor(() => getByTestId('btn-Velg bilde'));
 
     await act(async () => {
-      fireEvent.press(getByTestId('btn-Velg bilde'));
+      await fireEvent.press(getByTestId('btn-Velg bilde'));
     });
 
     await waitFor(() => expect(onUpload).not.toHaveBeenCalled());
@@ -186,13 +185,13 @@ describe('ProfileImageManager – image upload', () => {
     mockGetMediaLibraryPermissionsAsync.mockResolvedValue({ granted: false });
     mockRequestMediaLibraryPermissionsAsync.mockResolvedValue({ granted: false });
 
-    const { getByText, getByTestId } = render(<ProfileImageManager userName="Ola" onUpload={jest.fn()} onRemove={jest.fn()} />);
+    const { getByText, getByTestId } = await render(<ProfileImageManager userName="Ola" onUpload={jest.fn()} onRemove={jest.fn()} />);
 
-    fireEvent.press(getByText('O'));
+    await fireEvent.press(getByText('O'));
     await waitFor(() => getByTestId('btn-Velg bilde'));
 
     await act(async () => {
-      fireEvent.press(getByTestId('btn-Velg bilde'));
+      await fireEvent.press(getByTestId('btn-Velg bilde'));
     });
 
     await waitFor(() => expect(Alert.alert).toHaveBeenCalledWith('Ingen tilgang', expect.any(String)));

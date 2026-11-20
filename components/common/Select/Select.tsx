@@ -13,6 +13,7 @@ import {
   View,
   ViewStyle,
 } from 'react-native';
+import type { TextInputInstance } from 'react-native';
 import styles from './SelectStyles';
 import { colors } from '@/styles/colors';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
@@ -66,7 +67,7 @@ export const Select: React.FC<Props> = ({
   const [selectBoxPosition, setSelectBoxPosition] = useState({ x: 0, y: 0, width: 0, height: 0 });
   const rotateAnim = useRef(new Animated.Value(0)).current;
   const selectBoxRef = useRef<any>(null);
-  const searchInputRef = useRef<TextInput>(null);
+  const searchInputRef = useRef<TextInputInstance>(null);
 
   const filteredOptions = useMemo(() => {
     if (!searchable || !searchQuery) return options;

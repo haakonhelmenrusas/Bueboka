@@ -8,6 +8,7 @@ import { faRightFromBracket } from '@fortawesome/free-solid-svg-icons/faRightFro
 import { colors } from '@/styles/colors';
 import { useAuth } from '@/hooks';
 import { useCallback, useEffect, useRef, useState } from 'react';
+import { useObserve } from 'expo-observe';
 import ConfirmModal from '@/components/home/DeleteArrowSetModal/ConfirmModal';
 import { userRepository } from '@/services/repositories';
 import { AppError } from '@/services';
@@ -17,6 +18,7 @@ import {
   PrivacySection,
   SponsorCard,
   SupportCard,
+  FaqSection,
   LanguageSection,
   FeedbackModal,
 } from '@/components/settings';
@@ -25,7 +27,12 @@ import { EmailVerificationBanner } from '@/components/auth';
 import { useTranslation } from '@/contexts';
 
 export default function Settings() {
+  const { markInteractive } = useObserve();
   const { logout, deleteAccount, user, refreshUser } = useAuth();
+
+  useEffect(() => {
+    markInteractive();
+  }, [markInteractive]);
   const { t } = useTranslation();
   const insets = useSafeAreaInsets();
 
@@ -93,6 +100,7 @@ export default function Settings() {
           <Text style={styles.title}>{t['settings.title']}</Text>
           {user && <AccountSection user={user} onProfileUpdate={handleProfileUpdate} />}
           <PublicProfileSection user={user} />
+          <FaqSection />
           <LanguageSection />
           <View style={styles.sectionCard}>
             <Button

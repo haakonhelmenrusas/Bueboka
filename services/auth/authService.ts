@@ -4,9 +4,6 @@ import { clearTokens, saveTokens } from '@/services/auth/tokenStorage';
 import { User } from '@/types';
 import * as Sentry from '@sentry/react-native';
 
-/**
- * Registration data structure
- */
 export interface RegisterData {
   email: string;
   password: string;
@@ -14,59 +11,77 @@ export interface RegisterData {
   club?: string;
 }
 
-/**
- * Login data structure
- */
 export interface LoginData {
   email: string;
   password: string;
 }
 
-function ensureExpiryString(expiresAt?: string): string | undefined {
-  if (!expiresAt) return undefined;
-  try {
-    const d = new Date(expiresAt);
-    if (!isNaN(d.getTime())) return d.toISOString();
-    return expiresAt;
-  } catch {
-    return expiresAt;
+/**
+ * Normalize an email before it reaches the backend.
+ * A user row is looked up by an exact string match, so an address that picked
+ * up a trailing space from keyboard autocomplete, or a capital from autofill
+ * (which bypasses autoCapitalize="none" on the input), fails to match an
+ * account that plainly exists and better-auth reports "User not found".
+ */
+export function normalizeEmail(email: string): string {
+  return email.trim().toLowerCase();
+}
+
+function ensureExpiryString(expiresAt?: string): string {
+  if (expiresAt) {
+    try {
+      const d = new Date(expiresAt);
+      if (!isNaN(d.getTime())) return d.toISOString();
+      return expiresAt;
+    } catch {
+      return expiresAt;
+    }
   }
+  // better-auth sessions default to 7 days; use that when the response omits expiresAt
+  return new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString();
 }
 
 /**
- * Authentication service for all auth-related API calls
+ * Result of a sign-up attempt.
+ * When the backend runs better-auth with `requireEmailVerification`, a
+ * successful sign-up deliberately returns no session token — the address must
+ * be verified before a session is issued. `requiresEmailVerification` reflects
+ * that: it is true exactly when no token came back.
  */
+export interface RegisterResult {
+  user: User;
+  requiresEmailVerification: boolean;
+}
+
 export const authService = {
-  /**
-   * Register a new user with email and password
-   */
-  async register(data: RegisterData): Promise<{ user: User }> {
+  async register(data: RegisterData): Promise<RegisterResult> {
     try {
-      const response = await client.post<{ user: User; token?: string; expiresAt?: string }>('/auth/sign-up/email', data);
+      const response = await client.post<{ user: User; token?: string; expiresAt?: string }>('/auth/sign-up/email', {
+        ...data,
+        email: normalizeEmail(data.email),
+      });
       const { user, token, expiresAt } = response.data;
 
       if (token) {
-        const normalized = ensureExpiryString(expiresAt);
-        await saveTokens({ accessToken: token, expiresAt: normalized ?? '' });
+        await saveTokens({ accessToken: token, expiresAt: ensureExpiryString(expiresAt) });
       }
 
-      return { user };
+      return { user, requiresEmailVerification: !token };
     } catch (error) {
       throw handleApiError(error);
     }
   },
 
-  /**
-   * Login with email and password
-   */
   async login(data: LoginData): Promise<{ user: User }> {
     try {
-      const response = await client.post<{ user: User; token?: string; expiresAt?: string }>('/auth/sign-in/email', data);
+      const response = await client.post<{ user: User; token?: string; expiresAt?: string }>('/auth/sign-in/email', {
+        ...data,
+        email: normalizeEmail(data.email),
+      });
       const { user, token, expiresAt } = response.data;
 
       if (token) {
-        const normalized = ensureExpiryString(expiresAt);
-        await saveTokens({ accessToken: token, expiresAt: normalized ?? '' });
+        await saveTokens({ accessToken: token, expiresAt: ensureExpiryString(expiresAt) });
       }
 
       return { user };
@@ -75,9 +90,6 @@ export const authService = {
     }
   },
 
-  /**
-   * Logout the current user
-   */
   async logout(): Promise<void> {
     try {
       await client.post('/auth/sign-out');
@@ -92,20 +104,14 @@ export const authService = {
     }
   },
 
-  /**
-   * Send verification email to user
-   */
   async sendVerificationEmail(email: string): Promise<void> {
     try {
-      await client.post('/auth/send-verification-email', { email });
+      await client.post('/auth/send-verification-email', { email: normalizeEmail(email) });
     } catch (error) {
       throw handleApiError(error);
     }
   },
 
-  /**
-   * Verify email with token
-   */
   async verifyEmail(token: string): Promise<{ user: User }> {
     try {
       const response = await client.post<{ user: User }>('/auth/verify-email', { token });
@@ -115,9 +121,6 @@ export const authService = {
     }
   },
 
-  /**
-   * Resend verification email for current user
-   */
   async resendVerificationEmail(): Promise<void> {
     try {
       await client.post('/auth/send-verification-email');
@@ -126,9 +129,6 @@ export const authService = {
     }
   },
 
-  /**
-   * Validate the current session
-   */
   async validateSession(): Promise<{ user: User } | null> {
     try {
       const response = await client.get<{ user: User; session?: unknown }>('/auth/get-session');
@@ -139,20 +139,14 @@ export const authService = {
     }
   },
 
-  /**
-   * Request password reset email
-   */
   async requestPasswordReset(email: string): Promise<void> {
     try {
-      await client.post('/auth/forget-password', { email });
+      await client.post('/auth/forget-password', { email: normalizeEmail(email) });
     } catch (error) {
       throw handleApiError(error);
     }
   },
 
-  /**
-   * Reset password with token
-   */
   async resetPassword(token: string, newPassword: string): Promise<void> {
     try {
       await client.post('/auth/reset-password', {
