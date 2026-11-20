@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect, useRef } from 'react';
 import { useAuth } from '@/hooks/useAuth';
 import { challengeRepository, type GetAllChallengesParams } from '@/services/repositories';
 import { offlineMutation } from '@/services/offline/mutationHelper';
@@ -18,6 +18,25 @@ import { useTranslation } from '@/contexts/LanguageContext';
  */
 export interface FetchChallengesParams extends GetAllChallengesParams {
   forceRefresh?: boolean;
+}
+
+/**
+ * Module-level listeners so a mutation from one screen (e.g. deleting a
+ * pending challenge on the detail screen) also refetches the list on every
+ * other screen using useChallenge — each hook call holds its own state, so
+ * refetching only the current instance would leave the list screen stale.
+ */
+const challengeListListeners = new Set<() => void>();
+
+export function subscribeChallengeList(listener: () => void): () => void {
+  challengeListListeners.add(listener);
+  return () => {
+    challengeListListeners.delete(listener);
+  };
+}
+
+function emitChallengeListChanged(): void {
+  challengeListListeners.forEach((listener) => listener());
 }
 
 /**
@@ -101,6 +120,14 @@ export function useChallenge() {
     [pagination.page, pagination.pageSize, t],
   );
 
+  // Refetch this instance's list when another useChallenge instance mutates
+  // challenges (create/update/accept/decline/cancel/delete/submit)
+  const fetchChallengesRef = useRef(fetchChallenges);
+  useEffect(() => {
+    fetchChallengesRef.current = fetchChallenges;
+  }, [fetchChallenges]);
+  useEffect(() => subscribeChallengeList(() => void fetchChallengesRef.current()), []);
+
   /**
    * Fetch a specific challenge by ID
    */
@@ -142,6 +169,7 @@ export function useChallenge() {
 
         // Refresh challenges list
         await fetchChallenges();
+        emitChallengeListChanged();
 
         // No local notification for the sender — the server notifies the
         // challenged user, and the sender is notified only when they answer.
@@ -175,6 +203,7 @@ export function useChallenge() {
 
         setCurrentChallenge(challenge);
         await fetchChallenges();
+        emitChallengeListChanged();
         return challenge;
       } catch (err) {
         setError(err instanceof Error ? err : new Error(t['common.unknownError']));
@@ -205,6 +234,7 @@ export function useChallenge() {
 
         setCurrentChallenge(challenge);
         await fetchChallenges();
+        emitChallengeListChanged();
         return challenge;
       } catch (err) {
         setError(err instanceof Error ? err : new Error(t['common.unknownError']));
@@ -235,6 +265,7 @@ export function useChallenge() {
 
         setCurrentChallenge(challenge);
         await fetchChallenges();
+        emitChallengeListChanged();
         return challenge;
       } catch (err) {
         setError(err instanceof Error ? err : new Error(t['common.unknownError']));
@@ -265,6 +296,7 @@ export function useChallenge() {
 
         setCurrentChallenge(challenge);
         await fetchChallenges();
+        emitChallengeListChanged();
         return challenge;
       } catch (err) {
         setError(err instanceof Error ? err : new Error(t['common.unknownError']));
@@ -295,6 +327,7 @@ export function useChallenge() {
 
         setCurrentChallenge(challenge);
         await fetchChallenges();
+        emitChallengeListChanged();
         return challenge;
       } catch (err) {
         setError(err instanceof Error ? err : new Error(t['common.unknownError']));
@@ -324,6 +357,7 @@ export function useChallenge() {
         );
 
         await fetchChallenges();
+        emitChallengeListChanged();
       } catch (err) {
         setError(err instanceof Error ? err : new Error(t['common.unknownError']));
         throw err;

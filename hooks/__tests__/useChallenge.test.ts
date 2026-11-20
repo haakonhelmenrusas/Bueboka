@@ -415,6 +415,42 @@ describe('useChallenge', () => {
         expect(mockChallengeRepository.delete).toHaveBeenCalledWith('challenge-1');
       });
     });
+
+    it('refetches the challenge list on other useChallenge instances (e.g. the list screen) after delete', async () => {
+      mockChallengeRepository.delete.mockResolvedValue(undefined);
+      // The list screen's instance has already loaded the challenge
+      mockChallengeRepository.getAll.mockResolvedValue({
+        challenges: [mockChallengeListItem],
+        page: 1,
+        pageSize: 20,
+        total: 1,
+      });
+
+      // Two independent hook instances, like the list screen and the detail screen
+      const listScreen = await renderHook(() => useChallenge());
+      const detailScreen = await renderHook(() => useChallenge());
+
+      await act(async () => {
+        await listScreen.result.current.fetchChallenges();
+      });
+      await waitFor(() => expect(listScreen.result.current.challenges).toEqual([mockChallengeListItem]));
+
+      // After the delete the server no longer returns the challenge
+      mockChallengeRepository.getAll.mockResolvedValue({
+        challenges: [],
+        page: 1,
+        pageSize: 20,
+        total: 0,
+      });
+
+      await act(async () => {
+        await detailScreen.result.current.deleteChallenge('challenge-1');
+      });
+
+      // The list screen's instance must refetch and drop the deleted challenge
+      await waitFor(() => expect(listScreen.result.current.challenges).toEqual([]));
+      expect(mockChallengeRepository.delete).toHaveBeenCalledWith('challenge-1');
+    });
   });
 
   describe('fetchStatistics', () => {
