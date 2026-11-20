@@ -12,7 +12,7 @@ import { Arrows, Bow, Environment, Practice, PracticeCategory } from '@/types';
 import { useTranslation } from '@/contexts';
 import { buildEndData } from '@/utils/helpers/practiceHelpers';
 import { useFocusEffect, useRouter } from 'expo-router';
-import { consumePendingQuickPracticeResult, markQuickPracticeLaunched } from '@/utils/quickPractice';
+import { clearQuickPracticeCounts, consumePendingQuickPracticeResult, markQuickPracticeLaunched } from '@/utils/quickPractice';
 import type { TranslationKeys } from '@/lib/i18n';
 import { styles } from './CreatePracticeFormStyles';
 import { DEFAULT_ARROWS_PER_END } from '@/components/practice/shared/formConstants';
@@ -154,7 +154,12 @@ export default function CreatePracticeForm({
   // ─── Init form ───────────────────────────────────────────────────────────────
   useEffect(() => {
     if (!visible) {
-      if (!resumeFromQuickPracticeRef.current) setEditingId(null);
+      if (!resumeFromQuickPracticeRef.current) {
+        setEditingId(null);
+        // The form was closed for real (not hidden for quick practice):
+        // per-round quick-practice counts belong to this session only
+        clearQuickPracticeCounts();
+      }
       setCloseConfirmVisible(false);
       setConfirmVisible(false);
       setScoringRoundIndex(null);
@@ -167,7 +172,11 @@ export default function CreatePracticeForm({
     // Returning from the quick-practice screen: keep the current form state
     // and land back on the rounds step (1), where the arrow count belongs
     if (resumeFromQuickPractice) setStep(1);
-    else resetStep();
+    else {
+      resetStep();
+      // A new practice session starts with clean quick-practice counts
+      clearQuickPracticeCounts();
+    }
     setError(null);
 
     if (resumeFromQuickPractice) return;
@@ -550,7 +559,11 @@ export default function CreatePracticeForm({
         </KeyboardAvoidingView>
       </View>
 
+      {/* Rendered as an overlay inside this modal (embedded), not as a second
+          native RN Modal: stacking native modals on iOS is unreliable and can
+          freeze the app when both dismiss at once */}
       <ConfirmModal
+        embedded
         visible={confirmVisible}
         title={t['practiceForm.deleteTitle']}
         message={t['practiceForm.deleteMessage']}
@@ -562,6 +575,7 @@ export default function CreatePracticeForm({
       />
 
       <ConfirmModal
+        embedded
         visible={closeConfirmVisible}
         title={t['practiceForm.discardTitle']}
         message={t['practiceForm.discardMessage']}

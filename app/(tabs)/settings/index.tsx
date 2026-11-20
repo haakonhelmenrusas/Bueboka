@@ -18,6 +18,7 @@ import {
   PrivacySection,
   SponsorCard,
   SupportCard,
+  FaqSection,
   LanguageSection,
   FeedbackModal,
 } from '@/components/settings';
@@ -99,6 +100,7 @@ export default function Settings() {
           <Text style={styles.title}>{t['settings.title']}</Text>
           {user && <AccountSection user={user} onProfileUpdate={handleProfileUpdate} />}
           <PublicProfileSection user={user} />
+          <FaqSection />
           <LanguageSection />
           <View style={styles.sectionCard}>
             <Button

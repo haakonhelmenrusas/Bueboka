@@ -10,12 +10,15 @@ jest.mock('expo-router', () => ({
   useFocusEffect: jest.fn(),
 }));
 
+const mockMultiRemove = jest.fn().mockResolvedValue(undefined);
 jest.mock('@react-native-async-storage/async-storage', () => ({
   multiGet: jest.fn().mockResolvedValue([
     ['bueboka_last_distance', '18'],
     ['bueboka_last_target', '80cm'],
   ]),
   multiSet: jest.fn().mockResolvedValue(undefined),
+  getAllKeys: jest.fn().mockResolvedValue(['bueboka_quick_count_round_0', 'bueboka_last_distance']),
+  multiRemove: (...args: any[]) => mockMultiRemove(...args),
 }));
 
 jest.mock('@sentry/react-native', () => ({ captureException: jest.fn() }));
@@ -111,6 +114,42 @@ describe('CreatePracticeForm quick practice handoff', () => {
     });
 
     expect(mockSetStep).toHaveBeenCalledWith(1);
+  });
+
+  it('clears per-round quick-practice counts when the form is closed for real', async () => {
+    const { rerender } = await renderForm(true, jest.fn(), jest.fn());
+    await waitFor(() => expect(mockRoundsStepProps?.rounds?.[0]?.targetType).toBe('80cm'));
+
+    const props = (visible: boolean) => (
+      <CreatePracticeForm visible={visible} onClose={jest.fn()} onHide={jest.fn()} bows={[]} arrowSets={[]} />
+    );
+
+    mockMultiRemove.mockClear();
+    await act(async () => {
+      rerender(props(false));
+    });
+
+    // Only the quick-count keys are removed, other storage keys are kept
+    expect(mockMultiRemove).toHaveBeenCalledWith(['bueboka_quick_count_round_0']);
+  });
+
+  it('does NOT clear counts when the form is only hidden for quick practice', async () => {
+    const { getByTestId, rerender } = await renderForm(true, jest.fn(), jest.fn());
+    await waitFor(() => expect(mockRoundsStepProps?.rounds?.[0]?.targetType).toBe('80cm'));
+
+    await act(async () => {
+      fireEvent.press(getByTestId('start-quick-practice'));
+    });
+
+    const props = (visible: boolean) => (
+      <CreatePracticeForm visible={visible} onClose={jest.fn()} onHide={jest.fn()} bows={[]} arrowSets={[]} />
+    );
+
+    mockMultiRemove.mockClear();
+    await act(async () => {
+      rerender(props(false));
+    });
+    expect(mockMultiRemove).not.toHaveBeenCalled();
   });
 
   it('hides the form modal before pushing /hurtigtrening (pushed screen must not open behind the RN Modal)', async () => {

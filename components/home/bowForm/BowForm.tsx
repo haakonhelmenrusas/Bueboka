@@ -313,7 +313,11 @@ const BowForm = ({ modalVisible, setModalVisible, bow, existingBows = [], onSucc
           />
         </View>
       </KeyboardAvoidingView>
+
+      {/* Embedded overlay inside this modal — a second native RN Modal is
+          unreliable on iOS and can freeze the app when both dismiss at once */}
       <ConfirmModal
+        embedded
         visible={confirmVisible}
         title={t['bowForm.deleteTitle']}
         message={t['bowForm.deleteMessage'].replace('{name}', name)}

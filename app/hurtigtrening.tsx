@@ -1,6 +1,5 @@
 import { useCallback, useEffect, useState } from 'react';
 import { Text, TouchableOpacity, View } from 'react-native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -10,7 +9,7 @@ import { colors } from '@/styles/colors';
 import { useTranslation } from '@/contexts';
 import { Environment, PracticeCategory } from '@/types';
 import type { QuickPracticeInfo } from '@/utils/helpers/practiceHelpers';
-import { setPendingQuickPracticeResult } from '@/utils/quickPractice';
+import { getQuickPracticeCount, saveQuickPracticeCount, setPendingQuickPracticeResult } from '@/utils/quickPractice';
 import { Button } from '@/components/common';
 import { styles } from '@/components/practice/QuickPracticeScreenStyles';
 
@@ -31,17 +30,19 @@ export default function QuickPracticeScreen() {
   const num = (v: string | undefined) => (v ? Number(v) : undefined);
 
   // Remember the last arrow count per round, so re-opening the quick practice
-  // for the same round starts where the user left off
-  const countKey = `bueboka_quick_count_round_${params.roundIndex ?? '0'}`;
+  // for the same round starts where the user left off. Cleared when the
+  // practice form closes (see clearQuickPracticeCounts in CreatePracticeForm)
+  const roundIndexParam = params.roundIndex ?? '0';
 
   useEffect(() => {
-    AsyncStorage.getItem(countKey)
-      .then((v) => {
-        const n = v ? parseInt(v, 10) : 0;
-        if (!isNaN(n) && n > 0) setCount(n);
-      })
-      .catch(() => {});
-  }, [countKey]);
+    let cancelled = false;
+    getQuickPracticeCount(roundIndexParam).then((n) => {
+      if (!cancelled && n > 0) setCount(n);
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [roundIndexParam]);
 
   const info: QuickPracticeInfo = {
     distanceMeters: num(params.distanceMeters),
@@ -60,10 +61,10 @@ export default function QuickPracticeScreen() {
     const roundIndex = Number(params.roundIndex);
     if (Number.isInteger(roundIndex) && roundIndex >= 0) {
       setPendingQuickPracticeResult({ roundIndex, count });
-      AsyncStorage.setItem(countKey, String(count)).catch(() => {});
+      saveQuickPracticeCount(roundIndex, count);
     }
     router.back();
-  }, [count, params, router, countKey]);
+  }, [count, params, router]);
 
   return (
     <View style={styles.container}>

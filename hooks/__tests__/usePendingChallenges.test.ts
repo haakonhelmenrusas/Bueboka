@@ -7,6 +7,7 @@ import { ChallengeStatus } from '@/types';
 jest.mock('@/services/repositories', () => ({
   challengeRepository: {
     getAll: jest.fn(),
+    delete: jest.fn(),
   },
 }));
 
@@ -42,6 +43,7 @@ jest.mock('@/contexts/NotificationContext', () => ({
     unreadCount: mockNotifications.filter((n) => !n.read).length,
     addNotification: mockAddNotification,
     markAsRead: jest.fn(),
+    removeNotification: jest.fn(),
   }),
 }));
 
@@ -147,5 +149,24 @@ describe('usePendingChallenges', () => {
 
     expect(result.current.pendingCount).toBe(0);
     expect(mockAddNotification).not.toHaveBeenCalled();
+  });
+
+  it('refetches pending challenges immediately when a challenge is mutated elsewhere (e.g. deleted)', async () => {
+    const { useChallenge } = jest.requireActual('../useChallenge');
+    const mockDelete = jest.mocked(challengeRepository.delete);
+    mockDelete.mockResolvedValue(undefined);
+
+    const { result } = await renderHook(() => usePendingChallenges());
+    await waitFor(() => expect(result.current.pendingCount).toBe(1));
+    const callsAfterMount = mockGetAll.mock.calls.length;
+
+    // Simulate a delete from the challenge detail screen (separate hook instance)
+    const detail = await renderHook(() => useChallenge());
+    await act(async () => {
+      await detail.result.current.deleteChallenge('ch-1');
+    });
+
+    // The pending-count hook must refetch without waiting for the poll interval
+    await waitFor(() => expect(mockGetAll.mock.calls.length).toBeGreaterThan(callsAfterMount));
   });
 });

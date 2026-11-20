@@ -585,7 +585,11 @@ export default function CreateCompetitionForm({
         </KeyboardAvoidingView>
       </SafeAreaView>
 
+      {/* Rendered as an overlay inside this modal (embedded), not as a second
+          native RN Modal: stacking native modals on iOS is unreliable and can
+          freeze the app when both dismiss at once */}
       <ConfirmModal
+        embedded
         visible={confirmVisible}
         title={t['competitionForm.deleteTitle']}
         message={t['competitionForm.deleteMessage']}
@@ -597,6 +601,7 @@ export default function CreateCompetitionForm({
       />
 
       <ConfirmModal
+        embedded
         visible={closeConfirmVisible}
         title={t['practiceForm.discardTitle']}
         message={t['practiceForm.discardMessage']}
