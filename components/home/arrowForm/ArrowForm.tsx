@@ -184,172 +184,177 @@ export default function ArrowForm({ modalVisible, setArrowModalVisible, arrowSet
   }
 
   return (
-    <ModalWrapper
-      visible={modalVisible}
-      onClose={() => {
-        clearForm();
-        setArrowModalVisible(false);
-      }}>
-      <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : undefined} style={styles.modal}>
-        <ModalHeader onPress={handleCloseModal} title={arrowSet ? t['arrowForm.editTitle'] : t['arrowForm.newTitle']} />
-        <ScrollView keyboardShouldPersistTaps="handled" showsVerticalScrollIndicator={false} contentContainerStyle={styles.scrollContent}>
-          <Pressable onPress={() => Keyboard.dismiss()}>
-            <View style={styles.inputs}>
-              <Input
-                value={name}
-                onChangeText={(value) => dispatch({ type: 'SET_NAME', payload: value })}
-                helpText={t['arrowForm.nameHelpText']}
-                label={t['arrowForm.nameLabel']}
-                info={t['arrowForm.nameInfo']}
-              />
-              <View style={styles.row}>
-                <Select
-                  containerStyle={{ flex: 1 }}
-                  label={t['arrowDetails.material']}
-                  selectedValue={material}
-                  options={[
-                    { label: t['arrowMaterial.karbon'], value: Material.KARBON },
-                    { label: t['arrowMaterial.aluminium'], value: Material.ALUMINIUM },
-                    { label: t['arrowMaterial.treverk'], value: Material.TREVERK },
-                  ]}
-                  onValueChange={(value) => dispatch({ type: 'SET_MATERIAL', payload: value })}
-                />
+    <>
+      <ModalWrapper
+        visible={modalVisible}
+        onClose={() => {
+          clearForm();
+          setArrowModalVisible(false);
+        }}>
+        <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : undefined} style={styles.modal}>
+          <ModalHeader onPress={handleCloseModal} title={arrowSet ? t['arrowForm.editTitle'] : t['arrowForm.newTitle']} />
+          <ScrollView keyboardShouldPersistTaps="handled" showsVerticalScrollIndicator={false} contentContainerStyle={styles.scrollContent}>
+            <Pressable onPress={() => Keyboard.dismiss()}>
+              <View style={styles.inputs}>
                 <Input
-                  containerStyle={{ flex: 1 }}
-                  label={t['arrowDetails.arrowCount']}
-                  keyboardType="numeric"
-                  value={arrowsCount}
-                  onChangeText={(value) => handleNumberChange(value, 'SET_ARROWS_COUNT', dispatch)}
+                  value={name}
+                  onChangeText={(value) => dispatch({ type: 'SET_NAME', payload: value })}
+                  helpText={t['arrowForm.nameHelpText']}
+                  label={t['arrowForm.nameLabel']}
+                  info={t['arrowForm.nameInfo']}
+                />
+                <View style={styles.row}>
+                  <Select
+                    containerStyle={{ flex: 1 }}
+                    label={t['arrowDetails.material']}
+                    selectedValue={material}
+                    options={[
+                      { label: t['arrowMaterial.karbon'], value: Material.KARBON },
+                      { label: t['arrowMaterial.aluminium'], value: Material.ALUMINIUM },
+                      { label: t['arrowMaterial.treverk'], value: Material.TREVERK },
+                    ]}
+                    onValueChange={(value) => dispatch({ type: 'SET_MATERIAL', payload: value })}
+                  />
+                  <Input
+                    containerStyle={{ flex: 1 }}
+                    label={t['arrowDetails.arrowCount']}
+                    keyboardType="numeric"
+                    value={arrowsCount}
+                    onChangeText={(value) => handleNumberChange(value, 'SET_ARROWS_COUNT', dispatch)}
+                  />
+                </View>
+
+                <Checkbox
+                  value={isFavorite}
+                  label={t['common.favourite']}
+                  helpText={t['common.favouriteHelpText']}
+                  onChange={(newValue) => dispatch({ type: 'SET_FAVORITE', payload: newValue })}
+                />
+
+                <TouchableOpacity activeOpacity={0.7} style={styles.advancedToggle} onPress={() => setAdvancedOpen((prev) => !prev)}>
+                  <View style={styles.advancedLine} />
+                  <View style={styles.advancedLabelWrap}>
+                    <Text style={styles.advancedLabel}>{t['common.advanced']}</Text>
+                    <FontAwesomeIcon
+                      icon={faChevronDown}
+                      size={11}
+                      color={colors.textSecondary}
+                      style={{ transform: [{ rotate: advancedOpen ? '180deg' : '0deg' }] }}
+                    />
+                  </View>
+                  <View style={styles.advancedLine} />
+                </TouchableOpacity>
+
+                {advancedOpen && (
+                  <View style={styles.advancedContent}>
+                    <View style={styles.row}>
+                      <Input
+                        containerStyle={{ flex: 1 }}
+                        label={t['arrowDetails.length']}
+                        info={t['arrowDetails.lengthSuffix']}
+                        keyboardType="numeric"
+                        helpText={t['arrowForm.lengthHelpText']}
+                        value={length}
+                        onChangeText={(value) => dispatch({ type: 'SET_LENGTH', payload: value })}
+                      />
+                      <Input
+                        containerStyle={{ flex: 1 }}
+                        label={t['arrowDetails.weight']}
+                        info={t['arrowForm.grainSuffix']}
+                        keyboardType="numeric"
+                        helpText={t['arrowForm.weightHelpText']}
+                        value={weight}
+                        onChangeText={(value) => handleNumberChange(value, 'SET_WEIGHT', dispatch)}
+                      />
+                    </View>
+                    <View style={styles.row}>
+                      <Input
+                        containerStyle={{ flex: 1 }}
+                        label={t['arrowDetails.spine']}
+                        helpText={t['arrowForm.spineHelpText']}
+                        value={spine}
+                        onChangeText={(value) => dispatch({ type: 'SET_SPINE', payload: value })}
+                      />
+                      <Input
+                        containerStyle={{ flex: 1 }}
+                        label={t['arrowDetails.diameter']}
+                        info={t['arrowForm.mmSuffix']}
+                        keyboardType="numeric"
+                        helpText={t['arrowForm.diameterHelpText']}
+                        value={diameter}
+                        onChangeText={(value) => handleNumberChange(value, 'SET_DIAMETER', dispatch)}
+                      />
+                    </View>
+                    <View style={styles.row}>
+                      <Input
+                        containerStyle={{ flex: 1 }}
+                        label={t['arrowDetails.pointType']}
+                        helpText={t['arrowForm.pointTypeHelpText']}
+                        value={pointType}
+                        onChangeText={(value) => dispatch({ type: 'SET_POINT_TYPE', payload: value })}
+                      />
+                      <Input
+                        containerStyle={{ flex: 1 }}
+                        label={t['arrowDetails.pointWeight']}
+                        info={t['arrowForm.grainSuffix']}
+                        keyboardType="numeric"
+                        helpText={t['arrowForm.pointWeightHelpText']}
+                        value={pointWeight}
+                        onChangeText={(value) => handleNumberChange(value, 'SET_POINT_WEIGHT', dispatch)}
+                      />
+                    </View>
+                    <Input
+                      label={t['arrowDetails.vanes']}
+                      helpText={t['arrowForm.vanesHelpText']}
+                      value={vanes}
+                      onChangeText={(value) => dispatch({ type: 'SET_VANES', payload: value })}
+                    />
+                    <Input
+                      label={t['arrowDetails.nock']}
+                      helpText={t['arrowForm.nockHelpText']}
+                      value={nock}
+                      onChangeText={(value) => dispatch({ type: 'SET_NOCK', payload: value })}
+                    />
+                  </View>
+                )}
+
+                <Textarea
+                  label={t['arrowDetails.notes']}
+                  optional
+                  value={notes}
+                  onChangeText={(value) => dispatch({ type: 'SET_NOTES', payload: value })}
+                  placeholder={t['arrowForm.notesPlaceholder']}
                 />
               </View>
-
-              <Checkbox
-                value={isFavorite}
-                label={t['common.favourite']}
-                helpText={t['common.favouriteHelpText']}
-                onChange={(newValue) => dispatch({ type: 'SET_FAVORITE', payload: newValue })}
-              />
-
-              <TouchableOpacity activeOpacity={0.7} style={styles.advancedToggle} onPress={() => setAdvancedOpen((prev) => !prev)}>
-                <View style={styles.advancedLine} />
-                <View style={styles.advancedLabelWrap}>
-                  <Text style={styles.advancedLabel}>{t['common.advanced']}</Text>
-                  <FontAwesomeIcon
-                    icon={faChevronDown}
-                    size={11}
-                    color={colors.textSecondary}
-                    style={{ transform: [{ rotate: advancedOpen ? '180deg' : '0deg' }] }}
-                  />
-                </View>
-                <View style={styles.advancedLine} />
-              </TouchableOpacity>
-
-              {advancedOpen && (
-                <View style={styles.advancedContent}>
-                  <View style={styles.row}>
-                    <Input
-                      containerStyle={{ flex: 1 }}
-                      label={t['arrowDetails.length']}
-                      info={t['arrowDetails.lengthSuffix']}
-                      keyboardType="numeric"
-                      helpText={t['arrowForm.lengthHelpText']}
-                      value={length}
-                      onChangeText={(value) => dispatch({ type: 'SET_LENGTH', payload: value })}
-                    />
-                    <Input
-                      containerStyle={{ flex: 1 }}
-                      label={t['arrowDetails.weight']}
-                      info={t['arrowForm.grainSuffix']}
-                      keyboardType="numeric"
-                      helpText={t['arrowForm.weightHelpText']}
-                      value={weight}
-                      onChangeText={(value) => handleNumberChange(value, 'SET_WEIGHT', dispatch)}
-                    />
-                  </View>
-                  <View style={styles.row}>
-                    <Input
-                      containerStyle={{ flex: 1 }}
-                      label={t['arrowDetails.spine']}
-                      helpText={t['arrowForm.spineHelpText']}
-                      value={spine}
-                      onChangeText={(value) => dispatch({ type: 'SET_SPINE', payload: value })}
-                    />
-                    <Input
-                      containerStyle={{ flex: 1 }}
-                      label={t['arrowDetails.diameter']}
-                      info={t['arrowForm.mmSuffix']}
-                      keyboardType="numeric"
-                      helpText={t['arrowForm.diameterHelpText']}
-                      value={diameter}
-                      onChangeText={(value) => handleNumberChange(value, 'SET_DIAMETER', dispatch)}
-                    />
-                  </View>
-                  <View style={styles.row}>
-                    <Input
-                      containerStyle={{ flex: 1 }}
-                      label={t['arrowDetails.pointType']}
-                      helpText={t['arrowForm.pointTypeHelpText']}
-                      value={pointType}
-                      onChangeText={(value) => dispatch({ type: 'SET_POINT_TYPE', payload: value })}
-                    />
-                    <Input
-                      containerStyle={{ flex: 1 }}
-                      label={t['arrowDetails.pointWeight']}
-                      info={t['arrowForm.grainSuffix']}
-                      keyboardType="numeric"
-                      helpText={t['arrowForm.pointWeightHelpText']}
-                      value={pointWeight}
-                      onChangeText={(value) => handleNumberChange(value, 'SET_POINT_WEIGHT', dispatch)}
-                    />
-                  </View>
-                  <Input
-                    label={t['arrowDetails.vanes']}
-                    helpText={t['arrowForm.vanesHelpText']}
-                    value={vanes}
-                    onChangeText={(value) => dispatch({ type: 'SET_VANES', payload: value })}
-                  />
-                  <Input
-                    label={t['arrowDetails.nock']}
-                    helpText={t['arrowForm.nockHelpText']}
-                    value={nock}
-                    onChangeText={(value) => dispatch({ type: 'SET_NOCK', payload: value })}
-                  />
-                </View>
-              )}
-
-              <Textarea
-                label={t['arrowDetails.notes']}
-                optional
-                value={notes}
-                onChangeText={(value) => dispatch({ type: 'SET_NOTES', payload: value })}
-                placeholder={t['arrowForm.notesPlaceholder']}
-              />
-            </View>
-          </Pressable>
-        </ScrollView>
-        <View style={styles.footer}>
-          <Button disabled={!name || submitting} onPress={handleSubmit} label={submitting ? t['form.saving'] : t['form.save']} />
-          {arrowSet && (
+            </Pressable>
+          </ScrollView>
+          <View style={styles.footer}>
+            <Button disabled={!name || submitting} onPress={handleSubmit} label={submitting ? t['form.saving'] : t['form.save']} />
+            {arrowSet && (
+              <Button
+                variant="warning"
+                label={t['common.delete']}
+                onPress={() => setConfirmVisible(true)}
+                type="outline"
+                disabled={submitting}>
+                <FontAwesomeIcon icon={faTrash} size={16} color={colors.warning} />
+              </Button>
+            )}
             <Button
-              variant="warning"
-              label={t['common.delete']}
-              onPress={() => setConfirmVisible(true)}
               type="outline"
-              disabled={submitting}>
-              <FontAwesomeIcon icon={faTrash} size={16} color={colors.warning} />
-            </Button>
-          )}
-          <Button
-            type="outline"
-            disabled={submitting}
-            onPress={() => {
-              clearForm();
-              setArrowModalVisible(false);
-            }}
-            label={t['common.cancel']}
-          />
-        </View>
-      </KeyboardAvoidingView>
+              disabled={submitting}
+              onPress={() => {
+                clearForm();
+                setArrowModalVisible(false);
+              }}
+              label={t['common.cancel']}
+            />
+          </View>
+        </KeyboardAvoidingView>
+      </ModalWrapper>
+
+      {/* Nested RN Modals on iOS can leave the root view untouchable when
+          dismissed together with the parent modal — keep this as a sibling */}
       <ConfirmModal
         title={t['arrowForm.deleteTitle']}
         message={t['arrowForm.deleteMessage'].replace('{name}', arrowSet?.name ?? '')}
@@ -360,6 +365,6 @@ export default function ArrowForm({ modalVisible, setArrowModalVisible, arrowSet
           setConfirmVisible(false);
         }}
       />
-    </ModalWrapper>
+    </>
   );
 }
