@@ -621,6 +621,9 @@ export const en: TranslationKeys = {
   'settings.supportDesc':
     'Bueboka is developed and maintained by volunteers. All contributions go directly to operations and further development.',
   'settings.vippsLabel': 'Vipps number',
+  'settings.faqTitle': 'FAQ',
+  'settings.faqDesc': 'Find answers to frequently asked questions about Bueboka on our website.',
+  'settings.faqButton': 'Open FAQ in app',
 
   // Bow form
   'bowForm.editTitle': 'Edit bow',
