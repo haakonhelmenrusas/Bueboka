@@ -33,11 +33,21 @@ Bueboka er treningsdagboken for bueskyting — laget for norske skyttere.
 Perfekt for klubbtrening, felt, 3D og konkurranse. Kom i gang på under ett minutt — ingen konto hos tredjepart nødvendig.
 ```
 
+### What's New (for 2.2.1)
+```
+• Konkurransekort viser nå antall piler skutt
+• Fikset innlogging med e-post og passord i appen
+• Over-the-air-oppdateringer er aktivert, slik at rettelser kan sendes ut uten ny butikkversjon
+```
+
 ### What's New (for 2.2.0)
 ```
 • Score følger nå kategori og skive: 10-ring med X ute, 6-ring på 80 cm Centre, felt 6–1 og 3D 11/10/8/5
-• «Skyt og klikk» (hurtigtrening) åpnes nå riktig over skjemaet på iOS
-• Raskere og mer presis pilregistrering i score-modalen
+• «Skyt og klikk» (hurtigtrening) åpnes nå riktig over skjemaet på iOS og husker antall piler per runde
+• Nytt «Spørsmål og svar» i Innstillinger — åpnes rett i appen
+• Fikset at skjemaer kunne fryse eller ikke lukkes på iOS
+• Sletting av trening, konkurranse eller utfordring oppdaterer listene og telleren med én gang
+• Tydeligere feilmeldinger når noe går galt
 ```
 
 ## English (en)
@@ -70,9 +80,19 @@ Bueboka is the training log for archery — built for Norwegian archers.
 Perfect for club practice, field, 3D and competition. Get started in under a minute.
 ```
 
+### What's New (for 2.2.1)
+```
+• Competition cards now show the number of arrows shot
+• Fixed email and password sign-in in the app
+• Over-the-air updates enabled, so fixes can ship without a new store version
+```
+
 ### What's New (for 2.2.0)
 ```
 • Scoring now follows category and target face: 10-ring with X outdoors, 6-ring on 80 cm Centre, field 6–1 and 3D 11/10/8/5
-• "Quick practice" now opens correctly on top of the form on iOS
-• Faster, more precise arrow entry in the scoring modal
+• "Quick practice" now opens correctly on top of the form on iOS and remembers the arrow count per round
+• New FAQ section in Settings — opens right in the app
+• Fixed forms freezing or not closing on iOS
+• Deleting a practice, competition or challenge now refreshes the lists and badge immediately
+• Clearer error messages when something goes wrong
 ```

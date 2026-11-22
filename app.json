@@ -7,7 +7,7 @@
     },
     "name": "Bueboka",
     "slug": "bueboka",
-    "version": "2.1.0",
+    "version": "2.2.1",
     "icon": "./assets/images/icon.png",
     "extra": {
       "eas": {
@@ -20,7 +20,7 @@
     "ios": {
       "bundleIdentifier": "com.aaronshade.bueboka",
       "infoPlist": {
-        "CFBundleShortVersionString": "2.1.0",
+        "CFBundleShortVersionString": "2.2.1",
         "CFBundleIconName": "./assets/images/ipad.png",
         "ITSAppUsesNonExemptEncryption": false,
         "NSPhotoLibraryUsageDescription": "Bueboka trenger tilgang til bilder for at du skal kunne velge profilbilde.",
@@ -36,8 +36,8 @@
     },
     "updates": {
       "url": "https://u.expo.dev/a740b024-fdf9-420d-9998-a6ae076ebc43",
-      "enabled": false,
-      "checkAutomatically": "NEVER"
+      "enabled": true,
+      "checkAutomatically": "ON_LOAD"
     },
     "plugins": [
       "./plugins/withSoftInputMode",
