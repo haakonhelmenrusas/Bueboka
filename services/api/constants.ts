@@ -3,7 +3,18 @@
 
 export const API_BASE_URL = process.env.EXPO_PUBLIC_API_URL || 'http://localhost:3000/api';
 export const AUTH_BASE_URL = `${API_BASE_URL}/auth`;
-export const API_ORIGIN = API_BASE_URL.replace(/^https?:\/\/([^/]+).*$/, 'http://$1') || 'http://localhost:3000';
+// Origin of the API host, keeping its real scheme (https in production).
+// better-auth force-validates the Origin header on every request that carries one
+// (origin-check middleware) against trustedOrigins, which include the baseURL
+// origin (https://bueboka.no). A downgraded http:// origin gets 403 INVALID_ORIGIN
+// on sign-in, so the scheme must not be rewritten here.
+export const API_ORIGIN = (() => {
+  try {
+    return new URL(API_BASE_URL).origin;
+  } catch {
+    return 'http://localhost:3000';
+  }
+})();
 
 export const TOKEN_STORAGE_KEYS = {
   AUTH_TOKEN: 'auth_token',
