@@ -263,7 +263,7 @@ export default function CreateCompetitionForm({
       .filter((r) => (r.numberArrows ?? 0) > 0 || (r.arrowsWithoutScore ?? 0) > 0 || r.roundScore > 0 || r.targetType || r.distanceMeters)
       .map((r) => {
         const round: CreateCompetitionRoundData = { roundNumber: r.roundNumber, roundScore: r.roundScore || 0 };
-        if (r.numberArrows !== undefined) round.arrows = r.numberArrows;
+        if (r.numberArrows !== undefined) round.numberArrows = r.numberArrows;
         if (r.arrowsWithoutScore !== undefined) round.arrowsWithoutScore = r.arrowsWithoutScore;
         if (r.distanceMeters !== undefined) round.distanceMeters = r.distanceMeters;
         if (r.distanceFrom !== undefined) round.distanceFrom = r.distanceFrom;

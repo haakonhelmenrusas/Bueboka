@@ -36,8 +36,8 @@
     },
     "updates": {
       "url": "https://u.expo.dev/a740b024-fdf9-420d-9998-a6ae076ebc43",
-      "enabled": false,
-      "checkAutomatically": "NEVER"
+      "enabled": true,
+      "checkAutomatically": "ON_LOAD"
     },
     "plugins": [
       "./plugins/withSoftInputMode",

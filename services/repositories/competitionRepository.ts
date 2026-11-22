@@ -4,7 +4,8 @@ import type { Competition, Environment, PracticeCategory, WeatherCondition } fro
 
 export interface CreateCompetitionRoundData {
   roundNumber: number;
-  arrows?: number;
+  /** Scored arrow count — must be `numberArrows` to match the backend schema (lib/validations/competition.ts) */
+  numberArrows?: number;
   arrowsWithoutScore?: number;
   roundScore?: number;
   distanceMeters?: number;
