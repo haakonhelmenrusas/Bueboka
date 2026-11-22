@@ -33,6 +33,13 @@ Bueboka er treningsdagboken for bueskyting — laget for norske skyttere.
 Perfekt for klubbtrening, felt, 3D og konkurranse. Kom i gang på under ett minutt — ingen konto hos tredjepart nødvendig.
 ```
 
+### What's New (for 2.2.1)
+```
+• Konkurransekort viser nå antall piler skutt
+• Fikset innlogging med e-post og passord i appen
+• Over-the-air-oppdateringer er aktivert, slik at rettelser kan sendes ut uten ny butikkversjon
+```
+
 ### What's New (for 2.2.0)
 ```
 • Score følger nå kategori og skive: 10-ring med X ute, 6-ring på 80 cm Centre, felt 6–1 og 3D 11/10/8/5
@@ -71,6 +78,13 @@ Bueboka is the training log for archery — built for Norwegian archers.
 • Weather and location logged optionally — and everything works offline
 
 Perfect for club practice, field, 3D and competition. Get started in under a minute.
+```
+
+### What's New (for 2.2.1)
+```
+• Competition cards now show the number of arrows shot
+• Fixed email and password sign-in in the app
+• Over-the-air updates enabled, so fixes can ship without a new store version
 ```
 
 ### What's New (for 2.2.0)
